@@ -12,10 +12,13 @@ import com.clear_street.api.core.http.HttpRequest
 import com.clear_street.api.core.http.HttpResponse
 import com.clear_street.api.core.http.HttpResponse.Handler
 import com.clear_street.api.core.http.HttpResponseFor
+import com.clear_street.api.core.http.json
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
 import com.clear_street.api.models.active.v1.screener.ScreenerGetScreenerParams
 import com.clear_street.api.models.active.v1.screener.ScreenerGetScreenerResponse
+import com.clear_street.api.models.active.v1.screener.ScreenerSearchScreenerParams
+import com.clear_street.api.models.active.v1.screener.ScreenerSearchScreenerResponse
 import java.util.function.Consumer
 
 /** Retrieve details and lists of tradable instruments. */
@@ -37,6 +40,13 @@ class ScreenerServiceImpl internal constructor(private val clientOptions: Client
     ): ScreenerGetScreenerResponse =
         // get /active/v1/screener
         withRawResponse().getScreener(params, requestOptions).parse()
+
+    override fun searchScreener(
+        params: ScreenerSearchScreenerParams,
+        requestOptions: RequestOptions,
+    ): ScreenerSearchScreenerResponse =
+        // post /active/v1/screener
+        withRawResponse().searchScreener(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         ScreenerService.WithRawResponse {
@@ -70,6 +80,34 @@ class ScreenerServiceImpl internal constructor(private val clientOptions: Client
             return errorHandler.handle(response).parseable {
                 response
                     .use { getScreenerHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val searchScreenerHandler: Handler<ScreenerSearchScreenerResponse> =
+            jsonHandler<ScreenerSearchScreenerResponse>(clientOptions.jsonMapper)
+
+        override fun searchScreener(
+            params: ScreenerSearchScreenerParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<ScreenerSearchScreenerResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("active", "v1", "screener")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { searchScreenerHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

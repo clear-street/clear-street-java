@@ -24,22 +24,19 @@ import kotlin.jvm.optionals.getOrNull
 class ScreenerItem
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val buyRatings: JsonField<Int>,
-    private val holdRatings: JsonField<Int>,
     private val price: JsonField<String>,
     private val securityId: JsonField<String>,
     private val securityIdSource: JsonField<SecurityIdSource>,
-    private val sellRatings: JsonField<Int>,
-    private val strongBuyRatings: JsonField<Int>,
-    private val strongSellRatings: JsonField<Int>,
     private val symbol: JsonField<String>,
     private val totalRatings: JsonField<Int>,
     private val consensusPriceTarget: JsonField<String>,
-    private val consensusPriceTargetHigh: JsonField<String>,
-    private val consensusPriceTargetLow: JsonField<String>,
     private val consensusRating: JsonField<AnalystRating>,
     private val countryOfIssue: JsonField<String>,
+    private val debtToEquityTtm: JsonField<String>,
     private val description: JsonField<String>,
+    private val dividendYieldTtm: JsonField<String>,
+    private val earningsPerShareTtm: JsonField<String>,
+    private val exchange: JsonField<String>,
     private val fiftyTwoWeekHigh: JsonField<String>,
     private val fiftyTwoWeekLow: JsonField<String>,
     private val gapFrom52wHighPct: JsonField<String>,
@@ -60,6 +57,7 @@ private constructor(
     private val oneYearChangePct: JsonField<String>,
     private val percentChange: JsonField<String>,
     private val prevDayClose: JsonField<String>,
+    private val priceToEarningsTtm: JsonField<String>,
     private val sector: JsonField<String>,
     private val securityType: JsonField<String>,
     private val sixMonthChangePct: JsonField<String>,
@@ -68,11 +66,6 @@ private constructor(
     private val threeMonthChangePct: JsonField<String>,
     private val threeMonthsAgoClose: JsonField<String>,
     private val threeMonthsAgoOpen: JsonField<String>,
-    private val ttmDebtToEquity: JsonField<String>,
-    private val ttmDividendYield: JsonField<String>,
-    private val ttmEarningsPerShare: JsonField<String>,
-    private val ttmPriceToEarnings: JsonField<String>,
-    private val venue: JsonField<String>,
     private val volume: JsonField<String>,
     private val weekAvgVolume: JsonField<String>,
     private val yearToDateOpen: JsonField<String>,
@@ -82,10 +75,6 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("buy_ratings") @ExcludeMissing buyRatings: JsonField<Int> = JsonMissing.of(),
-        @JsonProperty("hold_ratings")
-        @ExcludeMissing
-        holdRatings: JsonField<Int> = JsonMissing.of(),
         @JsonProperty("price") @ExcludeMissing price: JsonField<String> = JsonMissing.of(),
         @JsonProperty("security_id")
         @ExcludeMissing
@@ -93,15 +82,6 @@ private constructor(
         @JsonProperty("security_id_source")
         @ExcludeMissing
         securityIdSource: JsonField<SecurityIdSource> = JsonMissing.of(),
-        @JsonProperty("sell_ratings")
-        @ExcludeMissing
-        sellRatings: JsonField<Int> = JsonMissing.of(),
-        @JsonProperty("strong_buy_ratings")
-        @ExcludeMissing
-        strongBuyRatings: JsonField<Int> = JsonMissing.of(),
-        @JsonProperty("strong_sell_ratings")
-        @ExcludeMissing
-        strongSellRatings: JsonField<Int> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("total_ratings")
         @ExcludeMissing
@@ -109,21 +89,25 @@ private constructor(
         @JsonProperty("consensus_price_target")
         @ExcludeMissing
         consensusPriceTarget: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("consensus_price_target_high")
-        @ExcludeMissing
-        consensusPriceTargetHigh: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("consensus_price_target_low")
-        @ExcludeMissing
-        consensusPriceTargetLow: JsonField<String> = JsonMissing.of(),
         @JsonProperty("consensus_rating")
         @ExcludeMissing
         consensusRating: JsonField<AnalystRating> = JsonMissing.of(),
         @JsonProperty("country_of_issue")
         @ExcludeMissing
         countryOfIssue: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("debt_to_equity_ttm")
+        @ExcludeMissing
+        debtToEquityTtm: JsonField<String> = JsonMissing.of(),
         @JsonProperty("description")
         @ExcludeMissing
         description: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("dividend_yield_ttm")
+        @ExcludeMissing
+        dividendYieldTtm: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("earnings_per_share_ttm")
+        @ExcludeMissing
+        earningsPerShareTtm: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("exchange") @ExcludeMissing exchange: JsonField<String> = JsonMissing.of(),
         @JsonProperty("fifty_two_week_high")
         @ExcludeMissing
         fiftyTwoWeekHigh: JsonField<String> = JsonMissing.of(),
@@ -178,6 +162,9 @@ private constructor(
         @JsonProperty("prev_day_close")
         @ExcludeMissing
         prevDayClose: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("price_to_earnings_ttm")
+        @ExcludeMissing
+        priceToEarningsTtm: JsonField<String> = JsonMissing.of(),
         @JsonProperty("sector") @ExcludeMissing sector: JsonField<String> = JsonMissing.of(),
         @JsonProperty("security_type")
         @ExcludeMissing
@@ -200,19 +187,6 @@ private constructor(
         @JsonProperty("three_months_ago_open")
         @ExcludeMissing
         threeMonthsAgoOpen: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("ttm_debt_to_equity")
-        @ExcludeMissing
-        ttmDebtToEquity: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("ttm_dividend_yield")
-        @ExcludeMissing
-        ttmDividendYield: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("ttm_earnings_per_share")
-        @ExcludeMissing
-        ttmEarningsPerShare: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("ttm_price_to_earnings")
-        @ExcludeMissing
-        ttmPriceToEarnings: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("venue") @ExcludeMissing venue: JsonField<String> = JsonMissing.of(),
         @JsonProperty("volume") @ExcludeMissing volume: JsonField<String> = JsonMissing.of(),
         @JsonProperty("week_avg_volume")
         @ExcludeMissing
@@ -224,22 +198,19 @@ private constructor(
         @ExcludeMissing
         ytdChangePct: JsonField<String> = JsonMissing.of(),
     ) : this(
-        buyRatings,
-        holdRatings,
         price,
         securityId,
         securityIdSource,
-        sellRatings,
-        strongBuyRatings,
-        strongSellRatings,
         symbol,
         totalRatings,
         consensusPriceTarget,
-        consensusPriceTargetHigh,
-        consensusPriceTargetLow,
         consensusRating,
         countryOfIssue,
+        debtToEquityTtm,
         description,
+        dividendYieldTtm,
+        earningsPerShareTtm,
+        exchange,
         fiftyTwoWeekHigh,
         fiftyTwoWeekLow,
         gapFrom52wHighPct,
@@ -260,6 +231,7 @@ private constructor(
         oneYearChangePct,
         percentChange,
         prevDayClose,
+        priceToEarningsTtm,
         sector,
         securityType,
         sixMonthChangePct,
@@ -268,33 +240,12 @@ private constructor(
         threeMonthChangePct,
         threeMonthsAgoClose,
         threeMonthsAgoOpen,
-        ttmDebtToEquity,
-        ttmDividendYield,
-        ttmEarningsPerShare,
-        ttmPriceToEarnings,
-        venue,
         volume,
         weekAvgVolume,
         yearToDateOpen,
         ytdChangePct,
         mutableMapOf(),
     )
-
-    /**
-     * The count of buy analyst ratings
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun buyRatings(): Int = buyRatings.getRequired("buy_ratings")
-
-    /**
-     * The count of hold analyst ratings
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun holdRatings(): Int = holdRatings.getRequired("hold_ratings")
 
     /**
      * The latest price for the instrument
@@ -319,30 +270,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun securityIdSource(): SecurityIdSource = securityIdSource.getRequired("security_id_source")
-
-    /**
-     * The count of sell analyst ratings
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun sellRatings(): Int = sellRatings.getRequired("sell_ratings")
-
-    /**
-     * The count of strong buy analyst ratings
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun strongBuyRatings(): Int = strongBuyRatings.getRequired("strong_buy_ratings")
-
-    /**
-     * The count of strong sell analyst ratings
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun strongSellRatings(): Int = strongSellRatings.getRequired("strong_sell_ratings")
 
     /**
      * The trading symbol for the instrument
@@ -370,24 +297,6 @@ private constructor(
         consensusPriceTarget.getOptional("consensus_price_target")
 
     /**
-     * The highest analyst price target
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun consensusPriceTargetHigh(): Optional<String> =
-        consensusPriceTargetHigh.getOptional("consensus_price_target_high")
-
-    /**
-     * The lowest analyst price target
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun consensusPriceTargetLow(): Optional<String> =
-        consensusPriceTargetLow.getOptional("consensus_price_target_low")
-
-    /**
      * The consensus analyst rating
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -404,12 +313,45 @@ private constructor(
     fun countryOfIssue(): Optional<String> = countryOfIssue.getOptional("country_of_issue")
 
     /**
+     * The TTM debt-to-equity ratio
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun debtToEquityTtm(): Optional<String> = debtToEquityTtm.getOptional("debt_to_equity_ttm")
+
+    /**
      * A detailed description of the instrument or company
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
     fun description(): Optional<String> = description.getOptional("description")
+
+    /**
+     * The TTM dividend yield percent
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun dividendYieldTtm(): Optional<String> = dividendYieldTtm.getOptional("dividend_yield_ttm")
+
+    /**
+     * The TTM earnings per share
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun earningsPerShareTtm(): Optional<String> =
+        earningsPerShareTtm.getOptional("earnings_per_share_ttm")
+
+    /**
+     * The MIC code of the primary listing exchange
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun exchange(): Optional<String> = exchange.getOptional("exchange")
 
     /**
      * The highest price over the last 52 weeks
@@ -574,6 +516,15 @@ private constructor(
     fun prevDayClose(): Optional<String> = prevDayClose.getOptional("prev_day_close")
 
     /**
+     * The TTM price-to-earnings ratio
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun priceToEarningsTtm(): Optional<String> =
+        priceToEarningsTtm.getOptional("price_to_earnings_ttm")
+
+    /**
      * The business sector of the instrument's issuer
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -643,48 +594,6 @@ private constructor(
         threeMonthsAgoOpen.getOptional("three_months_ago_open")
 
     /**
-     * The TTM debt-to-equity ratio
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun ttmDebtToEquity(): Optional<String> = ttmDebtToEquity.getOptional("ttm_debt_to_equity")
-
-    /**
-     * The TTM dividend yield percent
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun ttmDividendYield(): Optional<String> = ttmDividendYield.getOptional("ttm_dividend_yield")
-
-    /**
-     * The TTM earnings per share
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun ttmEarningsPerShare(): Optional<String> =
-        ttmEarningsPerShare.getOptional("ttm_earnings_per_share")
-
-    /**
-     * The TTM price-to-earnings ratio
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun ttmPriceToEarnings(): Optional<String> =
-        ttmPriceToEarnings.getOptional("ttm_price_to_earnings")
-
-    /**
-     * The MIC code of the primary listing venue
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun venue(): Optional<String> = venue.getOptional("venue")
-
-    /**
      * The latest trading volume for the instrument
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -717,20 +626,6 @@ private constructor(
     fun ytdChangePct(): Optional<String> = ytdChangePct.getOptional("ytd_change_pct")
 
     /**
-     * Returns the raw JSON value of [buyRatings].
-     *
-     * Unlike [buyRatings], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("buy_ratings") @ExcludeMissing fun _buyRatings(): JsonField<Int> = buyRatings
-
-    /**
-     * Returns the raw JSON value of [holdRatings].
-     *
-     * Unlike [holdRatings], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("hold_ratings") @ExcludeMissing fun _holdRatings(): JsonField<Int> = holdRatings
-
-    /**
      * Returns the raw JSON value of [price].
      *
      * Unlike [price], this method doesn't throw if the JSON field has an unexpected type.
@@ -753,33 +648,6 @@ private constructor(
     @JsonProperty("security_id_source")
     @ExcludeMissing
     fun _securityIdSource(): JsonField<SecurityIdSource> = securityIdSource
-
-    /**
-     * Returns the raw JSON value of [sellRatings].
-     *
-     * Unlike [sellRatings], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("sell_ratings") @ExcludeMissing fun _sellRatings(): JsonField<Int> = sellRatings
-
-    /**
-     * Returns the raw JSON value of [strongBuyRatings].
-     *
-     * Unlike [strongBuyRatings], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("strong_buy_ratings")
-    @ExcludeMissing
-    fun _strongBuyRatings(): JsonField<Int> = strongBuyRatings
-
-    /**
-     * Returns the raw JSON value of [strongSellRatings].
-     *
-     * Unlike [strongSellRatings], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("strong_sell_ratings")
-    @ExcludeMissing
-    fun _strongSellRatings(): JsonField<Int> = strongSellRatings
 
     /**
      * Returns the raw JSON value of [symbol].
@@ -808,26 +676,6 @@ private constructor(
     fun _consensusPriceTarget(): JsonField<String> = consensusPriceTarget
 
     /**
-     * Returns the raw JSON value of [consensusPriceTargetHigh].
-     *
-     * Unlike [consensusPriceTargetHigh], this method doesn't throw if the JSON field has an
-     * unexpected type.
-     */
-    @JsonProperty("consensus_price_target_high")
-    @ExcludeMissing
-    fun _consensusPriceTargetHigh(): JsonField<String> = consensusPriceTargetHigh
-
-    /**
-     * Returns the raw JSON value of [consensusPriceTargetLow].
-     *
-     * Unlike [consensusPriceTargetLow], this method doesn't throw if the JSON field has an
-     * unexpected type.
-     */
-    @JsonProperty("consensus_price_target_low")
-    @ExcludeMissing
-    fun _consensusPriceTargetLow(): JsonField<String> = consensusPriceTargetLow
-
-    /**
      * Returns the raw JSON value of [consensusRating].
      *
      * Unlike [consensusRating], this method doesn't throw if the JSON field has an unexpected type.
@@ -846,11 +694,47 @@ private constructor(
     fun _countryOfIssue(): JsonField<String> = countryOfIssue
 
     /**
+     * Returns the raw JSON value of [debtToEquityTtm].
+     *
+     * Unlike [debtToEquityTtm], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("debt_to_equity_ttm")
+    @ExcludeMissing
+    fun _debtToEquityTtm(): JsonField<String> = debtToEquityTtm
+
+    /**
      * Returns the raw JSON value of [description].
      *
      * Unlike [description], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("description") @ExcludeMissing fun _description(): JsonField<String> = description
+
+    /**
+     * Returns the raw JSON value of [dividendYieldTtm].
+     *
+     * Unlike [dividendYieldTtm], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("dividend_yield_ttm")
+    @ExcludeMissing
+    fun _dividendYieldTtm(): JsonField<String> = dividendYieldTtm
+
+    /**
+     * Returns the raw JSON value of [earningsPerShareTtm].
+     *
+     * Unlike [earningsPerShareTtm], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("earnings_per_share_ttm")
+    @ExcludeMissing
+    fun _earningsPerShareTtm(): JsonField<String> = earningsPerShareTtm
+
+    /**
+     * Returns the raw JSON value of [exchange].
+     *
+     * Unlike [exchange], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("exchange") @ExcludeMissing fun _exchange(): JsonField<String> = exchange
 
     /**
      * Returns the raw JSON value of [fiftyTwoWeekHigh].
@@ -1032,6 +916,16 @@ private constructor(
     fun _prevDayClose(): JsonField<String> = prevDayClose
 
     /**
+     * Returns the raw JSON value of [priceToEarningsTtm].
+     *
+     * Unlike [priceToEarningsTtm], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("price_to_earnings_ttm")
+    @ExcludeMissing
+    fun _priceToEarningsTtm(): JsonField<String> = priceToEarningsTtm
+
+    /**
      * Returns the raw JSON value of [sector].
      *
      * Unlike [sector], this method doesn't throw if the JSON field has an unexpected type.
@@ -1108,52 +1002,6 @@ private constructor(
     fun _threeMonthsAgoOpen(): JsonField<String> = threeMonthsAgoOpen
 
     /**
-     * Returns the raw JSON value of [ttmDebtToEquity].
-     *
-     * Unlike [ttmDebtToEquity], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("ttm_debt_to_equity")
-    @ExcludeMissing
-    fun _ttmDebtToEquity(): JsonField<String> = ttmDebtToEquity
-
-    /**
-     * Returns the raw JSON value of [ttmDividendYield].
-     *
-     * Unlike [ttmDividendYield], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("ttm_dividend_yield")
-    @ExcludeMissing
-    fun _ttmDividendYield(): JsonField<String> = ttmDividendYield
-
-    /**
-     * Returns the raw JSON value of [ttmEarningsPerShare].
-     *
-     * Unlike [ttmEarningsPerShare], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("ttm_earnings_per_share")
-    @ExcludeMissing
-    fun _ttmEarningsPerShare(): JsonField<String> = ttmEarningsPerShare
-
-    /**
-     * Returns the raw JSON value of [ttmPriceToEarnings].
-     *
-     * Unlike [ttmPriceToEarnings], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("ttm_price_to_earnings")
-    @ExcludeMissing
-    fun _ttmPriceToEarnings(): JsonField<String> = ttmPriceToEarnings
-
-    /**
-     * Returns the raw JSON value of [venue].
-     *
-     * Unlike [venue], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("venue") @ExcludeMissing fun _venue(): JsonField<String> = venue
-
-    /**
      * Returns the raw JSON value of [volume].
      *
      * Unlike [volume], this method doesn't throw if the JSON field has an unexpected type.
@@ -1206,14 +1054,9 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .buyRatings()
-         * .holdRatings()
          * .price()
          * .securityId()
          * .securityIdSource()
-         * .sellRatings()
-         * .strongBuyRatings()
-         * .strongSellRatings()
          * .symbol()
          * .totalRatings()
          * ```
@@ -1224,22 +1067,19 @@ private constructor(
     /** A builder for [ScreenerItem]. */
     class Builder internal constructor() {
 
-        private var buyRatings: JsonField<Int>? = null
-        private var holdRatings: JsonField<Int>? = null
         private var price: JsonField<String>? = null
         private var securityId: JsonField<String>? = null
         private var securityIdSource: JsonField<SecurityIdSource>? = null
-        private var sellRatings: JsonField<Int>? = null
-        private var strongBuyRatings: JsonField<Int>? = null
-        private var strongSellRatings: JsonField<Int>? = null
         private var symbol: JsonField<String>? = null
         private var totalRatings: JsonField<Int>? = null
         private var consensusPriceTarget: JsonField<String> = JsonMissing.of()
-        private var consensusPriceTargetHigh: JsonField<String> = JsonMissing.of()
-        private var consensusPriceTargetLow: JsonField<String> = JsonMissing.of()
         private var consensusRating: JsonField<AnalystRating> = JsonMissing.of()
         private var countryOfIssue: JsonField<String> = JsonMissing.of()
+        private var debtToEquityTtm: JsonField<String> = JsonMissing.of()
         private var description: JsonField<String> = JsonMissing.of()
+        private var dividendYieldTtm: JsonField<String> = JsonMissing.of()
+        private var earningsPerShareTtm: JsonField<String> = JsonMissing.of()
+        private var exchange: JsonField<String> = JsonMissing.of()
         private var fiftyTwoWeekHigh: JsonField<String> = JsonMissing.of()
         private var fiftyTwoWeekLow: JsonField<String> = JsonMissing.of()
         private var gapFrom52wHighPct: JsonField<String> = JsonMissing.of()
@@ -1260,6 +1100,7 @@ private constructor(
         private var oneYearChangePct: JsonField<String> = JsonMissing.of()
         private var percentChange: JsonField<String> = JsonMissing.of()
         private var prevDayClose: JsonField<String> = JsonMissing.of()
+        private var priceToEarningsTtm: JsonField<String> = JsonMissing.of()
         private var sector: JsonField<String> = JsonMissing.of()
         private var securityType: JsonField<String> = JsonMissing.of()
         private var sixMonthChangePct: JsonField<String> = JsonMissing.of()
@@ -1268,11 +1109,6 @@ private constructor(
         private var threeMonthChangePct: JsonField<String> = JsonMissing.of()
         private var threeMonthsAgoClose: JsonField<String> = JsonMissing.of()
         private var threeMonthsAgoOpen: JsonField<String> = JsonMissing.of()
-        private var ttmDebtToEquity: JsonField<String> = JsonMissing.of()
-        private var ttmDividendYield: JsonField<String> = JsonMissing.of()
-        private var ttmEarningsPerShare: JsonField<String> = JsonMissing.of()
-        private var ttmPriceToEarnings: JsonField<String> = JsonMissing.of()
-        private var venue: JsonField<String> = JsonMissing.of()
         private var volume: JsonField<String> = JsonMissing.of()
         private var weekAvgVolume: JsonField<String> = JsonMissing.of()
         private var yearToDateOpen: JsonField<String> = JsonMissing.of()
@@ -1281,22 +1117,19 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(screenerItem: ScreenerItem) = apply {
-            buyRatings = screenerItem.buyRatings
-            holdRatings = screenerItem.holdRatings
             price = screenerItem.price
             securityId = screenerItem.securityId
             securityIdSource = screenerItem.securityIdSource
-            sellRatings = screenerItem.sellRatings
-            strongBuyRatings = screenerItem.strongBuyRatings
-            strongSellRatings = screenerItem.strongSellRatings
             symbol = screenerItem.symbol
             totalRatings = screenerItem.totalRatings
             consensusPriceTarget = screenerItem.consensusPriceTarget
-            consensusPriceTargetHigh = screenerItem.consensusPriceTargetHigh
-            consensusPriceTargetLow = screenerItem.consensusPriceTargetLow
             consensusRating = screenerItem.consensusRating
             countryOfIssue = screenerItem.countryOfIssue
+            debtToEquityTtm = screenerItem.debtToEquityTtm
             description = screenerItem.description
+            dividendYieldTtm = screenerItem.dividendYieldTtm
+            earningsPerShareTtm = screenerItem.earningsPerShareTtm
+            exchange = screenerItem.exchange
             fiftyTwoWeekHigh = screenerItem.fiftyTwoWeekHigh
             fiftyTwoWeekLow = screenerItem.fiftyTwoWeekLow
             gapFrom52wHighPct = screenerItem.gapFrom52wHighPct
@@ -1317,6 +1150,7 @@ private constructor(
             oneYearChangePct = screenerItem.oneYearChangePct
             percentChange = screenerItem.percentChange
             prevDayClose = screenerItem.prevDayClose
+            priceToEarningsTtm = screenerItem.priceToEarningsTtm
             sector = screenerItem.sector
             securityType = screenerItem.securityType
             sixMonthChangePct = screenerItem.sixMonthChangePct
@@ -1325,39 +1159,12 @@ private constructor(
             threeMonthChangePct = screenerItem.threeMonthChangePct
             threeMonthsAgoClose = screenerItem.threeMonthsAgoClose
             threeMonthsAgoOpen = screenerItem.threeMonthsAgoOpen
-            ttmDebtToEquity = screenerItem.ttmDebtToEquity
-            ttmDividendYield = screenerItem.ttmDividendYield
-            ttmEarningsPerShare = screenerItem.ttmEarningsPerShare
-            ttmPriceToEarnings = screenerItem.ttmPriceToEarnings
-            venue = screenerItem.venue
             volume = screenerItem.volume
             weekAvgVolume = screenerItem.weekAvgVolume
             yearToDateOpen = screenerItem.yearToDateOpen
             ytdChangePct = screenerItem.ytdChangePct
             additionalProperties = screenerItem.additionalProperties.toMutableMap()
         }
-
-        /** The count of buy analyst ratings */
-        fun buyRatings(buyRatings: Int) = buyRatings(JsonField.of(buyRatings))
-
-        /**
-         * Sets [Builder.buyRatings] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.buyRatings] with a well-typed [Int] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun buyRatings(buyRatings: JsonField<Int>) = apply { this.buyRatings = buyRatings }
-
-        /** The count of hold analyst ratings */
-        fun holdRatings(holdRatings: Int) = holdRatings(JsonField.of(holdRatings))
-
-        /**
-         * Sets [Builder.holdRatings] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.holdRatings] with a well-typed [Int] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun holdRatings(holdRatings: JsonField<Int>) = apply { this.holdRatings = holdRatings }
 
         /** The latest price for the instrument */
         fun price(price: String) = price(JsonField.of(price))
@@ -1395,47 +1202,6 @@ private constructor(
          */
         fun securityIdSource(securityIdSource: JsonField<SecurityIdSource>) = apply {
             this.securityIdSource = securityIdSource
-        }
-
-        /** The count of sell analyst ratings */
-        fun sellRatings(sellRatings: Int) = sellRatings(JsonField.of(sellRatings))
-
-        /**
-         * Sets [Builder.sellRatings] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.sellRatings] with a well-typed [Int] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun sellRatings(sellRatings: JsonField<Int>) = apply { this.sellRatings = sellRatings }
-
-        /** The count of strong buy analyst ratings */
-        fun strongBuyRatings(strongBuyRatings: Int) =
-            strongBuyRatings(JsonField.of(strongBuyRatings))
-
-        /**
-         * Sets [Builder.strongBuyRatings] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.strongBuyRatings] with a well-typed [Int] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun strongBuyRatings(strongBuyRatings: JsonField<Int>) = apply {
-            this.strongBuyRatings = strongBuyRatings
-        }
-
-        /** The count of strong sell analyst ratings */
-        fun strongSellRatings(strongSellRatings: Int) =
-            strongSellRatings(JsonField.of(strongSellRatings))
-
-        /**
-         * Sets [Builder.strongSellRatings] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.strongSellRatings] with a well-typed [Int] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun strongSellRatings(strongSellRatings: JsonField<Int>) = apply {
-            this.strongSellRatings = strongSellRatings
         }
 
         /** The trading symbol for the instrument */
@@ -1483,50 +1249,6 @@ private constructor(
             this.consensusPriceTarget = consensusPriceTarget
         }
 
-        /** The highest analyst price target */
-        fun consensusPriceTargetHigh(consensusPriceTargetHigh: String?) =
-            consensusPriceTargetHigh(JsonField.ofNullable(consensusPriceTargetHigh))
-
-        /**
-         * Alias for calling [Builder.consensusPriceTargetHigh] with
-         * `consensusPriceTargetHigh.orElse(null)`.
-         */
-        fun consensusPriceTargetHigh(consensusPriceTargetHigh: Optional<String>) =
-            consensusPriceTargetHigh(consensusPriceTargetHigh.getOrNull())
-
-        /**
-         * Sets [Builder.consensusPriceTargetHigh] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.consensusPriceTargetHigh] with a well-typed [String]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
-         */
-        fun consensusPriceTargetHigh(consensusPriceTargetHigh: JsonField<String>) = apply {
-            this.consensusPriceTargetHigh = consensusPriceTargetHigh
-        }
-
-        /** The lowest analyst price target */
-        fun consensusPriceTargetLow(consensusPriceTargetLow: String?) =
-            consensusPriceTargetLow(JsonField.ofNullable(consensusPriceTargetLow))
-
-        /**
-         * Alias for calling [Builder.consensusPriceTargetLow] with
-         * `consensusPriceTargetLow.orElse(null)`.
-         */
-        fun consensusPriceTargetLow(consensusPriceTargetLow: Optional<String>) =
-            consensusPriceTargetLow(consensusPriceTargetLow.getOrNull())
-
-        /**
-         * Sets [Builder.consensusPriceTargetLow] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.consensusPriceTargetLow] with a well-typed [String]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
-         */
-        fun consensusPriceTargetLow(consensusPriceTargetLow: JsonField<String>) = apply {
-            this.consensusPriceTargetLow = consensusPriceTargetLow
-        }
-
         /** The consensus analyst rating */
         fun consensusRating(consensusRating: AnalystRating?) =
             consensusRating(JsonField.ofNullable(consensusRating))
@@ -1565,6 +1287,25 @@ private constructor(
             this.countryOfIssue = countryOfIssue
         }
 
+        /** The TTM debt-to-equity ratio */
+        fun debtToEquityTtm(debtToEquityTtm: String?) =
+            debtToEquityTtm(JsonField.ofNullable(debtToEquityTtm))
+
+        /** Alias for calling [Builder.debtToEquityTtm] with `debtToEquityTtm.orElse(null)`. */
+        fun debtToEquityTtm(debtToEquityTtm: Optional<String>) =
+            debtToEquityTtm(debtToEquityTtm.getOrNull())
+
+        /**
+         * Sets [Builder.debtToEquityTtm] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.debtToEquityTtm] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun debtToEquityTtm(debtToEquityTtm: JsonField<String>) = apply {
+            this.debtToEquityTtm = debtToEquityTtm
+        }
+
         /** A detailed description of the instrument or company */
         fun description(description: String?) = description(JsonField.ofNullable(description))
 
@@ -1579,6 +1320,60 @@ private constructor(
          * value.
          */
         fun description(description: JsonField<String>) = apply { this.description = description }
+
+        /** The TTM dividend yield percent */
+        fun dividendYieldTtm(dividendYieldTtm: String?) =
+            dividendYieldTtm(JsonField.ofNullable(dividendYieldTtm))
+
+        /** Alias for calling [Builder.dividendYieldTtm] with `dividendYieldTtm.orElse(null)`. */
+        fun dividendYieldTtm(dividendYieldTtm: Optional<String>) =
+            dividendYieldTtm(dividendYieldTtm.getOrNull())
+
+        /**
+         * Sets [Builder.dividendYieldTtm] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.dividendYieldTtm] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun dividendYieldTtm(dividendYieldTtm: JsonField<String>) = apply {
+            this.dividendYieldTtm = dividendYieldTtm
+        }
+
+        /** The TTM earnings per share */
+        fun earningsPerShareTtm(earningsPerShareTtm: String?) =
+            earningsPerShareTtm(JsonField.ofNullable(earningsPerShareTtm))
+
+        /**
+         * Alias for calling [Builder.earningsPerShareTtm] with `earningsPerShareTtm.orElse(null)`.
+         */
+        fun earningsPerShareTtm(earningsPerShareTtm: Optional<String>) =
+            earningsPerShareTtm(earningsPerShareTtm.getOrNull())
+
+        /**
+         * Sets [Builder.earningsPerShareTtm] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.earningsPerShareTtm] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun earningsPerShareTtm(earningsPerShareTtm: JsonField<String>) = apply {
+            this.earningsPerShareTtm = earningsPerShareTtm
+        }
+
+        /** The MIC code of the primary listing exchange */
+        fun exchange(exchange: String?) = exchange(JsonField.ofNullable(exchange))
+
+        /** Alias for calling [Builder.exchange] with `exchange.orElse(null)`. */
+        fun exchange(exchange: Optional<String>) = exchange(exchange.getOrNull())
+
+        /**
+         * Sets [Builder.exchange] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.exchange] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun exchange(exchange: JsonField<String>) = apply { this.exchange = exchange }
 
         /** The highest price over the last 52 weeks */
         fun fiftyTwoWeekHigh(fiftyTwoWeekHigh: String?) =
@@ -1940,6 +1735,27 @@ private constructor(
             this.prevDayClose = prevDayClose
         }
 
+        /** The TTM price-to-earnings ratio */
+        fun priceToEarningsTtm(priceToEarningsTtm: String?) =
+            priceToEarningsTtm(JsonField.ofNullable(priceToEarningsTtm))
+
+        /**
+         * Alias for calling [Builder.priceToEarningsTtm] with `priceToEarningsTtm.orElse(null)`.
+         */
+        fun priceToEarningsTtm(priceToEarningsTtm: Optional<String>) =
+            priceToEarningsTtm(priceToEarningsTtm.getOrNull())
+
+        /**
+         * Sets [Builder.priceToEarningsTtm] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.priceToEarningsTtm] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun priceToEarningsTtm(priceToEarningsTtm: JsonField<String>) = apply {
+            this.priceToEarningsTtm = priceToEarningsTtm
+        }
+
         /** The business sector of the instrument's issuer */
         fun sector(sector: String?) = sector(JsonField.ofNullable(sector))
 
@@ -2091,100 +1907,6 @@ private constructor(
             this.threeMonthsAgoOpen = threeMonthsAgoOpen
         }
 
-        /** The TTM debt-to-equity ratio */
-        fun ttmDebtToEquity(ttmDebtToEquity: String?) =
-            ttmDebtToEquity(JsonField.ofNullable(ttmDebtToEquity))
-
-        /** Alias for calling [Builder.ttmDebtToEquity] with `ttmDebtToEquity.orElse(null)`. */
-        fun ttmDebtToEquity(ttmDebtToEquity: Optional<String>) =
-            ttmDebtToEquity(ttmDebtToEquity.getOrNull())
-
-        /**
-         * Sets [Builder.ttmDebtToEquity] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.ttmDebtToEquity] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun ttmDebtToEquity(ttmDebtToEquity: JsonField<String>) = apply {
-            this.ttmDebtToEquity = ttmDebtToEquity
-        }
-
-        /** The TTM dividend yield percent */
-        fun ttmDividendYield(ttmDividendYield: String?) =
-            ttmDividendYield(JsonField.ofNullable(ttmDividendYield))
-
-        /** Alias for calling [Builder.ttmDividendYield] with `ttmDividendYield.orElse(null)`. */
-        fun ttmDividendYield(ttmDividendYield: Optional<String>) =
-            ttmDividendYield(ttmDividendYield.getOrNull())
-
-        /**
-         * Sets [Builder.ttmDividendYield] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.ttmDividendYield] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun ttmDividendYield(ttmDividendYield: JsonField<String>) = apply {
-            this.ttmDividendYield = ttmDividendYield
-        }
-
-        /** The TTM earnings per share */
-        fun ttmEarningsPerShare(ttmEarningsPerShare: String?) =
-            ttmEarningsPerShare(JsonField.ofNullable(ttmEarningsPerShare))
-
-        /**
-         * Alias for calling [Builder.ttmEarningsPerShare] with `ttmEarningsPerShare.orElse(null)`.
-         */
-        fun ttmEarningsPerShare(ttmEarningsPerShare: Optional<String>) =
-            ttmEarningsPerShare(ttmEarningsPerShare.getOrNull())
-
-        /**
-         * Sets [Builder.ttmEarningsPerShare] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.ttmEarningsPerShare] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun ttmEarningsPerShare(ttmEarningsPerShare: JsonField<String>) = apply {
-            this.ttmEarningsPerShare = ttmEarningsPerShare
-        }
-
-        /** The TTM price-to-earnings ratio */
-        fun ttmPriceToEarnings(ttmPriceToEarnings: String?) =
-            ttmPriceToEarnings(JsonField.ofNullable(ttmPriceToEarnings))
-
-        /**
-         * Alias for calling [Builder.ttmPriceToEarnings] with `ttmPriceToEarnings.orElse(null)`.
-         */
-        fun ttmPriceToEarnings(ttmPriceToEarnings: Optional<String>) =
-            ttmPriceToEarnings(ttmPriceToEarnings.getOrNull())
-
-        /**
-         * Sets [Builder.ttmPriceToEarnings] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.ttmPriceToEarnings] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun ttmPriceToEarnings(ttmPriceToEarnings: JsonField<String>) = apply {
-            this.ttmPriceToEarnings = ttmPriceToEarnings
-        }
-
-        /** The MIC code of the primary listing venue */
-        fun venue(venue: String?) = venue(JsonField.ofNullable(venue))
-
-        /** Alias for calling [Builder.venue] with `venue.orElse(null)`. */
-        fun venue(venue: Optional<String>) = venue(venue.getOrNull())
-
-        /**
-         * Sets [Builder.venue] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.venue] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun venue(venue: JsonField<String>) = apply { this.venue = venue }
-
         /** The latest trading volume for the instrument */
         fun volume(volume: String?) = volume(JsonField.ofNullable(volume))
 
@@ -2280,14 +2002,9 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .buyRatings()
-         * .holdRatings()
          * .price()
          * .securityId()
          * .securityIdSource()
-         * .sellRatings()
-         * .strongBuyRatings()
-         * .strongSellRatings()
          * .symbol()
          * .totalRatings()
          * ```
@@ -2296,22 +2013,19 @@ private constructor(
          */
         fun build(): ScreenerItem =
             ScreenerItem(
-                checkRequired("buyRatings", buyRatings),
-                checkRequired("holdRatings", holdRatings),
                 checkRequired("price", price),
                 checkRequired("securityId", securityId),
                 checkRequired("securityIdSource", securityIdSource),
-                checkRequired("sellRatings", sellRatings),
-                checkRequired("strongBuyRatings", strongBuyRatings),
-                checkRequired("strongSellRatings", strongSellRatings),
                 checkRequired("symbol", symbol),
                 checkRequired("totalRatings", totalRatings),
                 consensusPriceTarget,
-                consensusPriceTargetHigh,
-                consensusPriceTargetLow,
                 consensusRating,
                 countryOfIssue,
+                debtToEquityTtm,
                 description,
+                dividendYieldTtm,
+                earningsPerShareTtm,
+                exchange,
                 fiftyTwoWeekHigh,
                 fiftyTwoWeekLow,
                 gapFrom52wHighPct,
@@ -2332,6 +2046,7 @@ private constructor(
                 oneYearChangePct,
                 percentChange,
                 prevDayClose,
+                priceToEarningsTtm,
                 sector,
                 securityType,
                 sixMonthChangePct,
@@ -2340,11 +2055,6 @@ private constructor(
                 threeMonthChangePct,
                 threeMonthsAgoClose,
                 threeMonthsAgoOpen,
-                ttmDebtToEquity,
-                ttmDividendYield,
-                ttmEarningsPerShare,
-                ttmPriceToEarnings,
-                venue,
                 volume,
                 weekAvgVolume,
                 yearToDateOpen,
@@ -2360,22 +2070,19 @@ private constructor(
             return@apply
         }
 
-        buyRatings()
-        holdRatings()
         price()
         securityId()
         securityIdSource().validate()
-        sellRatings()
-        strongBuyRatings()
-        strongSellRatings()
         symbol()
         totalRatings()
         consensusPriceTarget()
-        consensusPriceTargetHigh()
-        consensusPriceTargetLow()
         consensusRating().ifPresent { it.validate() }
         countryOfIssue()
+        debtToEquityTtm()
         description()
+        dividendYieldTtm()
+        earningsPerShareTtm()
+        exchange()
         fiftyTwoWeekHigh()
         fiftyTwoWeekLow()
         gapFrom52wHighPct()
@@ -2396,6 +2103,7 @@ private constructor(
         oneYearChangePct()
         percentChange()
         prevDayClose()
+        priceToEarningsTtm()
         sector()
         securityType()
         sixMonthChangePct()
@@ -2404,11 +2112,6 @@ private constructor(
         threeMonthChangePct()
         threeMonthsAgoClose()
         threeMonthsAgoOpen()
-        ttmDebtToEquity()
-        ttmDividendYield()
-        ttmEarningsPerShare()
-        ttmPriceToEarnings()
-        venue()
         volume()
         weekAvgVolume()
         yearToDateOpen()
@@ -2431,22 +2134,19 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (if (buyRatings.asKnown().isPresent) 1 else 0) +
-            (if (holdRatings.asKnown().isPresent) 1 else 0) +
-            (if (price.asKnown().isPresent) 1 else 0) +
+        (if (price.asKnown().isPresent) 1 else 0) +
             (if (securityId.asKnown().isPresent) 1 else 0) +
             (securityIdSource.asKnown().getOrNull()?.validity() ?: 0) +
-            (if (sellRatings.asKnown().isPresent) 1 else 0) +
-            (if (strongBuyRatings.asKnown().isPresent) 1 else 0) +
-            (if (strongSellRatings.asKnown().isPresent) 1 else 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (totalRatings.asKnown().isPresent) 1 else 0) +
             (if (consensusPriceTarget.asKnown().isPresent) 1 else 0) +
-            (if (consensusPriceTargetHigh.asKnown().isPresent) 1 else 0) +
-            (if (consensusPriceTargetLow.asKnown().isPresent) 1 else 0) +
             (consensusRating.asKnown().getOrNull()?.validity() ?: 0) +
             (if (countryOfIssue.asKnown().isPresent) 1 else 0) +
+            (if (debtToEquityTtm.asKnown().isPresent) 1 else 0) +
             (if (description.asKnown().isPresent) 1 else 0) +
+            (if (dividendYieldTtm.asKnown().isPresent) 1 else 0) +
+            (if (earningsPerShareTtm.asKnown().isPresent) 1 else 0) +
+            (if (exchange.asKnown().isPresent) 1 else 0) +
             (if (fiftyTwoWeekHigh.asKnown().isPresent) 1 else 0) +
             (if (fiftyTwoWeekLow.asKnown().isPresent) 1 else 0) +
             (if (gapFrom52wHighPct.asKnown().isPresent) 1 else 0) +
@@ -2467,6 +2167,7 @@ private constructor(
             (if (oneYearChangePct.asKnown().isPresent) 1 else 0) +
             (if (percentChange.asKnown().isPresent) 1 else 0) +
             (if (prevDayClose.asKnown().isPresent) 1 else 0) +
+            (if (priceToEarningsTtm.asKnown().isPresent) 1 else 0) +
             (if (sector.asKnown().isPresent) 1 else 0) +
             (if (securityType.asKnown().isPresent) 1 else 0) +
             (if (sixMonthChangePct.asKnown().isPresent) 1 else 0) +
@@ -2475,11 +2176,6 @@ private constructor(
             (if (threeMonthChangePct.asKnown().isPresent) 1 else 0) +
             (if (threeMonthsAgoClose.asKnown().isPresent) 1 else 0) +
             (if (threeMonthsAgoOpen.asKnown().isPresent) 1 else 0) +
-            (if (ttmDebtToEquity.asKnown().isPresent) 1 else 0) +
-            (if (ttmDividendYield.asKnown().isPresent) 1 else 0) +
-            (if (ttmEarningsPerShare.asKnown().isPresent) 1 else 0) +
-            (if (ttmPriceToEarnings.asKnown().isPresent) 1 else 0) +
-            (if (venue.asKnown().isPresent) 1 else 0) +
             (if (volume.asKnown().isPresent) 1 else 0) +
             (if (weekAvgVolume.asKnown().isPresent) 1 else 0) +
             (if (yearToDateOpen.asKnown().isPresent) 1 else 0) +
@@ -2491,22 +2187,19 @@ private constructor(
         }
 
         return other is ScreenerItem &&
-            buyRatings == other.buyRatings &&
-            holdRatings == other.holdRatings &&
             price == other.price &&
             securityId == other.securityId &&
             securityIdSource == other.securityIdSource &&
-            sellRatings == other.sellRatings &&
-            strongBuyRatings == other.strongBuyRatings &&
-            strongSellRatings == other.strongSellRatings &&
             symbol == other.symbol &&
             totalRatings == other.totalRatings &&
             consensusPriceTarget == other.consensusPriceTarget &&
-            consensusPriceTargetHigh == other.consensusPriceTargetHigh &&
-            consensusPriceTargetLow == other.consensusPriceTargetLow &&
             consensusRating == other.consensusRating &&
             countryOfIssue == other.countryOfIssue &&
+            debtToEquityTtm == other.debtToEquityTtm &&
             description == other.description &&
+            dividendYieldTtm == other.dividendYieldTtm &&
+            earningsPerShareTtm == other.earningsPerShareTtm &&
+            exchange == other.exchange &&
             fiftyTwoWeekHigh == other.fiftyTwoWeekHigh &&
             fiftyTwoWeekLow == other.fiftyTwoWeekLow &&
             gapFrom52wHighPct == other.gapFrom52wHighPct &&
@@ -2527,6 +2220,7 @@ private constructor(
             oneYearChangePct == other.oneYearChangePct &&
             percentChange == other.percentChange &&
             prevDayClose == other.prevDayClose &&
+            priceToEarningsTtm == other.priceToEarningsTtm &&
             sector == other.sector &&
             securityType == other.securityType &&
             sixMonthChangePct == other.sixMonthChangePct &&
@@ -2535,11 +2229,6 @@ private constructor(
             threeMonthChangePct == other.threeMonthChangePct &&
             threeMonthsAgoClose == other.threeMonthsAgoClose &&
             threeMonthsAgoOpen == other.threeMonthsAgoOpen &&
-            ttmDebtToEquity == other.ttmDebtToEquity &&
-            ttmDividendYield == other.ttmDividendYield &&
-            ttmEarningsPerShare == other.ttmEarningsPerShare &&
-            ttmPriceToEarnings == other.ttmPriceToEarnings &&
-            venue == other.venue &&
             volume == other.volume &&
             weekAvgVolume == other.weekAvgVolume &&
             yearToDateOpen == other.yearToDateOpen &&
@@ -2549,22 +2238,19 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            buyRatings,
-            holdRatings,
             price,
             securityId,
             securityIdSource,
-            sellRatings,
-            strongBuyRatings,
-            strongSellRatings,
             symbol,
             totalRatings,
             consensusPriceTarget,
-            consensusPriceTargetHigh,
-            consensusPriceTargetLow,
             consensusRating,
             countryOfIssue,
+            debtToEquityTtm,
             description,
+            dividendYieldTtm,
+            earningsPerShareTtm,
+            exchange,
             fiftyTwoWeekHigh,
             fiftyTwoWeekLow,
             gapFrom52wHighPct,
@@ -2585,6 +2271,7 @@ private constructor(
             oneYearChangePct,
             percentChange,
             prevDayClose,
+            priceToEarningsTtm,
             sector,
             securityType,
             sixMonthChangePct,
@@ -2593,11 +2280,6 @@ private constructor(
             threeMonthChangePct,
             threeMonthsAgoClose,
             threeMonthsAgoOpen,
-            ttmDebtToEquity,
-            ttmDividendYield,
-            ttmEarningsPerShare,
-            ttmPriceToEarnings,
-            venue,
             volume,
             weekAvgVolume,
             yearToDateOpen,
@@ -2609,5 +2291,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ScreenerItem{buyRatings=$buyRatings, holdRatings=$holdRatings, price=$price, securityId=$securityId, securityIdSource=$securityIdSource, sellRatings=$sellRatings, strongBuyRatings=$strongBuyRatings, strongSellRatings=$strongSellRatings, symbol=$symbol, totalRatings=$totalRatings, consensusPriceTarget=$consensusPriceTarget, consensusPriceTargetHigh=$consensusPriceTargetHigh, consensusPriceTargetLow=$consensusPriceTargetLow, consensusRating=$consensusRating, countryOfIssue=$countryOfIssue, description=$description, fiftyTwoWeekHigh=$fiftyTwoWeekHigh, fiftyTwoWeekLow=$fiftyTwoWeekLow, gapFrom52wHighPct=$gapFrom52wHighPct, gapFrom52wLowPct=$gapFrom52wLowPct, industry=$industry, listDate=$listDate, marketCap=$marketCap, monthAvgVolume=$monthAvgVolume, name=$name, oneMonthAgoClose=$oneMonthAgoClose, oneMonthAgoOpen=$oneMonthAgoOpen, oneMonthChangePct=$oneMonthChangePct, oneWeekAgoClose=$oneWeekAgoClose, oneWeekAgoOpen=$oneWeekAgoOpen, oneWeekChangePct=$oneWeekChangePct, oneYearAgoClose=$oneYearAgoClose, oneYearAgoOpen=$oneYearAgoOpen, oneYearChangePct=$oneYearChangePct, percentChange=$percentChange, prevDayClose=$prevDayClose, sector=$sector, securityType=$securityType, sixMonthChangePct=$sixMonthChangePct, sixMonthsAgoClose=$sixMonthsAgoClose, sixMonthsAgoOpen=$sixMonthsAgoOpen, threeMonthChangePct=$threeMonthChangePct, threeMonthsAgoClose=$threeMonthsAgoClose, threeMonthsAgoOpen=$threeMonthsAgoOpen, ttmDebtToEquity=$ttmDebtToEquity, ttmDividendYield=$ttmDividendYield, ttmEarningsPerShare=$ttmEarningsPerShare, ttmPriceToEarnings=$ttmPriceToEarnings, venue=$venue, volume=$volume, weekAvgVolume=$weekAvgVolume, yearToDateOpen=$yearToDateOpen, ytdChangePct=$ytdChangePct, additionalProperties=$additionalProperties}"
+        "ScreenerItem{price=$price, securityId=$securityId, securityIdSource=$securityIdSource, symbol=$symbol, totalRatings=$totalRatings, consensusPriceTarget=$consensusPriceTarget, consensusRating=$consensusRating, countryOfIssue=$countryOfIssue, debtToEquityTtm=$debtToEquityTtm, description=$description, dividendYieldTtm=$dividendYieldTtm, earningsPerShareTtm=$earningsPerShareTtm, exchange=$exchange, fiftyTwoWeekHigh=$fiftyTwoWeekHigh, fiftyTwoWeekLow=$fiftyTwoWeekLow, gapFrom52wHighPct=$gapFrom52wHighPct, gapFrom52wLowPct=$gapFrom52wLowPct, industry=$industry, listDate=$listDate, marketCap=$marketCap, monthAvgVolume=$monthAvgVolume, name=$name, oneMonthAgoClose=$oneMonthAgoClose, oneMonthAgoOpen=$oneMonthAgoOpen, oneMonthChangePct=$oneMonthChangePct, oneWeekAgoClose=$oneWeekAgoClose, oneWeekAgoOpen=$oneWeekAgoOpen, oneWeekChangePct=$oneWeekChangePct, oneYearAgoClose=$oneYearAgoClose, oneYearAgoOpen=$oneYearAgoOpen, oneYearChangePct=$oneYearChangePct, percentChange=$percentChange, prevDayClose=$prevDayClose, priceToEarningsTtm=$priceToEarningsTtm, sector=$sector, securityType=$securityType, sixMonthChangePct=$sixMonthChangePct, sixMonthsAgoClose=$sixMonthsAgoClose, sixMonthsAgoOpen=$sixMonthsAgoOpen, threeMonthChangePct=$threeMonthChangePct, threeMonthsAgoClose=$threeMonthsAgoClose, threeMonthsAgoOpen=$threeMonthsAgoOpen, volume=$volume, weekAvgVolume=$weekAvgVolume, yearToDateOpen=$yearToDateOpen, ytdChangePct=$ytdChangePct, additionalProperties=$additionalProperties}"
 }

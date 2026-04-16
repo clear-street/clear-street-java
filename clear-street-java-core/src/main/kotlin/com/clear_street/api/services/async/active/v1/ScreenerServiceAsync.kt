@@ -7,6 +7,8 @@ import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.models.active.v1.screener.ScreenerGetScreenerParams
 import com.clear_street.api.models.active.v1.screener.ScreenerGetScreenerResponse
+import com.clear_street.api.models.active.v1.screener.ScreenerSearchScreenerParams
+import com.clear_street.api.models.active.v1.screener.ScreenerSearchScreenerResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -47,6 +49,35 @@ interface ScreenerServiceAsync {
         getScreener(ScreenerGetScreenerParams.none(), requestOptions)
 
     /**
+     * Returns a columnar response where each row is an array of column objects. Each column
+     * contains a human-readable name, a field reference, an optional type hint (e.g. `CURR_USD`,
+     * `PERCENT`), and the value.
+     *
+     * Use `field_filter` to select which columns appear in each row. When omitted, the default
+     * field set is returned.
+     */
+    fun searchScreener(): CompletableFuture<ScreenerSearchScreenerResponse> =
+        searchScreener(ScreenerSearchScreenerParams.none())
+
+    /** @see searchScreener */
+    fun searchScreener(
+        params: ScreenerSearchScreenerParams = ScreenerSearchScreenerParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ScreenerSearchScreenerResponse>
+
+    /** @see searchScreener */
+    fun searchScreener(
+        params: ScreenerSearchScreenerParams = ScreenerSearchScreenerParams.none()
+    ): CompletableFuture<ScreenerSearchScreenerResponse> =
+        searchScreener(params, RequestOptions.none())
+
+    /** @see searchScreener */
+    fun searchScreener(
+        requestOptions: RequestOptions
+    ): CompletableFuture<ScreenerSearchScreenerResponse> =
+        searchScreener(ScreenerSearchScreenerParams.none(), requestOptions)
+
+    /**
      * A view of [ScreenerServiceAsync] that provides access to raw HTTP responses for each method.
      */
     interface WithRawResponse {
@@ -84,5 +115,30 @@ interface ScreenerServiceAsync {
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<ScreenerGetScreenerResponse>> =
             getScreener(ScreenerGetScreenerParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /active/v1/screener`, but is otherwise the same as
+         * [ScreenerServiceAsync.searchScreener].
+         */
+        fun searchScreener(): CompletableFuture<HttpResponseFor<ScreenerSearchScreenerResponse>> =
+            searchScreener(ScreenerSearchScreenerParams.none())
+
+        /** @see searchScreener */
+        fun searchScreener(
+            params: ScreenerSearchScreenerParams = ScreenerSearchScreenerParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ScreenerSearchScreenerResponse>>
+
+        /** @see searchScreener */
+        fun searchScreener(
+            params: ScreenerSearchScreenerParams = ScreenerSearchScreenerParams.none()
+        ): CompletableFuture<HttpResponseFor<ScreenerSearchScreenerResponse>> =
+            searchScreener(params, RequestOptions.none())
+
+        /** @see searchScreener */
+        fun searchScreener(
+            requestOptions: RequestOptions
+        ): CompletableFuture<HttpResponseFor<ScreenerSearchScreenerResponse>> =
+            searchScreener(ScreenerSearchScreenerParams.none(), requestOptions)
     }
 }
