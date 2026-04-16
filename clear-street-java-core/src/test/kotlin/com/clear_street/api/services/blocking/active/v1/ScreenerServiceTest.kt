@@ -3,7 +3,12 @@
 package com.clear_street.api.services.blocking.active.v1
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
+import com.clear_street.api.models.active.v1.screener.FieldLookback
+import com.clear_street.api.models.active.v1.screener.FieldPeriod
+import com.clear_street.api.models.active.v1.screener.FieldRef
+import com.clear_street.api.models.active.v1.screener.FieldType
 import com.clear_street.api.models.active.v1.screener.ScreenerGetScreenerParams
+import com.clear_street.api.models.active.v1.screener.ScreenerSearchScreenerParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -28,6 +33,115 @@ internal class ScreenerServiceTest {
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .sortBy("sort_by")
                     .sortDirection(ScreenerGetScreenerParams.SortDirection.ASC)
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun searchScreener() {
+        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val screenerService = client.active().v1().screener()
+
+        val response =
+            screenerService.searchScreener(
+                ScreenerSearchScreenerParams.builder()
+                    .fieldFilter(
+                        listOf(
+                            FieldRef.builder()
+                                .name("market_cap")
+                                .lookback(FieldLookback.ONE_WEEK)
+                                .period(FieldPeriod.QUARTER)
+                                .valueType(FieldType.DECIMAL)
+                                .build(),
+                            FieldRef.builder()
+                                .name("price")
+                                .lookback(FieldLookback.ONE_WEEK)
+                                .period(FieldPeriod.QUARTER)
+                                .valueType(FieldType.DECIMAL)
+                                .build(),
+                            FieldRef.builder()
+                                .name("volume")
+                                .lookback(FieldLookback.ONE_WEEK)
+                                .period(FieldPeriod.QUARTER)
+                                .valueType(FieldType.DECIMAL)
+                                .build(),
+                        )
+                    )
+                    .addFilter(
+                        ScreenerSearchScreenerParams.Filter.builder()
+                            .left(
+                                FieldRef.builder()
+                                    .name("market_cap")
+                                    .lookback(FieldLookback.ONE_WEEK)
+                                    .period(FieldPeriod.QUARTER)
+                                    .valueType(FieldType.DECIMAL)
+                                    .build()
+                            )
+                            .op(
+                                ScreenerSearchScreenerParams.Filter.Op.builder()
+                                    .name(ScreenerSearchScreenerParams.Filter.Op.Name.GTE)
+                                    .addArg(
+                                        ScreenerSearchScreenerParams.Filter.Op.Arg.LEFT_INCLUSIVE
+                                    )
+                                    .build()
+                            )
+                            .addRight(
+                                ScreenerSearchScreenerParams.Filter.Right.builder()
+                                    .value(1000000000.0)
+                                    .variable(
+                                        ScreenerSearchScreenerParams.Filter.Right.Variable.builder()
+                                            .name("today")
+                                            .lookback(FieldLookback.ONE_WEEK)
+                                            .modifier(
+                                                ScreenerSearchScreenerParams.Filter.Right.Variable
+                                                    .Modifier
+                                                    .builder()
+                                                    .addArg(30.0)
+                                                    .addArg("DAY")
+                                                    .name(
+                                                        ScreenerSearchScreenerParams.Filter.Right
+                                                            .Variable
+                                                            .Modifier
+                                                            .Name
+                                                            .SUB
+                                                    )
+                                                    .build()
+                                            )
+                                            .period(FieldPeriod.QUARTER)
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .pageSize(25L)
+                    .pageToken("page_token")
+                    .sortBy(
+                        FieldRef.builder()
+                            .name("market_cap")
+                            .lookback(FieldLookback.ONE_WEEK)
+                            .period(FieldPeriod.QUARTER)
+                            .valueType(FieldType.DECIMAL)
+                            .build()
+                    )
+                    .sortCaseSensitive(true)
+                    .sortDirection(ScreenerSearchScreenerParams.SortDirection.ASC)
+                    .addSort(
+                        ScreenerSearchScreenerParams.Sort.builder()
+                            .field(
+                                FieldRef.builder()
+                                    .name("market_cap")
+                                    .lookback(FieldLookback.ONE_WEEK)
+                                    .period(FieldPeriod.QUARTER)
+                                    .valueType(FieldType.DECIMAL)
+                                    .build()
+                            )
+                            .direction(ScreenerSearchScreenerParams.Sort.Direction.DESC)
+                            .build()
+                    )
                     .build()
             )
 
