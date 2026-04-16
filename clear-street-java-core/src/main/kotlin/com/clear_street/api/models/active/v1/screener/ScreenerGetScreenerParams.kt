@@ -33,10 +33,12 @@ private constructor(
     /** Dynamic filters with dot notation (e.g., filter[price.gte]=50, filter[symbol.bw]=A) */
     fun filter(): Optional<Filter> = Optional.ofNullable(filter)
 
-    /** Number of items to return per page (default: 100, max: 10000) */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
-    /** Token for retrieving the next page of results. Contains encoded pagination state. */
+    /**
+     * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+     * offset). When provided, page_size is ignored.
+     */
     fun pageToken(): Optional<String> = Optional.ofNullable(pageToken)
 
     /** Field to sort by */
@@ -110,7 +112,6 @@ private constructor(
         /** Alias for calling [Builder.filter] with `filter.orElse(null)`. */
         fun filter(filter: Optional<Filter>) = filter(filter.getOrNull())
 
-        /** Number of items to return per page (default: 100, max: 10000) */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**
@@ -123,7 +124,10 @@ private constructor(
         /** Alias for calling [Builder.pageSize] with `pageSize.orElse(null)`. */
         fun pageSize(pageSize: Optional<Long>) = pageSize(pageSize.getOrNull())
 
-        /** Token for retrieving the next page of results. Contains encoded pagination state. */
+        /**
+         * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+         * offset). When provided, page_size is ignored.
+         */
         fun pageToken(pageToken: String?) = apply { this.pageToken = pageToken }
 
         /** Alias for calling [Builder.pageToken] with `pageToken.orElse(null)`. */
