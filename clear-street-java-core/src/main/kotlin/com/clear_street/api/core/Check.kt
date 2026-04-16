@@ -77,7 +77,7 @@ This can happen if you are either:
 
 Double-check that you are depending on compatible Jackson versions.
 
-See https://www.github.com/stainless-sdks/clear-street-java#jackson for more information.
+See https://www.github.com/clear-street/clear-street-java#jackson for more information.
         """
             .trimIndent()
     }
