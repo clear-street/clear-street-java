@@ -45,8 +45,6 @@ private constructor(
     private val prefillOrder: PrefillOrder? = null,
     private val openChart: OpenChart? = null,
     private val openScreener: OpenScreener? = null,
-    private val openChatWindow: OpenChatWindow? = null,
-    private val navigate: Navigate? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -59,21 +57,11 @@ private constructor(
     /** Open a stock screener with filters */
     fun openScreener(): Optional<OpenScreener> = Optional.ofNullable(openScreener)
 
-    /** Open a chat window */
-    fun openChatWindow(): Optional<OpenChatWindow> = Optional.ofNullable(openChatWindow)
-
-    /** Navigate to a client route */
-    fun navigate(): Optional<Navigate> = Optional.ofNullable(navigate)
-
     fun isPrefillOrder(): Boolean = prefillOrder != null
 
     fun isOpenChart(): Boolean = openChart != null
 
     fun isOpenScreener(): Boolean = openScreener != null
-
-    fun isOpenChatWindow(): Boolean = openChatWindow != null
-
-    fun isNavigate(): Boolean = navigate != null
 
     /** Prefill an order ticket for user confirmation */
     fun asPrefillOrder(): PrefillOrder = prefillOrder.getOrThrow("prefillOrder")
@@ -84,12 +72,6 @@ private constructor(
     /** Open a stock screener with filters */
     fun asOpenScreener(): OpenScreener = openScreener.getOrThrow("openScreener")
 
-    /** Open a chat window */
-    fun asOpenChatWindow(): OpenChatWindow = openChatWindow.getOrThrow("openChatWindow")
-
-    /** Navigate to a client route */
-    fun asNavigate(): Navigate = navigate.getOrThrow("navigate")
-
     fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
     fun <T> accept(visitor: Visitor<T>): T =
@@ -97,8 +79,6 @@ private constructor(
             prefillOrder != null -> visitor.visitPrefillOrder(prefillOrder)
             openChart != null -> visitor.visitOpenChart(openChart)
             openScreener != null -> visitor.visitOpenScreener(openScreener)
-            openChatWindow != null -> visitor.visitOpenChatWindow(openChatWindow)
-            navigate != null -> visitor.visitNavigate(navigate)
             else -> visitor.unknown(_json)
         }
 
@@ -121,14 +101,6 @@ private constructor(
 
                 override fun visitOpenScreener(openScreener: OpenScreener) {
                     openScreener.validate()
-                }
-
-                override fun visitOpenChatWindow(openChatWindow: OpenChatWindow) {
-                    openChatWindow.validate()
-                }
-
-                override fun visitNavigate(navigate: Navigate) {
-                    navigate.validate()
                 }
             }
         )
@@ -158,11 +130,6 @@ private constructor(
 
                 override fun visitOpenScreener(openScreener: OpenScreener) = openScreener.validity()
 
-                override fun visitOpenChatWindow(openChatWindow: OpenChatWindow) =
-                    openChatWindow.validity()
-
-                override fun visitNavigate(navigate: Navigate) = navigate.validity()
-
                 override fun unknown(json: JsonValue?) = 0
             }
         )
@@ -175,21 +142,16 @@ private constructor(
         return other is StructuredAction &&
             prefillOrder == other.prefillOrder &&
             openChart == other.openChart &&
-            openScreener == other.openScreener &&
-            openChatWindow == other.openChatWindow &&
-            navigate == other.navigate
+            openScreener == other.openScreener
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(prefillOrder, openChart, openScreener, openChatWindow, navigate)
+    override fun hashCode(): Int = Objects.hash(prefillOrder, openChart, openScreener)
 
     override fun toString(): String =
         when {
             prefillOrder != null -> "StructuredAction{prefillOrder=$prefillOrder}"
             openChart != null -> "StructuredAction{openChart=$openChart}"
             openScreener != null -> "StructuredAction{openScreener=$openScreener}"
-            openChatWindow != null -> "StructuredAction{openChatWindow=$openChatWindow}"
-            navigate != null -> "StructuredAction{navigate=$navigate}"
             _json != null -> "StructuredAction{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid StructuredAction")
         }
@@ -208,14 +170,6 @@ private constructor(
         @JvmStatic
         fun ofOpenScreener(openScreener: OpenScreener) =
             StructuredAction(openScreener = openScreener)
-
-        /** Open a chat window */
-        @JvmStatic
-        fun ofOpenChatWindow(openChatWindow: OpenChatWindow) =
-            StructuredAction(openChatWindow = openChatWindow)
-
-        /** Navigate to a client route */
-        @JvmStatic fun ofNavigate(navigate: Navigate) = StructuredAction(navigate = navigate)
     }
 
     /**
@@ -232,12 +186,6 @@ private constructor(
 
         /** Open a stock screener with filters */
         fun visitOpenScreener(openScreener: OpenScreener): T
-
-        /** Open a chat window */
-        fun visitOpenChatWindow(openChatWindow: OpenChatWindow): T
-
-        /** Navigate to a client route */
-        fun visitNavigate(navigate: Navigate): T
 
         /**
          * Maps an unknown variant of [StructuredAction] to a value of type [T].
@@ -270,12 +218,6 @@ private constructor(
                         tryDeserialize(node, jacksonTypeRef<OpenScreener>())?.let {
                             StructuredAction(openScreener = it, _json = json)
                         },
-                        tryDeserialize(node, jacksonTypeRef<OpenChatWindow>())?.let {
-                            StructuredAction(openChatWindow = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<Navigate>())?.let {
-                            StructuredAction(navigate = it, _json = json)
-                        },
                     )
                     .filterNotNull()
                     .allMaxBy { it.validity() }
@@ -303,8 +245,6 @@ private constructor(
                 value.prefillOrder != null -> generator.writeObject(value.prefillOrder)
                 value.openChart != null -> generator.writeObject(value.openChart)
                 value.openScreener != null -> generator.writeObject(value.openScreener)
-                value.openChatWindow != null -> generator.writeObject(value.openChatWindow)
-                value.navigate != null -> generator.writeObject(value.navigate)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid StructuredAction")
             }
@@ -1649,748 +1589,5 @@ private constructor(
 
         override fun toString() =
             "OpenScreener{filters=$filters, fieldFilter=$fieldFilter, pageSize=$pageSize, sortBy=$sortBy, sortDirection=$sortDirection, actionType=$actionType, additionalProperties=$additionalProperties}"
-    }
-
-    /** Open a chat window */
-    class OpenChatWindow
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val extras: JsonValue,
-        private val threadId: JsonField<String>,
-        private val title: JsonField<String>,
-        private val actionType: JsonField<ActionType>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("extras") @ExcludeMissing extras: JsonValue = JsonMissing.of(),
-            @JsonProperty("thread_id")
-            @ExcludeMissing
-            threadId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("title") @ExcludeMissing title: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("action_type")
-            @ExcludeMissing
-            actionType: JsonField<ActionType> = JsonMissing.of(),
-        ) : this(extras, threadId, title, actionType, mutableMapOf())
-
-        fun toOpenChatWindowAction(): OpenChatWindowAction =
-            OpenChatWindowAction.builder().extras(extras).threadId(threadId).title(title).build()
-
-        /**
-         * Additional configuration
-         *
-         * This arbitrary value can be deserialized into a custom type using the `convert` method:
-         * ```java
-         * MyClass myObject = openChatWindow.extras().convert(MyClass.class);
-         * ```
-         */
-        @JsonProperty("extras") @ExcludeMissing fun _extras(): JsonValue = extras
-
-        /**
-         * Thread ID to open (None to open a new chat window)
-         *
-         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun threadId(): Optional<String> = threadId.getOptional("thread_id")
-
-        /**
-         * Window title
-         *
-         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun title(): Optional<String> = title.getOptional("title")
-
-        /**
-         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun actionType(): ActionType = actionType.getRequired("action_type")
-
-        /**
-         * Returns the raw JSON value of [threadId].
-         *
-         * Unlike [threadId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("thread_id") @ExcludeMissing fun _threadId(): JsonField<String> = threadId
-
-        /**
-         * Returns the raw JSON value of [title].
-         *
-         * Unlike [title], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("title") @ExcludeMissing fun _title(): JsonField<String> = title
-
-        /**
-         * Returns the raw JSON value of [actionType].
-         *
-         * Unlike [actionType], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("action_type")
-        @ExcludeMissing
-        fun _actionType(): JsonField<ActionType> = actionType
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [OpenChatWindow].
-             *
-             * The following fields are required:
-             * ```java
-             * .actionType()
-             * ```
-             */
-            @JvmStatic fun builder() = Builder()
-        }
-
-        /** A builder for [OpenChatWindow]. */
-        class Builder internal constructor() {
-
-            private var extras: JsonValue = JsonMissing.of()
-            private var threadId: JsonField<String> = JsonMissing.of()
-            private var title: JsonField<String> = JsonMissing.of()
-            private var actionType: JsonField<ActionType>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            @JvmSynthetic
-            internal fun from(openChatWindow: OpenChatWindow) = apply {
-                extras = openChatWindow.extras
-                threadId = openChatWindow.threadId
-                title = openChatWindow.title
-                actionType = openChatWindow.actionType
-                additionalProperties = openChatWindow.additionalProperties.toMutableMap()
-            }
-
-            /** Additional configuration */
-            fun extras(extras: JsonValue) = apply { this.extras = extras }
-
-            /** Thread ID to open (None to open a new chat window) */
-            fun threadId(threadId: String?) = threadId(JsonField.ofNullable(threadId))
-
-            /** Alias for calling [Builder.threadId] with `threadId.orElse(null)`. */
-            fun threadId(threadId: Optional<String>) = threadId(threadId.getOrNull())
-
-            /**
-             * Sets [Builder.threadId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.threadId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun threadId(threadId: JsonField<String>) = apply { this.threadId = threadId }
-
-            /** Window title */
-            fun title(title: String?) = title(JsonField.ofNullable(title))
-
-            /** Alias for calling [Builder.title] with `title.orElse(null)`. */
-            fun title(title: Optional<String>) = title(title.getOrNull())
-
-            /**
-             * Sets [Builder.title] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.title] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun title(title: JsonField<String>) = apply { this.title = title }
-
-            fun actionType(actionType: ActionType) = actionType(JsonField.of(actionType))
-
-            /**
-             * Sets [Builder.actionType] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.actionType] with a well-typed [ActionType] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun actionType(actionType: JsonField<ActionType>) = apply {
-                this.actionType = actionType
-            }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [OpenChatWindow].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```java
-             * .actionType()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): OpenChatWindow =
-                OpenChatWindow(
-                    extras,
-                    threadId,
-                    title,
-                    checkRequired("actionType", actionType),
-                    additionalProperties.toMutableMap(),
-                )
-        }
-
-        private var validated: Boolean = false
-
-        fun validate(): OpenChatWindow = apply {
-            if (validated) {
-                return@apply
-            }
-
-            threadId()
-            title()
-            actionType().validate()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: ClearStreetInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic
-        internal fun validity(): Int =
-            (if (threadId.asKnown().isPresent) 1 else 0) +
-                (if (title.asKnown().isPresent) 1 else 0) +
-                (actionType.asKnown().getOrNull()?.validity() ?: 0)
-
-        class ActionType @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                @JvmField val OPEN_CHAT_WINDOW = of("open_chat_window")
-
-                @JvmStatic fun of(value: String) = ActionType(JsonField.of(value))
-            }
-
-            /** An enum containing [ActionType]'s known values. */
-            enum class Known {
-                OPEN_CHAT_WINDOW
-            }
-
-            /**
-             * An enum containing [ActionType]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [ActionType] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                OPEN_CHAT_WINDOW,
-                /**
-                 * An enum member indicating that [ActionType] was instantiated with an unknown
-                 * value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    OPEN_CHAT_WINDOW -> Value.OPEN_CHAT_WINDOW
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws ClearStreetInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    OPEN_CHAT_WINDOW -> Known.OPEN_CHAT_WINDOW
-                    else -> throw ClearStreetInvalidDataException("Unknown ActionType: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws ClearStreetInvalidDataException if this class instance's value does not have
-             *   the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString().orElseThrow {
-                    ClearStreetInvalidDataException("Value is not a String")
-                }
-
-            private var validated: Boolean = false
-
-            fun validate(): ActionType = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: ClearStreetInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is ActionType && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is OpenChatWindow &&
-                extras == other.extras &&
-                threadId == other.threadId &&
-                title == other.title &&
-                actionType == other.actionType &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy {
-            Objects.hash(extras, threadId, title, actionType, additionalProperties)
-        }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "OpenChatWindow{extras=$extras, threadId=$threadId, title=$title, actionType=$actionType, additionalProperties=$additionalProperties}"
-    }
-
-    /** Navigate to a client route */
-    class Navigate
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val route: JsonField<String>,
-        private val params: JsonValue,
-        private val actionType: JsonField<ActionType>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("route") @ExcludeMissing route: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("params") @ExcludeMissing params: JsonValue = JsonMissing.of(),
-            @JsonProperty("action_type")
-            @ExcludeMissing
-            actionType: JsonField<ActionType> = JsonMissing.of(),
-        ) : this(route, params, actionType, mutableMapOf())
-
-        fun toNavigateAction(): NavigateAction =
-            NavigateAction.builder().route(route).params(params).build()
-
-        /**
-         * Route path or key
-         *
-         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun route(): String = route.getRequired("route")
-
-        /**
-         * Route parameters
-         *
-         * This arbitrary value can be deserialized into a custom type using the `convert` method:
-         * ```java
-         * MyClass myObject = navigate.params().convert(MyClass.class);
-         * ```
-         */
-        @JsonProperty("params") @ExcludeMissing fun _params(): JsonValue = params
-
-        /**
-         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun actionType(): ActionType = actionType.getRequired("action_type")
-
-        /**
-         * Returns the raw JSON value of [route].
-         *
-         * Unlike [route], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("route") @ExcludeMissing fun _route(): JsonField<String> = route
-
-        /**
-         * Returns the raw JSON value of [actionType].
-         *
-         * Unlike [actionType], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("action_type")
-        @ExcludeMissing
-        fun _actionType(): JsonField<ActionType> = actionType
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [Navigate].
-             *
-             * The following fields are required:
-             * ```java
-             * .route()
-             * .actionType()
-             * ```
-             */
-            @JvmStatic fun builder() = Builder()
-        }
-
-        /** A builder for [Navigate]. */
-        class Builder internal constructor() {
-
-            private var route: JsonField<String>? = null
-            private var params: JsonValue = JsonMissing.of()
-            private var actionType: JsonField<ActionType>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            @JvmSynthetic
-            internal fun from(navigate: Navigate) = apply {
-                route = navigate.route
-                params = navigate.params
-                actionType = navigate.actionType
-                additionalProperties = navigate.additionalProperties.toMutableMap()
-            }
-
-            /** Route path or key */
-            fun route(route: String) = route(JsonField.of(route))
-
-            /**
-             * Sets [Builder.route] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.route] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun route(route: JsonField<String>) = apply { this.route = route }
-
-            /** Route parameters */
-            fun params(params: JsonValue) = apply { this.params = params }
-
-            fun actionType(actionType: ActionType) = actionType(JsonField.of(actionType))
-
-            /**
-             * Sets [Builder.actionType] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.actionType] with a well-typed [ActionType] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun actionType(actionType: JsonField<ActionType>) = apply {
-                this.actionType = actionType
-            }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Navigate].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```java
-             * .route()
-             * .actionType()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): Navigate =
-                Navigate(
-                    checkRequired("route", route),
-                    params,
-                    checkRequired("actionType", actionType),
-                    additionalProperties.toMutableMap(),
-                )
-        }
-
-        private var validated: Boolean = false
-
-        fun validate(): Navigate = apply {
-            if (validated) {
-                return@apply
-            }
-
-            route()
-            actionType().validate()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: ClearStreetInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic
-        internal fun validity(): Int =
-            (if (route.asKnown().isPresent) 1 else 0) +
-                (actionType.asKnown().getOrNull()?.validity() ?: 0)
-
-        class ActionType @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                @JvmField val NAVIGATE = of("navigate")
-
-                @JvmStatic fun of(value: String) = ActionType(JsonField.of(value))
-            }
-
-            /** An enum containing [ActionType]'s known values. */
-            enum class Known {
-                NAVIGATE
-            }
-
-            /**
-             * An enum containing [ActionType]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [ActionType] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                NAVIGATE,
-                /**
-                 * An enum member indicating that [ActionType] was instantiated with an unknown
-                 * value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    NAVIGATE -> Value.NAVIGATE
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws ClearStreetInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    NAVIGATE -> Known.NAVIGATE
-                    else -> throw ClearStreetInvalidDataException("Unknown ActionType: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws ClearStreetInvalidDataException if this class instance's value does not have
-             *   the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString().orElseThrow {
-                    ClearStreetInvalidDataException("Value is not a String")
-                }
-
-            private var validated: Boolean = false
-
-            fun validate(): ActionType = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: ClearStreetInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is ActionType && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Navigate &&
-                route == other.route &&
-                params == other.params &&
-                actionType == other.actionType &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy {
-            Objects.hash(route, params, actionType, additionalProperties)
-        }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "Navigate{route=$route, params=$params, actionType=$actionType, additionalProperties=$additionalProperties}"
     }
 }

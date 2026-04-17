@@ -3,10 +3,10 @@
 package com.clear_street.api.services.blocking.active.v1
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.services.blocking.active.v1.omniai.FeedbackService
-import com.clear_street.api.services.blocking.active.v1.omniai.FeedbackServiceImpl
-import com.clear_street.api.services.blocking.active.v1.omniai.RunService
-import com.clear_street.api.services.blocking.active.v1.omniai.RunServiceImpl
+import com.clear_street.api.services.blocking.active.v1.omniai.MessageService
+import com.clear_street.api.services.blocking.active.v1.omniai.MessageServiceImpl
+import com.clear_street.api.services.blocking.active.v1.omniai.ResponseService
+import com.clear_street.api.services.blocking.active.v1.omniai.ResponseServiceImpl
 import com.clear_street.api.services.blocking.active.v1.omniai.ThreadService
 import com.clear_street.api.services.blocking.active.v1.omniai.ThreadServiceImpl
 import java.util.function.Consumer
@@ -18,9 +18,9 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
         WithRawResponseImpl(clientOptions)
     }
 
-    private val feedback: FeedbackService by lazy { FeedbackServiceImpl(clientOptions) }
+    private val messages: MessageService by lazy { MessageServiceImpl(clientOptions) }
 
-    private val runs: RunService by lazy { RunServiceImpl(clientOptions) }
+    private val responses: ResponseService by lazy { ResponseServiceImpl(clientOptions) }
 
     private val threads: ThreadService by lazy { ThreadServiceImpl(clientOptions) }
 
@@ -29,24 +29,36 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): OmniAiService =
         OmniAiServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** AI assistant for conversational trading interactions. */
-    override fun feedback(): FeedbackService = feedback
+    /**
+     * Thread-centric AI assistant for conversational trading. Create threads to start
+     * conversations, poll response objects for in-progress output, and read finalized messages from
+     * thread history. Every endpoint requires an explicit account_id.
+     */
+    override fun messages(): MessageService = messages
 
-    /** AI assistant for conversational trading interactions. */
-    override fun runs(): RunService = runs
+    /**
+     * Thread-centric AI assistant for conversational trading. Create threads to start
+     * conversations, poll response objects for in-progress output, and read finalized messages from
+     * thread history. Every endpoint requires an explicit account_id.
+     */
+    override fun responses(): ResponseService = responses
 
-    /** AI assistant for conversational trading interactions. */
+    /**
+     * Thread-centric AI assistant for conversational trading. Create threads to start
+     * conversations, poll response objects for in-progress output, and read finalized messages from
+     * thread history. Every endpoint requires an explicit account_id.
+     */
     override fun threads(): ThreadService = threads
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         OmniAiService.WithRawResponse {
 
-        private val feedback: FeedbackService.WithRawResponse by lazy {
-            FeedbackServiceImpl.WithRawResponseImpl(clientOptions)
+        private val messages: MessageService.WithRawResponse by lazy {
+            MessageServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val runs: RunService.WithRawResponse by lazy {
-            RunServiceImpl.WithRawResponseImpl(clientOptions)
+        private val responses: ResponseService.WithRawResponse by lazy {
+            ResponseServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val threads: ThreadService.WithRawResponse by lazy {
@@ -60,13 +72,25 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** AI assistant for conversational trading interactions. */
-        override fun feedback(): FeedbackService.WithRawResponse = feedback
+        /**
+         * Thread-centric AI assistant for conversational trading. Create threads to start
+         * conversations, poll response objects for in-progress output, and read finalized messages
+         * from thread history. Every endpoint requires an explicit account_id.
+         */
+        override fun messages(): MessageService.WithRawResponse = messages
 
-        /** AI assistant for conversational trading interactions. */
-        override fun runs(): RunService.WithRawResponse = runs
+        /**
+         * Thread-centric AI assistant for conversational trading. Create threads to start
+         * conversations, poll response objects for in-progress output, and read finalized messages
+         * from thread history. Every endpoint requires an explicit account_id.
+         */
+        override fun responses(): ResponseService.WithRawResponse = responses
 
-        /** AI assistant for conversational trading interactions. */
+        /**
+         * Thread-centric AI assistant for conversational trading. Create threads to start
+         * conversations, poll response objects for in-progress output, and read finalized messages
+         * from thread history. Every endpoint requires an explicit account_id.
+         */
         override fun threads(): ThreadService.WithRawResponse = threads
     }
 }

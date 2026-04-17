@@ -12,10 +12,9 @@ internal class MessageListMessagesParamsTest {
     fun create() {
         MessageListMessagesParams.builder()
             .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-            .accountId("account_id")
-            .afterSeq(0L)
-            .pageSize(0)
-            .pageToken("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .accountId(0L)
+            .pageSize(1L)
+            .pageToken("U3RhaW5sZXNzIHJvY2tz")
             .build()
     }
 
@@ -24,7 +23,7 @@ internal class MessageListMessagesParamsTest {
         val params =
             MessageListMessagesParams.builder()
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId("account_id")
+                .accountId(0L)
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
@@ -37,10 +36,9 @@ internal class MessageListMessagesParamsTest {
         val params =
             MessageListMessagesParams.builder()
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId("account_id")
-                .afterSeq(0L)
-                .pageSize(0)
-                .pageToken("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .accountId(0L)
+                .pageSize(1L)
+                .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .build()
 
         val queryParams = params._queryParams()
@@ -48,10 +46,9 @@ internal class MessageListMessagesParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put("account_id", "account_id")
-                    .put("after_seq", "0")
-                    .put("page_size", "0")
-                    .put("page_token", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .put("account_id", "0")
+                    .put("page_size", "1")
+                    .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
                     .build()
             )
     }
@@ -61,12 +58,11 @@ internal class MessageListMessagesParamsTest {
         val params =
             MessageListMessagesParams.builder()
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId("account_id")
+                .accountId(0L)
                 .build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams)
-            .isEqualTo(QueryParams.builder().put("account_id", "account_id").build())
+        assertThat(queryParams).isEqualTo(QueryParams.builder().put("account_id", "0").build())
     }
 }

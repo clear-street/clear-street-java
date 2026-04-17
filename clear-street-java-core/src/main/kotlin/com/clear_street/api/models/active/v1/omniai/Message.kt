@@ -17,61 +17,50 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
+/** Final immutable message. */
 class Message
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val contentText: JsonField<String>,
+    private val id: JsonField<String>,
+    private val content: JsonField<MessageContent>,
     private val createdAt: JsonField<String>,
+    private val outcome: JsonField<MessageOutcome>,
     private val role: JsonField<MessageRole>,
     private val seq: JsonField<Long>,
-    private val id: JsonField<String>,
-    private val authorUserId: JsonField<String>,
-    private val content: JsonField<MessageContent>,
-    private val metadata: JsonValue,
-    private val runId: JsonField<String>,
     private val threadId: JsonField<String>,
+    private val error: JsonField<ErrorStatus>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("content_text")
-        @ExcludeMissing
-        contentText: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("created_at") @ExcludeMissing createdAt: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("role") @ExcludeMissing role: JsonField<MessageRole> = JsonMissing.of(),
-        @JsonProperty("seq") @ExcludeMissing seq: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("author_user_id")
-        @ExcludeMissing
-        authorUserId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("content")
         @ExcludeMissing
         content: JsonField<MessageContent> = JsonMissing.of(),
-        @JsonProperty("metadata") @ExcludeMissing metadata: JsonValue = JsonMissing.of(),
-        @JsonProperty("run_id") @ExcludeMissing runId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("created_at") @ExcludeMissing createdAt: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("outcome")
+        @ExcludeMissing
+        outcome: JsonField<MessageOutcome> = JsonMissing.of(),
+        @JsonProperty("role") @ExcludeMissing role: JsonField<MessageRole> = JsonMissing.of(),
+        @JsonProperty("seq") @ExcludeMissing seq: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("thread_id") @ExcludeMissing threadId: JsonField<String> = JsonMissing.of(),
-    ) : this(
-        contentText,
-        createdAt,
-        role,
-        seq,
-        id,
-        authorUserId,
-        content,
-        metadata,
-        runId,
-        threadId,
-        mutableMapOf(),
-    )
+        @JsonProperty("error") @ExcludeMissing error: JsonField<ErrorStatus> = JsonMissing.of(),
+    ) : this(id, content, createdAt, outcome, role, seq, threadId, error, mutableMapOf())
 
     /**
-     * Denormalized text content for search/display
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun id(): String = id.getRequired("id")
+
+    /**
+     * Finalized immutable message content container. Never includes thinking parts.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun contentText(): String = contentText.getRequired("content_text")
+    fun content(): MessageContent = content.getRequired("content")
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -80,6 +69,16 @@ private constructor(
     fun createdAt(): String = createdAt.getRequired("created_at")
 
     /**
+     * Immutable terminal outcome for a finalized assistant message.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun outcome(): MessageOutcome = outcome.getRequired("outcome")
+
+    /**
+     * Finalized message role in the public contract.
+     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -92,53 +91,32 @@ private constructor(
     fun seq(): Long = seq.getRequired("seq")
 
     /**
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun id(): Optional<String> = id.getOptional("id")
+    fun threadId(): String = threadId.getRequired("thread_id")
 
     /**
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun authorUserId(): Optional<String> = authorUserId.getOptional("author_user_id")
-
-    /**
-     * Parsed content parts (text, thinking, and structured actions)
+     * Shared sanitized error payload.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun content(): Optional<MessageContent> = content.getOptional("content")
+    fun error(): Optional<ErrorStatus> = error.getOptional("error")
 
     /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```java
-     * MyClass myObject = message.metadata().convert(MyClass.class);
-     * ```
-     */
-    @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonValue = metadata
-
-    /**
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun runId(): Optional<String> = runId.getOptional("run_id")
-
-    /**
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun threadId(): Optional<String> = threadId.getOptional("thread_id")
-
-    /**
-     * Returns the raw JSON value of [contentText].
+     * Returns the raw JSON value of [id].
      *
-     * Unlike [contentText], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("content_text")
-    @ExcludeMissing
-    fun _contentText(): JsonField<String> = contentText
+    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+    /**
+     * Returns the raw JSON value of [content].
+     *
+     * Unlike [content], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("content") @ExcludeMissing fun _content(): JsonField<MessageContent> = content
 
     /**
      * Returns the raw JSON value of [createdAt].
@@ -146,6 +124,13 @@ private constructor(
      * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("created_at") @ExcludeMissing fun _createdAt(): JsonField<String> = createdAt
+
+    /**
+     * Returns the raw JSON value of [outcome].
+     *
+     * Unlike [outcome], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("outcome") @ExcludeMissing fun _outcome(): JsonField<MessageOutcome> = outcome
 
     /**
      * Returns the raw JSON value of [role].
@@ -162,41 +147,18 @@ private constructor(
     @JsonProperty("seq") @ExcludeMissing fun _seq(): JsonField<Long> = seq
 
     /**
-     * Returns the raw JSON value of [id].
-     *
-     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
-
-    /**
-     * Returns the raw JSON value of [authorUserId].
-     *
-     * Unlike [authorUserId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("author_user_id")
-    @ExcludeMissing
-    fun _authorUserId(): JsonField<String> = authorUserId
-
-    /**
-     * Returns the raw JSON value of [content].
-     *
-     * Unlike [content], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("content") @ExcludeMissing fun _content(): JsonField<MessageContent> = content
-
-    /**
-     * Returns the raw JSON value of [runId].
-     *
-     * Unlike [runId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("run_id") @ExcludeMissing fun _runId(): JsonField<String> = runId
-
-    /**
      * Returns the raw JSON value of [threadId].
      *
      * Unlike [threadId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("thread_id") @ExcludeMissing fun _threadId(): JsonField<String> = threadId
+
+    /**
+     * Returns the raw JSON value of [error].
+     *
+     * Unlike [error], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("error") @ExcludeMissing fun _error(): JsonField<ErrorStatus> = error
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -217,10 +179,13 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .contentText()
+         * .id()
+         * .content()
          * .createdAt()
+         * .outcome()
          * .role()
          * .seq()
+         * .threadId()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -229,44 +194,50 @@ private constructor(
     /** A builder for [Message]. */
     class Builder internal constructor() {
 
-        private var contentText: JsonField<String>? = null
+        private var id: JsonField<String>? = null
+        private var content: JsonField<MessageContent>? = null
         private var createdAt: JsonField<String>? = null
+        private var outcome: JsonField<MessageOutcome>? = null
         private var role: JsonField<MessageRole>? = null
         private var seq: JsonField<Long>? = null
-        private var id: JsonField<String> = JsonMissing.of()
-        private var authorUserId: JsonField<String> = JsonMissing.of()
-        private var content: JsonField<MessageContent> = JsonMissing.of()
-        private var metadata: JsonValue = JsonMissing.of()
-        private var runId: JsonField<String> = JsonMissing.of()
-        private var threadId: JsonField<String> = JsonMissing.of()
+        private var threadId: JsonField<String>? = null
+        private var error: JsonField<ErrorStatus> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(message: Message) = apply {
-            contentText = message.contentText
+            id = message.id
+            content = message.content
             createdAt = message.createdAt
+            outcome = message.outcome
             role = message.role
             seq = message.seq
-            id = message.id
-            authorUserId = message.authorUserId
-            content = message.content
-            metadata = message.metadata
-            runId = message.runId
             threadId = message.threadId
+            error = message.error
             additionalProperties = message.additionalProperties.toMutableMap()
         }
 
-        /** Denormalized text content for search/display */
-        fun contentText(contentText: String) = contentText(JsonField.of(contentText))
+        fun id(id: String) = id(JsonField.of(id))
 
         /**
-         * Sets [Builder.contentText] to an arbitrary JSON value.
+         * Sets [Builder.id] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.contentText] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.id] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun contentText(contentText: JsonField<String>) = apply { this.contentText = contentText }
+        fun id(id: JsonField<String>) = apply { this.id = id }
+
+        /** Finalized immutable message content container. Never includes thinking parts. */
+        fun content(content: MessageContent) = content(JsonField.of(content))
+
+        /**
+         * Sets [Builder.content] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.content] with a well-typed [MessageContent] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun content(content: JsonField<MessageContent>) = apply { this.content = content }
 
         fun createdAt(createdAt: String) = createdAt(JsonField.of(createdAt))
 
@@ -279,6 +250,19 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<String>) = apply { this.createdAt = createdAt }
 
+        /** Immutable terminal outcome for a finalized assistant message. */
+        fun outcome(outcome: MessageOutcome) = outcome(JsonField.of(outcome))
+
+        /**
+         * Sets [Builder.outcome] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.outcome] with a well-typed [MessageOutcome] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun outcome(outcome: JsonField<MessageOutcome>) = apply { this.outcome = outcome }
+
+        /** Finalized message role in the public contract. */
         fun role(role: MessageRole) = role(JsonField.of(role))
 
         /**
@@ -300,69 +284,7 @@ private constructor(
          */
         fun seq(seq: JsonField<Long>) = apply { this.seq = seq }
 
-        fun id(id: String?) = id(JsonField.ofNullable(id))
-
-        /** Alias for calling [Builder.id] with `id.orElse(null)`. */
-        fun id(id: Optional<String>) = id(id.getOrNull())
-
-        /**
-         * Sets [Builder.id] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.id] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun id(id: JsonField<String>) = apply { this.id = id }
-
-        fun authorUserId(authorUserId: String?) = authorUserId(JsonField.ofNullable(authorUserId))
-
-        /** Alias for calling [Builder.authorUserId] with `authorUserId.orElse(null)`. */
-        fun authorUserId(authorUserId: Optional<String>) = authorUserId(authorUserId.getOrNull())
-
-        /**
-         * Sets [Builder.authorUserId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.authorUserId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun authorUserId(authorUserId: JsonField<String>) = apply {
-            this.authorUserId = authorUserId
-        }
-
-        /** Parsed content parts (text, thinking, and structured actions) */
-        fun content(content: MessageContent?) = content(JsonField.ofNullable(content))
-
-        /** Alias for calling [Builder.content] with `content.orElse(null)`. */
-        fun content(content: Optional<MessageContent>) = content(content.getOrNull())
-
-        /**
-         * Sets [Builder.content] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.content] with a well-typed [MessageContent] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun content(content: JsonField<MessageContent>) = apply { this.content = content }
-
-        fun metadata(metadata: JsonValue) = apply { this.metadata = metadata }
-
-        fun runId(runId: String?) = runId(JsonField.ofNullable(runId))
-
-        /** Alias for calling [Builder.runId] with `runId.orElse(null)`. */
-        fun runId(runId: Optional<String>) = runId(runId.getOrNull())
-
-        /**
-         * Sets [Builder.runId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.runId] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun runId(runId: JsonField<String>) = apply { this.runId = runId }
-
-        fun threadId(threadId: String?) = threadId(JsonField.ofNullable(threadId))
-
-        /** Alias for calling [Builder.threadId] with `threadId.orElse(null)`. */
-        fun threadId(threadId: Optional<String>) = threadId(threadId.getOrNull())
+        fun threadId(threadId: String) = threadId(JsonField.of(threadId))
 
         /**
          * Sets [Builder.threadId] to an arbitrary JSON value.
@@ -371,6 +293,21 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun threadId(threadId: JsonField<String>) = apply { this.threadId = threadId }
+
+        /** Shared sanitized error payload. */
+        fun error(error: ErrorStatus?) = error(JsonField.ofNullable(error))
+
+        /** Alias for calling [Builder.error] with `error.orElse(null)`. */
+        fun error(error: Optional<ErrorStatus>) = error(error.getOrNull())
+
+        /**
+         * Sets [Builder.error] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.error] with a well-typed [ErrorStatus] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun error(error: JsonField<ErrorStatus>) = apply { this.error = error }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -398,26 +335,27 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .contentText()
+         * .id()
+         * .content()
          * .createdAt()
+         * .outcome()
          * .role()
          * .seq()
+         * .threadId()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): Message =
             Message(
-                checkRequired("contentText", contentText),
+                checkRequired("id", id),
+                checkRequired("content", content),
                 checkRequired("createdAt", createdAt),
+                checkRequired("outcome", outcome),
                 checkRequired("role", role),
                 checkRequired("seq", seq),
-                id,
-                authorUserId,
-                content,
-                metadata,
-                runId,
-                threadId,
+                checkRequired("threadId", threadId),
+                error,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -429,15 +367,14 @@ private constructor(
             return@apply
         }
 
-        contentText()
+        id()
+        content().validate()
         createdAt()
+        outcome().validate()
         role().validate()
         seq()
-        id()
-        authorUserId()
-        content().ifPresent { it.validate() }
-        runId()
         threadId()
+        error().ifPresent { it.validate() }
         validated = true
     }
 
@@ -456,15 +393,14 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (if (contentText.asKnown().isPresent) 1 else 0) +
+        (if (id.asKnown().isPresent) 1 else 0) +
+            (content.asKnown().getOrNull()?.validity() ?: 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
+            (outcome.asKnown().getOrNull()?.validity() ?: 0) +
             (role.asKnown().getOrNull()?.validity() ?: 0) +
             (if (seq.asKnown().isPresent) 1 else 0) +
-            (if (id.asKnown().isPresent) 1 else 0) +
-            (if (authorUserId.asKnown().isPresent) 1 else 0) +
-            (content.asKnown().getOrNull()?.validity() ?: 0) +
-            (if (runId.asKnown().isPresent) 1 else 0) +
-            (if (threadId.asKnown().isPresent) 1 else 0)
+            (if (threadId.asKnown().isPresent) 1 else 0) +
+            (error.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -472,31 +408,27 @@ private constructor(
         }
 
         return other is Message &&
-            contentText == other.contentText &&
+            id == other.id &&
+            content == other.content &&
             createdAt == other.createdAt &&
+            outcome == other.outcome &&
             role == other.role &&
             seq == other.seq &&
-            id == other.id &&
-            authorUserId == other.authorUserId &&
-            content == other.content &&
-            metadata == other.metadata &&
-            runId == other.runId &&
             threadId == other.threadId &&
+            error == other.error &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            contentText,
+            id,
+            content,
             createdAt,
+            outcome,
             role,
             seq,
-            id,
-            authorUserId,
-            content,
-            metadata,
-            runId,
             threadId,
+            error,
             additionalProperties,
         )
     }
@@ -504,5 +436,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Message{contentText=$contentText, createdAt=$createdAt, role=$role, seq=$seq, id=$id, authorUserId=$authorUserId, content=$content, metadata=$metadata, runId=$runId, threadId=$threadId, additionalProperties=$additionalProperties}"
+        "Message{id=$id, content=$content, createdAt=$createdAt, outcome=$outcome, role=$role, seq=$seq, threadId=$threadId, error=$error, additionalProperties=$additionalProperties}"
 }
