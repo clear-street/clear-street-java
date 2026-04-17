@@ -10,13 +10,21 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** List messages in a thread. */
+/**
+ * List finalized messages in a thread.
+ *
+ * Returns **finalized** messages in chronological order. Messages from in-progress assistant turns
+ * are excluded — use `GET /omni-ai/threads/{thread_id}/response` or `GET
+ * /omni-ai/responses/{response_id}` for live output.
+ *
+ * If the last finalized message has role `USER`, an active response likely exists and should be
+ * polled separately.
+ */
 class MessageListMessagesParams
 private constructor(
     private val threadId: String?,
-    private val accountId: String,
-    private val afterSeq: Long?,
-    private val pageSize: Int?,
+    private val accountId: Long,
+    private val pageSize: Long?,
     private val pageToken: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -25,15 +33,14 @@ private constructor(
     fun threadId(): Optional<String> = Optional.ofNullable(threadId)
 
     /** Account ID for the request */
-    fun accountId(): String = accountId
+    fun accountId(): Long = accountId
 
-    /** Return messages after this sequence number */
-    fun afterSeq(): Optional<Long> = Optional.ofNullable(afterSeq)
+    fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
-    /** Maximum messages to return */
-    fun pageSize(): Optional<Int> = Optional.ofNullable(pageSize)
-
-    /** Page token for pagination */
+    /**
+     * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+     * offset). When provided, page_size is ignored.
+     */
     fun pageToken(): Optional<String> = Optional.ofNullable(pageToken)
 
     /** Additional headers to send with the request. */
@@ -61,9 +68,8 @@ private constructor(
     class Builder internal constructor() {
 
         private var threadId: String? = null
-        private var accountId: String? = null
-        private var afterSeq: Long? = null
-        private var pageSize: Int? = null
+        private var accountId: Long? = null
+        private var pageSize: Long? = null
         private var pageToken: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -72,7 +78,6 @@ private constructor(
         internal fun from(messageListMessagesParams: MessageListMessagesParams) = apply {
             threadId = messageListMessagesParams.threadId
             accountId = messageListMessagesParams.accountId
-            afterSeq = messageListMessagesParams.afterSeq
             pageSize = messageListMessagesParams.pageSize
             pageToken = messageListMessagesParams.pageToken
             additionalHeaders = messageListMessagesParams.additionalHeaders.toBuilder()
@@ -85,35 +90,24 @@ private constructor(
         fun threadId(threadId: Optional<String>) = threadId(threadId.getOrNull())
 
         /** Account ID for the request */
-        fun accountId(accountId: String) = apply { this.accountId = accountId }
+        fun accountId(accountId: Long) = apply { this.accountId = accountId }
 
-        /** Return messages after this sequence number */
-        fun afterSeq(afterSeq: Long?) = apply { this.afterSeq = afterSeq }
-
-        /**
-         * Alias for [Builder.afterSeq].
-         *
-         * This unboxed primitive overload exists for backwards compatibility.
-         */
-        fun afterSeq(afterSeq: Long) = afterSeq(afterSeq as Long?)
-
-        /** Alias for calling [Builder.afterSeq] with `afterSeq.orElse(null)`. */
-        fun afterSeq(afterSeq: Optional<Long>) = afterSeq(afterSeq.getOrNull())
-
-        /** Maximum messages to return */
-        fun pageSize(pageSize: Int?) = apply { this.pageSize = pageSize }
+        fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**
          * Alias for [Builder.pageSize].
          *
          * This unboxed primitive overload exists for backwards compatibility.
          */
-        fun pageSize(pageSize: Int) = pageSize(pageSize as Int?)
+        fun pageSize(pageSize: Long) = pageSize(pageSize as Long?)
 
         /** Alias for calling [Builder.pageSize] with `pageSize.orElse(null)`. */
-        fun pageSize(pageSize: Optional<Int>) = pageSize(pageSize.getOrNull())
+        fun pageSize(pageSize: Optional<Long>) = pageSize(pageSize.getOrNull())
 
-        /** Page token for pagination */
+        /**
+         * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+         * offset). When provided, page_size is ignored.
+         */
         fun pageToken(pageToken: String?) = apply { this.pageToken = pageToken }
 
         /** Alias for calling [Builder.pageToken] with `pageToken.orElse(null)`. */
@@ -233,7 +227,6 @@ private constructor(
             MessageListMessagesParams(
                 threadId,
                 checkRequired("accountId", accountId),
-                afterSeq,
                 pageSize,
                 pageToken,
                 additionalHeaders.build(),
@@ -252,8 +245,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                put("account_id", accountId)
-                afterSeq?.let { put("after_seq", it.toString()) }
+                put("account_id", accountId.toString())
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 putAll(additionalQueryParams)
@@ -268,7 +260,6 @@ private constructor(
         return other is MessageListMessagesParams &&
             threadId == other.threadId &&
             accountId == other.accountId &&
-            afterSeq == other.afterSeq &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
             additionalHeaders == other.additionalHeaders &&
@@ -279,7 +270,6 @@ private constructor(
         Objects.hash(
             threadId,
             accountId,
-            afterSeq,
             pageSize,
             pageToken,
             additionalHeaders,
@@ -287,5 +277,5 @@ private constructor(
         )
 
     override fun toString() =
-        "MessageListMessagesParams{threadId=$threadId, accountId=$accountId, afterSeq=$afterSeq, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "MessageListMessagesParams{threadId=$threadId, accountId=$accountId, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

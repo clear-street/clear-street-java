@@ -3,8 +3,8 @@
 package com.clear_street.api.services.blocking.active.v1
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.services.blocking.active.v1.omniai.FeedbackService
-import com.clear_street.api.services.blocking.active.v1.omniai.RunService
+import com.clear_street.api.services.blocking.active.v1.omniai.MessageService
+import com.clear_street.api.services.blocking.active.v1.omniai.ResponseService
 import com.clear_street.api.services.blocking.active.v1.omniai.ThreadService
 import java.util.function.Consumer
 
@@ -22,13 +22,25 @@ interface OmniAiService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): OmniAiService
 
-    /** AI assistant for conversational trading interactions. */
-    fun feedback(): FeedbackService
+    /**
+     * Thread-centric AI assistant for conversational trading. Create threads to start
+     * conversations, poll response objects for in-progress output, and read finalized messages from
+     * thread history. Every endpoint requires an explicit account_id.
+     */
+    fun messages(): MessageService
 
-    /** AI assistant for conversational trading interactions. */
-    fun runs(): RunService
+    /**
+     * Thread-centric AI assistant for conversational trading. Create threads to start
+     * conversations, poll response objects for in-progress output, and read finalized messages from
+     * thread history. Every endpoint requires an explicit account_id.
+     */
+    fun responses(): ResponseService
 
-    /** AI assistant for conversational trading interactions. */
+    /**
+     * Thread-centric AI assistant for conversational trading. Create threads to start
+     * conversations, poll response objects for in-progress output, and read finalized messages from
+     * thread history. Every endpoint requires an explicit account_id.
+     */
     fun threads(): ThreadService
 
     /** A view of [OmniAiService] that provides access to raw HTTP responses for each method. */
@@ -41,13 +53,25 @@ interface OmniAiService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): OmniAiService.WithRawResponse
 
-        /** AI assistant for conversational trading interactions. */
-        fun feedback(): FeedbackService.WithRawResponse
+        /**
+         * Thread-centric AI assistant for conversational trading. Create threads to start
+         * conversations, poll response objects for in-progress output, and read finalized messages
+         * from thread history. Every endpoint requires an explicit account_id.
+         */
+        fun messages(): MessageService.WithRawResponse
 
-        /** AI assistant for conversational trading interactions. */
-        fun runs(): RunService.WithRawResponse
+        /**
+         * Thread-centric AI assistant for conversational trading. Create threads to start
+         * conversations, poll response objects for in-progress output, and read finalized messages
+         * from thread history. Every endpoint requires an explicit account_id.
+         */
+        fun responses(): ResponseService.WithRawResponse
 
-        /** AI assistant for conversational trading interactions. */
+        /**
+         * Thread-centric AI assistant for conversational trading. Create threads to start
+         * conversations, poll response objects for in-progress output, and read finalized messages
+         * from thread history. Every endpoint requires an explicit account_id.
+         */
         fun threads(): ThreadService.WithRawResponse
     }
 }

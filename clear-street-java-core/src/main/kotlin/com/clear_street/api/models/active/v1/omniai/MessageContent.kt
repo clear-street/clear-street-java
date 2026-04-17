@@ -18,11 +18,11 @@ import java.util.Collections
 import java.util.Objects
 import kotlin.jvm.optionals.getOrNull
 
-/** Message content containing text and structured action parts. */
+/** Finalized immutable message content container. Never includes thinking parts. */
 class MessageContent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val parts: JsonField<List<ContentPart>>,
+    private val parts: JsonField<List<MessageContentPart>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -30,21 +30,21 @@ private constructor(
     private constructor(
         @JsonProperty("parts")
         @ExcludeMissing
-        parts: JsonField<List<ContentPart>> = JsonMissing.of()
+        parts: JsonField<List<MessageContentPart>> = JsonMissing.of()
     ) : this(parts, mutableMapOf())
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun parts(): List<ContentPart> = parts.getRequired("parts")
+    fun parts(): List<MessageContentPart> = parts.getRequired("parts")
 
     /**
      * Returns the raw JSON value of [parts].
      *
      * Unlike [parts], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("parts") @ExcludeMissing fun _parts(): JsonField<List<ContentPart>> = parts
+    @JsonProperty("parts") @ExcludeMissing fun _parts(): JsonField<List<MessageContentPart>> = parts
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -74,7 +74,7 @@ private constructor(
     /** A builder for [MessageContent]. */
     class Builder internal constructor() {
 
-        private var parts: JsonField<MutableList<ContentPart>>? = null
+        private var parts: JsonField<MutableList<MessageContentPart>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -83,48 +83,48 @@ private constructor(
             additionalProperties = messageContent.additionalProperties.toMutableMap()
         }
 
-        fun parts(parts: List<ContentPart>) = parts(JsonField.of(parts))
+        fun parts(parts: List<MessageContentPart>) = parts(JsonField.of(parts))
 
         /**
          * Sets [Builder.parts] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.parts] with a well-typed `List<ContentPart>` value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.parts] with a well-typed `List<MessageContentPart>`
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
          */
-        fun parts(parts: JsonField<List<ContentPart>>) = apply {
+        fun parts(parts: JsonField<List<MessageContentPart>>) = apply {
             this.parts = parts.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [ContentPart] to [parts].
+         * Adds a single [MessageContentPart] to [parts].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addPart(part: ContentPart) = apply {
+        fun addPart(part: MessageContentPart) = apply {
             parts =
                 (parts ?: JsonField.of(mutableListOf())).also { checkKnown("parts", it).add(part) }
         }
 
-        /** Alias for calling [addPart] with `ContentPart.ofText(text)`. */
-        fun addPart(text: ContentPart.Text) = addPart(ContentPart.ofText(text))
+        /** Alias for calling [addPart] with `MessageContentPart.ofUnionMember0(unionMember0)`. */
+        fun addPart(unionMember0: MessageContentPart.UnionMember0) =
+            addPart(MessageContentPart.ofUnionMember0(unionMember0))
 
-        /** Alias for calling [addPart] with `ContentPart.ofStructuredAction(structuredAction)`. */
-        fun addPart(structuredAction: ContentPart.StructuredAction) =
-            addPart(ContentPart.ofStructuredAction(structuredAction))
+        /** Alias for calling [addPart] with `MessageContentPart.ofUnionMember1(unionMember1)`. */
+        fun addPart(unionMember1: MessageContentPart.UnionMember1) =
+            addPart(MessageContentPart.ofUnionMember1(unionMember1))
 
-        /** Alias for calling [addPart] with `ContentPart.ofThinking(thinking)`. */
-        fun addPart(thinking: ContentPart.Thinking) = addPart(ContentPart.ofThinking(thinking))
+        /** Alias for calling [addPart] with `MessageContentPart.ofUnionMember2(unionMember2)`. */
+        fun addPart(unionMember2: MessageContentPart.UnionMember2) =
+            addPart(MessageContentPart.ofUnionMember2(unionMember2))
 
-        /** Alias for calling [addPart] with `ContentPart.ofChart(chart)`. */
-        fun addPart(chart: ContentPart.Chart) = addPart(ContentPart.ofChart(chart))
+        /** Alias for calling [addPart] with `MessageContentPart.ofUnionMember3(unionMember3)`. */
+        fun addPart(unionMember3: MessageContentPart.UnionMember3) =
+            addPart(MessageContentPart.ofUnionMember3(unionMember3))
 
-        /** Alias for calling [addPart] with `ContentPart.ofSuggestedActions(suggestedActions)`. */
-        fun addPart(suggestedActions: ContentPart.SuggestedActions) =
-            addPart(ContentPart.ofSuggestedActions(suggestedActions))
-
-        /** Alias for calling [addPart] with `ContentPart.ofType(type)`. */
-        fun addPart(type: ContentPart.Type) = addPart(ContentPart.ofType(type))
+        /** Alias for calling [addPart] with `MessageContentPart.ofUnionMember4(unionMember4)`. */
+        fun addPart(unionMember4: MessageContentPart.UnionMember4) =
+            addPart(MessageContentPart.ofUnionMember4(unionMember4))
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
