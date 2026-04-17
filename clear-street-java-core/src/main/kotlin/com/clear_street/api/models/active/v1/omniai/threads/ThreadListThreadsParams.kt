@@ -10,23 +10,29 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieves threads for the authenticated user. */
+/**
+ * Returns thread metadata ordered by most recently created first. Use `page_size` and `page_token`
+ * for pagination. Thread objects contain only metadata (title, timestamps) — use the messages
+ * endpoint for conversation history.
+ */
 class ThreadListThreadsParams
 private constructor(
-    private val accountId: String,
-    private val pageSize: Int?,
+    private val accountId: Long,
+    private val pageSize: Long?,
     private val pageToken: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     /** Account ID for the request */
-    fun accountId(): String = accountId
+    fun accountId(): Long = accountId
 
-    /** Maximum threads to return */
-    fun pageSize(): Optional<Int> = Optional.ofNullable(pageSize)
+    fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
-    /** Page token for pagination */
+    /**
+     * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+     * offset). When provided, page_size is ignored.
+     */
     fun pageToken(): Optional<String> = Optional.ofNullable(pageToken)
 
     /** Additional headers to send with the request. */
@@ -53,8 +59,8 @@ private constructor(
     /** A builder for [ThreadListThreadsParams]. */
     class Builder internal constructor() {
 
-        private var accountId: String? = null
-        private var pageSize: Int? = null
+        private var accountId: Long? = null
+        private var pageSize: Long? = null
         private var pageToken: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -69,22 +75,24 @@ private constructor(
         }
 
         /** Account ID for the request */
-        fun accountId(accountId: String) = apply { this.accountId = accountId }
+        fun accountId(accountId: Long) = apply { this.accountId = accountId }
 
-        /** Maximum threads to return */
-        fun pageSize(pageSize: Int?) = apply { this.pageSize = pageSize }
+        fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**
          * Alias for [Builder.pageSize].
          *
          * This unboxed primitive overload exists for backwards compatibility.
          */
-        fun pageSize(pageSize: Int) = pageSize(pageSize as Int?)
+        fun pageSize(pageSize: Long) = pageSize(pageSize as Long?)
 
         /** Alias for calling [Builder.pageSize] with `pageSize.orElse(null)`. */
-        fun pageSize(pageSize: Optional<Int>) = pageSize(pageSize.getOrNull())
+        fun pageSize(pageSize: Optional<Long>) = pageSize(pageSize.getOrNull())
 
-        /** Page token for pagination */
+        /**
+         * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+         * offset). When provided, page_size is ignored.
+         */
         fun pageToken(pageToken: String?) = apply { this.pageToken = pageToken }
 
         /** Alias for calling [Builder.pageToken] with `pageToken.orElse(null)`. */
@@ -215,7 +223,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                put("account_id", accountId)
+                put("account_id", accountId.toString())
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 putAll(additionalQueryParams)

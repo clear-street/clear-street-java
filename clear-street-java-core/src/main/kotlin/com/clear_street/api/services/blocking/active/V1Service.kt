@@ -8,7 +8,6 @@ import com.clear_street.api.services.blocking.active.v1.ApiKeyService
 import com.clear_street.api.services.blocking.active.v1.CalendarService
 import com.clear_street.api.services.blocking.active.v1.ClockService
 import com.clear_street.api.services.blocking.active.v1.InstrumentService
-import com.clear_street.api.services.blocking.active.v1.IrisService
 import com.clear_street.api.services.blocking.active.v1.MarketDataService
 import com.clear_street.api.services.blocking.active.v1.NewsService
 import com.clear_street.api.services.blocking.active.v1.OmniAiService
@@ -46,8 +45,6 @@ interface V1Service {
 
     /** Retrieve details and lists of tradable instruments. */
     fun instruments(): InstrumentService
-
-    fun iris(): IrisService
 
     fun marketData(): MarketDataService
 
@@ -94,8 +91,6 @@ interface V1Service {
 
         /** Retrieve details and lists of tradable instruments. */
         fun instruments(): InstrumentService.WithRawResponse
-
-        fun iris(): IrisService.WithRawResponse
 
         fun marketData(): MarketDataService.WithRawResponse
 
