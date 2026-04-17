@@ -14,7 +14,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Searches for instruments matching specified criteria. */
+/**
+ * Screen instruments.
+ *
+ * Searches for instruments matching specified criteria.
+ */
 class ScreenerGetScreenerParams
 private constructor(
     private val fieldFilter: List<String>?,

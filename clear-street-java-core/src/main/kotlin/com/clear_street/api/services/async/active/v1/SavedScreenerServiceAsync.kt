@@ -33,7 +33,11 @@ interface SavedScreenerServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): SavedScreenerServiceAsync
 
-    /** Persists a screener configuration for the authenticated user. */
+    /**
+     * Create a saved screener configuration.
+     *
+     * Persists a screener configuration for the authenticated user.
+     */
     fun createScreener(): CompletableFuture<SavedScreenerCreateScreenerResponse> =
         createScreener(SavedScreenerCreateScreenerParams.none())
 
@@ -55,7 +59,11 @@ interface SavedScreenerServiceAsync {
     ): CompletableFuture<SavedScreenerCreateScreenerResponse> =
         createScreener(SavedScreenerCreateScreenerParams.none(), requestOptions)
 
-    /** Deletes the screener configuration for the authenticated user. */
+    /**
+     * Delete a saved screener configuration.
+     *
+     * Deletes the screener configuration for the authenticated user.
+     */
     fun deleteScreener(screenerId: String): CompletableFuture<Void?> =
         deleteScreener(screenerId, SavedScreenerDeleteScreenerParams.none())
 
@@ -90,7 +98,11 @@ interface SavedScreenerServiceAsync {
     ): CompletableFuture<Void?> =
         deleteScreener(screenerId, SavedScreenerDeleteScreenerParams.none(), requestOptions)
 
-    /** Returns a single screener configuration for the authenticated user. */
+    /**
+     * Get a saved screener configuration by ID.
+     *
+     * Returns a single screener configuration for the authenticated user.
+     */
     fun getScreenerById(
         screenerId: String
     ): CompletableFuture<SavedScreenerGetScreenerByIdResponse> =
@@ -130,7 +142,11 @@ interface SavedScreenerServiceAsync {
     ): CompletableFuture<SavedScreenerGetScreenerByIdResponse> =
         getScreenerById(screenerId, SavedScreenerGetScreenerByIdParams.none(), requestOptions)
 
-    /** Returns all screener configurations for the authenticated user. */
+    /**
+     * List saved screener configurations.
+     *
+     * Returns all screener configurations for the authenticated user.
+     */
     fun listScreeners(): CompletableFuture<SavedScreenerListScreenersResponse> =
         listScreeners(SavedScreenerListScreenersParams.none())
 
@@ -153,6 +169,8 @@ interface SavedScreenerServiceAsync {
         listScreeners(SavedScreenerListScreenersParams.none(), requestOptions)
 
     /**
+     * Update a saved screener configuration.
+     *
      * Replaces the screener configuration for the authenticated user. If `name` is null, the
      * existing name is preserved.
      */

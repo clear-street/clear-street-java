@@ -21,7 +21,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieves all positions for the specified trading account. */
+/**
+ * Delete a position within an account for an instrument.
+ *
+ * Retrieves all positions for the specified trading account.
+ */
 class PositionClosePositionParams
 private constructor(
     private val accountId: Long,

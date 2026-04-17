@@ -16,6 +16,8 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
+ * Cancel all orders for an account
+ *
  * All filter parameters can be used independently or combined. The only constraint is that
  * `security_id` and `security_id_source` must be provided together if either is specified.
  */

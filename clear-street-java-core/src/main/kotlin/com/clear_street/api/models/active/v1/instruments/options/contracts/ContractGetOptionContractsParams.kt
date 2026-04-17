@@ -13,6 +13,8 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
+ * List options contracts.
+ *
  * Returns options contracts for a given underlier with options-specific metadata. Exactly one
  * underlier identifier must be provided.
  */

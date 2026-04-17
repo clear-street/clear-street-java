@@ -22,7 +22,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Persists a screener configuration for the authenticated user. */
+/**
+ * Create a saved screener configuration.
+ *
+ * Persists a screener configuration for the authenticated user.
+ */
 class SavedScreenerCreateScreenerParams
 private constructor(
     private val body: Body,

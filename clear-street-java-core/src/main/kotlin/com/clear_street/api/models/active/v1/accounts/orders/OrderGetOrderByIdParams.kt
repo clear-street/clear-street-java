@@ -10,7 +10,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get order by ID */
+/** Get Order By ID */
 class OrderGetOrderByIdParams
 private constructor(
     private val accountId: Long,

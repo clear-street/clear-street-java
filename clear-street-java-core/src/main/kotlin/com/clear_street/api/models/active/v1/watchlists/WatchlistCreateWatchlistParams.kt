@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
 
-/** Create a new watchlist */
+/** Create Watchlist */
 class WatchlistCreateWatchlistParams
 private constructor(
     private val body: Body,

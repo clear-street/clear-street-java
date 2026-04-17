@@ -27,7 +27,11 @@ interface ScreenerServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ScreenerServiceAsync
 
-    /** Searches for instruments matching specified criteria. */
+    /**
+     * Screen instruments.
+     *
+     * Searches for instruments matching specified criteria.
+     */
     fun getScreener(): CompletableFuture<ScreenerGetScreenerResponse> =
         getScreener(ScreenerGetScreenerParams.none())
 
@@ -49,6 +53,8 @@ interface ScreenerServiceAsync {
         getScreener(ScreenerGetScreenerParams.none(), requestOptions)
 
     /**
+     * Search instruments using structured filters.
+     *
      * Returns a columnar response where each row is an array of column objects. Each column
      * contains a human-readable name, a field reference, an optional type hint (e.g. `CURR_USD`,
      * `PERCENT`), and the value.

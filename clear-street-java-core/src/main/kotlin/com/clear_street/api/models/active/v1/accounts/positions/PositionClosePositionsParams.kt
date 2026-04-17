@@ -19,7 +19,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Closes all positions for the specified trading account. */
+/**
+ * Delete all positions within an account.
+ *
+ * Closes all positions for the specified trading account.
+ */
 class PositionClosePositionsParams
 private constructor(
     private val accountId: Long?,

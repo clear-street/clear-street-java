@@ -36,6 +36,8 @@ interface OrderServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrderServiceAsync
 
     /**
+     * Cancel all orders for an account
+     *
      * All filter parameters can be used independently or combined. The only constraint is that
      * `security_id` and `security_id_source` must be provided together if either is specified.
      */
@@ -101,7 +103,7 @@ interface OrderServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<OrderCancelOrderResponse>
 
-    /** Get order by ID */
+    /** Get Order By ID */
     fun getOrderById(
         orderId: String,
         params: OrderGetOrderByIdParams,

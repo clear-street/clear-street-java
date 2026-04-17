@@ -53,7 +53,11 @@ interface ThreadService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ThreadGetThreadResponse
 
-    /** Retrieves threads for the authenticated user. */
+    /**
+     * List conversation threads.
+     *
+     * Retrieves threads for the authenticated user.
+     */
     fun listThreads(params: ThreadListThreadsParams): ThreadListThreadsResponse =
         listThreads(params, RequestOptions.none())
 

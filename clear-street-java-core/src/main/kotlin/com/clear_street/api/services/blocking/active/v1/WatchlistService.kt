@@ -35,7 +35,7 @@ interface WatchlistService {
     /** Retrieve details and lists of tradable instruments. */
     fun items(): ItemService
 
-    /** Create a new watchlist */
+    /** Create Watchlist */
     fun createWatchlist(params: WatchlistCreateWatchlistParams): WatchlistCreateWatchlistResponse =
         createWatchlist(params, RequestOptions.none())
 

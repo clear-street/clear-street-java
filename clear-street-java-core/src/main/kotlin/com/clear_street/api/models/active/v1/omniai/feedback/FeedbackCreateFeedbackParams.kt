@@ -19,7 +19,11 @@ import java.util.Collections
 import java.util.Objects
 import java.util.Optional
 
-/** Submit user feedback (thumbs up/down, rating, comment) for an assistant message. */
+/**
+ * Create feedback on a message.
+ *
+ * Submit user feedback (thumbs up/down, rating, comment) for an assistant message.
+ */
 class FeedbackCreateFeedbackParams
 private constructor(
     private val body: Body,

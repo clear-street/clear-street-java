@@ -23,6 +23,8 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
+ * Update a saved screener configuration.
+ *
  * Replaces the screener configuration for the authenticated user. If `name` is null, the existing
  * name is preserved.
  */

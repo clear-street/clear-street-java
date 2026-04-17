@@ -9,7 +9,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Returns a single screener configuration for the authenticated user. */
+/**
+ * Get a saved screener configuration by ID.
+ *
+ * Returns a single screener configuration for the authenticated user.
+ */
 class SavedScreenerGetScreenerByIdParams
 private constructor(
     private val screenerId: String?,

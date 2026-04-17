@@ -36,6 +36,8 @@ interface OrderService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrderService
 
     /**
+     * Cancel all orders for an account
+     *
      * All filter parameters can be used independently or combined. The only constraint is that
      * `security_id` and `security_id_source` must be provided together if either is specified.
      */
@@ -95,7 +97,7 @@ interface OrderService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): OrderCancelOrderResponse
 
-    /** Get order by ID */
+    /** Get Order By ID */
     fun getOrderById(orderId: String, params: OrderGetOrderByIdParams): OrderGetOrderByIdResponse =
         getOrderById(orderId, params, RequestOptions.none())
 

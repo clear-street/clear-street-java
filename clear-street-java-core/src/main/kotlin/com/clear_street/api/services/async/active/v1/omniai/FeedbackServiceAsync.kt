@@ -25,7 +25,11 @@ interface FeedbackServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): FeedbackServiceAsync
 
-    /** Submit user feedback (thumbs up/down, rating, comment) for an assistant message. */
+    /**
+     * Create feedback on a message.
+     *
+     * Submit user feedback (thumbs up/down, rating, comment) for an assistant message.
+     */
     fun createFeedback(
         params: FeedbackCreateFeedbackParams
     ): CompletableFuture<FeedbackCreateFeedbackResponse> =

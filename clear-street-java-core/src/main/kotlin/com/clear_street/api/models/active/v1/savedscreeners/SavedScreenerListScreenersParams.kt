@@ -7,7 +7,11 @@ import com.clear_street.api.core.http.Headers
 import com.clear_street.api.core.http.QueryParams
 import java.util.Objects
 
-/** Returns all screener configurations for the authenticated user. */
+/**
+ * List saved screener configurations.
+ *
+ * Returns all screener configurations for the authenticated user.
+ */
 class SavedScreenerListScreenersParams
 private constructor(
     private val additionalHeaders: Headers,
