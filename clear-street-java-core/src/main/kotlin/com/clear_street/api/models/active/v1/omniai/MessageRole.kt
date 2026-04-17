@@ -7,6 +7,7 @@ import com.clear_street.api.core.JsonField
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
+/** Finalized message role in the public contract. */
 class MessageRole @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
     /**
@@ -20,26 +21,17 @@ class MessageRole @JsonCreator private constructor(private val value: JsonField<
 
     companion object {
 
-        @JvmField val UNSPECIFIED = of("UNSPECIFIED")
-
-        @JvmField val SYSTEM = of("SYSTEM")
-
         @JvmField val USER = of("USER")
 
         @JvmField val ASSISTANT = of("ASSISTANT")
-
-        @JvmField val TOOL = of("TOOL")
 
         @JvmStatic fun of(value: String) = MessageRole(JsonField.of(value))
     }
 
     /** An enum containing [MessageRole]'s known values. */
     enum class Known {
-        UNSPECIFIED,
-        SYSTEM,
         USER,
         ASSISTANT,
-        TOOL,
     }
 
     /**
@@ -52,11 +44,8 @@ class MessageRole @JsonCreator private constructor(private val value: JsonField<
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
-        UNSPECIFIED,
-        SYSTEM,
         USER,
         ASSISTANT,
-        TOOL,
         /** An enum member indicating that [MessageRole] was instantiated with an unknown value. */
         _UNKNOWN,
     }
@@ -70,11 +59,8 @@ class MessageRole @JsonCreator private constructor(private val value: JsonField<
      */
     fun value(): Value =
         when (this) {
-            UNSPECIFIED -> Value.UNSPECIFIED
-            SYSTEM -> Value.SYSTEM
             USER -> Value.USER
             ASSISTANT -> Value.ASSISTANT
-            TOOL -> Value.TOOL
             else -> Value._UNKNOWN
         }
 
@@ -89,11 +75,8 @@ class MessageRole @JsonCreator private constructor(private val value: JsonField<
      */
     fun known(): Known =
         when (this) {
-            UNSPECIFIED -> Known.UNSPECIFIED
-            SYSTEM -> Known.SYSTEM
             USER -> Known.USER
             ASSISTANT -> Known.ASSISTANT
-            TOOL -> Known.TOOL
             else -> throw ClearStreetInvalidDataException("Unknown MessageRole: $value")
         }
 

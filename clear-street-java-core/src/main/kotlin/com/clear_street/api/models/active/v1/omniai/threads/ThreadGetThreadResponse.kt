@@ -11,7 +11,7 @@ import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.BaseResponse
 import com.clear_street.api.models.ResponseMetadata
-import com.clear_street.api.models.active.v1.omniai.GetThreadResponse
+import com.clear_street.api.models.active.v1.omniai.Thread
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -26,7 +26,7 @@ class ThreadGetThreadResponse
 private constructor(
     private val metadata: JsonField<ResponseMetadata>,
     private val error: JsonField<ApiError>,
-    private val data: JsonField<GetThreadResponse>,
+    private val data: JsonField<Thread>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -36,7 +36,7 @@ private constructor(
         @ExcludeMissing
         metadata: JsonField<ResponseMetadata> = JsonMissing.of(),
         @JsonProperty("error") @ExcludeMissing error: JsonField<ApiError> = JsonMissing.of(),
-        @JsonProperty("data") @ExcludeMissing data: JsonField<GetThreadResponse> = JsonMissing.of(),
+        @JsonProperty("data") @ExcludeMissing data: JsonField<Thread> = JsonMissing.of(),
     ) : this(metadata, error, data, mutableMapOf())
 
     fun toBaseResponse(): BaseResponse =
@@ -59,10 +59,12 @@ private constructor(
     fun error(): Optional<ApiError> = error.getOptional("error")
 
     /**
+     * Thread metadata returned by list/get thread endpoints.
+     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): GetThreadResponse = data.getRequired("data")
+    fun data(): Thread = data.getRequired("data")
 
     /**
      * Returns the raw JSON value of [metadata].
@@ -85,7 +87,7 @@ private constructor(
      *
      * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<GetThreadResponse> = data
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<Thread> = data
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -118,7 +120,7 @@ private constructor(
 
         private var metadata: JsonField<ResponseMetadata>? = null
         private var error: JsonField<ApiError> = JsonMissing.of()
-        private var data: JsonField<GetThreadResponse>? = null
+        private var data: JsonField<Thread>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -155,16 +157,16 @@ private constructor(
          */
         fun error(error: JsonField<ApiError>) = apply { this.error = error }
 
-        fun data(data: GetThreadResponse) = data(JsonField.of(data))
+        /** Thread metadata returned by list/get thread endpoints. */
+        fun data(data: Thread) = data(JsonField.of(data))
 
         /**
          * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed [GetThreadResponse] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.data] with a well-typed [Thread] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun data(data: JsonField<GetThreadResponse>) = apply { this.data = data }
+        fun data(data: JsonField<Thread>) = apply { this.data = data }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()

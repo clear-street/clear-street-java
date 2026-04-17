@@ -13,8 +13,6 @@ import com.clear_street.api.services.blocking.active.v1.ClockService
 import com.clear_street.api.services.blocking.active.v1.ClockServiceImpl
 import com.clear_street.api.services.blocking.active.v1.InstrumentService
 import com.clear_street.api.services.blocking.active.v1.InstrumentServiceImpl
-import com.clear_street.api.services.blocking.active.v1.IrisService
-import com.clear_street.api.services.blocking.active.v1.IrisServiceImpl
 import com.clear_street.api.services.blocking.active.v1.MarketDataService
 import com.clear_street.api.services.blocking.active.v1.MarketDataServiceImpl
 import com.clear_street.api.services.blocking.active.v1.NewsService
@@ -48,8 +46,6 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     private val clock: ClockService by lazy { ClockServiceImpl(clientOptions) }
 
     private val instruments: InstrumentService by lazy { InstrumentServiceImpl(clientOptions) }
-
-    private val iris: IrisService by lazy { IrisServiceImpl(clientOptions) }
 
     private val marketData: MarketDataService by lazy { MarketDataServiceImpl(clientOptions) }
 
@@ -87,8 +83,6 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     /** Retrieve details and lists of tradable instruments. */
     override fun instruments(): InstrumentService = instruments
-
-    override fun iris(): IrisService = iris
 
     override fun marketData(): MarketDataService = marketData
 
@@ -133,10 +127,6 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         private val instruments: InstrumentService.WithRawResponse by lazy {
             InstrumentServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val iris: IrisService.WithRawResponse by lazy {
-            IrisServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val marketData: MarketDataService.WithRawResponse by lazy {
@@ -191,8 +181,6 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         /** Retrieve details and lists of tradable instruments. */
         override fun instruments(): InstrumentService.WithRawResponse = instruments
-
-        override fun iris(): IrisService.WithRawResponse = iris
 
         override fun marketData(): MarketDataService.WithRawResponse = marketData
 

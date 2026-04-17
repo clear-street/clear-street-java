@@ -14,14 +14,20 @@ internal class MessageContentTest {
         val messageContent =
             MessageContent.builder()
                 .addPart(
-                    ContentPart.Text.builder().text("text").type(ContentPart.Text.Type.TEXT).build()
+                    MessageContentPart.UnionMember0.builder()
+                        .text("text")
+                        .type(MessageContentPart.UnionMember0.Type.TEXT)
+                        .build()
                 )
                 .build()
 
         assertThat(messageContent.parts())
             .containsExactly(
-                ContentPart.ofText(
-                    ContentPart.Text.builder().text("text").type(ContentPart.Text.Type.TEXT).build()
+                MessageContentPart.ofUnionMember0(
+                    MessageContentPart.UnionMember0.builder()
+                        .text("text")
+                        .type(MessageContentPart.UnionMember0.Type.TEXT)
+                        .build()
                 )
             )
     }
@@ -32,7 +38,10 @@ internal class MessageContentTest {
         val messageContent =
             MessageContent.builder()
                 .addPart(
-                    ContentPart.Text.builder().text("text").type(ContentPart.Text.Type.TEXT).build()
+                    MessageContentPart.UnionMember0.builder()
+                        .text("text")
+                        .type(MessageContentPart.UnionMember0.Type.TEXT)
+                        .build()
                 )
                 .build()
 

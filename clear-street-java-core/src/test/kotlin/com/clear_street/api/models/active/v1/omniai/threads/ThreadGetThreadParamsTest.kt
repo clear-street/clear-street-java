@@ -12,7 +12,7 @@ internal class ThreadGetThreadParamsTest {
     fun create() {
         ThreadGetThreadParams.builder()
             .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-            .accountId("account_id")
+            .accountId(0L)
             .build()
     }
 
@@ -21,7 +21,7 @@ internal class ThreadGetThreadParamsTest {
         val params =
             ThreadGetThreadParams.builder()
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId("account_id")
+                .accountId(0L)
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
@@ -34,12 +34,11 @@ internal class ThreadGetThreadParamsTest {
         val params =
             ThreadGetThreadParams.builder()
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId("account_id")
+                .accountId(0L)
                 .build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams)
-            .isEqualTo(QueryParams.builder().put("account_id", "account_id").build())
+        assertThat(queryParams).isEqualTo(QueryParams.builder().put("account_id", "0").build())
     }
 }
