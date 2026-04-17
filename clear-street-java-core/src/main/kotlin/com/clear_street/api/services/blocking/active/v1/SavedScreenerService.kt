@@ -11,10 +11,10 @@ import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerCreateS
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerDeleteScreenerParams
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenerByIdParams
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenerByIdResponse
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerListScreenersParams
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerListScreenersResponse
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerUpdateScreenerParams
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerUpdateScreenerResponse
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenersParams
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenersResponse
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerReplaceScreenerParams
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerReplaceScreenerResponse
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -137,23 +137,23 @@ interface SavedScreenerService {
      *
      * Returns all screener configurations for the authenticated user.
      */
-    fun listScreeners(): SavedScreenerListScreenersResponse =
-        listScreeners(SavedScreenerListScreenersParams.none())
+    fun getScreeners(): SavedScreenerGetScreenersResponse =
+        getScreeners(SavedScreenerGetScreenersParams.none())
 
-    /** @see listScreeners */
-    fun listScreeners(
-        params: SavedScreenerListScreenersParams = SavedScreenerListScreenersParams.none(),
+    /** @see getScreeners */
+    fun getScreeners(
+        params: SavedScreenerGetScreenersParams = SavedScreenerGetScreenersParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SavedScreenerListScreenersResponse
+    ): SavedScreenerGetScreenersResponse
 
-    /** @see listScreeners */
-    fun listScreeners(
-        params: SavedScreenerListScreenersParams = SavedScreenerListScreenersParams.none()
-    ): SavedScreenerListScreenersResponse = listScreeners(params, RequestOptions.none())
+    /** @see getScreeners */
+    fun getScreeners(
+        params: SavedScreenerGetScreenersParams = SavedScreenerGetScreenersParams.none()
+    ): SavedScreenerGetScreenersResponse = getScreeners(params, RequestOptions.none())
 
-    /** @see listScreeners */
-    fun listScreeners(requestOptions: RequestOptions): SavedScreenerListScreenersResponse =
-        listScreeners(SavedScreenerListScreenersParams.none(), requestOptions)
+    /** @see getScreeners */
+    fun getScreeners(requestOptions: RequestOptions): SavedScreenerGetScreenersResponse =
+        getScreeners(SavedScreenerGetScreenersParams.none(), requestOptions)
 
     /**
      * Update a saved screener configuration.
@@ -161,41 +161,41 @@ interface SavedScreenerService {
      * Replaces the screener configuration for the authenticated user. If `name` is null, the
      * existing name is preserved.
      */
-    fun updateScreener(screenerId: String): SavedScreenerUpdateScreenerResponse =
-        updateScreener(screenerId, SavedScreenerUpdateScreenerParams.none())
+    fun replaceScreener(screenerId: String): SavedScreenerReplaceScreenerResponse =
+        replaceScreener(screenerId, SavedScreenerReplaceScreenerParams.none())
 
-    /** @see updateScreener */
-    fun updateScreener(
+    /** @see replaceScreener */
+    fun replaceScreener(
         screenerId: String,
-        params: SavedScreenerUpdateScreenerParams = SavedScreenerUpdateScreenerParams.none(),
+        params: SavedScreenerReplaceScreenerParams = SavedScreenerReplaceScreenerParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SavedScreenerUpdateScreenerResponse =
-        updateScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
+    ): SavedScreenerReplaceScreenerResponse =
+        replaceScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
 
-    /** @see updateScreener */
-    fun updateScreener(
+    /** @see replaceScreener */
+    fun replaceScreener(
         screenerId: String,
-        params: SavedScreenerUpdateScreenerParams = SavedScreenerUpdateScreenerParams.none(),
-    ): SavedScreenerUpdateScreenerResponse =
-        updateScreener(screenerId, params, RequestOptions.none())
+        params: SavedScreenerReplaceScreenerParams = SavedScreenerReplaceScreenerParams.none(),
+    ): SavedScreenerReplaceScreenerResponse =
+        replaceScreener(screenerId, params, RequestOptions.none())
 
-    /** @see updateScreener */
-    fun updateScreener(
-        params: SavedScreenerUpdateScreenerParams,
+    /** @see replaceScreener */
+    fun replaceScreener(
+        params: SavedScreenerReplaceScreenerParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SavedScreenerUpdateScreenerResponse
+    ): SavedScreenerReplaceScreenerResponse
 
-    /** @see updateScreener */
-    fun updateScreener(
-        params: SavedScreenerUpdateScreenerParams
-    ): SavedScreenerUpdateScreenerResponse = updateScreener(params, RequestOptions.none())
+    /** @see replaceScreener */
+    fun replaceScreener(
+        params: SavedScreenerReplaceScreenerParams
+    ): SavedScreenerReplaceScreenerResponse = replaceScreener(params, RequestOptions.none())
 
-    /** @see updateScreener */
-    fun updateScreener(
+    /** @see replaceScreener */
+    fun replaceScreener(
         screenerId: String,
         requestOptions: RequestOptions,
-    ): SavedScreenerUpdateScreenerResponse =
-        updateScreener(screenerId, SavedScreenerUpdateScreenerParams.none(), requestOptions)
+    ): SavedScreenerReplaceScreenerResponse =
+        replaceScreener(screenerId, SavedScreenerReplaceScreenerParams.none(), requestOptions)
 
     /**
      * A view of [SavedScreenerService] that provides access to raw HTTP responses for each method.
@@ -332,80 +332,80 @@ interface SavedScreenerService {
 
         /**
          * Returns a raw HTTP response for `get /active/v1/saved-screeners`, but is otherwise the
-         * same as [SavedScreenerService.listScreeners].
+         * same as [SavedScreenerService.getScreeners].
          */
         @MustBeClosed
-        fun listScreeners(): HttpResponseFor<SavedScreenerListScreenersResponse> =
-            listScreeners(SavedScreenerListScreenersParams.none())
+        fun getScreeners(): HttpResponseFor<SavedScreenerGetScreenersResponse> =
+            getScreeners(SavedScreenerGetScreenersParams.none())
 
-        /** @see listScreeners */
+        /** @see getScreeners */
         @MustBeClosed
-        fun listScreeners(
-            params: SavedScreenerListScreenersParams = SavedScreenerListScreenersParams.none(),
+        fun getScreeners(
+            params: SavedScreenerGetScreenersParams = SavedScreenerGetScreenersParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SavedScreenerListScreenersResponse>
+        ): HttpResponseFor<SavedScreenerGetScreenersResponse>
 
-        /** @see listScreeners */
+        /** @see getScreeners */
         @MustBeClosed
-        fun listScreeners(
-            params: SavedScreenerListScreenersParams = SavedScreenerListScreenersParams.none()
-        ): HttpResponseFor<SavedScreenerListScreenersResponse> =
-            listScreeners(params, RequestOptions.none())
+        fun getScreeners(
+            params: SavedScreenerGetScreenersParams = SavedScreenerGetScreenersParams.none()
+        ): HttpResponseFor<SavedScreenerGetScreenersResponse> =
+            getScreeners(params, RequestOptions.none())
 
-        /** @see listScreeners */
+        /** @see getScreeners */
         @MustBeClosed
-        fun listScreeners(
+        fun getScreeners(
             requestOptions: RequestOptions
-        ): HttpResponseFor<SavedScreenerListScreenersResponse> =
-            listScreeners(SavedScreenerListScreenersParams.none(), requestOptions)
+        ): HttpResponseFor<SavedScreenerGetScreenersResponse> =
+            getScreeners(SavedScreenerGetScreenersParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `put /active/v1/saved-screeners/{screener_id}`, but is
-         * otherwise the same as [SavedScreenerService.updateScreener].
+         * otherwise the same as [SavedScreenerService.replaceScreener].
          */
         @MustBeClosed
-        fun updateScreener(
+        fun replaceScreener(
             screenerId: String
-        ): HttpResponseFor<SavedScreenerUpdateScreenerResponse> =
-            updateScreener(screenerId, SavedScreenerUpdateScreenerParams.none())
+        ): HttpResponseFor<SavedScreenerReplaceScreenerResponse> =
+            replaceScreener(screenerId, SavedScreenerReplaceScreenerParams.none())
 
-        /** @see updateScreener */
+        /** @see replaceScreener */
         @MustBeClosed
-        fun updateScreener(
+        fun replaceScreener(
             screenerId: String,
-            params: SavedScreenerUpdateScreenerParams = SavedScreenerUpdateScreenerParams.none(),
+            params: SavedScreenerReplaceScreenerParams = SavedScreenerReplaceScreenerParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SavedScreenerUpdateScreenerResponse> =
-            updateScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
+        ): HttpResponseFor<SavedScreenerReplaceScreenerResponse> =
+            replaceScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
 
-        /** @see updateScreener */
+        /** @see replaceScreener */
         @MustBeClosed
-        fun updateScreener(
+        fun replaceScreener(
             screenerId: String,
-            params: SavedScreenerUpdateScreenerParams = SavedScreenerUpdateScreenerParams.none(),
-        ): HttpResponseFor<SavedScreenerUpdateScreenerResponse> =
-            updateScreener(screenerId, params, RequestOptions.none())
+            params: SavedScreenerReplaceScreenerParams = SavedScreenerReplaceScreenerParams.none(),
+        ): HttpResponseFor<SavedScreenerReplaceScreenerResponse> =
+            replaceScreener(screenerId, params, RequestOptions.none())
 
-        /** @see updateScreener */
+        /** @see replaceScreener */
         @MustBeClosed
-        fun updateScreener(
-            params: SavedScreenerUpdateScreenerParams,
+        fun replaceScreener(
+            params: SavedScreenerReplaceScreenerParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SavedScreenerUpdateScreenerResponse>
+        ): HttpResponseFor<SavedScreenerReplaceScreenerResponse>
 
-        /** @see updateScreener */
+        /** @see replaceScreener */
         @MustBeClosed
-        fun updateScreener(
-            params: SavedScreenerUpdateScreenerParams
-        ): HttpResponseFor<SavedScreenerUpdateScreenerResponse> =
-            updateScreener(params, RequestOptions.none())
+        fun replaceScreener(
+            params: SavedScreenerReplaceScreenerParams
+        ): HttpResponseFor<SavedScreenerReplaceScreenerResponse> =
+            replaceScreener(params, RequestOptions.none())
 
-        /** @see updateScreener */
+        /** @see replaceScreener */
         @MustBeClosed
-        fun updateScreener(
+        fun replaceScreener(
             screenerId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<SavedScreenerUpdateScreenerResponse> =
-            updateScreener(screenerId, SavedScreenerUpdateScreenerParams.none(), requestOptions)
+        ): HttpResponseFor<SavedScreenerReplaceScreenerResponse> =
+            replaceScreener(screenerId, SavedScreenerReplaceScreenerParams.none(), requestOptions)
     }
 }

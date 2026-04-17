@@ -5,7 +5,7 @@ package com.clear_street.api.services.blocking.active.v1
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerCreateScreenerParams
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerFilter
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerUpdateScreenerParams
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerReplaceScreenerParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -59,24 +59,24 @@ internal class SavedScreenerServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun listScreeners() {
+    fun getScreeners() {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
         val savedScreenerService = client.active().v1().savedScreeners()
 
-        val response = savedScreenerService.listScreeners()
+        val response = savedScreenerService.getScreeners()
 
         response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun updateScreener() {
+    fun replaceScreener() {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
         val savedScreenerService = client.active().v1().savedScreeners()
 
         val response =
-            savedScreenerService.updateScreener(
-                SavedScreenerUpdateScreenerParams.builder()
+            savedScreenerService.replaceScreener(
+                SavedScreenerReplaceScreenerParams.builder()
                     .screenerId("550e8400-e29b-41d4-a716-446655440000")
                     .addFieldFilter("string")
                     .addFilter(
@@ -88,7 +88,7 @@ internal class SavedScreenerServiceTest {
                     )
                     .name("name")
                     .sortBy("sort_by")
-                    .sortDirection(SavedScreenerUpdateScreenerParams.SortDirection.ASC)
+                    .sortDirection(SavedScreenerReplaceScreenerParams.SortDirection.ASC)
                     .build()
             )
 

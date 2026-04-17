@@ -16,10 +16,10 @@ import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.core.http.json
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepareAsync
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOrdersParams
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOrdersResponse
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOrderParams
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOrderResponse
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOpenOrdersParams
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOpenOrdersResponse
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOpenOrderParams
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOpenOrderResponse
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrderByIdResponse
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrdersParams
@@ -45,19 +45,19 @@ class OrderServiceAsyncImpl internal constructor(private val clientOptions: Clie
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrderServiceAsync =
         OrderServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun cancelAllOrders(
-        params: OrderCancelAllOrdersParams,
+    override fun cancelAllOpenOrders(
+        params: OrderCancelAllOpenOrdersParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<OrderCancelAllOrdersResponse> =
+    ): CompletableFuture<OrderCancelAllOpenOrdersResponse> =
         // delete /active/v1/accounts/{account_id}/orders
-        withRawResponse().cancelAllOrders(params, requestOptions).thenApply { it.parse() }
+        withRawResponse().cancelAllOpenOrders(params, requestOptions).thenApply { it.parse() }
 
-    override fun cancelOrder(
-        params: OrderCancelOrderParams,
+    override fun cancelOpenOrder(
+        params: OrderCancelOpenOrderParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<OrderCancelOrderResponse> =
+    ): CompletableFuture<OrderCancelOpenOrderResponse> =
         // delete /active/v1/accounts/{account_id}/orders/{order_id}
-        withRawResponse().cancelOrder(params, requestOptions).thenApply { it.parse() }
+        withRawResponse().cancelOpenOrder(params, requestOptions).thenApply { it.parse() }
 
     override fun getOrderById(
         params: OrderGetOrderByIdParams,
@@ -100,13 +100,13 @@ class OrderServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val cancelAllOrdersHandler: Handler<OrderCancelAllOrdersResponse> =
-            jsonHandler<OrderCancelAllOrdersResponse>(clientOptions.jsonMapper)
+        private val cancelAllOpenOrdersHandler: Handler<OrderCancelAllOpenOrdersResponse> =
+            jsonHandler<OrderCancelAllOpenOrdersResponse>(clientOptions.jsonMapper)
 
-        override fun cancelAllOrders(
-            params: OrderCancelAllOrdersParams,
+        override fun cancelAllOpenOrders(
+            params: OrderCancelAllOpenOrdersParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<OrderCancelAllOrdersResponse>> {
+        ): CompletableFuture<HttpResponseFor<OrderCancelAllOpenOrdersResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("accountId", params.accountId().getOrNull())
@@ -124,7 +124,7 @@ class OrderServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
                         response
-                            .use { cancelAllOrdersHandler.handle(it) }
+                            .use { cancelAllOpenOrdersHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
@@ -134,13 +134,13 @@ class OrderServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 }
         }
 
-        private val cancelOrderHandler: Handler<OrderCancelOrderResponse> =
-            jsonHandler<OrderCancelOrderResponse>(clientOptions.jsonMapper)
+        private val cancelOpenOrderHandler: Handler<OrderCancelOpenOrderResponse> =
+            jsonHandler<OrderCancelOpenOrderResponse>(clientOptions.jsonMapper)
 
-        override fun cancelOrder(
-            params: OrderCancelOrderParams,
+        override fun cancelOpenOrder(
+            params: OrderCancelOpenOrderParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<OrderCancelOrderResponse>> {
+        ): CompletableFuture<HttpResponseFor<OrderCancelOpenOrderResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("orderId", params.orderId().getOrNull())
@@ -165,7 +165,7 @@ class OrderServiceAsyncImpl internal constructor(private val clientOptions: Clie
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
                         response
-                            .use { cancelOrderHandler.handle(it) }
+                            .use { cancelOpenOrderHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

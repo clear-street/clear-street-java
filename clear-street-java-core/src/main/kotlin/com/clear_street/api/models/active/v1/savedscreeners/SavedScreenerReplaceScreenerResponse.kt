@@ -20,7 +20,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-class SavedScreenerUpdateScreenerResponse
+class SavedScreenerReplaceScreenerResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val metadata: JsonField<ResponseMetadata>,
@@ -104,7 +104,7 @@ private constructor(
 
         /**
          * Returns a mutable builder for constructing an instance of
-         * [SavedScreenerUpdateScreenerResponse].
+         * [SavedScreenerReplaceScreenerResponse].
          *
          * The following fields are required:
          * ```java
@@ -115,7 +115,7 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [SavedScreenerUpdateScreenerResponse]. */
+    /** A builder for [SavedScreenerReplaceScreenerResponse]. */
     class Builder internal constructor() {
 
         private var metadata: JsonField<ResponseMetadata>? = null
@@ -125,13 +125,13 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(
-            savedScreenerUpdateScreenerResponse: SavedScreenerUpdateScreenerResponse
+            savedScreenerReplaceScreenerResponse: SavedScreenerReplaceScreenerResponse
         ) = apply {
-            metadata = savedScreenerUpdateScreenerResponse.metadata
-            error = savedScreenerUpdateScreenerResponse.error
-            data = savedScreenerUpdateScreenerResponse.data
+            metadata = savedScreenerReplaceScreenerResponse.metadata
+            error = savedScreenerReplaceScreenerResponse.error
+            data = savedScreenerReplaceScreenerResponse.data
             additionalProperties =
-                savedScreenerUpdateScreenerResponse.additionalProperties.toMutableMap()
+                savedScreenerReplaceScreenerResponse.additionalProperties.toMutableMap()
         }
 
         /** Response metadata, including the request ID and optional pagination info. */
@@ -192,7 +192,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SavedScreenerUpdateScreenerResponse].
+         * Returns an immutable instance of [SavedScreenerReplaceScreenerResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -204,8 +204,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): SavedScreenerUpdateScreenerResponse =
-            SavedScreenerUpdateScreenerResponse(
+        fun build(): SavedScreenerReplaceScreenerResponse =
+            SavedScreenerReplaceScreenerResponse(
                 checkRequired("metadata", metadata),
                 error,
                 checkRequired("data", data),
@@ -215,7 +215,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): SavedScreenerUpdateScreenerResponse = apply {
+    fun validate(): SavedScreenerReplaceScreenerResponse = apply {
         if (validated) {
             return@apply
         }
@@ -250,7 +250,7 @@ private constructor(
             return true
         }
 
-        return other is SavedScreenerUpdateScreenerResponse &&
+        return other is SavedScreenerReplaceScreenerResponse &&
             metadata == other.metadata &&
             error == other.error &&
             data == other.data &&
@@ -262,5 +262,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SavedScreenerUpdateScreenerResponse{metadata=$metadata, error=$error, data=$data, additionalProperties=$additionalProperties}"
+        "SavedScreenerReplaceScreenerResponse{metadata=$metadata, error=$error, data=$data, additionalProperties=$additionalProperties}"
 }

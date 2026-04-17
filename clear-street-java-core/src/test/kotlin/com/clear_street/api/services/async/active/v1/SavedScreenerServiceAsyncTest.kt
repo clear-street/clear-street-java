@@ -5,7 +5,7 @@ package com.clear_street.api.services.async.active.v1
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerCreateScreenerParams
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerFilter
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerUpdateScreenerParams
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerReplaceScreenerParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -65,11 +65,11 @@ internal class SavedScreenerServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun listScreeners() {
+    fun getScreeners() {
         val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
         val savedScreenerServiceAsync = client.active().v1().savedScreeners()
 
-        val responseFuture = savedScreenerServiceAsync.listScreeners()
+        val responseFuture = savedScreenerServiceAsync.getScreeners()
 
         val response = responseFuture.get()
         response.validate()
@@ -77,13 +77,13 @@ internal class SavedScreenerServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun updateScreener() {
+    fun replaceScreener() {
         val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
         val savedScreenerServiceAsync = client.active().v1().savedScreeners()
 
         val responseFuture =
-            savedScreenerServiceAsync.updateScreener(
-                SavedScreenerUpdateScreenerParams.builder()
+            savedScreenerServiceAsync.replaceScreener(
+                SavedScreenerReplaceScreenerParams.builder()
                     .screenerId("550e8400-e29b-41d4-a716-446655440000")
                     .addFieldFilter("string")
                     .addFilter(
@@ -95,7 +95,7 @@ internal class SavedScreenerServiceAsyncTest {
                     )
                     .name("name")
                     .sortBy("sort_by")
-                    .sortDirection(SavedScreenerUpdateScreenerParams.SortDirection.ASC)
+                    .sortDirection(SavedScreenerReplaceScreenerParams.SortDirection.ASC)
                     .build()
             )
 

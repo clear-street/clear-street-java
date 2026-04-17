@@ -12,7 +12,7 @@ import java.util.Objects
  *
  * Returns all screener configurations for the authenticated user.
  */
-class SavedScreenerListScreenersParams
+class SavedScreenerGetScreenersParams
 private constructor(
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -28,27 +28,27 @@ private constructor(
 
     companion object {
 
-        @JvmStatic fun none(): SavedScreenerListScreenersParams = builder().build()
+        @JvmStatic fun none(): SavedScreenerGetScreenersParams = builder().build()
 
         /**
          * Returns a mutable builder for constructing an instance of
-         * [SavedScreenerListScreenersParams].
+         * [SavedScreenerGetScreenersParams].
          */
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [SavedScreenerListScreenersParams]. */
+    /** A builder for [SavedScreenerGetScreenersParams]. */
     class Builder internal constructor() {
 
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
-        internal fun from(savedScreenerListScreenersParams: SavedScreenerListScreenersParams) =
+        internal fun from(savedScreenerGetScreenersParams: SavedScreenerGetScreenersParams) =
             apply {
-                additionalHeaders = savedScreenerListScreenersParams.additionalHeaders.toBuilder()
+                additionalHeaders = savedScreenerGetScreenersParams.additionalHeaders.toBuilder()
                 additionalQueryParams =
-                    savedScreenerListScreenersParams.additionalQueryParams.toBuilder()
+                    savedScreenerGetScreenersParams.additionalQueryParams.toBuilder()
             }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -150,12 +150,12 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SavedScreenerListScreenersParams].
+         * Returns an immutable instance of [SavedScreenerGetScreenersParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): SavedScreenerListScreenersParams =
-            SavedScreenerListScreenersParams(
+        fun build(): SavedScreenerGetScreenersParams =
+            SavedScreenerGetScreenersParams(
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -170,7 +170,7 @@ private constructor(
             return true
         }
 
-        return other is SavedScreenerListScreenersParams &&
+        return other is SavedScreenerGetScreenersParams &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -178,5 +178,5 @@ private constructor(
     override fun hashCode(): Int = Objects.hash(additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SavedScreenerListScreenersParams{additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SavedScreenerGetScreenersParams{additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -1,12 +1,14 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.models.active.v1.accounts.orders
+package com.clear_street.api.models.active.v1.savedscreeners
 
 import com.clear_street.api.core.ExcludeMissing
 import com.clear_street.api.core.JsonField
 import com.clear_street.api.core.JsonMissing
 import com.clear_street.api.core.JsonValue
+import com.clear_street.api.core.checkKnown
 import com.clear_street.api.core.checkRequired
+import com.clear_street.api.core.toImmutable
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.BaseResponse
@@ -20,12 +22,12 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-class OrderCancelOrderResponse
+class SavedScreenerGetScreenersResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val metadata: JsonField<ResponseMetadata>,
     private val error: JsonField<ApiError>,
-    private val data: JsonField<Order>,
+    private val data: JsonField<List<ScreenerEntry>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -35,7 +37,9 @@ private constructor(
         @ExcludeMissing
         metadata: JsonField<ResponseMetadata> = JsonMissing.of(),
         @JsonProperty("error") @ExcludeMissing error: JsonField<ApiError> = JsonMissing.of(),
-        @JsonProperty("data") @ExcludeMissing data: JsonField<Order> = JsonMissing.of(),
+        @JsonProperty("data")
+        @ExcludeMissing
+        data: JsonField<List<ScreenerEntry>> = JsonMissing.of(),
     ) : this(metadata, error, data, mutableMapOf())
 
     fun toBaseResponse(): BaseResponse =
@@ -58,15 +62,10 @@ private constructor(
     fun error(): Optional<ApiError> = error.getOptional("error")
 
     /**
-     * A trading order with its current state and execution details.
-     *
-     * This is the unified API representation of an order across its lifecycle, combining data from
-     * execution reports, order status queries, and parent/child tracking.
-     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): Order = data.getRequired("data")
+    fun data(): List<ScreenerEntry> = data.getRequired("data")
 
     /**
      * Returns the raw JSON value of [metadata].
@@ -89,7 +88,7 @@ private constructor(
      *
      * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<Order> = data
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<ScreenerEntry>> = data
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -106,7 +105,8 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [OrderCancelOrderResponse].
+         * Returns a mutable builder for constructing an instance of
+         * [SavedScreenerGetScreenersResponse].
          *
          * The following fields are required:
          * ```java
@@ -117,21 +117,23 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [OrderCancelOrderResponse]. */
+    /** A builder for [SavedScreenerGetScreenersResponse]. */
     class Builder internal constructor() {
 
         private var metadata: JsonField<ResponseMetadata>? = null
         private var error: JsonField<ApiError> = JsonMissing.of()
-        private var data: JsonField<Order>? = null
+        private var data: JsonField<MutableList<ScreenerEntry>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(orderCancelOrderResponse: OrderCancelOrderResponse) = apply {
-            metadata = orderCancelOrderResponse.metadata
-            error = orderCancelOrderResponse.error
-            data = orderCancelOrderResponse.data
-            additionalProperties = orderCancelOrderResponse.additionalProperties.toMutableMap()
-        }
+        internal fun from(savedScreenerGetScreenersResponse: SavedScreenerGetScreenersResponse) =
+            apply {
+                metadata = savedScreenerGetScreenersResponse.metadata
+                error = savedScreenerGetScreenersResponse.error
+                data = savedScreenerGetScreenersResponse.data.map { it.toMutableList() }
+                additionalProperties =
+                    savedScreenerGetScreenersResponse.additionalProperties.toMutableMap()
+            }
 
         /** Response metadata, including the request ID and optional pagination info. */
         fun metadata(metadata: ResponseMetadata) = metadata(JsonField.of(metadata))
@@ -159,21 +161,30 @@ private constructor(
          */
         fun error(error: JsonField<ApiError>) = apply { this.error = error }
 
-        /**
-         * A trading order with its current state and execution details.
-         *
-         * This is the unified API representation of an order across its lifecycle, combining data
-         * from execution reports, order status queries, and parent/child tracking.
-         */
-        fun data(data: Order) = data(JsonField.of(data))
+        fun data(data: List<ScreenerEntry>) = data(JsonField.of(data))
 
         /**
          * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed [Order] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.data] with a well-typed `List<ScreenerEntry>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun data(data: JsonField<Order>) = apply { this.data = data }
+        fun data(data: JsonField<List<ScreenerEntry>>) = apply {
+            this.data = data.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [ScreenerEntry] to [Builder.data].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addData(data: ScreenerEntry) = apply {
+            this.data =
+                (this.data ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("data", it).add(data)
+                }
+        }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -195,7 +206,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [OrderCancelOrderResponse].
+         * Returns an immutable instance of [SavedScreenerGetScreenersResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -207,25 +218,25 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): OrderCancelOrderResponse =
-            OrderCancelOrderResponse(
+        fun build(): SavedScreenerGetScreenersResponse =
+            SavedScreenerGetScreenersResponse(
                 checkRequired("metadata", metadata),
                 error,
-                checkRequired("data", data),
+                checkRequired("data", data).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
     }
 
     private var validated: Boolean = false
 
-    fun validate(): OrderCancelOrderResponse = apply {
+    fun validate(): SavedScreenerGetScreenersResponse = apply {
         if (validated) {
             return@apply
         }
 
         metadata().validate()
         error().ifPresent { it.validate() }
-        data().validate()
+        data().forEach { it.validate() }
         validated = true
     }
 
@@ -246,14 +257,14 @@ private constructor(
     internal fun validity(): Int =
         (metadata.asKnown().getOrNull()?.validity() ?: 0) +
             (error.asKnown().getOrNull()?.validity() ?: 0) +
-            (data.asKnown().getOrNull()?.validity() ?: 0)
+            (data.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is OrderCancelOrderResponse &&
+        return other is SavedScreenerGetScreenersResponse &&
             metadata == other.metadata &&
             error == other.error &&
             data == other.data &&
@@ -265,5 +276,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OrderCancelOrderResponse{metadata=$metadata, error=$error, data=$data, additionalProperties=$additionalProperties}"
+        "SavedScreenerGetScreenersResponse{metadata=$metadata, error=$error, data=$data, additionalProperties=$additionalProperties}"
 }

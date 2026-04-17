@@ -4,10 +4,10 @@ package com.clear_street.api.models.active.v1.savedscreeners
 
 import org.junit.jupiter.api.Test
 
-internal class SavedScreenerListScreenersParamsTest {
+internal class SavedScreenerGetScreenersParamsTest {
 
     @Test
     fun create() {
-        SavedScreenerListScreenersParams.builder().build()
+        SavedScreenerGetScreenersParams.builder().build()
     }
 }

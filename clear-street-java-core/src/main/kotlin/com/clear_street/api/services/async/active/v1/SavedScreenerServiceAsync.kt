@@ -11,10 +11,10 @@ import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerCreateS
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerDeleteScreenerParams
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenerByIdParams
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenerByIdResponse
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerListScreenersParams
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerListScreenersResponse
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerUpdateScreenerParams
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerUpdateScreenerResponse
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenersParams
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenersResponse
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerReplaceScreenerParams
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerReplaceScreenerResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -147,26 +147,26 @@ interface SavedScreenerServiceAsync {
      *
      * Returns all screener configurations for the authenticated user.
      */
-    fun listScreeners(): CompletableFuture<SavedScreenerListScreenersResponse> =
-        listScreeners(SavedScreenerListScreenersParams.none())
+    fun getScreeners(): CompletableFuture<SavedScreenerGetScreenersResponse> =
+        getScreeners(SavedScreenerGetScreenersParams.none())
 
-    /** @see listScreeners */
-    fun listScreeners(
-        params: SavedScreenerListScreenersParams = SavedScreenerListScreenersParams.none(),
+    /** @see getScreeners */
+    fun getScreeners(
+        params: SavedScreenerGetScreenersParams = SavedScreenerGetScreenersParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SavedScreenerListScreenersResponse>
+    ): CompletableFuture<SavedScreenerGetScreenersResponse>
 
-    /** @see listScreeners */
-    fun listScreeners(
-        params: SavedScreenerListScreenersParams = SavedScreenerListScreenersParams.none()
-    ): CompletableFuture<SavedScreenerListScreenersResponse> =
-        listScreeners(params, RequestOptions.none())
+    /** @see getScreeners */
+    fun getScreeners(
+        params: SavedScreenerGetScreenersParams = SavedScreenerGetScreenersParams.none()
+    ): CompletableFuture<SavedScreenerGetScreenersResponse> =
+        getScreeners(params, RequestOptions.none())
 
-    /** @see listScreeners */
-    fun listScreeners(
+    /** @see getScreeners */
+    fun getScreeners(
         requestOptions: RequestOptions
-    ): CompletableFuture<SavedScreenerListScreenersResponse> =
-        listScreeners(SavedScreenerListScreenersParams.none(), requestOptions)
+    ): CompletableFuture<SavedScreenerGetScreenersResponse> =
+        getScreeners(SavedScreenerGetScreenersParams.none(), requestOptions)
 
     /**
      * Update a saved screener configuration.
@@ -174,42 +174,44 @@ interface SavedScreenerServiceAsync {
      * Replaces the screener configuration for the authenticated user. If `name` is null, the
      * existing name is preserved.
      */
-    fun updateScreener(screenerId: String): CompletableFuture<SavedScreenerUpdateScreenerResponse> =
-        updateScreener(screenerId, SavedScreenerUpdateScreenerParams.none())
+    fun replaceScreener(
+        screenerId: String
+    ): CompletableFuture<SavedScreenerReplaceScreenerResponse> =
+        replaceScreener(screenerId, SavedScreenerReplaceScreenerParams.none())
 
-    /** @see updateScreener */
-    fun updateScreener(
+    /** @see replaceScreener */
+    fun replaceScreener(
         screenerId: String,
-        params: SavedScreenerUpdateScreenerParams = SavedScreenerUpdateScreenerParams.none(),
+        params: SavedScreenerReplaceScreenerParams = SavedScreenerReplaceScreenerParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SavedScreenerUpdateScreenerResponse> =
-        updateScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
+    ): CompletableFuture<SavedScreenerReplaceScreenerResponse> =
+        replaceScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
 
-    /** @see updateScreener */
-    fun updateScreener(
+    /** @see replaceScreener */
+    fun replaceScreener(
         screenerId: String,
-        params: SavedScreenerUpdateScreenerParams = SavedScreenerUpdateScreenerParams.none(),
-    ): CompletableFuture<SavedScreenerUpdateScreenerResponse> =
-        updateScreener(screenerId, params, RequestOptions.none())
+        params: SavedScreenerReplaceScreenerParams = SavedScreenerReplaceScreenerParams.none(),
+    ): CompletableFuture<SavedScreenerReplaceScreenerResponse> =
+        replaceScreener(screenerId, params, RequestOptions.none())
 
-    /** @see updateScreener */
-    fun updateScreener(
-        params: SavedScreenerUpdateScreenerParams,
+    /** @see replaceScreener */
+    fun replaceScreener(
+        params: SavedScreenerReplaceScreenerParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SavedScreenerUpdateScreenerResponse>
+    ): CompletableFuture<SavedScreenerReplaceScreenerResponse>
 
-    /** @see updateScreener */
-    fun updateScreener(
-        params: SavedScreenerUpdateScreenerParams
-    ): CompletableFuture<SavedScreenerUpdateScreenerResponse> =
-        updateScreener(params, RequestOptions.none())
+    /** @see replaceScreener */
+    fun replaceScreener(
+        params: SavedScreenerReplaceScreenerParams
+    ): CompletableFuture<SavedScreenerReplaceScreenerResponse> =
+        replaceScreener(params, RequestOptions.none())
 
-    /** @see updateScreener */
-    fun updateScreener(
+    /** @see replaceScreener */
+    fun replaceScreener(
         screenerId: String,
         requestOptions: RequestOptions,
-    ): CompletableFuture<SavedScreenerUpdateScreenerResponse> =
-        updateScreener(screenerId, SavedScreenerUpdateScreenerParams.none(), requestOptions)
+    ): CompletableFuture<SavedScreenerReplaceScreenerResponse> =
+        replaceScreener(screenerId, SavedScreenerReplaceScreenerParams.none(), requestOptions)
 
     /**
      * A view of [SavedScreenerServiceAsync] that provides access to raw HTTP responses for each
@@ -337,71 +339,70 @@ interface SavedScreenerServiceAsync {
 
         /**
          * Returns a raw HTTP response for `get /active/v1/saved-screeners`, but is otherwise the
-         * same as [SavedScreenerServiceAsync.listScreeners].
+         * same as [SavedScreenerServiceAsync.getScreeners].
          */
-        fun listScreeners():
-            CompletableFuture<HttpResponseFor<SavedScreenerListScreenersResponse>> =
-            listScreeners(SavedScreenerListScreenersParams.none())
+        fun getScreeners(): CompletableFuture<HttpResponseFor<SavedScreenerGetScreenersResponse>> =
+            getScreeners(SavedScreenerGetScreenersParams.none())
 
-        /** @see listScreeners */
-        fun listScreeners(
-            params: SavedScreenerListScreenersParams = SavedScreenerListScreenersParams.none(),
+        /** @see getScreeners */
+        fun getScreeners(
+            params: SavedScreenerGetScreenersParams = SavedScreenerGetScreenersParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SavedScreenerListScreenersResponse>>
+        ): CompletableFuture<HttpResponseFor<SavedScreenerGetScreenersResponse>>
 
-        /** @see listScreeners */
-        fun listScreeners(
-            params: SavedScreenerListScreenersParams = SavedScreenerListScreenersParams.none()
-        ): CompletableFuture<HttpResponseFor<SavedScreenerListScreenersResponse>> =
-            listScreeners(params, RequestOptions.none())
+        /** @see getScreeners */
+        fun getScreeners(
+            params: SavedScreenerGetScreenersParams = SavedScreenerGetScreenersParams.none()
+        ): CompletableFuture<HttpResponseFor<SavedScreenerGetScreenersResponse>> =
+            getScreeners(params, RequestOptions.none())
 
-        /** @see listScreeners */
-        fun listScreeners(
+        /** @see getScreeners */
+        fun getScreeners(
             requestOptions: RequestOptions
-        ): CompletableFuture<HttpResponseFor<SavedScreenerListScreenersResponse>> =
-            listScreeners(SavedScreenerListScreenersParams.none(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<SavedScreenerGetScreenersResponse>> =
+            getScreeners(SavedScreenerGetScreenersParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `put /active/v1/saved-screeners/{screener_id}`, but is
-         * otherwise the same as [SavedScreenerServiceAsync.updateScreener].
+         * otherwise the same as [SavedScreenerServiceAsync.replaceScreener].
          */
-        fun updateScreener(
+        fun replaceScreener(
             screenerId: String
-        ): CompletableFuture<HttpResponseFor<SavedScreenerUpdateScreenerResponse>> =
-            updateScreener(screenerId, SavedScreenerUpdateScreenerParams.none())
+        ): CompletableFuture<HttpResponseFor<SavedScreenerReplaceScreenerResponse>> =
+            replaceScreener(screenerId, SavedScreenerReplaceScreenerParams.none())
 
-        /** @see updateScreener */
-        fun updateScreener(
+        /** @see replaceScreener */
+        fun replaceScreener(
             screenerId: String,
-            params: SavedScreenerUpdateScreenerParams = SavedScreenerUpdateScreenerParams.none(),
+            params: SavedScreenerReplaceScreenerParams = SavedScreenerReplaceScreenerParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SavedScreenerUpdateScreenerResponse>> =
-            updateScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<SavedScreenerReplaceScreenerResponse>> =
+            replaceScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
 
-        /** @see updateScreener */
-        fun updateScreener(
+        /** @see replaceScreener */
+        fun replaceScreener(
             screenerId: String,
-            params: SavedScreenerUpdateScreenerParams = SavedScreenerUpdateScreenerParams.none(),
-        ): CompletableFuture<HttpResponseFor<SavedScreenerUpdateScreenerResponse>> =
-            updateScreener(screenerId, params, RequestOptions.none())
+            params: SavedScreenerReplaceScreenerParams = SavedScreenerReplaceScreenerParams.none(),
+        ): CompletableFuture<HttpResponseFor<SavedScreenerReplaceScreenerResponse>> =
+            replaceScreener(screenerId, params, RequestOptions.none())
 
-        /** @see updateScreener */
-        fun updateScreener(
-            params: SavedScreenerUpdateScreenerParams,
+        /** @see replaceScreener */
+        fun replaceScreener(
+            params: SavedScreenerReplaceScreenerParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SavedScreenerUpdateScreenerResponse>>
+        ): CompletableFuture<HttpResponseFor<SavedScreenerReplaceScreenerResponse>>
 
-        /** @see updateScreener */
-        fun updateScreener(
-            params: SavedScreenerUpdateScreenerParams
-        ): CompletableFuture<HttpResponseFor<SavedScreenerUpdateScreenerResponse>> =
-            updateScreener(params, RequestOptions.none())
+        /** @see replaceScreener */
+        fun replaceScreener(
+            params: SavedScreenerReplaceScreenerParams
+        ): CompletableFuture<HttpResponseFor<SavedScreenerReplaceScreenerResponse>> =
+            replaceScreener(params, RequestOptions.none())
 
-        /** @see updateScreener */
-        fun updateScreener(
+        /** @see replaceScreener */
+        fun replaceScreener(
             screenerId: String,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SavedScreenerUpdateScreenerResponse>> =
-            updateScreener(screenerId, SavedScreenerUpdateScreenerParams.none(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<SavedScreenerReplaceScreenerResponse>> =
+            replaceScreener(screenerId, SavedScreenerReplaceScreenerParams.none(), requestOptions)
     }
 }

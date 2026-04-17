@@ -6,11 +6,11 @@ import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class SavedScreenerUpdateScreenerParamsTest {
+internal class SavedScreenerReplaceScreenerParamsTest {
 
     @Test
     fun create() {
-        SavedScreenerUpdateScreenerParams.builder()
+        SavedScreenerReplaceScreenerParams.builder()
             .screenerId("550e8400-e29b-41d4-a716-446655440000")
             .addFieldFilter("string")
             .addFilter(
@@ -22,14 +22,14 @@ internal class SavedScreenerUpdateScreenerParamsTest {
             )
             .name("name")
             .sortBy("sort_by")
-            .sortDirection(SavedScreenerUpdateScreenerParams.SortDirection.ASC)
+            .sortDirection(SavedScreenerReplaceScreenerParams.SortDirection.ASC)
             .build()
     }
 
     @Test
     fun pathParams() {
         val params =
-            SavedScreenerUpdateScreenerParams.builder()
+            SavedScreenerReplaceScreenerParams.builder()
                 .screenerId("550e8400-e29b-41d4-a716-446655440000")
                 .build()
 
@@ -41,7 +41,7 @@ internal class SavedScreenerUpdateScreenerParamsTest {
     @Test
     fun body() {
         val params =
-            SavedScreenerUpdateScreenerParams.builder()
+            SavedScreenerReplaceScreenerParams.builder()
                 .screenerId("550e8400-e29b-41d4-a716-446655440000")
                 .addFieldFilter("string")
                 .addFilter(
@@ -53,7 +53,7 @@ internal class SavedScreenerUpdateScreenerParamsTest {
                 )
                 .name("name")
                 .sortBy("sort_by")
-                .sortDirection(SavedScreenerUpdateScreenerParams.SortDirection.ASC)
+                .sortDirection(SavedScreenerReplaceScreenerParams.SortDirection.ASC)
                 .build()
 
         val body = params._body()
@@ -70,13 +70,13 @@ internal class SavedScreenerUpdateScreenerParamsTest {
         assertThat(body.name()).contains("name")
         assertThat(body.sortBy()).contains("sort_by")
         assertThat(body.sortDirection())
-            .contains(SavedScreenerUpdateScreenerParams.SortDirection.ASC)
+            .contains(SavedScreenerReplaceScreenerParams.SortDirection.ASC)
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
-            SavedScreenerUpdateScreenerParams.builder()
+            SavedScreenerReplaceScreenerParams.builder()
                 .screenerId("550e8400-e29b-41d4-a716-446655440000")
                 .build()
 

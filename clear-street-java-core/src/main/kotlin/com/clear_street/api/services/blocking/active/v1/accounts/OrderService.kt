@@ -5,10 +5,10 @@ package com.clear_street.api.services.blocking.active.v1.accounts
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOrdersParams
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOrdersResponse
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOrderParams
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOrderResponse
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOpenOrdersParams
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOpenOrdersResponse
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOpenOrderParams
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOpenOrderResponse
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrderByIdResponse
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrdersParams
@@ -41,61 +41,65 @@ interface OrderService {
      * All filter parameters can be used independently or combined. The only constraint is that
      * `security_id` and `security_id_source` must be provided together if either is specified.
      */
-    fun cancelAllOrders(accountId: Long): OrderCancelAllOrdersResponse =
-        cancelAllOrders(accountId, OrderCancelAllOrdersParams.none())
+    fun cancelAllOpenOrders(accountId: Long): OrderCancelAllOpenOrdersResponse =
+        cancelAllOpenOrders(accountId, OrderCancelAllOpenOrdersParams.none())
 
-    /** @see cancelAllOrders */
-    fun cancelAllOrders(
+    /** @see cancelAllOpenOrders */
+    fun cancelAllOpenOrders(
         accountId: Long,
-        params: OrderCancelAllOrdersParams = OrderCancelAllOrdersParams.none(),
+        params: OrderCancelAllOpenOrdersParams = OrderCancelAllOpenOrdersParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): OrderCancelAllOrdersResponse =
-        cancelAllOrders(params.toBuilder().accountId(accountId).build(), requestOptions)
+    ): OrderCancelAllOpenOrdersResponse =
+        cancelAllOpenOrders(params.toBuilder().accountId(accountId).build(), requestOptions)
 
-    /** @see cancelAllOrders */
-    fun cancelAllOrders(
+    /** @see cancelAllOpenOrders */
+    fun cancelAllOpenOrders(
         accountId: Long,
-        params: OrderCancelAllOrdersParams = OrderCancelAllOrdersParams.none(),
-    ): OrderCancelAllOrdersResponse = cancelAllOrders(accountId, params, RequestOptions.none())
+        params: OrderCancelAllOpenOrdersParams = OrderCancelAllOpenOrdersParams.none(),
+    ): OrderCancelAllOpenOrdersResponse =
+        cancelAllOpenOrders(accountId, params, RequestOptions.none())
 
-    /** @see cancelAllOrders */
-    fun cancelAllOrders(
-        params: OrderCancelAllOrdersParams,
+    /** @see cancelAllOpenOrders */
+    fun cancelAllOpenOrders(
+        params: OrderCancelAllOpenOrdersParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): OrderCancelAllOrdersResponse
+    ): OrderCancelAllOpenOrdersResponse
 
-    /** @see cancelAllOrders */
-    fun cancelAllOrders(params: OrderCancelAllOrdersParams): OrderCancelAllOrdersResponse =
-        cancelAllOrders(params, RequestOptions.none())
+    /** @see cancelAllOpenOrders */
+    fun cancelAllOpenOrders(
+        params: OrderCancelAllOpenOrdersParams
+    ): OrderCancelAllOpenOrdersResponse = cancelAllOpenOrders(params, RequestOptions.none())
 
-    /** @see cancelAllOrders */
-    fun cancelAllOrders(
+    /** @see cancelAllOpenOrders */
+    fun cancelAllOpenOrders(
         accountId: Long,
         requestOptions: RequestOptions,
-    ): OrderCancelAllOrdersResponse =
-        cancelAllOrders(accountId, OrderCancelAllOrdersParams.none(), requestOptions)
+    ): OrderCancelAllOpenOrdersResponse =
+        cancelAllOpenOrders(accountId, OrderCancelAllOpenOrdersParams.none(), requestOptions)
 
     /** Cancel a specific order */
-    fun cancelOrder(orderId: String, params: OrderCancelOrderParams): OrderCancelOrderResponse =
-        cancelOrder(orderId, params, RequestOptions.none())
-
-    /** @see cancelOrder */
-    fun cancelOrder(
+    fun cancelOpenOrder(
         orderId: String,
-        params: OrderCancelOrderParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): OrderCancelOrderResponse =
-        cancelOrder(params.toBuilder().orderId(orderId).build(), requestOptions)
+        params: OrderCancelOpenOrderParams,
+    ): OrderCancelOpenOrderResponse = cancelOpenOrder(orderId, params, RequestOptions.none())
 
-    /** @see cancelOrder */
-    fun cancelOrder(params: OrderCancelOrderParams): OrderCancelOrderResponse =
-        cancelOrder(params, RequestOptions.none())
-
-    /** @see cancelOrder */
-    fun cancelOrder(
-        params: OrderCancelOrderParams,
+    /** @see cancelOpenOrder */
+    fun cancelOpenOrder(
+        orderId: String,
+        params: OrderCancelOpenOrderParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): OrderCancelOrderResponse
+    ): OrderCancelOpenOrderResponse =
+        cancelOpenOrder(params.toBuilder().orderId(orderId).build(), requestOptions)
+
+    /** @see cancelOpenOrder */
+    fun cancelOpenOrder(params: OrderCancelOpenOrderParams): OrderCancelOpenOrderResponse =
+        cancelOpenOrder(params, RequestOptions.none())
+
+    /** @see cancelOpenOrder */
+    fun cancelOpenOrder(
+        params: OrderCancelOpenOrderParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): OrderCancelOpenOrderResponse
 
     /** Get Order By ID */
     fun getOrderById(orderId: String, params: OrderGetOrderByIdParams): OrderGetOrderByIdResponse =
@@ -207,83 +211,87 @@ interface OrderService {
 
         /**
          * Returns a raw HTTP response for `delete /active/v1/accounts/{account_id}/orders`, but is
-         * otherwise the same as [OrderService.cancelAllOrders].
+         * otherwise the same as [OrderService.cancelAllOpenOrders].
          */
         @MustBeClosed
-        fun cancelAllOrders(accountId: Long): HttpResponseFor<OrderCancelAllOrdersResponse> =
-            cancelAllOrders(accountId, OrderCancelAllOrdersParams.none())
+        fun cancelAllOpenOrders(
+            accountId: Long
+        ): HttpResponseFor<OrderCancelAllOpenOrdersResponse> =
+            cancelAllOpenOrders(accountId, OrderCancelAllOpenOrdersParams.none())
 
-        /** @see cancelAllOrders */
+        /** @see cancelAllOpenOrders */
         @MustBeClosed
-        fun cancelAllOrders(
+        fun cancelAllOpenOrders(
             accountId: Long,
-            params: OrderCancelAllOrdersParams = OrderCancelAllOrdersParams.none(),
+            params: OrderCancelAllOpenOrdersParams = OrderCancelAllOpenOrdersParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<OrderCancelAllOrdersResponse> =
-            cancelAllOrders(params.toBuilder().accountId(accountId).build(), requestOptions)
+        ): HttpResponseFor<OrderCancelAllOpenOrdersResponse> =
+            cancelAllOpenOrders(params.toBuilder().accountId(accountId).build(), requestOptions)
 
-        /** @see cancelAllOrders */
+        /** @see cancelAllOpenOrders */
         @MustBeClosed
-        fun cancelAllOrders(
+        fun cancelAllOpenOrders(
             accountId: Long,
-            params: OrderCancelAllOrdersParams = OrderCancelAllOrdersParams.none(),
-        ): HttpResponseFor<OrderCancelAllOrdersResponse> =
-            cancelAllOrders(accountId, params, RequestOptions.none())
+            params: OrderCancelAllOpenOrdersParams = OrderCancelAllOpenOrdersParams.none(),
+        ): HttpResponseFor<OrderCancelAllOpenOrdersResponse> =
+            cancelAllOpenOrders(accountId, params, RequestOptions.none())
 
-        /** @see cancelAllOrders */
+        /** @see cancelAllOpenOrders */
         @MustBeClosed
-        fun cancelAllOrders(
-            params: OrderCancelAllOrdersParams,
+        fun cancelAllOpenOrders(
+            params: OrderCancelAllOpenOrdersParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<OrderCancelAllOrdersResponse>
+        ): HttpResponseFor<OrderCancelAllOpenOrdersResponse>
 
-        /** @see cancelAllOrders */
+        /** @see cancelAllOpenOrders */
         @MustBeClosed
-        fun cancelAllOrders(
-            params: OrderCancelAllOrdersParams
-        ): HttpResponseFor<OrderCancelAllOrdersResponse> =
-            cancelAllOrders(params, RequestOptions.none())
+        fun cancelAllOpenOrders(
+            params: OrderCancelAllOpenOrdersParams
+        ): HttpResponseFor<OrderCancelAllOpenOrdersResponse> =
+            cancelAllOpenOrders(params, RequestOptions.none())
 
-        /** @see cancelAllOrders */
+        /** @see cancelAllOpenOrders */
         @MustBeClosed
-        fun cancelAllOrders(
+        fun cancelAllOpenOrders(
             accountId: Long,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<OrderCancelAllOrdersResponse> =
-            cancelAllOrders(accountId, OrderCancelAllOrdersParams.none(), requestOptions)
+        ): HttpResponseFor<OrderCancelAllOpenOrdersResponse> =
+            cancelAllOpenOrders(accountId, OrderCancelAllOpenOrdersParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `delete
          * /active/v1/accounts/{account_id}/orders/{order_id}`, but is otherwise the same as
-         * [OrderService.cancelOrder].
+         * [OrderService.cancelOpenOrder].
          */
         @MustBeClosed
-        fun cancelOrder(
+        fun cancelOpenOrder(
             orderId: String,
-            params: OrderCancelOrderParams,
-        ): HttpResponseFor<OrderCancelOrderResponse> =
-            cancelOrder(orderId, params, RequestOptions.none())
+            params: OrderCancelOpenOrderParams,
+        ): HttpResponseFor<OrderCancelOpenOrderResponse> =
+            cancelOpenOrder(orderId, params, RequestOptions.none())
 
-        /** @see cancelOrder */
+        /** @see cancelOpenOrder */
         @MustBeClosed
-        fun cancelOrder(
+        fun cancelOpenOrder(
             orderId: String,
-            params: OrderCancelOrderParams,
+            params: OrderCancelOpenOrderParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<OrderCancelOrderResponse> =
-            cancelOrder(params.toBuilder().orderId(orderId).build(), requestOptions)
+        ): HttpResponseFor<OrderCancelOpenOrderResponse> =
+            cancelOpenOrder(params.toBuilder().orderId(orderId).build(), requestOptions)
 
-        /** @see cancelOrder */
+        /** @see cancelOpenOrder */
         @MustBeClosed
-        fun cancelOrder(params: OrderCancelOrderParams): HttpResponseFor<OrderCancelOrderResponse> =
-            cancelOrder(params, RequestOptions.none())
+        fun cancelOpenOrder(
+            params: OrderCancelOpenOrderParams
+        ): HttpResponseFor<OrderCancelOpenOrderResponse> =
+            cancelOpenOrder(params, RequestOptions.none())
 
-        /** @see cancelOrder */
+        /** @see cancelOpenOrder */
         @MustBeClosed
-        fun cancelOrder(
-            params: OrderCancelOrderParams,
+        fun cancelOpenOrder(
+            params: OrderCancelOpenOrderParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<OrderCancelOrderResponse>
+        ): HttpResponseFor<OrderCancelOpenOrderResponse>
 
         /**
          * Returns a raw HTTP response for `get /active/v1/accounts/{account_id}/orders/{order_id}`,

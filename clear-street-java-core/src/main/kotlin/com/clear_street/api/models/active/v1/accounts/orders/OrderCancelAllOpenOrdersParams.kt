@@ -21,7 +21,7 @@ import kotlin.jvm.optionals.getOrNull
  * All filter parameters can be used independently or combined. The only constraint is that
  * `security_id` and `security_id_source` must be provided together if either is specified.
  */
-class OrderCancelAllOrdersParams
+class OrderCancelAllOpenOrdersParams
 private constructor(
     private val accountId: Long?,
     private val securityId: List<String>?,
@@ -76,15 +76,16 @@ private constructor(
 
     companion object {
 
-        @JvmStatic fun none(): OrderCancelAllOrdersParams = builder().build()
+        @JvmStatic fun none(): OrderCancelAllOpenOrdersParams = builder().build()
 
         /**
-         * Returns a mutable builder for constructing an instance of [OrderCancelAllOrdersParams].
+         * Returns a mutable builder for constructing an instance of
+         * [OrderCancelAllOpenOrdersParams].
          */
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [OrderCancelAllOrdersParams]. */
+    /** A builder for [OrderCancelAllOpenOrdersParams]. */
     class Builder internal constructor() {
 
         private var accountId: Long? = null
@@ -98,17 +99,17 @@ private constructor(
         private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(orderCancelAllOrdersParams: OrderCancelAllOrdersParams) = apply {
-            accountId = orderCancelAllOrdersParams.accountId
-            securityId = orderCancelAllOrdersParams.securityId?.toMutableList()
-            securityIdSource = orderCancelAllOrdersParams.securityIdSource?.toMutableList()
-            securityType = orderCancelAllOrdersParams.securityType
-            side = orderCancelAllOrdersParams.side
-            type = orderCancelAllOrdersParams.type
-            additionalHeaders = orderCancelAllOrdersParams.additionalHeaders.toBuilder()
-            additionalQueryParams = orderCancelAllOrdersParams.additionalQueryParams.toBuilder()
+        internal fun from(orderCancelAllOpenOrdersParams: OrderCancelAllOpenOrdersParams) = apply {
+            accountId = orderCancelAllOpenOrdersParams.accountId
+            securityId = orderCancelAllOpenOrdersParams.securityId?.toMutableList()
+            securityIdSource = orderCancelAllOpenOrdersParams.securityIdSource?.toMutableList()
+            securityType = orderCancelAllOpenOrdersParams.securityType
+            side = orderCancelAllOpenOrdersParams.side
+            type = orderCancelAllOpenOrdersParams.type
+            additionalHeaders = orderCancelAllOpenOrdersParams.additionalHeaders.toBuilder()
+            additionalQueryParams = orderCancelAllOpenOrdersParams.additionalQueryParams.toBuilder()
             additionalBodyProperties =
-                orderCancelAllOrdersParams.additionalBodyProperties.toMutableMap()
+                orderCancelAllOpenOrdersParams.additionalBodyProperties.toMutableMap()
         }
 
         fun accountId(accountId: Long?) = apply { this.accountId = accountId }
@@ -311,12 +312,12 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [OrderCancelAllOrdersParams].
+         * Returns an immutable instance of [OrderCancelAllOpenOrdersParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): OrderCancelAllOrdersParams =
-            OrderCancelAllOrdersParams(
+        fun build(): OrderCancelAllOpenOrdersParams =
+            OrderCancelAllOpenOrdersParams(
                 accountId,
                 securityId?.toImmutable(),
                 securityIdSource?.toImmutable(),
@@ -824,7 +825,7 @@ private constructor(
             return true
         }
 
-        return other is OrderCancelAllOrdersParams &&
+        return other is OrderCancelAllOpenOrdersParams &&
             accountId == other.accountId &&
             securityId == other.securityId &&
             securityIdSource == other.securityIdSource &&
@@ -850,5 +851,5 @@ private constructor(
         )
 
     override fun toString() =
-        "OrderCancelAllOrdersParams{accountId=$accountId, securityId=$securityId, securityIdSource=$securityIdSource, securityType=$securityType, side=$side, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "OrderCancelAllOpenOrdersParams{accountId=$accountId, securityId=$securityId, securityIdSource=$securityIdSource, securityType=$securityType, side=$side, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }
