@@ -26,6 +26,7 @@ internal class NewsServiceAsyncTest {
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .searchQuery("search_query")
+                    .addSector(NewsGetNewsParams.Sector.BASIC_MATERIALS)
                     .addSecurityId("string")
                     .addSecurityIdSource("string")
                     .to("to")

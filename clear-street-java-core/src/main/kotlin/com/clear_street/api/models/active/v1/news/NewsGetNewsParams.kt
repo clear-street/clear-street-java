@@ -28,6 +28,7 @@ private constructor(
     private val pageSize: Long?,
     private val pageToken: String?,
     private val searchQuery: String?,
+    private val sectors: List<Sector>?,
     private val securityId: List<String>?,
     private val securityIdSource: List<String>?,
     private val to: String?,
@@ -64,6 +65,9 @@ private constructor(
 
     /** Free-text query matched against title/text and associated security IDs. */
     fun searchQuery(): Optional<String> = Optional.ofNullable(searchQuery)
+
+    /** Comma-separated sector values to filter by. */
+    fun sectors(): Optional<List<Sector>> = Optional.ofNullable(sectors)
 
     /**
      * Filter by security ID(s). Accepts single value or indexed array.
@@ -113,6 +117,7 @@ private constructor(
         private var pageSize: Long? = null
         private var pageToken: String? = null
         private var searchQuery: String? = null
+        private var sectors: MutableList<Sector>? = null
         private var securityId: MutableList<String>? = null
         private var securityIdSource: MutableList<String>? = null
         private var to: String? = null
@@ -129,6 +134,7 @@ private constructor(
             pageSize = newsGetNewsParams.pageSize
             pageToken = newsGetNewsParams.pageToken
             searchQuery = newsGetNewsParams.searchQuery
+            sectors = newsGetNewsParams.sectors?.toMutableList()
             securityId = newsGetNewsParams.securityId?.toMutableList()
             securityIdSource = newsGetNewsParams.securityIdSource?.toMutableList()
             to = newsGetNewsParams.to
@@ -216,6 +222,21 @@ private constructor(
 
         /** Alias for calling [Builder.searchQuery] with `searchQuery.orElse(null)`. */
         fun searchQuery(searchQuery: Optional<String>) = searchQuery(searchQuery.getOrNull())
+
+        /** Comma-separated sector values to filter by. */
+        fun sectors(sectors: List<Sector>?) = apply { this.sectors = sectors?.toMutableList() }
+
+        /** Alias for calling [Builder.sectors] with `sectors.orElse(null)`. */
+        fun sectors(sectors: Optional<List<Sector>>) = sectors(sectors.getOrNull())
+
+        /**
+         * Adds a single [Sector] to [sectors].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addSector(sector: Sector) = apply {
+            sectors = (sectors ?: mutableListOf()).apply { add(sector) }
+        }
 
         /**
          * Filter by security ID(s). Accepts single value or indexed array.
@@ -384,6 +405,7 @@ private constructor(
                 pageSize,
                 pageToken,
                 searchQuery,
+                sectors?.toImmutable(),
                 securityId?.toImmutable(),
                 securityIdSource?.toImmutable(),
                 to,
@@ -405,6 +427,7 @@ private constructor(
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 searchQuery?.let { put("search_query", it) }
+                sectors?.forEachIndexed { index, it -> put("sectors[$index]", it.toString()) }
                 securityId?.forEachIndexed { index, it -> put("security_id[$index]", it) }
                 securityIdSource?.forEachIndexed { index, it ->
                     put("security_id_source[$index]", it)
@@ -542,6 +565,188 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /** Market sector classification. */
+    class Sector @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val BASIC_MATERIALS = of("BASIC_MATERIALS")
+
+            @JvmField val COMMUNICATION_SERVICES = of("COMMUNICATION_SERVICES")
+
+            @JvmField val CONSUMER_CYCLICAL = of("CONSUMER_CYCLICAL")
+
+            @JvmField val CONSUMER_DEFENSIVE = of("CONSUMER_DEFENSIVE")
+
+            @JvmField val ENERGY = of("ENERGY")
+
+            @JvmField val FINANCIAL_SERVICES = of("FINANCIAL_SERVICES")
+
+            @JvmField val HEALTHCARE = of("HEALTHCARE")
+
+            @JvmField val INDUSTRIALS = of("INDUSTRIALS")
+
+            @JvmField val REAL_ESTATE = of("REAL_ESTATE")
+
+            @JvmField val TECHNOLOGY = of("TECHNOLOGY")
+
+            @JvmField val UTILITIES = of("UTILITIES")
+
+            @JvmStatic fun of(value: String) = Sector(JsonField.of(value))
+        }
+
+        /** An enum containing [Sector]'s known values. */
+        enum class Known {
+            BASIC_MATERIALS,
+            COMMUNICATION_SERVICES,
+            CONSUMER_CYCLICAL,
+            CONSUMER_DEFENSIVE,
+            ENERGY,
+            FINANCIAL_SERVICES,
+            HEALTHCARE,
+            INDUSTRIALS,
+            REAL_ESTATE,
+            TECHNOLOGY,
+            UTILITIES,
+        }
+
+        /**
+         * An enum containing [Sector]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Sector] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            BASIC_MATERIALS,
+            COMMUNICATION_SERVICES,
+            CONSUMER_CYCLICAL,
+            CONSUMER_DEFENSIVE,
+            ENERGY,
+            FINANCIAL_SERVICES,
+            HEALTHCARE,
+            INDUSTRIALS,
+            REAL_ESTATE,
+            TECHNOLOGY,
+            UTILITIES,
+            /** An enum member indicating that [Sector] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                BASIC_MATERIALS -> Value.BASIC_MATERIALS
+                COMMUNICATION_SERVICES -> Value.COMMUNICATION_SERVICES
+                CONSUMER_CYCLICAL -> Value.CONSUMER_CYCLICAL
+                CONSUMER_DEFENSIVE -> Value.CONSUMER_DEFENSIVE
+                ENERGY -> Value.ENERGY
+                FINANCIAL_SERVICES -> Value.FINANCIAL_SERVICES
+                HEALTHCARE -> Value.HEALTHCARE
+                INDUSTRIALS -> Value.INDUSTRIALS
+                REAL_ESTATE -> Value.REAL_ESTATE
+                TECHNOLOGY -> Value.TECHNOLOGY
+                UTILITIES -> Value.UTILITIES
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws ClearStreetInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                BASIC_MATERIALS -> Known.BASIC_MATERIALS
+                COMMUNICATION_SERVICES -> Known.COMMUNICATION_SERVICES
+                CONSUMER_CYCLICAL -> Known.CONSUMER_CYCLICAL
+                CONSUMER_DEFENSIVE -> Known.CONSUMER_DEFENSIVE
+                ENERGY -> Known.ENERGY
+                FINANCIAL_SERVICES -> Known.FINANCIAL_SERVICES
+                HEALTHCARE -> Known.HEALTHCARE
+                INDUSTRIALS -> Known.INDUSTRIALS
+                REAL_ESTATE -> Known.REAL_ESTATE
+                TECHNOLOGY -> Known.TECHNOLOGY
+                UTILITIES -> Known.UTILITIES
+                else -> throw ClearStreetInvalidDataException("Unknown Sector: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws ClearStreetInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow {
+                ClearStreetInvalidDataException("Value is not a String")
+            }
+
+        private var validated: Boolean = false
+
+        fun validate(): Sector = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: ClearStreetInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Sector && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -556,6 +761,7 @@ private constructor(
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
             searchQuery == other.searchQuery &&
+            sectors == other.sectors &&
             securityId == other.securityId &&
             securityIdSource == other.securityIdSource &&
             to == other.to &&
@@ -573,6 +779,7 @@ private constructor(
             pageSize,
             pageToken,
             searchQuery,
+            sectors,
             securityId,
             securityIdSource,
             to,
@@ -581,5 +788,5 @@ private constructor(
         )
 
     override fun toString() =
-        "NewsGetNewsParams{excludePublishers=$excludePublishers, from=$from, includePublishers=$includePublishers, instrumentIds=$instrumentIds, newsType=$newsType, pageSize=$pageSize, pageToken=$pageToken, searchQuery=$searchQuery, securityId=$securityId, securityIdSource=$securityIdSource, to=$to, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "NewsGetNewsParams{excludePublishers=$excludePublishers, from=$from, includePublishers=$includePublishers, instrumentIds=$instrumentIds, newsType=$newsType, pageSize=$pageSize, pageToken=$pageToken, searchQuery=$searchQuery, sectors=$sectors, securityId=$securityId, securityIdSource=$securityIdSource, to=$to, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
