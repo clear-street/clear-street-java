@@ -13,27 +13,18 @@ import com.clear_street.api.core.http.HttpRequest
 import com.clear_street.api.core.http.HttpResponse
 import com.clear_street.api.core.http.HttpResponse.Handler
 import com.clear_street.api.core.http.HttpResponseFor
-import com.clear_street.api.core.http.json
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
-import com.clear_street.api.models.active.v1.omniai.threads.ThreadCreateThreadParams
-import com.clear_street.api.models.active.v1.omniai.threads.ThreadCreateThreadResponse
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadGetThreadParams
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadGetThreadResponse
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadListThreadsParams
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadListThreadsResponse
 import com.clear_street.api.services.blocking.active.v1.omniai.threads.MessageService
 import com.clear_street.api.services.blocking.active.v1.omniai.threads.MessageServiceImpl
-import com.clear_street.api.services.blocking.active.v1.omniai.threads.ResponseService
-import com.clear_street.api.services.blocking.active.v1.omniai.threads.ResponseServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/**
- * Thread-centric AI assistant for conversational trading. Create threads to start conversations,
- * poll response objects for in-progress output, and read finalized messages from thread history.
- * Every endpoint requires an explicit account_id.
- */
+/** AI assistant for conversational trading interactions. */
 class ThreadServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     ThreadService {
 
@@ -43,33 +34,13 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
 
     private val messages: MessageService by lazy { MessageServiceImpl(clientOptions) }
 
-    private val response: ResponseService by lazy { ResponseServiceImpl(clientOptions) }
-
     override fun withRawResponse(): ThreadService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): ThreadService =
         ThreadServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /**
-     * Thread-centric AI assistant for conversational trading. Create threads to start
-     * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Every endpoint requires an explicit account_id.
-     */
+    /** AI assistant for conversational trading interactions. */
     override fun messages(): MessageService = messages
-
-    /**
-     * Thread-centric AI assistant for conversational trading. Create threads to start
-     * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Every endpoint requires an explicit account_id.
-     */
-    override fun response(): ResponseService = response
-
-    override fun createThread(
-        params: ThreadCreateThreadParams,
-        requestOptions: RequestOptions,
-    ): ThreadCreateThreadResponse =
-        // post /active/v1/omni-ai/threads
-        withRawResponse().createThread(params, requestOptions).parse()
 
     override fun getThread(
         params: ThreadGetThreadParams,
@@ -95,10 +66,6 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
             MessageServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val response: ResponseService.WithRawResponse by lazy {
-            ResponseServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): ThreadService.WithRawResponse =
@@ -106,47 +73,8 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /**
-         * Thread-centric AI assistant for conversational trading. Create threads to start
-         * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Every endpoint requires an explicit account_id.
-         */
+        /** AI assistant for conversational trading interactions. */
         override fun messages(): MessageService.WithRawResponse = messages
-
-        /**
-         * Thread-centric AI assistant for conversational trading. Create threads to start
-         * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Every endpoint requires an explicit account_id.
-         */
-        override fun response(): ResponseService.WithRawResponse = response
-
-        private val createThreadHandler: Handler<ThreadCreateThreadResponse> =
-            jsonHandler<ThreadCreateThreadResponse>(clientOptions.jsonMapper)
-
-        override fun createThread(
-            params: ThreadCreateThreadParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<ThreadCreateThreadResponse> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("active", "v1", "omni-ai", "threads")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { createThreadHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
 
         private val getThreadHandler: Handler<ThreadGetThreadResponse> =
             jsonHandler<ThreadGetThreadResponse>(clientOptions.jsonMapper)

@@ -11,9 +11,9 @@ internal class ThreadListThreadsParamsTest {
     @Test
     fun create() {
         ThreadListThreadsParams.builder()
-            .accountId(0L)
-            .pageSize(1L)
-            .pageToken("U3RhaW5sZXNzIHJvY2tz")
+            .accountId("account_id")
+            .pageSize(0)
+            .pageToken("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .build()
     }
 
@@ -21,9 +21,9 @@ internal class ThreadListThreadsParamsTest {
     fun queryParams() {
         val params =
             ThreadListThreadsParams.builder()
-                .accountId(0L)
-                .pageSize(1L)
-                .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                .accountId("account_id")
+                .pageSize(0)
+                .pageToken("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         val queryParams = params._queryParams()
@@ -31,19 +31,20 @@ internal class ThreadListThreadsParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put("account_id", "0")
-                    .put("page_size", "1")
-                    .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
+                    .put("account_id", "account_id")
+                    .put("page_size", "0")
+                    .put("page_token", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
     }
 
     @Test
     fun queryParamsWithoutOptionalFields() {
-        val params = ThreadListThreadsParams.builder().accountId(0L).build()
+        val params = ThreadListThreadsParams.builder().accountId("account_id").build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams).isEqualTo(QueryParams.builder().put("account_id", "0").build())
+        assertThat(queryParams)
+            .isEqualTo(QueryParams.builder().put("account_id", "account_id").build())
     }
 }

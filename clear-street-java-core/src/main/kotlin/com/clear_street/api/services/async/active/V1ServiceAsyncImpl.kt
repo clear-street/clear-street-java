@@ -13,6 +13,8 @@ import com.clear_street.api.services.async.active.v1.ClockServiceAsync
 import com.clear_street.api.services.async.active.v1.ClockServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.InstrumentServiceAsync
 import com.clear_street.api.services.async.active.v1.InstrumentServiceAsyncImpl
+import com.clear_street.api.services.async.active.v1.IrisServiceAsync
+import com.clear_street.api.services.async.active.v1.IrisServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.MarketDataServiceAsync
 import com.clear_street.api.services.async.active.v1.MarketDataServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.NewsServiceAsync
@@ -49,6 +51,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     private val instruments: InstrumentServiceAsync by lazy {
         InstrumentServiceAsyncImpl(clientOptions)
     }
+
+    private val iris: IrisServiceAsync by lazy { IrisServiceAsyncImpl(clientOptions) }
 
     private val marketData: MarketDataServiceAsync by lazy {
         MarketDataServiceAsyncImpl(clientOptions)
@@ -90,6 +94,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     /** Retrieve details and lists of tradable instruments. */
     override fun instruments(): InstrumentServiceAsync = instruments
+
+    override fun iris(): IrisServiceAsync = iris
 
     override fun marketData(): MarketDataServiceAsync = marketData
 
@@ -134,6 +140,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         private val instruments: InstrumentServiceAsync.WithRawResponse by lazy {
             InstrumentServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val iris: IrisServiceAsync.WithRawResponse by lazy {
+            IrisServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val marketData: MarketDataServiceAsync.WithRawResponse by lazy {
@@ -188,6 +198,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         /** Retrieve details and lists of tradable instruments. */
         override fun instruments(): InstrumentServiceAsync.WithRawResponse = instruments
+
+        override fun iris(): IrisServiceAsync.WithRawResponse = iris
 
         override fun marketData(): MarketDataServiceAsync.WithRawResponse = marketData
 

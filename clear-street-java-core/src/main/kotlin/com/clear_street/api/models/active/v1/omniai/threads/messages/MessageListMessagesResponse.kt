@@ -6,14 +6,12 @@ import com.clear_street.api.core.ExcludeMissing
 import com.clear_street.api.core.JsonField
 import com.clear_street.api.core.JsonMissing
 import com.clear_street.api.core.JsonValue
-import com.clear_street.api.core.checkKnown
 import com.clear_street.api.core.checkRequired
-import com.clear_street.api.core.toImmutable
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.BaseResponse
 import com.clear_street.api.models.ResponseMetadata
-import com.clear_street.api.models.active.v1.omniai.Message
+import com.clear_street.api.models.active.v1.omniai.ListMessagesResponse
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -28,7 +26,7 @@ class MessageListMessagesResponse
 private constructor(
     private val metadata: JsonField<ResponseMetadata>,
     private val error: JsonField<ApiError>,
-    private val data: JsonField<List<Message>>,
+    private val data: JsonField<ListMessagesResponse>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -38,7 +36,9 @@ private constructor(
         @ExcludeMissing
         metadata: JsonField<ResponseMetadata> = JsonMissing.of(),
         @JsonProperty("error") @ExcludeMissing error: JsonField<ApiError> = JsonMissing.of(),
-        @JsonProperty("data") @ExcludeMissing data: JsonField<List<Message>> = JsonMissing.of(),
+        @JsonProperty("data")
+        @ExcludeMissing
+        data: JsonField<ListMessagesResponse> = JsonMissing.of(),
     ) : this(metadata, error, data, mutableMapOf())
 
     fun toBaseResponse(): BaseResponse =
@@ -64,7 +64,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): List<Message> = data.getRequired("data")
+    fun data(): ListMessagesResponse = data.getRequired("data")
 
     /**
      * Returns the raw JSON value of [metadata].
@@ -87,7 +87,7 @@ private constructor(
      *
      * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<Message>> = data
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<ListMessagesResponse> = data
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -120,14 +120,14 @@ private constructor(
 
         private var metadata: JsonField<ResponseMetadata>? = null
         private var error: JsonField<ApiError> = JsonMissing.of()
-        private var data: JsonField<MutableList<Message>>? = null
+        private var data: JsonField<ListMessagesResponse>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(messageListMessagesResponse: MessageListMessagesResponse) = apply {
             metadata = messageListMessagesResponse.metadata
             error = messageListMessagesResponse.error
-            data = messageListMessagesResponse.data.map { it.toMutableList() }
+            data = messageListMessagesResponse.data
             additionalProperties = messageListMessagesResponse.additionalProperties.toMutableMap()
         }
 
@@ -157,30 +157,16 @@ private constructor(
          */
         fun error(error: JsonField<ApiError>) = apply { this.error = error }
 
-        fun data(data: List<Message>) = data(JsonField.of(data))
+        fun data(data: ListMessagesResponse) = data(JsonField.of(data))
 
         /**
          * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed `List<Message>` value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.data] with a well-typed [ListMessagesResponse] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun data(data: JsonField<List<Message>>) = apply {
-            this.data = data.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [Message] to [Builder.data].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addData(data: Message) = apply {
-            this.data =
-                (this.data ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("data", it).add(data)
-                }
-        }
+        fun data(data: JsonField<ListMessagesResponse>) = apply { this.data = data }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -218,7 +204,7 @@ private constructor(
             MessageListMessagesResponse(
                 checkRequired("metadata", metadata),
                 error,
-                checkRequired("data", data).map { it.toImmutable() },
+                checkRequired("data", data),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -232,7 +218,7 @@ private constructor(
 
         metadata().validate()
         error().ifPresent { it.validate() }
-        data().forEach { it.validate() }
+        data().validate()
         validated = true
     }
 
@@ -253,7 +239,7 @@ private constructor(
     internal fun validity(): Int =
         (metadata.asKnown().getOrNull()?.validity() ?: 0) +
             (error.asKnown().getOrNull()?.validity() ?: 0) +
-            (data.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+            (data.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

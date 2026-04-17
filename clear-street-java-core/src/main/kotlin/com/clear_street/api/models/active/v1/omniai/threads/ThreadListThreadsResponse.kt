@@ -6,14 +6,12 @@ import com.clear_street.api.core.ExcludeMissing
 import com.clear_street.api.core.JsonField
 import com.clear_street.api.core.JsonMissing
 import com.clear_street.api.core.JsonValue
-import com.clear_street.api.core.checkKnown
 import com.clear_street.api.core.checkRequired
-import com.clear_street.api.core.toImmutable
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.BaseResponse
 import com.clear_street.api.models.ResponseMetadata
-import com.clear_street.api.models.active.v1.omniai.Thread
+import com.clear_street.api.models.active.v1.omniai.ListThreadsResponse
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -28,7 +26,7 @@ class ThreadListThreadsResponse
 private constructor(
     private val metadata: JsonField<ResponseMetadata>,
     private val error: JsonField<ApiError>,
-    private val data: JsonField<List<Thread>>,
+    private val data: JsonField<ListThreadsResponse>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -38,7 +36,9 @@ private constructor(
         @ExcludeMissing
         metadata: JsonField<ResponseMetadata> = JsonMissing.of(),
         @JsonProperty("error") @ExcludeMissing error: JsonField<ApiError> = JsonMissing.of(),
-        @JsonProperty("data") @ExcludeMissing data: JsonField<List<Thread>> = JsonMissing.of(),
+        @JsonProperty("data")
+        @ExcludeMissing
+        data: JsonField<ListThreadsResponse> = JsonMissing.of(),
     ) : this(metadata, error, data, mutableMapOf())
 
     fun toBaseResponse(): BaseResponse =
@@ -64,7 +64,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): List<Thread> = data.getRequired("data")
+    fun data(): ListThreadsResponse = data.getRequired("data")
 
     /**
      * Returns the raw JSON value of [metadata].
@@ -87,7 +87,7 @@ private constructor(
      *
      * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<Thread>> = data
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<ListThreadsResponse> = data
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -120,14 +120,14 @@ private constructor(
 
         private var metadata: JsonField<ResponseMetadata>? = null
         private var error: JsonField<ApiError> = JsonMissing.of()
-        private var data: JsonField<MutableList<Thread>>? = null
+        private var data: JsonField<ListThreadsResponse>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(threadListThreadsResponse: ThreadListThreadsResponse) = apply {
             metadata = threadListThreadsResponse.metadata
             error = threadListThreadsResponse.error
-            data = threadListThreadsResponse.data.map { it.toMutableList() }
+            data = threadListThreadsResponse.data
             additionalProperties = threadListThreadsResponse.additionalProperties.toMutableMap()
         }
 
@@ -157,30 +157,16 @@ private constructor(
          */
         fun error(error: JsonField<ApiError>) = apply { this.error = error }
 
-        fun data(data: List<Thread>) = data(JsonField.of(data))
+        fun data(data: ListThreadsResponse) = data(JsonField.of(data))
 
         /**
          * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed `List<Thread>` value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.data] with a well-typed [ListThreadsResponse] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun data(data: JsonField<List<Thread>>) = apply {
-            this.data = data.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [Thread] to [Builder.data].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addData(data: Thread) = apply {
-            this.data =
-                (this.data ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("data", it).add(data)
-                }
-        }
+        fun data(data: JsonField<ListThreadsResponse>) = apply { this.data = data }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -218,7 +204,7 @@ private constructor(
             ThreadListThreadsResponse(
                 checkRequired("metadata", metadata),
                 error,
-                checkRequired("data", data).map { it.toImmutable() },
+                checkRequired("data", data),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -232,7 +218,7 @@ private constructor(
 
         metadata().validate()
         error().ifPresent { it.validate() }
-        data().forEach { it.validate() }
+        data().validate()
         validated = true
     }
 
@@ -253,7 +239,7 @@ private constructor(
     internal fun validity(): Int =
         (metadata.asKnown().getOrNull()?.validity() ?: 0) +
             (error.asKnown().getOrNull()?.validity() ?: 0) +
-            (data.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+            (data.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
