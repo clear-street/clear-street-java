@@ -10,14 +10,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/**
- * Returns metadata (title, timestamps) for a single thread. Does not include messages — use `GET
- * /omni-ai/threads/{thread_id}/messages` for conversation history.
- */
+/** Get a specific thread. */
 class ThreadGetThreadParams
 private constructor(
     private val threadId: String?,
-    private val accountId: Long,
+    private val accountId: String,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -25,7 +22,7 @@ private constructor(
     fun threadId(): Optional<String> = Optional.ofNullable(threadId)
 
     /** Account ID for the request */
-    fun accountId(): Long = accountId
+    fun accountId(): String = accountId
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -52,7 +49,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var threadId: String? = null
-        private var accountId: Long? = null
+        private var accountId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -70,7 +67,7 @@ private constructor(
         fun threadId(threadId: Optional<String>) = threadId(threadId.getOrNull())
 
         /** Account ID for the request */
-        fun accountId(accountId: Long) = apply { this.accountId = accountId }
+        fun accountId(accountId: String) = apply { this.accountId = accountId }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -202,7 +199,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                put("account_id", accountId.toString())
+                put("account_id", accountId)
                 putAll(additionalQueryParams)
             }
             .build()

@@ -20,12 +20,10 @@ internal class PortfolioHistorySegmentTest {
                 .startingEquity("starting_equity")
                 .unrealizedPnl("unrealized_pnl")
                 .boughtNotional("bought_notional")
-                .boughtQuantity("bought_quantity")
                 .dayPnl("day_pnl")
                 .netPnl("net_pnl")
                 .positionPnl("position_pnl")
                 .soldNotional("sold_notional")
-                .soldQuantity("sold_quantity")
                 .build()
 
         assertThat(portfolioHistorySegment.date()).isEqualTo(LocalDate.parse("2019-12-27"))
@@ -34,12 +32,10 @@ internal class PortfolioHistorySegmentTest {
         assertThat(portfolioHistorySegment.startingEquity()).isEqualTo("starting_equity")
         assertThat(portfolioHistorySegment.unrealizedPnl()).isEqualTo("unrealized_pnl")
         assertThat(portfolioHistorySegment.boughtNotional()).contains("bought_notional")
-        assertThat(portfolioHistorySegment.boughtQuantity()).contains("bought_quantity")
         assertThat(portfolioHistorySegment.dayPnl()).contains("day_pnl")
         assertThat(portfolioHistorySegment.netPnl()).contains("net_pnl")
         assertThat(portfolioHistorySegment.positionPnl()).contains("position_pnl")
         assertThat(portfolioHistorySegment.soldNotional()).contains("sold_notional")
-        assertThat(portfolioHistorySegment.soldQuantity()).contains("sold_quantity")
     }
 
     @Test
@@ -53,12 +49,10 @@ internal class PortfolioHistorySegmentTest {
                 .startingEquity("starting_equity")
                 .unrealizedPnl("unrealized_pnl")
                 .boughtNotional("bought_notional")
-                .boughtQuantity("bought_quantity")
                 .dayPnl("day_pnl")
                 .netPnl("net_pnl")
                 .positionPnl("position_pnl")
                 .soldNotional("sold_notional")
-                .soldQuantity("sold_quantity")
                 .build()
 
         val roundtrippedPortfolioHistorySegment =

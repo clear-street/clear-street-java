@@ -6,6 +6,7 @@ import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.ResponseMetadata
+import com.clear_street.api.models.active.v1.omniai.ListThreadsResponse
 import com.clear_street.api.models.active.v1.omniai.Thread
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.assertj.core.api.Assertions.assertThat
@@ -38,13 +39,21 @@ internal class ThreadListThreadsResponseTest {
                         )
                         .build()
                 )
-                .addData(
-                    Thread.builder()
-                        .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .createdAt("created_at")
-                        .description("description")
-                        .title("title")
-                        .updatedAt("updated_at")
+                .data(
+                    ListThreadsResponse.builder()
+                        .addThread(
+                            Thread.builder()
+                                .accountId("account_id")
+                                .createdAt("created_at")
+                                .description("description")
+                                .ownerUserId("owner_user_id")
+                                .title("title")
+                                .updatedAt("updated_at")
+                                .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                                .metadata(JsonValue.from(mapOf<String, Any>()))
+                                .build()
+                        )
+                        .nextPageToken("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
@@ -73,13 +82,21 @@ internal class ThreadListThreadsResponseTest {
                     .build()
             )
         assertThat(threadListThreadsResponse.data())
-            .containsExactly(
-                Thread.builder()
-                    .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .createdAt("created_at")
-                    .description("description")
-                    .title("title")
-                    .updatedAt("updated_at")
+            .isEqualTo(
+                ListThreadsResponse.builder()
+                    .addThread(
+                        Thread.builder()
+                            .accountId("account_id")
+                            .createdAt("created_at")
+                            .description("description")
+                            .ownerUserId("owner_user_id")
+                            .title("title")
+                            .updatedAt("updated_at")
+                            .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                            .metadata(JsonValue.from(mapOf<String, Any>()))
+                            .build()
+                    )
+                    .nextPageToken("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
     }
@@ -110,13 +127,21 @@ internal class ThreadListThreadsResponseTest {
                         )
                         .build()
                 )
-                .addData(
-                    Thread.builder()
-                        .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .createdAt("created_at")
-                        .description("description")
-                        .title("title")
-                        .updatedAt("updated_at")
+                .data(
+                    ListThreadsResponse.builder()
+                        .addThread(
+                            Thread.builder()
+                                .accountId("account_id")
+                                .createdAt("created_at")
+                                .description("description")
+                                .ownerUserId("owner_user_id")
+                                .title("title")
+                                .updatedAt("updated_at")
+                                .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                                .metadata(JsonValue.from(mapOf<String, Any>()))
+                                .build()
+                        )
+                        .nextPageToken("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()

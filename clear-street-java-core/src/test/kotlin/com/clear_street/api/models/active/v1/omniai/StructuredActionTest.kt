@@ -45,6 +45,8 @@ internal class StructuredActionTest {
         assertThat(structuredAction.prefillOrder()).contains(prefillOrder)
         assertThat(structuredAction.openChart()).isEmpty
         assertThat(structuredAction.openScreener()).isEmpty
+        assertThat(structuredAction.openChatWindow()).isEmpty
+        assertThat(structuredAction.navigate()).isEmpty
     }
 
     @Test
@@ -95,6 +97,8 @@ internal class StructuredActionTest {
         assertThat(structuredAction.prefillOrder()).isEmpty
         assertThat(structuredAction.openChart()).contains(openChart)
         assertThat(structuredAction.openScreener()).isEmpty
+        assertThat(structuredAction.openChatWindow()).isEmpty
+        assertThat(structuredAction.navigate()).isEmpty
     }
 
     @Test
@@ -149,6 +153,8 @@ internal class StructuredActionTest {
         assertThat(structuredAction.prefillOrder()).isEmpty
         assertThat(structuredAction.openChart()).isEmpty
         assertThat(structuredAction.openScreener()).contains(openScreener)
+        assertThat(structuredAction.openChatWindow()).isEmpty
+        assertThat(structuredAction.navigate()).isEmpty
     }
 
     @Test
@@ -176,6 +182,86 @@ internal class StructuredActionTest {
                     .sortBy("sort_by")
                     .sortDirection("sort_direction")
                     .actionType(StructuredAction.OpenScreener.ActionType.OPEN_SCREENER)
+                    .build()
+            )
+
+        val roundtrippedStructuredAction =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(structuredAction),
+                jacksonTypeRef<StructuredAction>(),
+            )
+
+        assertThat(roundtrippedStructuredAction).isEqualTo(structuredAction)
+    }
+
+    @Test
+    fun ofOpenChatWindow() {
+        val openChatWindow =
+            StructuredAction.OpenChatWindow.builder()
+                .extras(JsonValue.from(mapOf<String, Any>()))
+                .threadId("550e8400-e29b-41d4-a716-446655440000")
+                .title("Trading Assistant")
+                .actionType(StructuredAction.OpenChatWindow.ActionType.OPEN_CHAT_WINDOW)
+                .build()
+
+        val structuredAction = StructuredAction.ofOpenChatWindow(openChatWindow)
+
+        assertThat(structuredAction.prefillOrder()).isEmpty
+        assertThat(structuredAction.openChart()).isEmpty
+        assertThat(structuredAction.openScreener()).isEmpty
+        assertThat(structuredAction.openChatWindow()).contains(openChatWindow)
+        assertThat(structuredAction.navigate()).isEmpty
+    }
+
+    @Test
+    fun ofOpenChatWindowRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val structuredAction =
+            StructuredAction.ofOpenChatWindow(
+                StructuredAction.OpenChatWindow.builder()
+                    .extras(JsonValue.from(mapOf<String, Any>()))
+                    .threadId("550e8400-e29b-41d4-a716-446655440000")
+                    .title("Trading Assistant")
+                    .actionType(StructuredAction.OpenChatWindow.ActionType.OPEN_CHAT_WINDOW)
+                    .build()
+            )
+
+        val roundtrippedStructuredAction =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(structuredAction),
+                jacksonTypeRef<StructuredAction>(),
+            )
+
+        assertThat(roundtrippedStructuredAction).isEqualTo(structuredAction)
+    }
+
+    @Test
+    fun ofNavigate() {
+        val navigate =
+            StructuredAction.Navigate.builder()
+                .route("/portfolio")
+                .params(JsonValue.from(mapOf("tab" to "positions")))
+                .actionType(StructuredAction.Navigate.ActionType.NAVIGATE)
+                .build()
+
+        val structuredAction = StructuredAction.ofNavigate(navigate)
+
+        assertThat(structuredAction.prefillOrder()).isEmpty
+        assertThat(structuredAction.openChart()).isEmpty
+        assertThat(structuredAction.openScreener()).isEmpty
+        assertThat(structuredAction.openChatWindow()).isEmpty
+        assertThat(structuredAction.navigate()).contains(navigate)
+    }
+
+    @Test
+    fun ofNavigateRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val structuredAction =
+            StructuredAction.ofNavigate(
+                StructuredAction.Navigate.builder()
+                    .route("/portfolio")
+                    .params(JsonValue.from(mapOf("tab" to "positions")))
+                    .actionType(StructuredAction.Navigate.ActionType.NAVIGATE)
                     .build()
             )
 

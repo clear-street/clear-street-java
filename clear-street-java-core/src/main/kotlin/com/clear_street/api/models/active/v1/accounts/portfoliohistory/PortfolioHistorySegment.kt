@@ -27,12 +27,10 @@ private constructor(
     private val startingEquity: JsonField<String>,
     private val unrealizedPnl: JsonField<String>,
     private val boughtNotional: JsonField<String>,
-    private val boughtQuantity: JsonField<String>,
     private val dayPnl: JsonField<String>,
     private val netPnl: JsonField<String>,
     private val positionPnl: JsonField<String>,
     private val soldNotional: JsonField<String>,
-    private val soldQuantity: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -54,9 +52,6 @@ private constructor(
         @JsonProperty("bought_notional")
         @ExcludeMissing
         boughtNotional: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("bought_quantity")
-        @ExcludeMissing
-        boughtQuantity: JsonField<String> = JsonMissing.of(),
         @JsonProperty("day_pnl") @ExcludeMissing dayPnl: JsonField<String> = JsonMissing.of(),
         @JsonProperty("net_pnl") @ExcludeMissing netPnl: JsonField<String> = JsonMissing.of(),
         @JsonProperty("position_pnl")
@@ -65,9 +60,6 @@ private constructor(
         @JsonProperty("sold_notional")
         @ExcludeMissing
         soldNotional: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("sold_quantity")
-        @ExcludeMissing
-        soldQuantity: JsonField<String> = JsonMissing.of(),
     ) : this(
         date,
         endingEquity,
@@ -75,12 +67,10 @@ private constructor(
         startingEquity,
         unrealizedPnl,
         boughtNotional,
-        boughtQuantity,
         dayPnl,
         netPnl,
         positionPnl,
         soldNotional,
-        soldQuantity,
         mutableMapOf(),
     )
 
@@ -133,14 +123,6 @@ private constructor(
     fun boughtNotional(): Optional<String> = boughtNotional.getOptional("bought_notional")
 
     /**
-     * Quantity bought MTM
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun boughtQuantity(): Optional<String> = boughtQuantity.getOptional("bought_quantity")
-
-    /**
      * Sum of the profit and loss from intraday trading activities for the trading day.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -172,14 +154,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun soldNotional(): Optional<String> = soldNotional.getOptional("sold_notional")
-
-    /**
-     * Quantity sold MTM
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun soldQuantity(): Optional<String> = soldQuantity.getOptional("sold_quantity")
 
     /**
      * Returns the raw JSON value of [date].
@@ -234,15 +208,6 @@ private constructor(
     fun _boughtNotional(): JsonField<String> = boughtNotional
 
     /**
-     * Returns the raw JSON value of [boughtQuantity].
-     *
-     * Unlike [boughtQuantity], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("bought_quantity")
-    @ExcludeMissing
-    fun _boughtQuantity(): JsonField<String> = boughtQuantity
-
-    /**
      * Returns the raw JSON value of [dayPnl].
      *
      * Unlike [dayPnl], this method doesn't throw if the JSON field has an unexpected type.
@@ -273,15 +238,6 @@ private constructor(
     @JsonProperty("sold_notional")
     @ExcludeMissing
     fun _soldNotional(): JsonField<String> = soldNotional
-
-    /**
-     * Returns the raw JSON value of [soldQuantity].
-     *
-     * Unlike [soldQuantity], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("sold_quantity")
-    @ExcludeMissing
-    fun _soldQuantity(): JsonField<String> = soldQuantity
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -321,12 +277,10 @@ private constructor(
         private var startingEquity: JsonField<String>? = null
         private var unrealizedPnl: JsonField<String>? = null
         private var boughtNotional: JsonField<String> = JsonMissing.of()
-        private var boughtQuantity: JsonField<String> = JsonMissing.of()
         private var dayPnl: JsonField<String> = JsonMissing.of()
         private var netPnl: JsonField<String> = JsonMissing.of()
         private var positionPnl: JsonField<String> = JsonMissing.of()
         private var soldNotional: JsonField<String> = JsonMissing.of()
-        private var soldQuantity: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -337,12 +291,10 @@ private constructor(
             startingEquity = portfolioHistorySegment.startingEquity
             unrealizedPnl = portfolioHistorySegment.unrealizedPnl
             boughtNotional = portfolioHistorySegment.boughtNotional
-            boughtQuantity = portfolioHistorySegment.boughtQuantity
             dayPnl = portfolioHistorySegment.dayPnl
             netPnl = portfolioHistorySegment.netPnl
             positionPnl = portfolioHistorySegment.positionPnl
             soldNotional = portfolioHistorySegment.soldNotional
-            soldQuantity = portfolioHistorySegment.soldQuantity
             additionalProperties = portfolioHistorySegment.additionalProperties.toMutableMap()
         }
 
@@ -430,25 +382,6 @@ private constructor(
             this.boughtNotional = boughtNotional
         }
 
-        /** Quantity bought MTM */
-        fun boughtQuantity(boughtQuantity: String?) =
-            boughtQuantity(JsonField.ofNullable(boughtQuantity))
-
-        /** Alias for calling [Builder.boughtQuantity] with `boughtQuantity.orElse(null)`. */
-        fun boughtQuantity(boughtQuantity: Optional<String>) =
-            boughtQuantity(boughtQuantity.getOrNull())
-
-        /**
-         * Sets [Builder.boughtQuantity] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.boughtQuantity] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun boughtQuantity(boughtQuantity: JsonField<String>) = apply {
-            this.boughtQuantity = boughtQuantity
-        }
-
         /** Sum of the profit and loss from intraday trading activities for the trading day. */
         fun dayPnl(dayPnl: String?) = dayPnl(JsonField.ofNullable(dayPnl))
 
@@ -512,23 +445,6 @@ private constructor(
             this.soldNotional = soldNotional
         }
 
-        /** Quantity sold MTM */
-        fun soldQuantity(soldQuantity: String?) = soldQuantity(JsonField.ofNullable(soldQuantity))
-
-        /** Alias for calling [Builder.soldQuantity] with `soldQuantity.orElse(null)`. */
-        fun soldQuantity(soldQuantity: Optional<String>) = soldQuantity(soldQuantity.getOrNull())
-
-        /**
-         * Sets [Builder.soldQuantity] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.soldQuantity] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun soldQuantity(soldQuantity: JsonField<String>) = apply {
-            this.soldQuantity = soldQuantity
-        }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -572,12 +488,10 @@ private constructor(
                 checkRequired("startingEquity", startingEquity),
                 checkRequired("unrealizedPnl", unrealizedPnl),
                 boughtNotional,
-                boughtQuantity,
                 dayPnl,
                 netPnl,
                 positionPnl,
                 soldNotional,
-                soldQuantity,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -595,12 +509,10 @@ private constructor(
         startingEquity()
         unrealizedPnl()
         boughtNotional()
-        boughtQuantity()
         dayPnl()
         netPnl()
         positionPnl()
         soldNotional()
-        soldQuantity()
         validated = true
     }
 
@@ -625,12 +537,10 @@ private constructor(
             (if (startingEquity.asKnown().isPresent) 1 else 0) +
             (if (unrealizedPnl.asKnown().isPresent) 1 else 0) +
             (if (boughtNotional.asKnown().isPresent) 1 else 0) +
-            (if (boughtQuantity.asKnown().isPresent) 1 else 0) +
             (if (dayPnl.asKnown().isPresent) 1 else 0) +
             (if (netPnl.asKnown().isPresent) 1 else 0) +
             (if (positionPnl.asKnown().isPresent) 1 else 0) +
-            (if (soldNotional.asKnown().isPresent) 1 else 0) +
-            (if (soldQuantity.asKnown().isPresent) 1 else 0)
+            (if (soldNotional.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -644,12 +554,10 @@ private constructor(
             startingEquity == other.startingEquity &&
             unrealizedPnl == other.unrealizedPnl &&
             boughtNotional == other.boughtNotional &&
-            boughtQuantity == other.boughtQuantity &&
             dayPnl == other.dayPnl &&
             netPnl == other.netPnl &&
             positionPnl == other.positionPnl &&
             soldNotional == other.soldNotional &&
-            soldQuantity == other.soldQuantity &&
             additionalProperties == other.additionalProperties
     }
 
@@ -661,12 +569,10 @@ private constructor(
             startingEquity,
             unrealizedPnl,
             boughtNotional,
-            boughtQuantity,
             dayPnl,
             netPnl,
             positionPnl,
             soldNotional,
-            soldQuantity,
             additionalProperties,
         )
     }
@@ -674,5 +580,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PortfolioHistorySegment{date=$date, endingEquity=$endingEquity, realizedPnl=$realizedPnl, startingEquity=$startingEquity, unrealizedPnl=$unrealizedPnl, boughtNotional=$boughtNotional, boughtQuantity=$boughtQuantity, dayPnl=$dayPnl, netPnl=$netPnl, positionPnl=$positionPnl, soldNotional=$soldNotional, soldQuantity=$soldQuantity, additionalProperties=$additionalProperties}"
+        "PortfolioHistorySegment{date=$date, endingEquity=$endingEquity, realizedPnl=$realizedPnl, startingEquity=$startingEquity, unrealizedPnl=$unrealizedPnl, boughtNotional=$boughtNotional, dayPnl=$dayPnl, netPnl=$netPnl, positionPnl=$positionPnl, soldNotional=$soldNotional, additionalProperties=$additionalProperties}"
 }

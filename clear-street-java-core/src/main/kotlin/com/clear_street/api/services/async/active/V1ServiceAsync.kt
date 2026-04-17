@@ -8,6 +8,7 @@ import com.clear_street.api.services.async.active.v1.ApiKeyServiceAsync
 import com.clear_street.api.services.async.active.v1.CalendarServiceAsync
 import com.clear_street.api.services.async.active.v1.ClockServiceAsync
 import com.clear_street.api.services.async.active.v1.InstrumentServiceAsync
+import com.clear_street.api.services.async.active.v1.IrisServiceAsync
 import com.clear_street.api.services.async.active.v1.MarketDataServiceAsync
 import com.clear_street.api.services.async.active.v1.NewsServiceAsync
 import com.clear_street.api.services.async.active.v1.OmniAiServiceAsync
@@ -45,6 +46,8 @@ interface V1ServiceAsync {
 
     /** Retrieve details and lists of tradable instruments. */
     fun instruments(): InstrumentServiceAsync
+
+    fun iris(): IrisServiceAsync
 
     fun marketData(): MarketDataServiceAsync
 
@@ -91,6 +94,8 @@ interface V1ServiceAsync {
 
         /** Retrieve details and lists of tradable instruments. */
         fun instruments(): InstrumentServiceAsync.WithRawResponse
+
+        fun iris(): IrisServiceAsync.WithRawResponse
 
         fun marketData(): MarketDataServiceAsync.WithRawResponse
 
