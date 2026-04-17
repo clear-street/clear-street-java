@@ -10,7 +10,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieves threads for the authenticated user. */
+/**
+ * List conversation threads.
+ *
+ * Retrieves threads for the authenticated user.
+ */
 class ThreadListThreadsParams
 private constructor(
     private val accountId: String,

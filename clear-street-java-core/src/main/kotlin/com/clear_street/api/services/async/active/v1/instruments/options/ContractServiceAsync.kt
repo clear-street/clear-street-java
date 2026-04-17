@@ -26,6 +26,8 @@ interface ContractServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ContractServiceAsync
 
     /**
+     * List options contracts.
+     *
      * Returns options contracts for a given underlier with options-specific metadata. Exactly one
      * underlier identifier must be provided.
      */

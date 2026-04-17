@@ -33,7 +33,11 @@ interface SavedScreenerService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): SavedScreenerService
 
-    /** Persists a screener configuration for the authenticated user. */
+    /**
+     * Create a saved screener configuration.
+     *
+     * Persists a screener configuration for the authenticated user.
+     */
     fun createScreener(): SavedScreenerCreateScreenerResponse =
         createScreener(SavedScreenerCreateScreenerParams.none())
 
@@ -52,7 +56,11 @@ interface SavedScreenerService {
     fun createScreener(requestOptions: RequestOptions): SavedScreenerCreateScreenerResponse =
         createScreener(SavedScreenerCreateScreenerParams.none(), requestOptions)
 
-    /** Deletes the screener configuration for the authenticated user. */
+    /**
+     * Delete a saved screener configuration.
+     *
+     * Deletes the screener configuration for the authenticated user.
+     */
     fun deleteScreener(screenerId: String) =
         deleteScreener(screenerId, SavedScreenerDeleteScreenerParams.none())
 
@@ -83,7 +91,11 @@ interface SavedScreenerService {
     fun deleteScreener(screenerId: String, requestOptions: RequestOptions) =
         deleteScreener(screenerId, SavedScreenerDeleteScreenerParams.none(), requestOptions)
 
-    /** Returns a single screener configuration for the authenticated user. */
+    /**
+     * Get a saved screener configuration by ID.
+     *
+     * Returns a single screener configuration for the authenticated user.
+     */
     fun getScreenerById(screenerId: String): SavedScreenerGetScreenerByIdResponse =
         getScreenerById(screenerId, SavedScreenerGetScreenerByIdParams.none())
 
@@ -120,7 +132,11 @@ interface SavedScreenerService {
     ): SavedScreenerGetScreenerByIdResponse =
         getScreenerById(screenerId, SavedScreenerGetScreenerByIdParams.none(), requestOptions)
 
-    /** Returns all screener configurations for the authenticated user. */
+    /**
+     * List saved screener configurations.
+     *
+     * Returns all screener configurations for the authenticated user.
+     */
     fun listScreeners(): SavedScreenerListScreenersResponse =
         listScreeners(SavedScreenerListScreenersParams.none())
 
@@ -140,6 +156,8 @@ interface SavedScreenerService {
         listScreeners(SavedScreenerListScreenersParams.none(), requestOptions)
 
     /**
+     * Update a saved screener configuration.
+     *
      * Replaces the screener configuration for the authenticated user. If `name` is null, the
      * existing name is preserved.
      */

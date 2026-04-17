@@ -24,6 +24,8 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
+ * Start a new assistant run.
+ *
  * Begins an agentic conversation run. If thread_id is provided, continues an existing conversation;
  * otherwise creates a new thread.
  */

@@ -56,7 +56,11 @@ interface ThreadServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<ThreadGetThreadResponse>
 
-    /** Retrieves threads for the authenticated user. */
+    /**
+     * List conversation threads.
+     *
+     * Retrieves threads for the authenticated user.
+     */
     fun listThreads(params: ThreadListThreadsParams): CompletableFuture<ThreadListThreadsResponse> =
         listThreads(params, RequestOptions.none())
 

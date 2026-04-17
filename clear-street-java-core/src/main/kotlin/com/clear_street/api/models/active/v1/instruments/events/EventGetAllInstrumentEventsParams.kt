@@ -10,7 +10,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieves all instrument events grouped by date. */
+/**
+ * List instrument events across all securities.
+ *
+ * Retrieves all instrument events grouped by date.
+ */
 class EventGetAllInstrumentEventsParams
 private constructor(
     private val eventTypes: List<AllEventsEventType>?,

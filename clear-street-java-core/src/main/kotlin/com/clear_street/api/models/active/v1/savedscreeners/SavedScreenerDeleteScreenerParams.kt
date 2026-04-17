@@ -11,7 +11,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Deletes the screener configuration for the authenticated user. */
+/**
+ * Delete a saved screener configuration.
+ *
+ * Deletes the screener configuration for the authenticated user.
+ */
 class SavedScreenerDeleteScreenerParams
 private constructor(
     private val screenerId: String?,

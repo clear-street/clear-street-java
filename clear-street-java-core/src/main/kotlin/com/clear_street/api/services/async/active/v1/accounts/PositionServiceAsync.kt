@@ -29,7 +29,11 @@ interface PositionServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): PositionServiceAsync
 
-    /** Retrieves all positions for the specified trading account. */
+    /**
+     * Delete a position within an account for an instrument.
+     *
+     * Retrieves all positions for the specified trading account.
+     */
     fun closePosition(
         securityId: String,
         params: PositionClosePositionParams,
@@ -56,7 +60,11 @@ interface PositionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<PositionClosePositionResponse>
 
-    /** Closes all positions for the specified trading account. */
+    /**
+     * Delete all positions within an account.
+     *
+     * Closes all positions for the specified trading account.
+     */
     fun closePositions(accountId: Long): CompletableFuture<PositionClosePositionsResponse> =
         closePositions(accountId, PositionClosePositionsParams.none())
 

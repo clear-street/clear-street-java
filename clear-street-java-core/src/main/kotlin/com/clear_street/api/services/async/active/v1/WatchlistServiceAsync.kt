@@ -35,7 +35,7 @@ interface WatchlistServiceAsync {
     /** Retrieve details and lists of tradable instruments. */
     fun items(): ItemServiceAsync
 
-    /** Create a new watchlist */
+    /** Create Watchlist */
     fun createWatchlist(
         params: WatchlistCreateWatchlistParams
     ): CompletableFuture<WatchlistCreateWatchlistResponse> =

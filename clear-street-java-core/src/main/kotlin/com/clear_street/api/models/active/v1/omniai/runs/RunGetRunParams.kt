@@ -10,7 +10,11 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Poll for the current status of a run and any new events since the last poll. */
+/**
+ * Get run status and events.
+ *
+ * Poll for the current status of a run and any new events since the last poll.
+ */
 class RunGetRunParams
 private constructor(
     private val runId: String?,

@@ -27,7 +27,11 @@ interface EventService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventService
 
-    /** Retrieves all instrument events grouped by date. */
+    /**
+     * List instrument events across all securities.
+     *
+     * Retrieves all instrument events grouped by date.
+     */
     fun getAllInstrumentEvents(): EventGetAllInstrumentEventsResponse =
         getAllInstrumentEvents(EventGetAllInstrumentEventsParams.none())
 

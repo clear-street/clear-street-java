@@ -27,7 +27,11 @@ interface EventServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EventServiceAsync
 
-    /** Retrieves all instrument events grouped by date. */
+    /**
+     * List instrument events across all securities.
+     *
+     * Retrieves all instrument events grouped by date.
+     */
     fun getAllInstrumentEvents(): CompletableFuture<EventGetAllInstrumentEventsResponse> =
         getAllInstrumentEvents(EventGetAllInstrumentEventsParams.none())
 

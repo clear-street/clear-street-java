@@ -25,7 +25,11 @@ interface FeedbackService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): FeedbackService
 
-    /** Submit user feedback (thumbs up/down, rating, comment) for an assistant message. */
+    /**
+     * Create feedback on a message.
+     *
+     * Submit user feedback (thumbs up/down, rating, comment) for an assistant message.
+     */
     fun createFeedback(params: FeedbackCreateFeedbackParams): FeedbackCreateFeedbackResponse =
         createFeedback(params, RequestOptions.none())
 

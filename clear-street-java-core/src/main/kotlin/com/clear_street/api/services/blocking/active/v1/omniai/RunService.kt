@@ -50,7 +50,11 @@ interface RunService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): RunCancelRunResponse
 
-    /** Poll for the current status of a run and any new events since the last poll. */
+    /**
+     * Get run status and events.
+     *
+     * Poll for the current status of a run and any new events since the last poll.
+     */
     fun getRun(runId: String, params: RunGetRunParams): RunGetRunResponse =
         getRun(runId, params, RequestOptions.none())
 
@@ -71,6 +75,8 @@ interface RunService {
     ): RunGetRunResponse
 
     /**
+     * Start a new assistant run.
+     *
      * Begins an agentic conversation run. If thread_id is provided, continues an existing
      * conversation; otherwise creates a new thread.
      */
