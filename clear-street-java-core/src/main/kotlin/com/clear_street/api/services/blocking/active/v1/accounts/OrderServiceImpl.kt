@@ -16,10 +16,10 @@ import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.core.http.json
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOrdersParams
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOrdersResponse
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOrderParams
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOrderResponse
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOpenOrdersParams
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOpenOrdersResponse
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOpenOrderParams
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOpenOrderResponse
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrderByIdResponse
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrdersParams
@@ -44,19 +44,19 @@ class OrderServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): OrderService =
         OrderServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun cancelAllOrders(
-        params: OrderCancelAllOrdersParams,
+    override fun cancelAllOpenOrders(
+        params: OrderCancelAllOpenOrdersParams,
         requestOptions: RequestOptions,
-    ): OrderCancelAllOrdersResponse =
+    ): OrderCancelAllOpenOrdersResponse =
         // delete /active/v1/accounts/{account_id}/orders
-        withRawResponse().cancelAllOrders(params, requestOptions).parse()
+        withRawResponse().cancelAllOpenOrders(params, requestOptions).parse()
 
-    override fun cancelOrder(
-        params: OrderCancelOrderParams,
+    override fun cancelOpenOrder(
+        params: OrderCancelOpenOrderParams,
         requestOptions: RequestOptions,
-    ): OrderCancelOrderResponse =
+    ): OrderCancelOpenOrderResponse =
         // delete /active/v1/accounts/{account_id}/orders/{order_id}
-        withRawResponse().cancelOrder(params, requestOptions).parse()
+        withRawResponse().cancelOpenOrder(params, requestOptions).parse()
 
     override fun getOrderById(
         params: OrderGetOrderByIdParams,
@@ -99,13 +99,13 @@ class OrderServiceImpl internal constructor(private val clientOptions: ClientOpt
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val cancelAllOrdersHandler: Handler<OrderCancelAllOrdersResponse> =
-            jsonHandler<OrderCancelAllOrdersResponse>(clientOptions.jsonMapper)
+        private val cancelAllOpenOrdersHandler: Handler<OrderCancelAllOpenOrdersResponse> =
+            jsonHandler<OrderCancelAllOpenOrdersResponse>(clientOptions.jsonMapper)
 
-        override fun cancelAllOrders(
-            params: OrderCancelAllOrdersParams,
+        override fun cancelAllOpenOrders(
+            params: OrderCancelAllOpenOrdersParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<OrderCancelAllOrdersResponse> {
+        ): HttpResponseFor<OrderCancelAllOpenOrdersResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("accountId", params.accountId().getOrNull())
@@ -121,7 +121,7 @@ class OrderServiceImpl internal constructor(private val clientOptions: ClientOpt
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { cancelAllOrdersHandler.handle(it) }
+                    .use { cancelAllOpenOrdersHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
@@ -130,13 +130,13 @@ class OrderServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val cancelOrderHandler: Handler<OrderCancelOrderResponse> =
-            jsonHandler<OrderCancelOrderResponse>(clientOptions.jsonMapper)
+        private val cancelOpenOrderHandler: Handler<OrderCancelOpenOrderResponse> =
+            jsonHandler<OrderCancelOpenOrderResponse>(clientOptions.jsonMapper)
 
-        override fun cancelOrder(
-            params: OrderCancelOrderParams,
+        override fun cancelOpenOrder(
+            params: OrderCancelOpenOrderParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<OrderCancelOrderResponse> {
+        ): HttpResponseFor<OrderCancelOpenOrderResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("orderId", params.orderId().getOrNull())
@@ -159,7 +159,7 @@ class OrderServiceImpl internal constructor(private val clientOptions: ClientOpt
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { cancelOrderHandler.handle(it) }
+                    .use { cancelOpenOrderHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

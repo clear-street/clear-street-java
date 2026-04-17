@@ -24,7 +24,7 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Delete a position within an account for an instrument.
  *
- * Retrieves all positions for the specified trading account.
+ * Retrieves orders generated to close the position.
  */
 class PositionClosePositionParams
 private constructor(

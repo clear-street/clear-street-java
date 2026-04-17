@@ -28,7 +28,7 @@ import kotlin.jvm.optionals.getOrNull
  * Replaces the screener configuration for the authenticated user. If `name` is null, the existing
  * name is preserved.
  */
-class SavedScreenerUpdateScreenerParams
+class SavedScreenerReplaceScreenerParams
 private constructor(
     private val screenerId: String?,
     private val body: Body,
@@ -125,16 +125,16 @@ private constructor(
 
     companion object {
 
-        @JvmStatic fun none(): SavedScreenerUpdateScreenerParams = builder().build()
+        @JvmStatic fun none(): SavedScreenerReplaceScreenerParams = builder().build()
 
         /**
          * Returns a mutable builder for constructing an instance of
-         * [SavedScreenerUpdateScreenerParams].
+         * [SavedScreenerReplaceScreenerParams].
          */
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [SavedScreenerUpdateScreenerParams]. */
+    /** A builder for [SavedScreenerReplaceScreenerParams]. */
     class Builder internal constructor() {
 
         private var screenerId: String? = null
@@ -143,13 +143,13 @@ private constructor(
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
-        internal fun from(savedScreenerUpdateScreenerParams: SavedScreenerUpdateScreenerParams) =
+        internal fun from(savedScreenerReplaceScreenerParams: SavedScreenerReplaceScreenerParams) =
             apply {
-                screenerId = savedScreenerUpdateScreenerParams.screenerId
-                body = savedScreenerUpdateScreenerParams.body.toBuilder()
-                additionalHeaders = savedScreenerUpdateScreenerParams.additionalHeaders.toBuilder()
+                screenerId = savedScreenerReplaceScreenerParams.screenerId
+                body = savedScreenerReplaceScreenerParams.body.toBuilder()
+                additionalHeaders = savedScreenerReplaceScreenerParams.additionalHeaders.toBuilder()
                 additionalQueryParams =
-                    savedScreenerUpdateScreenerParams.additionalQueryParams.toBuilder()
+                    savedScreenerReplaceScreenerParams.additionalQueryParams.toBuilder()
             }
 
         fun screenerId(screenerId: String?) = apply { this.screenerId = screenerId }
@@ -383,12 +383,12 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SavedScreenerUpdateScreenerParams].
+         * Returns an immutable instance of [SavedScreenerReplaceScreenerParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): SavedScreenerUpdateScreenerParams =
-            SavedScreenerUpdateScreenerParams(
+        fun build(): SavedScreenerReplaceScreenerParams =
+            SavedScreenerReplaceScreenerParams(
                 screenerId,
                 body.build(),
                 additionalHeaders.build(),
@@ -898,7 +898,7 @@ private constructor(
             return true
         }
 
-        return other is SavedScreenerUpdateScreenerParams &&
+        return other is SavedScreenerReplaceScreenerParams &&
             screenerId == other.screenerId &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -909,5 +909,5 @@ private constructor(
         Objects.hash(screenerId, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SavedScreenerUpdateScreenerParams{screenerId=$screenerId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SavedScreenerReplaceScreenerParams{screenerId=$screenerId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

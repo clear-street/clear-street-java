@@ -22,10 +22,10 @@ import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerCreateS
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerDeleteScreenerParams
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenerByIdParams
 import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenerByIdResponse
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerListScreenersParams
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerListScreenersResponse
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerUpdateScreenerParams
-import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerUpdateScreenerResponse
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenersParams
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerGetScreenersResponse
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerReplaceScreenerParams
+import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerReplaceScreenerResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -64,19 +64,19 @@ class SavedScreenerServiceImpl internal constructor(private val clientOptions: C
         // get /active/v1/saved-screeners/{screener_id}
         withRawResponse().getScreenerById(params, requestOptions).parse()
 
-    override fun listScreeners(
-        params: SavedScreenerListScreenersParams,
+    override fun getScreeners(
+        params: SavedScreenerGetScreenersParams,
         requestOptions: RequestOptions,
-    ): SavedScreenerListScreenersResponse =
+    ): SavedScreenerGetScreenersResponse =
         // get /active/v1/saved-screeners
-        withRawResponse().listScreeners(params, requestOptions).parse()
+        withRawResponse().getScreeners(params, requestOptions).parse()
 
-    override fun updateScreener(
-        params: SavedScreenerUpdateScreenerParams,
+    override fun replaceScreener(
+        params: SavedScreenerReplaceScreenerParams,
         requestOptions: RequestOptions,
-    ): SavedScreenerUpdateScreenerResponse =
+    ): SavedScreenerReplaceScreenerResponse =
         // put /active/v1/saved-screeners/{screener_id}
-        withRawResponse().updateScreener(params, requestOptions).parse()
+        withRawResponse().replaceScreener(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         SavedScreenerService.WithRawResponse {
@@ -173,13 +173,13 @@ class SavedScreenerServiceImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val listScreenersHandler: Handler<SavedScreenerListScreenersResponse> =
-            jsonHandler<SavedScreenerListScreenersResponse>(clientOptions.jsonMapper)
+        private val getScreenersHandler: Handler<SavedScreenerGetScreenersResponse> =
+            jsonHandler<SavedScreenerGetScreenersResponse>(clientOptions.jsonMapper)
 
-        override fun listScreeners(
-            params: SavedScreenerListScreenersParams,
+        override fun getScreeners(
+            params: SavedScreenerGetScreenersParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<SavedScreenerListScreenersResponse> {
+        ): HttpResponseFor<SavedScreenerGetScreenersResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -191,7 +191,7 @@ class SavedScreenerServiceImpl internal constructor(private val clientOptions: C
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { listScreenersHandler.handle(it) }
+                    .use { getScreenersHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
@@ -200,13 +200,13 @@ class SavedScreenerServiceImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val updateScreenerHandler: Handler<SavedScreenerUpdateScreenerResponse> =
-            jsonHandler<SavedScreenerUpdateScreenerResponse>(clientOptions.jsonMapper)
+        private val replaceScreenerHandler: Handler<SavedScreenerReplaceScreenerResponse> =
+            jsonHandler<SavedScreenerReplaceScreenerResponse>(clientOptions.jsonMapper)
 
-        override fun updateScreener(
-            params: SavedScreenerUpdateScreenerParams,
+        override fun replaceScreener(
+            params: SavedScreenerReplaceScreenerParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<SavedScreenerUpdateScreenerResponse> {
+        ): HttpResponseFor<SavedScreenerReplaceScreenerResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("screenerId", params.screenerId().getOrNull())
@@ -222,7 +222,7 @@ class SavedScreenerServiceImpl internal constructor(private val clientOptions: C
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { updateScreenerHandler.handle(it) }
+                    .use { replaceScreenerHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

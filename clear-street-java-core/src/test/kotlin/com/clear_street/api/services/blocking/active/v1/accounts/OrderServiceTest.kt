@@ -4,8 +4,8 @@ package com.clear_street.api.services.blocking.active.v1.accounts
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
 import com.clear_street.api.models.active.v1.SecurityType
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOrdersParams
-import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOrderParams
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelAllOpenOrdersParams
+import com.clear_street.api.models.active.v1.accounts.orders.OrderCancelOpenOrderParams
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.active.v1.accounts.orders.OrderGetOrdersParams
 import com.clear_street.api.models.active.v1.accounts.orders.OrderReplaceOrderParams
@@ -21,19 +21,19 @@ internal class OrderServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun cancelAllOrders() {
+    fun cancelAllOpenOrders() {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
         val orderService = client.active().v1().accounts().orders()
 
         val response =
-            orderService.cancelAllOrders(
-                OrderCancelAllOrdersParams.builder()
+            orderService.cancelAllOpenOrders(
+                OrderCancelAllOpenOrdersParams.builder()
                     .accountId(0L)
                     .addSecurityId("string")
                     .addSecurityIdSource("string")
-                    .securityType(OrderCancelAllOrdersParams.SecurityType.COMMON_STOCK)
-                    .side(OrderCancelAllOrdersParams.Side.BUY)
-                    .type(OrderCancelAllOrdersParams.Type.MARKET)
+                    .securityType(OrderCancelAllOpenOrdersParams.SecurityType.COMMON_STOCK)
+                    .side(OrderCancelAllOpenOrdersParams.Side.BUY)
+                    .type(OrderCancelAllOpenOrdersParams.Type.MARKET)
                     .build()
             )
 
@@ -42,13 +42,13 @@ internal class OrderServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun cancelOrder() {
+    fun cancelOpenOrder() {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
         val orderService = client.active().v1().accounts().orders()
 
         val response =
-            orderService.cancelOrder(
-                OrderCancelOrderParams.builder().accountId(0L).orderId("order_id").build()
+            orderService.cancelOpenOrder(
+                OrderCancelOpenOrderParams.builder().accountId(0L).orderId("order_id").build()
             )
 
         response.validate()

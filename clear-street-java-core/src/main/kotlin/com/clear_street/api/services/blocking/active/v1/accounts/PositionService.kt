@@ -32,7 +32,7 @@ interface PositionService {
     /**
      * Delete a position within an account for an instrument.
      *
-     * Retrieves all positions for the specified trading account.
+     * Retrieves orders generated to close the position.
      */
     fun closePosition(
         securityId: String,

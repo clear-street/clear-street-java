@@ -13,12 +13,12 @@ import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class OrderCancelAllOrdersResponseTest {
+internal class OrderCancelOpenOrderResponseTest {
 
     @Test
     fun create() {
-        val orderCancelAllOrdersResponse =
-            OrderCancelAllOrdersResponse.builder()
+        val orderCancelOpenOrderResponse =
+            OrderCancelOpenOrderResponse.builder()
                 .metadata(
                     ResponseMetadata.builder()
                         .requestId("request_id")
@@ -40,7 +40,7 @@ internal class OrderCancelAllOrdersResponseTest {
                         )
                         .build()
                 )
-                .addData(
+                .data(
                     Order.builder()
                         .id("my-ref-id-20251001-001")
                         .accountId(19816L)
@@ -80,7 +80,7 @@ internal class OrderCancelAllOrdersResponseTest {
                 )
                 .build()
 
-        assertThat(orderCancelAllOrdersResponse.metadata())
+        assertThat(orderCancelOpenOrderResponse.metadata())
             .isEqualTo(
                 ResponseMetadata.builder()
                     .requestId("request_id")
@@ -91,7 +91,7 @@ internal class OrderCancelAllOrdersResponseTest {
                     .totalPages(0)
                     .build()
             )
-        assertThat(orderCancelAllOrdersResponse.error())
+        assertThat(orderCancelOpenOrderResponse.error())
             .contains(
                 ApiError.builder()
                     .code(400)
@@ -103,8 +103,8 @@ internal class OrderCancelAllOrdersResponseTest {
                     )
                     .build()
             )
-        assertThat(orderCancelAllOrdersResponse.data())
-            .containsExactly(
+        assertThat(orderCancelOpenOrderResponse.data())
+            .isEqualTo(
                 Order.builder()
                     .id("my-ref-id-20251001-001")
                     .accountId(19816L)
@@ -147,8 +147,8 @@ internal class OrderCancelAllOrdersResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val orderCancelAllOrdersResponse =
-            OrderCancelAllOrdersResponse.builder()
+        val orderCancelOpenOrderResponse =
+            OrderCancelOpenOrderResponse.builder()
                 .metadata(
                     ResponseMetadata.builder()
                         .requestId("request_id")
@@ -170,7 +170,7 @@ internal class OrderCancelAllOrdersResponseTest {
                         )
                         .build()
                 )
-                .addData(
+                .data(
                     Order.builder()
                         .id("my-ref-id-20251001-001")
                         .accountId(19816L)
@@ -210,12 +210,12 @@ internal class OrderCancelAllOrdersResponseTest {
                 )
                 .build()
 
-        val roundtrippedOrderCancelAllOrdersResponse =
+        val roundtrippedOrderCancelOpenOrderResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(orderCancelAllOrdersResponse),
-                jacksonTypeRef<OrderCancelAllOrdersResponse>(),
+                jsonMapper.writeValueAsString(orderCancelOpenOrderResponse),
+                jacksonTypeRef<OrderCancelOpenOrderResponse>(),
             )
 
-        assertThat(roundtrippedOrderCancelAllOrdersResponse).isEqualTo(orderCancelAllOrdersResponse)
+        assertThat(roundtrippedOrderCancelOpenOrderResponse).isEqualTo(orderCancelOpenOrderResponse)
     }
 }

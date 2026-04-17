@@ -6,23 +6,23 @@ import com.clear_street.api.core.http.QueryParams
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class OrderCancelAllOrdersParamsTest {
+internal class OrderCancelAllOpenOrdersParamsTest {
 
     @Test
     fun create() {
-        OrderCancelAllOrdersParams.builder()
+        OrderCancelAllOpenOrdersParams.builder()
             .accountId(0L)
             .addSecurityId("string")
             .addSecurityIdSource("string")
-            .securityType(OrderCancelAllOrdersParams.SecurityType.COMMON_STOCK)
-            .side(OrderCancelAllOrdersParams.Side.BUY)
-            .type(OrderCancelAllOrdersParams.Type.MARKET)
+            .securityType(OrderCancelAllOpenOrdersParams.SecurityType.COMMON_STOCK)
+            .side(OrderCancelAllOpenOrdersParams.Side.BUY)
+            .type(OrderCancelAllOpenOrdersParams.Type.MARKET)
             .build()
     }
 
     @Test
     fun pathParams() {
-        val params = OrderCancelAllOrdersParams.builder().accountId(0L).build()
+        val params = OrderCancelAllOpenOrdersParams.builder().accountId(0L).build()
 
         assertThat(params._pathParam(0)).isEqualTo("0")
         // out-of-bound path param
@@ -32,13 +32,13 @@ internal class OrderCancelAllOrdersParamsTest {
     @Test
     fun queryParams() {
         val params =
-            OrderCancelAllOrdersParams.builder()
+            OrderCancelAllOpenOrdersParams.builder()
                 .accountId(0L)
                 .addSecurityId("string")
                 .addSecurityIdSource("string")
-                .securityType(OrderCancelAllOrdersParams.SecurityType.COMMON_STOCK)
-                .side(OrderCancelAllOrdersParams.Side.BUY)
-                .type(OrderCancelAllOrdersParams.Type.MARKET)
+                .securityType(OrderCancelAllOpenOrdersParams.SecurityType.COMMON_STOCK)
+                .side(OrderCancelAllOpenOrdersParams.Side.BUY)
+                .type(OrderCancelAllOpenOrdersParams.Type.MARKET)
                 .build()
 
         val queryParams = params._queryParams()
@@ -57,7 +57,7 @@ internal class OrderCancelAllOrdersParamsTest {
 
     @Test
     fun queryParamsWithoutOptionalFields() {
-        val params = OrderCancelAllOrdersParams.builder().accountId(0L).build()
+        val params = OrderCancelAllOpenOrdersParams.builder().accountId(0L).build()
 
         val queryParams = params._queryParams()
 

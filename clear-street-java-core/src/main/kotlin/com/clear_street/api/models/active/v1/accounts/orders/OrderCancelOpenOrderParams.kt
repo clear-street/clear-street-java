@@ -13,7 +13,7 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** Cancel a specific order */
-class OrderCancelOrderParams
+class OrderCancelOpenOrderParams
 private constructor(
     private val accountId: Long,
     private val orderId: String?,
@@ -40,7 +40,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [OrderCancelOrderParams].
+         * Returns a mutable builder for constructing an instance of [OrderCancelOpenOrderParams].
          *
          * The following fields are required:
          * ```java
@@ -50,7 +50,7 @@ private constructor(
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [OrderCancelOrderParams]. */
+    /** A builder for [OrderCancelOpenOrderParams]. */
     class Builder internal constructor() {
 
         private var accountId: Long? = null
@@ -60,13 +60,13 @@ private constructor(
         private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
-        internal fun from(orderCancelOrderParams: OrderCancelOrderParams) = apply {
-            accountId = orderCancelOrderParams.accountId
-            orderId = orderCancelOrderParams.orderId
-            additionalHeaders = orderCancelOrderParams.additionalHeaders.toBuilder()
-            additionalQueryParams = orderCancelOrderParams.additionalQueryParams.toBuilder()
+        internal fun from(orderCancelOpenOrderParams: OrderCancelOpenOrderParams) = apply {
+            accountId = orderCancelOpenOrderParams.accountId
+            orderId = orderCancelOpenOrderParams.orderId
+            additionalHeaders = orderCancelOpenOrderParams.additionalHeaders.toBuilder()
+            additionalQueryParams = orderCancelOpenOrderParams.additionalQueryParams.toBuilder()
             additionalBodyProperties =
-                orderCancelOrderParams.additionalBodyProperties.toMutableMap()
+                orderCancelOpenOrderParams.additionalBodyProperties.toMutableMap()
         }
 
         fun accountId(accountId: Long) = apply { this.accountId = accountId }
@@ -197,7 +197,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [OrderCancelOrderParams].
+         * Returns an immutable instance of [OrderCancelOpenOrderParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -208,8 +208,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): OrderCancelOrderParams =
-            OrderCancelOrderParams(
+        fun build(): OrderCancelOpenOrderParams =
+            OrderCancelOpenOrderParams(
                 checkRequired("accountId", accountId),
                 orderId,
                 additionalHeaders.build(),
@@ -237,7 +237,7 @@ private constructor(
             return true
         }
 
-        return other is OrderCancelOrderParams &&
+        return other is OrderCancelOpenOrderParams &&
             accountId == other.accountId &&
             orderId == other.orderId &&
             additionalHeaders == other.additionalHeaders &&
@@ -255,5 +255,5 @@ private constructor(
         )
 
     override fun toString() =
-        "OrderCancelOrderParams{accountId=$accountId, orderId=$orderId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "OrderCancelOpenOrderParams{accountId=$accountId, orderId=$orderId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }

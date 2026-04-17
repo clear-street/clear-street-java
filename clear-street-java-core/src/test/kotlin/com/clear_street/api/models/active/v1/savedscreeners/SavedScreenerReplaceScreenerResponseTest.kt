@@ -11,12 +11,12 @@ import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class SavedScreenerListScreenersResponseTest {
+internal class SavedScreenerReplaceScreenerResponseTest {
 
     @Test
     fun create() {
-        val savedScreenerListScreenersResponse =
-            SavedScreenerListScreenersResponse.builder()
+        val savedScreenerReplaceScreenerResponse =
+            SavedScreenerReplaceScreenerResponse.builder()
                 .metadata(
                     ResponseMetadata.builder()
                         .requestId("request_id")
@@ -38,7 +38,7 @@ internal class SavedScreenerListScreenersResponseTest {
                         )
                         .build()
                 )
-                .addData(
+                .data(
                     ScreenerEntry.builder()
                         .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -58,7 +58,7 @@ internal class SavedScreenerListScreenersResponseTest {
                 )
                 .build()
 
-        assertThat(savedScreenerListScreenersResponse.metadata())
+        assertThat(savedScreenerReplaceScreenerResponse.metadata())
             .isEqualTo(
                 ResponseMetadata.builder()
                     .requestId("request_id")
@@ -69,7 +69,7 @@ internal class SavedScreenerListScreenersResponseTest {
                     .totalPages(0)
                     .build()
             )
-        assertThat(savedScreenerListScreenersResponse.error())
+        assertThat(savedScreenerReplaceScreenerResponse.error())
             .contains(
                 ApiError.builder()
                     .code(400)
@@ -81,8 +81,8 @@ internal class SavedScreenerListScreenersResponseTest {
                     )
                     .build()
             )
-        assertThat(savedScreenerListScreenersResponse.data())
-            .containsExactly(
+        assertThat(savedScreenerReplaceScreenerResponse.data())
+            .isEqualTo(
                 ScreenerEntry.builder()
                     .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -105,8 +105,8 @@ internal class SavedScreenerListScreenersResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val savedScreenerListScreenersResponse =
-            SavedScreenerListScreenersResponse.builder()
+        val savedScreenerReplaceScreenerResponse =
+            SavedScreenerReplaceScreenerResponse.builder()
                 .metadata(
                     ResponseMetadata.builder()
                         .requestId("request_id")
@@ -128,7 +128,7 @@ internal class SavedScreenerListScreenersResponseTest {
                         )
                         .build()
                 )
-                .addData(
+                .data(
                     ScreenerEntry.builder()
                         .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -148,13 +148,13 @@ internal class SavedScreenerListScreenersResponseTest {
                 )
                 .build()
 
-        val roundtrippedSavedScreenerListScreenersResponse =
+        val roundtrippedSavedScreenerReplaceScreenerResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(savedScreenerListScreenersResponse),
-                jacksonTypeRef<SavedScreenerListScreenersResponse>(),
+                jsonMapper.writeValueAsString(savedScreenerReplaceScreenerResponse),
+                jacksonTypeRef<SavedScreenerReplaceScreenerResponse>(),
             )
 
-        assertThat(roundtrippedSavedScreenerListScreenersResponse)
-            .isEqualTo(savedScreenerListScreenersResponse)
+        assertThat(roundtrippedSavedScreenerReplaceScreenerResponse)
+            .isEqualTo(savedScreenerReplaceScreenerResponse)
     }
 }
