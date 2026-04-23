@@ -19,16 +19,4 @@ internal class VersionServiceAsyncTest {
         val response = responseFuture.get()
         response.validate()
     }
-
-    @Disabled("Mock server tests are disabled")
-    @Test
-    fun updateVersion() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
-        val versionServiceAsync = client.active().v1().version()
-
-        val responseFuture = versionServiceAsync.updateVersion()
-
-        val response = responseFuture.get()
-        response.validate()
-    }
 }

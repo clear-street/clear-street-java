@@ -24,8 +24,6 @@ import com.clear_street.api.models.active.v1.accounts.AccountPatchAccountByIdPar
 import com.clear_street.api.models.active.v1.accounts.AccountPatchAccountByIdResponse
 import com.clear_street.api.services.blocking.active.v1.accounts.BalanceService
 import com.clear_street.api.services.blocking.active.v1.accounts.BalanceServiceImpl
-import com.clear_street.api.services.blocking.active.v1.accounts.LocateService
-import com.clear_street.api.services.blocking.active.v1.accounts.LocateServiceImpl
 import com.clear_street.api.services.blocking.active.v1.accounts.OrderService
 import com.clear_street.api.services.blocking.active.v1.accounts.OrderServiceImpl
 import com.clear_street.api.services.blocking.active.v1.accounts.PortfolioHistoryService
@@ -45,8 +43,6 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
 
     private val balances: BalanceService by lazy { BalanceServiceImpl(clientOptions) }
 
-    private val locates: LocateService by lazy { LocateServiceImpl(clientOptions) }
-
     private val orders: OrderService by lazy { OrderServiceImpl(clientOptions) }
 
     private val portfolioHistory: PortfolioHistoryService by lazy {
@@ -62,9 +58,6 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
 
     /** Manage trading accounts and view balances. */
     override fun balances(): BalanceService = balances
-
-    /** Manage locate requests for short selling. */
-    override fun locates(): LocateService = locates
 
     /** Place, monitor, and manage trading orders. */
     override fun orders(): OrderService = orders
@@ -106,10 +99,6 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
             BalanceServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val locates: LocateService.WithRawResponse by lazy {
-            LocateServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val orders: OrderService.WithRawResponse by lazy {
             OrderServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -131,9 +120,6 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
 
         /** Manage trading accounts and view balances. */
         override fun balances(): BalanceService.WithRawResponse = balances
-
-        /** Manage locate requests for short selling. */
-        override fun locates(): LocateService.WithRawResponse = locates
 
         /** Place, monitor, and manage trading orders. */
         override fun orders(): OrderService.WithRawResponse = orders

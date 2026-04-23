@@ -12,8 +12,6 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrument
 import com.clear_street.api.services.blocking.active.v1.instruments.AnalystReportingService
 import com.clear_street.api.services.blocking.active.v1.instruments.EventService
 import com.clear_street.api.services.blocking.active.v1.instruments.OptionService
-import com.clear_street.api.services.blocking.active.v1.instruments.ReportingService
-import com.clear_street.api.services.blocking.active.v1.instruments.VenueService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -39,12 +37,6 @@ interface InstrumentService {
     fun events(): EventService
 
     fun options(): OptionService
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun reporting(): ReportingService
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun venues(): VenueService
 
     /** Retrieves detailed information for a specific instrument. */
     fun getInstrumentById(
@@ -110,12 +102,6 @@ interface InstrumentService {
         fun events(): EventService.WithRawResponse
 
         fun options(): OptionService.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun reporting(): ReportingService.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun venues(): VenueService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get

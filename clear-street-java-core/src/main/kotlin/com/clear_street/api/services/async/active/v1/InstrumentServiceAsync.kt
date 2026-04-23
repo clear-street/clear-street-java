@@ -12,8 +12,6 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrument
 import com.clear_street.api.services.async.active.v1.instruments.AnalystReportingServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.OptionServiceAsync
-import com.clear_street.api.services.async.active.v1.instruments.ReportingServiceAsync
-import com.clear_street.api.services.async.active.v1.instruments.VenueServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -39,12 +37,6 @@ interface InstrumentServiceAsync {
     fun events(): EventServiceAsync
 
     fun options(): OptionServiceAsync
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun reporting(): ReportingServiceAsync
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun venues(): VenueServiceAsync
 
     /** Retrieves detailed information for a specific instrument. */
     fun getInstrumentById(
@@ -117,12 +109,6 @@ interface InstrumentServiceAsync {
         fun events(): EventServiceAsync.WithRawResponse
 
         fun options(): OptionServiceAsync.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun reporting(): ReportingServiceAsync.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun venues(): VenueServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get
