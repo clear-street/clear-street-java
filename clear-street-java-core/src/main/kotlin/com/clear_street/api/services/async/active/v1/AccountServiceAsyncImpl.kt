@@ -24,8 +24,6 @@ import com.clear_street.api.models.active.v1.accounts.AccountPatchAccountByIdPar
 import com.clear_street.api.models.active.v1.accounts.AccountPatchAccountByIdResponse
 import com.clear_street.api.services.async.active.v1.accounts.BalanceServiceAsync
 import com.clear_street.api.services.async.active.v1.accounts.BalanceServiceAsyncImpl
-import com.clear_street.api.services.async.active.v1.accounts.LocateServiceAsync
-import com.clear_street.api.services.async.active.v1.accounts.LocateServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.accounts.OrderServiceAsync
 import com.clear_street.api.services.async.active.v1.accounts.OrderServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.accounts.PortfolioHistoryServiceAsync
@@ -46,8 +44,6 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
 
     private val balances: BalanceServiceAsync by lazy { BalanceServiceAsyncImpl(clientOptions) }
 
-    private val locates: LocateServiceAsync by lazy { LocateServiceAsyncImpl(clientOptions) }
-
     private val orders: OrderServiceAsync by lazy { OrderServiceAsyncImpl(clientOptions) }
 
     private val portfolioHistory: PortfolioHistoryServiceAsync by lazy {
@@ -63,9 +59,6 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
 
     /** Manage trading accounts and view balances. */
     override fun balances(): BalanceServiceAsync = balances
-
-    /** Manage locate requests for short selling. */
-    override fun locates(): LocateServiceAsync = locates
 
     /** Place, monitor, and manage trading orders. */
     override fun orders(): OrderServiceAsync = orders
@@ -107,10 +100,6 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
             BalanceServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val locates: LocateServiceAsync.WithRawResponse by lazy {
-            LocateServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val orders: OrderServiceAsync.WithRawResponse by lazy {
             OrderServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -132,9 +121,6 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
 
         /** Manage trading accounts and view balances. */
         override fun balances(): BalanceServiceAsync.WithRawResponse = balances
-
-        /** Manage locate requests for short selling. */
-        override fun locates(): LocateServiceAsync.WithRawResponse = locates
 
         /** Place, monitor, and manage trading orders. */
         override fun orders(): OrderServiceAsync.WithRawResponse = orders

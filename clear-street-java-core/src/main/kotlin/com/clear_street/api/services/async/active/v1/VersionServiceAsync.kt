@@ -7,8 +7,6 @@ import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.models.active.v1.version.VersionGetVersionParams
 import com.clear_street.api.models.active.v1.version.VersionGetVersionResponse
-import com.clear_street.api.models.active.v1.version.VersionUpdateVersionParams
-import com.clear_street.api.models.active.v1.version.VersionUpdateVersionResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -45,28 +43,6 @@ interface VersionServiceAsync {
     /** @see getVersion */
     fun getVersion(requestOptions: RequestOptions): CompletableFuture<VersionGetVersionResponse> =
         getVersion(VersionGetVersionParams.none(), requestOptions)
-
-    /** Allows clients to set their preferred API version. */
-    fun updateVersion(): CompletableFuture<VersionUpdateVersionResponse> =
-        updateVersion(VersionUpdateVersionParams.none())
-
-    /** @see updateVersion */
-    fun updateVersion(
-        params: VersionUpdateVersionParams = VersionUpdateVersionParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<VersionUpdateVersionResponse>
-
-    /** @see updateVersion */
-    fun updateVersion(
-        params: VersionUpdateVersionParams = VersionUpdateVersionParams.none()
-    ): CompletableFuture<VersionUpdateVersionResponse> =
-        updateVersion(params, RequestOptions.none())
-
-    /** @see updateVersion */
-    fun updateVersion(
-        requestOptions: RequestOptions
-    ): CompletableFuture<VersionUpdateVersionResponse> =
-        updateVersion(VersionUpdateVersionParams.none(), requestOptions)
 
     /**
      * A view of [VersionServiceAsync] that provides access to raw HTTP responses for each method.
@@ -106,30 +82,5 @@ interface VersionServiceAsync {
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<VersionGetVersionResponse>> =
             getVersion(VersionGetVersionParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `patch /active/v1/version`, but is otherwise the same as
-         * [VersionServiceAsync.updateVersion].
-         */
-        fun updateVersion(): CompletableFuture<HttpResponseFor<VersionUpdateVersionResponse>> =
-            updateVersion(VersionUpdateVersionParams.none())
-
-        /** @see updateVersion */
-        fun updateVersion(
-            params: VersionUpdateVersionParams = VersionUpdateVersionParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<VersionUpdateVersionResponse>>
-
-        /** @see updateVersion */
-        fun updateVersion(
-            params: VersionUpdateVersionParams = VersionUpdateVersionParams.none()
-        ): CompletableFuture<HttpResponseFor<VersionUpdateVersionResponse>> =
-            updateVersion(params, RequestOptions.none())
-
-        /** @see updateVersion */
-        fun updateVersion(
-            requestOptions: RequestOptions
-        ): CompletableFuture<HttpResponseFor<VersionUpdateVersionResponse>> =
-            updateVersion(VersionUpdateVersionParams.none(), requestOptions)
     }
 }
