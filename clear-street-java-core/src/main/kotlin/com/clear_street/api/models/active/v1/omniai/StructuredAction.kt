@@ -45,6 +45,7 @@ private constructor(
     private val prefillOrder: PrefillOrder? = null,
     private val openChart: OpenChart? = null,
     private val openScreener: OpenScreener? = null,
+    private val openEntitlementConsent: OpenEntitlementConsent? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -57,11 +58,17 @@ private constructor(
     /** Open a stock screener with filters */
     fun openScreener(): Optional<OpenScreener> = Optional.ofNullable(openScreener)
 
+    /** Open entitlement consent flow */
+    fun openEntitlementConsent(): Optional<OpenEntitlementConsent> =
+        Optional.ofNullable(openEntitlementConsent)
+
     fun isPrefillOrder(): Boolean = prefillOrder != null
 
     fun isOpenChart(): Boolean = openChart != null
 
     fun isOpenScreener(): Boolean = openScreener != null
+
+    fun isOpenEntitlementConsent(): Boolean = openEntitlementConsent != null
 
     /** Prefill an order ticket for user confirmation */
     fun asPrefillOrder(): PrefillOrder = prefillOrder.getOrThrow("prefillOrder")
@@ -72,6 +79,10 @@ private constructor(
     /** Open a stock screener with filters */
     fun asOpenScreener(): OpenScreener = openScreener.getOrThrow("openScreener")
 
+    /** Open entitlement consent flow */
+    fun asOpenEntitlementConsent(): OpenEntitlementConsent =
+        openEntitlementConsent.getOrThrow("openEntitlementConsent")
+
     fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
     fun <T> accept(visitor: Visitor<T>): T =
@@ -79,6 +90,8 @@ private constructor(
             prefillOrder != null -> visitor.visitPrefillOrder(prefillOrder)
             openChart != null -> visitor.visitOpenChart(openChart)
             openScreener != null -> visitor.visitOpenScreener(openScreener)
+            openEntitlementConsent != null ->
+                visitor.visitOpenEntitlementConsent(openEntitlementConsent)
             else -> visitor.unknown(_json)
         }
 
@@ -101,6 +114,12 @@ private constructor(
 
                 override fun visitOpenScreener(openScreener: OpenScreener) {
                     openScreener.validate()
+                }
+
+                override fun visitOpenEntitlementConsent(
+                    openEntitlementConsent: OpenEntitlementConsent
+                ) {
+                    openEntitlementConsent.validate()
                 }
             }
         )
@@ -130,6 +149,10 @@ private constructor(
 
                 override fun visitOpenScreener(openScreener: OpenScreener) = openScreener.validity()
 
+                override fun visitOpenEntitlementConsent(
+                    openEntitlementConsent: OpenEntitlementConsent
+                ) = openEntitlementConsent.validity()
+
                 override fun unknown(json: JsonValue?) = 0
             }
         )
@@ -142,16 +165,20 @@ private constructor(
         return other is StructuredAction &&
             prefillOrder == other.prefillOrder &&
             openChart == other.openChart &&
-            openScreener == other.openScreener
+            openScreener == other.openScreener &&
+            openEntitlementConsent == other.openEntitlementConsent
     }
 
-    override fun hashCode(): Int = Objects.hash(prefillOrder, openChart, openScreener)
+    override fun hashCode(): Int =
+        Objects.hash(prefillOrder, openChart, openScreener, openEntitlementConsent)
 
     override fun toString(): String =
         when {
             prefillOrder != null -> "StructuredAction{prefillOrder=$prefillOrder}"
             openChart != null -> "StructuredAction{openChart=$openChart}"
             openScreener != null -> "StructuredAction{openScreener=$openScreener}"
+            openEntitlementConsent != null ->
+                "StructuredAction{openEntitlementConsent=$openEntitlementConsent}"
             _json != null -> "StructuredAction{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid StructuredAction")
         }
@@ -170,6 +197,11 @@ private constructor(
         @JvmStatic
         fun ofOpenScreener(openScreener: OpenScreener) =
             StructuredAction(openScreener = openScreener)
+
+        /** Open entitlement consent flow */
+        @JvmStatic
+        fun ofOpenEntitlementConsent(openEntitlementConsent: OpenEntitlementConsent) =
+            StructuredAction(openEntitlementConsent = openEntitlementConsent)
     }
 
     /**
@@ -186,6 +218,9 @@ private constructor(
 
         /** Open a stock screener with filters */
         fun visitOpenScreener(openScreener: OpenScreener): T
+
+        /** Open entitlement consent flow */
+        fun visitOpenEntitlementConsent(openEntitlementConsent: OpenEntitlementConsent): T
 
         /**
          * Maps an unknown variant of [StructuredAction] to a value of type [T].
@@ -218,6 +253,9 @@ private constructor(
                         tryDeserialize(node, jacksonTypeRef<OpenScreener>())?.let {
                             StructuredAction(openScreener = it, _json = json)
                         },
+                        tryDeserialize(node, jacksonTypeRef<OpenEntitlementConsent>())?.let {
+                            StructuredAction(openEntitlementConsent = it, _json = json)
+                        },
                     )
                     .filterNotNull()
                     .allMaxBy { it.validity() }
@@ -245,6 +283,8 @@ private constructor(
                 value.prefillOrder != null -> generator.writeObject(value.prefillOrder)
                 value.openChart != null -> generator.writeObject(value.openChart)
                 value.openScreener != null -> generator.writeObject(value.openScreener)
+                value.openEntitlementConsent != null ->
+                    generator.writeObject(value.openEntitlementConsent)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid StructuredAction")
             }
@@ -1589,5 +1629,509 @@ private constructor(
 
         override fun toString() =
             "OpenScreener{filters=$filters, fieldFilter=$fieldFilter, pageSize=$pageSize, sortBy=$sortBy, sortDirection=$sortDirection, actionType=$actionType, additionalProperties=$additionalProperties}"
+    }
+
+    /** Open entitlement consent flow */
+    class OpenEntitlementConsent
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val agreementKey: JsonField<String>,
+        private val reason: JsonField<String>,
+        private val requestedEntitlementCodes: JsonField<List<String>>,
+        private val tradingAccountIds: JsonField<List<Long>>,
+        private val actionType: JsonField<ActionType>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("agreement_key")
+            @ExcludeMissing
+            agreementKey: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("reason") @ExcludeMissing reason: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("requested_entitlement_codes")
+            @ExcludeMissing
+            requestedEntitlementCodes: JsonField<List<String>> = JsonMissing.of(),
+            @JsonProperty("trading_account_ids")
+            @ExcludeMissing
+            tradingAccountIds: JsonField<List<Long>> = JsonMissing.of(),
+            @JsonProperty("action_type")
+            @ExcludeMissing
+            actionType: JsonField<ActionType> = JsonMissing.of(),
+        ) : this(
+            agreementKey,
+            reason,
+            requestedEntitlementCodes,
+            tradingAccountIds,
+            actionType,
+            mutableMapOf(),
+        )
+
+        fun toOpenEntitlementConsentAction(): OpenEntitlementConsentAction =
+            OpenEntitlementConsentAction.builder()
+                .agreementKey(agreementKey)
+                .reason(reason)
+                .requestedEntitlementCodes(requestedEntitlementCodes)
+                .tradingAccountIds(tradingAccountIds)
+                .build()
+
+        /**
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun agreementKey(): String = agreementKey.getRequired("agreement_key")
+
+        /**
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun reason(): String = reason.getRequired("reason")
+
+        /**
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun requestedEntitlementCodes(): List<String> =
+            requestedEntitlementCodes.getRequired("requested_entitlement_codes")
+
+        /**
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun tradingAccountIds(): List<Long> = tradingAccountIds.getRequired("trading_account_ids")
+
+        /**
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun actionType(): ActionType = actionType.getRequired("action_type")
+
+        /**
+         * Returns the raw JSON value of [agreementKey].
+         *
+         * Unlike [agreementKey], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("agreement_key")
+        @ExcludeMissing
+        fun _agreementKey(): JsonField<String> = agreementKey
+
+        /**
+         * Returns the raw JSON value of [reason].
+         *
+         * Unlike [reason], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("reason") @ExcludeMissing fun _reason(): JsonField<String> = reason
+
+        /**
+         * Returns the raw JSON value of [requestedEntitlementCodes].
+         *
+         * Unlike [requestedEntitlementCodes], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("requested_entitlement_codes")
+        @ExcludeMissing
+        fun _requestedEntitlementCodes(): JsonField<List<String>> = requestedEntitlementCodes
+
+        /**
+         * Returns the raw JSON value of [tradingAccountIds].
+         *
+         * Unlike [tradingAccountIds], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("trading_account_ids")
+        @ExcludeMissing
+        fun _tradingAccountIds(): JsonField<List<Long>> = tradingAccountIds
+
+        /**
+         * Returns the raw JSON value of [actionType].
+         *
+         * Unlike [actionType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("action_type")
+        @ExcludeMissing
+        fun _actionType(): JsonField<ActionType> = actionType
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [OpenEntitlementConsent].
+             *
+             * The following fields are required:
+             * ```java
+             * .agreementKey()
+             * .reason()
+             * .requestedEntitlementCodes()
+             * .tradingAccountIds()
+             * .actionType()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [OpenEntitlementConsent]. */
+        class Builder internal constructor() {
+
+            private var agreementKey: JsonField<String>? = null
+            private var reason: JsonField<String>? = null
+            private var requestedEntitlementCodes: JsonField<MutableList<String>>? = null
+            private var tradingAccountIds: JsonField<MutableList<Long>>? = null
+            private var actionType: JsonField<ActionType>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(openEntitlementConsent: OpenEntitlementConsent) = apply {
+                agreementKey = openEntitlementConsent.agreementKey
+                reason = openEntitlementConsent.reason
+                requestedEntitlementCodes =
+                    openEntitlementConsent.requestedEntitlementCodes.map { it.toMutableList() }
+                tradingAccountIds =
+                    openEntitlementConsent.tradingAccountIds.map { it.toMutableList() }
+                actionType = openEntitlementConsent.actionType
+                additionalProperties = openEntitlementConsent.additionalProperties.toMutableMap()
+            }
+
+            fun agreementKey(agreementKey: String) = agreementKey(JsonField.of(agreementKey))
+
+            /**
+             * Sets [Builder.agreementKey] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.agreementKey] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun agreementKey(agreementKey: JsonField<String>) = apply {
+                this.agreementKey = agreementKey
+            }
+
+            fun reason(reason: String) = reason(JsonField.of(reason))
+
+            /**
+             * Sets [Builder.reason] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.reason] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun reason(reason: JsonField<String>) = apply { this.reason = reason }
+
+            fun requestedEntitlementCodes(requestedEntitlementCodes: List<String>) =
+                requestedEntitlementCodes(JsonField.of(requestedEntitlementCodes))
+
+            /**
+             * Sets [Builder.requestedEntitlementCodes] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.requestedEntitlementCodes] with a well-typed
+             * `List<String>` value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun requestedEntitlementCodes(requestedEntitlementCodes: JsonField<List<String>>) =
+                apply {
+                    this.requestedEntitlementCodes =
+                        requestedEntitlementCodes.map { it.toMutableList() }
+                }
+
+            /**
+             * Adds a single [String] to [requestedEntitlementCodes].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addRequestedEntitlementCode(requestedEntitlementCode: String) = apply {
+                requestedEntitlementCodes =
+                    (requestedEntitlementCodes ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("requestedEntitlementCodes", it).add(requestedEntitlementCode)
+                    }
+            }
+
+            fun tradingAccountIds(tradingAccountIds: List<Long>) =
+                tradingAccountIds(JsonField.of(tradingAccountIds))
+
+            /**
+             * Sets [Builder.tradingAccountIds] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.tradingAccountIds] with a well-typed `List<Long>`
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun tradingAccountIds(tradingAccountIds: JsonField<List<Long>>) = apply {
+                this.tradingAccountIds = tradingAccountIds.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [Long] to [tradingAccountIds].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addTradingAccountId(tradingAccountId: Long) = apply {
+                tradingAccountIds =
+                    (tradingAccountIds ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("tradingAccountIds", it).add(tradingAccountId)
+                    }
+            }
+
+            fun actionType(actionType: ActionType) = actionType(JsonField.of(actionType))
+
+            /**
+             * Sets [Builder.actionType] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.actionType] with a well-typed [ActionType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun actionType(actionType: JsonField<ActionType>) = apply {
+                this.actionType = actionType
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [OpenEntitlementConsent].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .agreementKey()
+             * .reason()
+             * .requestedEntitlementCodes()
+             * .tradingAccountIds()
+             * .actionType()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): OpenEntitlementConsent =
+                OpenEntitlementConsent(
+                    checkRequired("agreementKey", agreementKey),
+                    checkRequired("reason", reason),
+                    checkRequired("requestedEntitlementCodes", requestedEntitlementCodes).map {
+                        it.toImmutable()
+                    },
+                    checkRequired("tradingAccountIds", tradingAccountIds).map { it.toImmutable() },
+                    checkRequired("actionType", actionType),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): OpenEntitlementConsent = apply {
+            if (validated) {
+                return@apply
+            }
+
+            agreementKey()
+            reason()
+            requestedEntitlementCodes()
+            tradingAccountIds()
+            actionType().validate()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: ClearStreetInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (if (agreementKey.asKnown().isPresent) 1 else 0) +
+                (if (reason.asKnown().isPresent) 1 else 0) +
+                (requestedEntitlementCodes.asKnown().getOrNull()?.size ?: 0) +
+                (tradingAccountIds.asKnown().getOrNull()?.size ?: 0) +
+                (actionType.asKnown().getOrNull()?.validity() ?: 0)
+
+        class ActionType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val OPEN_ENTITLEMENT_CONSENT = of("open_entitlement_consent")
+
+                @JvmStatic fun of(value: String) = ActionType(JsonField.of(value))
+            }
+
+            /** An enum containing [ActionType]'s known values. */
+            enum class Known {
+                OPEN_ENTITLEMENT_CONSENT
+            }
+
+            /**
+             * An enum containing [ActionType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [ActionType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                OPEN_ENTITLEMENT_CONSENT,
+                /**
+                 * An enum member indicating that [ActionType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    OPEN_ENTITLEMENT_CONSENT -> Value.OPEN_ENTITLEMENT_CONSENT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws ClearStreetInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    OPEN_ENTITLEMENT_CONSENT -> Known.OPEN_ENTITLEMENT_CONSENT
+                    else -> throw ClearStreetInvalidDataException("Unknown ActionType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws ClearStreetInvalidDataException if this class instance's value does not have
+             *   the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    ClearStreetInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            fun validate(): ActionType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: ClearStreetInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is ActionType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is OpenEntitlementConsent &&
+                agreementKey == other.agreementKey &&
+                reason == other.reason &&
+                requestedEntitlementCodes == other.requestedEntitlementCodes &&
+                tradingAccountIds == other.tradingAccountIds &&
+                actionType == other.actionType &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(
+                agreementKey,
+                reason,
+                requestedEntitlementCodes,
+                tradingAccountIds,
+                actionType,
+                additionalProperties,
+            )
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "OpenEntitlementConsent{agreementKey=$agreementKey, reason=$reason, requestedEntitlementCodes=$requestedEntitlementCodes, tradingAccountIds=$tradingAccountIds, actionType=$actionType, additionalProperties=$additionalProperties}"
     }
 }

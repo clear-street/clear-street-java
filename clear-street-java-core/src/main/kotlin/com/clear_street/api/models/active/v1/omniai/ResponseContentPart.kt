@@ -1137,6 +1137,13 @@ private constructor(
             fun action(openScreener: StructuredAction.OpenScreener) =
                 action(StructuredAction.ofOpenScreener(openScreener))
 
+            /**
+             * Alias for calling [action] with
+             * `StructuredAction.ofOpenEntitlementConsent(openEntitlementConsent)`.
+             */
+            fun action(openEntitlementConsent: StructuredAction.OpenEntitlementConsent) =
+                action(StructuredAction.ofOpenEntitlementConsent(openEntitlementConsent))
+
             fun actionId(actionId: String) = actionId(JsonField.of(actionId))
 
             /**
@@ -1381,14 +1388,16 @@ private constructor(
     class UnionMember3
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val payload: JsonValue,
+        private val payload: JsonField<ChartPayload>,
         private val type: JsonField<Type>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("payload") @ExcludeMissing payload: JsonValue = JsonMissing.of(),
+            @JsonProperty("payload")
+            @ExcludeMissing
+            payload: JsonField<ChartPayload> = JsonMissing.of(),
             @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
         ) : this(payload, type, mutableMapOf())
 
@@ -1396,18 +1405,25 @@ private constructor(
             ContentPartChartPayload.builder().payload(payload).build()
 
         /**
-         * This arbitrary value can be deserialized into a custom type using the `convert` method:
-         * ```java
-         * MyClass myObject = unionMember3.payload().convert(MyClass.class);
-         * ```
+         * Typed chart payload rendered inline in assistant content.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("payload") @ExcludeMissing fun _payload(): JsonValue = payload
+        fun payload(): ChartPayload = payload.getRequired("payload")
 
         /**
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun type(): Type = type.getRequired("type")
+
+        /**
+         * Returns the raw JSON value of [payload].
+         *
+         * Unlike [payload], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("payload") @ExcludeMissing fun _payload(): JsonField<ChartPayload> = payload
 
         /**
          * Returns the raw JSON value of [type].
@@ -1445,7 +1461,7 @@ private constructor(
         /** A builder for [UnionMember3]. */
         class Builder internal constructor() {
 
-            private var payload: JsonValue? = null
+            private var payload: JsonField<ChartPayload>? = null
             private var type: JsonField<Type>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -1456,7 +1472,17 @@ private constructor(
                 additionalProperties = unionMember3.additionalProperties.toMutableMap()
             }
 
-            fun payload(payload: JsonValue) = apply { this.payload = payload }
+            /** Typed chart payload rendered inline in assistant content. */
+            fun payload(payload: ChartPayload) = payload(JsonField.of(payload))
+
+            /**
+             * Sets [Builder.payload] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.payload] with a well-typed [ChartPayload] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun payload(payload: JsonField<ChartPayload>) = apply { this.payload = payload }
 
             fun type(type: Type) = type(JsonField.of(type))
 
@@ -1516,6 +1542,7 @@ private constructor(
                 return@apply
             }
 
+            payload().validate()
             type().validate()
             validated = true
         }
@@ -1534,7 +1561,10 @@ private constructor(
          *
          * Used for best match union deserialization.
          */
-        @JvmSynthetic internal fun validity(): Int = (type.asKnown().getOrNull()?.validity() ?: 0)
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (payload.asKnown().getOrNull()?.validity() ?: 0) +
+                (type.asKnown().getOrNull()?.validity() ?: 0)
 
         class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -1680,14 +1710,16 @@ private constructor(
     class UnionMember4
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val payload: JsonValue,
+        private val payload: JsonField<SuggestedActionsPayload>,
         private val type: JsonField<Type>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("payload") @ExcludeMissing payload: JsonValue = JsonMissing.of(),
+            @JsonProperty("payload")
+            @ExcludeMissing
+            payload: JsonField<SuggestedActionsPayload> = JsonMissing.of(),
             @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
         ) : this(payload, type, mutableMapOf())
 
@@ -1695,18 +1727,27 @@ private constructor(
             ContentPartSuggestedActionsPayload.builder().payload(payload).build()
 
         /**
-         * This arbitrary value can be deserialized into a custom type using the `convert` method:
-         * ```java
-         * MyClass myObject = unionMember4.payload().convert(MyClass.class);
-         * ```
+         * Suggested follow-up buttons rendered at the end of an assistant message.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("payload") @ExcludeMissing fun _payload(): JsonValue = payload
+        fun payload(): SuggestedActionsPayload = payload.getRequired("payload")
 
         /**
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun type(): Type = type.getRequired("type")
+
+        /**
+         * Returns the raw JSON value of [payload].
+         *
+         * Unlike [payload], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("payload")
+        @ExcludeMissing
+        fun _payload(): JsonField<SuggestedActionsPayload> = payload
 
         /**
          * Returns the raw JSON value of [type].
@@ -1744,7 +1785,7 @@ private constructor(
         /** A builder for [UnionMember4]. */
         class Builder internal constructor() {
 
-            private var payload: JsonValue? = null
+            private var payload: JsonField<SuggestedActionsPayload>? = null
             private var type: JsonField<Type>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -1755,7 +1796,19 @@ private constructor(
                 additionalProperties = unionMember4.additionalProperties.toMutableMap()
             }
 
-            fun payload(payload: JsonValue) = apply { this.payload = payload }
+            /** Suggested follow-up buttons rendered at the end of an assistant message. */
+            fun payload(payload: SuggestedActionsPayload) = payload(JsonField.of(payload))
+
+            /**
+             * Sets [Builder.payload] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.payload] with a well-typed [SuggestedActionsPayload]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun payload(payload: JsonField<SuggestedActionsPayload>) = apply {
+                this.payload = payload
+            }
 
             fun type(type: Type) = type(JsonField.of(type))
 
@@ -1815,6 +1868,7 @@ private constructor(
                 return@apply
             }
 
+            payload().validate()
             type().validate()
             validated = true
         }
@@ -1833,7 +1887,10 @@ private constructor(
          *
          * Used for best match union deserialization.
          */
-        @JvmSynthetic internal fun validity(): Int = (type.asKnown().getOrNull()?.validity() ?: 0)
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (payload.asKnown().getOrNull()?.validity() ?: 0) +
+                (type.asKnown().getOrNull()?.validity() ?: 0)
 
         class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 

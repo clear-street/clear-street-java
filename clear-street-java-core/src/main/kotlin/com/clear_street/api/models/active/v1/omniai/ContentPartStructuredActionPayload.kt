@@ -136,6 +136,13 @@ private constructor(
         fun action(openScreener: StructuredAction.OpenScreener) =
             action(StructuredAction.ofOpenScreener(openScreener))
 
+        /**
+         * Alias for calling [action] with
+         * `StructuredAction.ofOpenEntitlementConsent(openEntitlementConsent)`.
+         */
+        fun action(openEntitlementConsent: StructuredAction.OpenEntitlementConsent) =
+            action(StructuredAction.ofOpenEntitlementConsent(openEntitlementConsent))
+
         fun actionId(actionId: String) = actionId(JsonField.of(actionId))
 
         /**

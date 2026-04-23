@@ -14,7 +14,8 @@ import java.util.function.Consumer
 /**
  * Thread-centric AI assistant for conversational trading. Create threads to start conversations,
  * poll response objects for in-progress output, and read finalized messages from thread history.
- * Every endpoint requires an explicit account_id.
+ * Thread/message/response endpoints require an explicit account_id. Entitlement endpoints are
+ * caller-scoped and use trading_account_ids.
  */
 interface MessageService {
 
@@ -33,7 +34,8 @@ interface MessageService {
     /**
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Every endpoint requires an explicit account_id.
+     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
+     * endpoints are caller-scoped and use trading_account_ids.
      */
     fun feedback(): FeedbackService
 
@@ -78,7 +80,8 @@ interface MessageService {
         /**
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Every endpoint requires an explicit account_id.
+         * from thread history. Thread/message/response endpoints require an explicit account_id.
+         * Entitlement endpoints are caller-scoped and use trading_account_ids.
          */
         fun feedback(): FeedbackService.WithRawResponse
 
