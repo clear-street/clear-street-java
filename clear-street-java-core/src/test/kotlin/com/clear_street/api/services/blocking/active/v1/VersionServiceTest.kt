@@ -18,4 +18,15 @@ internal class VersionServiceTest {
 
         response.validate()
     }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun updateVersion() {
+        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val versionService = client.active().v1().version()
+
+        val response = versionService.updateVersion()
+
+        response.validate()
+    }
 }

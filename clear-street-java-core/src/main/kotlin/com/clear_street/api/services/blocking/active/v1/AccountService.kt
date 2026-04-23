@@ -12,6 +12,7 @@ import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsResponse
 import com.clear_street.api.models.active.v1.accounts.AccountPatchAccountByIdParams
 import com.clear_street.api.models.active.v1.accounts.AccountPatchAccountByIdResponse
 import com.clear_street.api.services.blocking.active.v1.accounts.BalanceService
+import com.clear_street.api.services.blocking.active.v1.accounts.LocateService
 import com.clear_street.api.services.blocking.active.v1.accounts.OrderService
 import com.clear_street.api.services.blocking.active.v1.accounts.PortfolioHistoryService
 import com.clear_street.api.services.blocking.active.v1.accounts.PositionService
@@ -35,6 +36,9 @@ interface AccountService {
 
     /** Manage trading accounts and view balances. */
     fun balances(): BalanceService
+
+    /** Manage locate requests for short selling. */
+    fun locates(): LocateService
 
     /** Place, monitor, and manage trading orders. */
     fun orders(): OrderService
@@ -145,6 +149,9 @@ interface AccountService {
 
         /** Manage trading accounts and view balances. */
         fun balances(): BalanceService.WithRawResponse
+
+        /** Manage locate requests for short selling. */
+        fun locates(): LocateService.WithRawResponse
 
         /** Place, monitor, and manage trading orders. */
         fun orders(): OrderService.WithRawResponse
