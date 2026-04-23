@@ -25,7 +25,8 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Thread-centric AI assistant for conversational trading. Create threads to start conversations,
  * poll response objects for in-progress output, and read finalized messages from thread history.
- * Every endpoint requires an explicit account_id.
+ * Thread/message/response endpoints require an explicit account_id. Entitlement endpoints are
+ * caller-scoped and use trading_account_ids.
  */
 class MessageServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     MessageService {
@@ -44,7 +45,8 @@ class MessageServiceImpl internal constructor(private val clientOptions: ClientO
     /**
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Every endpoint requires an explicit account_id.
+     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
+     * endpoints are caller-scoped and use trading_account_ids.
      */
     override fun feedback(): FeedbackService = feedback
 
@@ -75,7 +77,8 @@ class MessageServiceImpl internal constructor(private val clientOptions: ClientO
         /**
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Every endpoint requires an explicit account_id.
+         * from thread history. Thread/message/response endpoints require an explicit account_id.
+         * Entitlement endpoints are caller-scoped and use trading_account_ids.
          */
         override fun feedback(): FeedbackService.WithRawResponse = feedback
 

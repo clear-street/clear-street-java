@@ -3,6 +3,7 @@
 package com.clear_street.api.models.active.v1.omniai
 
 import com.clear_street.api.core.ExcludeMissing
+import com.clear_street.api.core.JsonField
 import com.clear_street.api.core.JsonMissing
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.checkRequired
@@ -13,27 +14,35 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
+import kotlin.jvm.optionals.getOrNull
 
 /** Chart payload content part. */
 class ContentPartChartPayload
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val payload: JsonValue,
+    private val payload: JsonField<ChartPayload>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("payload") @ExcludeMissing payload: JsonValue = JsonMissing.of()
+        @JsonProperty("payload") @ExcludeMissing payload: JsonField<ChartPayload> = JsonMissing.of()
     ) : this(payload, mutableMapOf())
 
     /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```java
-     * MyClass myObject = contentPartChartPayload.payload().convert(MyClass.class);
-     * ```
+     * Typed chart payload rendered inline in assistant content.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    @JsonProperty("payload") @ExcludeMissing fun _payload(): JsonValue = payload
+    fun payload(): ChartPayload = payload.getRequired("payload")
+
+    /**
+     * Returns the raw JSON value of [payload].
+     *
+     * Unlike [payload], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("payload") @ExcludeMissing fun _payload(): JsonField<ChartPayload> = payload
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -63,7 +72,7 @@ private constructor(
     /** A builder for [ContentPartChartPayload]. */
     class Builder internal constructor() {
 
-        private var payload: JsonValue? = null
+        private var payload: JsonField<ChartPayload>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -72,7 +81,17 @@ private constructor(
             additionalProperties = contentPartChartPayload.additionalProperties.toMutableMap()
         }
 
-        fun payload(payload: JsonValue) = apply { this.payload = payload }
+        /** Typed chart payload rendered inline in assistant content. */
+        fun payload(payload: ChartPayload) = payload(JsonField.of(payload))
+
+        /**
+         * Sets [Builder.payload] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.payload] with a well-typed [ChartPayload] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun payload(payload: JsonField<ChartPayload>) = apply { this.payload = payload }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -119,6 +138,7 @@ private constructor(
             return@apply
         }
 
+        payload().validate()
         validated = true
     }
 
@@ -135,7 +155,7 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    @JvmSynthetic internal fun validity(): Int = 0
+    @JvmSynthetic internal fun validity(): Int = (payload.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

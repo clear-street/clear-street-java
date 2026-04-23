@@ -134,7 +134,38 @@ internal class MessageContentPartTest {
     fun ofUnionMember2() {
         val unionMember2 =
             MessageContentPart.UnionMember2.builder()
-                .payload(JsonValue.from(mapOf<String, Any>()))
+                .payload(
+                    ChartPayload.builder()
+                        .chartId("chart_aapl_3m")
+                        .addActionButton(
+                            ActionButton.builder()
+                                .buttonId("btn_compare_aapl_spy")
+                                .label("Compare AAPL vs SPY")
+                                .prompt(
+                                    PromptButtonAction.builder()
+                                        .prompt("Compare AAPL vs SPY over 1 year")
+                                        .build()
+                                )
+                                .structuredAction(
+                                    StructuredActionButtonAction.builder()
+                                        .actionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .dataChart(
+                            DataChart.builder()
+                                .addSeries(
+                                    ChartSeries.builder()
+                                        .name("name")
+                                        .addPoint(ChartPoint.builder().x("x").y(0.0).build())
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .symbolChart(SymbolChart.builder().symbol("AAPL").timeframe("3M").build())
+                        .build()
+                )
                 .type(MessageContentPart.UnionMember2.Type.CHART)
                 .build()
 
@@ -153,7 +184,40 @@ internal class MessageContentPartTest {
         val messageContentPart =
             MessageContentPart.ofUnionMember2(
                 MessageContentPart.UnionMember2.builder()
-                    .payload(JsonValue.from(mapOf<String, Any>()))
+                    .payload(
+                        ChartPayload.builder()
+                            .chartId("chart_aapl_3m")
+                            .addActionButton(
+                                ActionButton.builder()
+                                    .buttonId("btn_compare_aapl_spy")
+                                    .label("Compare AAPL vs SPY")
+                                    .prompt(
+                                        PromptButtonAction.builder()
+                                            .prompt("Compare AAPL vs SPY over 1 year")
+                                            .build()
+                                    )
+                                    .structuredAction(
+                                        StructuredActionButtonAction.builder()
+                                            .actionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .dataChart(
+                                DataChart.builder()
+                                    .addSeries(
+                                        ChartSeries.builder()
+                                            .name("name")
+                                            .addPoint(ChartPoint.builder().x("x").y(0.0).build())
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .symbolChart(
+                                SymbolChart.builder().symbol("AAPL").timeframe("3M").build()
+                            )
+                            .build()
+                    )
                     .type(MessageContentPart.UnionMember2.Type.CHART)
                     .build()
             )
@@ -171,7 +235,42 @@ internal class MessageContentPartTest {
     fun ofUnionMember3() {
         val unionMember3 =
             MessageContentPart.UnionMember3.builder()
-                .payload(JsonValue.from(mapOf<String, Any>()))
+                .payload(
+                    SuggestedActionsPayload.builder()
+                        .addActionButton(
+                            ActionButton.builder()
+                                .buttonId("btn_show_aapl_1y")
+                                .label("Show AAPL over 1 year")
+                                .prompt(
+                                    PromptButtonAction.builder()
+                                        .prompt("Show AAPL over the last year")
+                                        .build()
+                                )
+                                .structuredAction(
+                                    StructuredActionButtonAction.builder()
+                                        .actionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .addActionButton(
+                            ActionButton.builder()
+                                .buttonId("btn_compare_aapl_spy")
+                                .label("Compare AAPL vs SPY")
+                                .prompt(
+                                    PromptButtonAction.builder()
+                                        .prompt("Compare AAPL vs SPY over 1 year")
+                                        .build()
+                                )
+                                .structuredAction(
+                                    StructuredActionButtonAction.builder()
+                                        .actionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .type(MessageContentPart.UnionMember3.Type.SUGGESTED_ACTIONS)
                 .build()
 
@@ -190,7 +289,42 @@ internal class MessageContentPartTest {
         val messageContentPart =
             MessageContentPart.ofUnionMember3(
                 MessageContentPart.UnionMember3.builder()
-                    .payload(JsonValue.from(mapOf<String, Any>()))
+                    .payload(
+                        SuggestedActionsPayload.builder()
+                            .addActionButton(
+                                ActionButton.builder()
+                                    .buttonId("btn_show_aapl_1y")
+                                    .label("Show AAPL over 1 year")
+                                    .prompt(
+                                        PromptButtonAction.builder()
+                                            .prompt("Show AAPL over the last year")
+                                            .build()
+                                    )
+                                    .structuredAction(
+                                        StructuredActionButtonAction.builder()
+                                            .actionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .addActionButton(
+                                ActionButton.builder()
+                                    .buttonId("btn_compare_aapl_spy")
+                                    .label("Compare AAPL vs SPY")
+                                    .prompt(
+                                        PromptButtonAction.builder()
+                                            .prompt("Compare AAPL vs SPY over 1 year")
+                                            .build()
+                                    )
+                                    .structuredAction(
+                                        StructuredActionButtonAction.builder()
+                                            .actionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
                     .type(MessageContentPart.UnionMember3.Type.SUGGESTED_ACTIONS)
                     .build()
             )

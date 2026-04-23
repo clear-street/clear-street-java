@@ -32,7 +32,8 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Thread-centric AI assistant for conversational trading. Create threads to start conversations,
  * poll response objects for in-progress output, and read finalized messages from thread history.
- * Every endpoint requires an explicit account_id.
+ * Thread/message/response endpoints require an explicit account_id. Entitlement endpoints are
+ * caller-scoped and use trading_account_ids.
  */
 class ThreadServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     ThreadService {
@@ -53,14 +54,16 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
     /**
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Every endpoint requires an explicit account_id.
+     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
+     * endpoints are caller-scoped and use trading_account_ids.
      */
     override fun messages(): MessageService = messages
 
     /**
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Every endpoint requires an explicit account_id.
+     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
+     * endpoints are caller-scoped and use trading_account_ids.
      */
     override fun response(): ResponseService = response
 
@@ -109,14 +112,16 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
         /**
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Every endpoint requires an explicit account_id.
+         * from thread history. Thread/message/response endpoints require an explicit account_id.
+         * Entitlement endpoints are caller-scoped and use trading_account_ids.
          */
         override fun messages(): MessageService.WithRawResponse = messages
 
         /**
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Every endpoint requires an explicit account_id.
+         * from thread history. Thread/message/response endpoints require an explicit account_id.
+         * Entitlement endpoints are caller-scoped and use trading_account_ids.
          */
         override fun response(): ResponseService.WithRawResponse = response
 

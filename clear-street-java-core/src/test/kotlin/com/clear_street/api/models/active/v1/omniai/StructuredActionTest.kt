@@ -45,6 +45,7 @@ internal class StructuredActionTest {
         assertThat(structuredAction.prefillOrder()).contains(prefillOrder)
         assertThat(structuredAction.openChart()).isEmpty
         assertThat(structuredAction.openScreener()).isEmpty
+        assertThat(structuredAction.openEntitlementConsent()).isEmpty
     }
 
     @Test
@@ -95,6 +96,7 @@ internal class StructuredActionTest {
         assertThat(structuredAction.prefillOrder()).isEmpty
         assertThat(structuredAction.openChart()).contains(openChart)
         assertThat(structuredAction.openScreener()).isEmpty
+        assertThat(structuredAction.openEntitlementConsent()).isEmpty
     }
 
     @Test
@@ -149,6 +151,7 @@ internal class StructuredActionTest {
         assertThat(structuredAction.prefillOrder()).isEmpty
         assertThat(structuredAction.openChart()).isEmpty
         assertThat(structuredAction.openScreener()).contains(openScreener)
+        assertThat(structuredAction.openEntitlementConsent()).isEmpty
     }
 
     @Test
@@ -176,6 +179,52 @@ internal class StructuredActionTest {
                     .sortBy("sort_by")
                     .sortDirection("sort_direction")
                     .actionType(StructuredAction.OpenScreener.ActionType.OPEN_SCREENER)
+                    .build()
+            )
+
+        val roundtrippedStructuredAction =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(structuredAction),
+                jacksonTypeRef<StructuredAction>(),
+            )
+
+        assertThat(roundtrippedStructuredAction).isEqualTo(structuredAction)
+    }
+
+    @Test
+    fun ofOpenEntitlementConsent() {
+        val openEntitlementConsent =
+            StructuredAction.OpenEntitlementConsent.builder()
+                .agreementKey("omni_account_data_access")
+                .reason("Portfolio analysis requires Omni consent to access account data.")
+                .addRequestedEntitlementCode("omni.account_data")
+                .addTradingAccountId(100019L)
+                .actionType(
+                    StructuredAction.OpenEntitlementConsent.ActionType.OPEN_ENTITLEMENT_CONSENT
+                )
+                .build()
+
+        val structuredAction = StructuredAction.ofOpenEntitlementConsent(openEntitlementConsent)
+
+        assertThat(structuredAction.prefillOrder()).isEmpty
+        assertThat(structuredAction.openChart()).isEmpty
+        assertThat(structuredAction.openScreener()).isEmpty
+        assertThat(structuredAction.openEntitlementConsent()).contains(openEntitlementConsent)
+    }
+
+    @Test
+    fun ofOpenEntitlementConsentRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val structuredAction =
+            StructuredAction.ofOpenEntitlementConsent(
+                StructuredAction.OpenEntitlementConsent.builder()
+                    .agreementKey("omni_account_data_access")
+                    .reason("Portfolio analysis requires Omni consent to access account data.")
+                    .addRequestedEntitlementCode("omni.account_data")
+                    .addTradingAccountId(100019L)
+                    .actionType(
+                        StructuredAction.OpenEntitlementConsent.ActionType.OPEN_ENTITLEMENT_CONSENT
+                    )
                     .build()
             )
 

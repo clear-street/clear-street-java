@@ -604,6 +604,8 @@ private constructor(
 
             @JvmField val OPEN_SCREENER = of("OPEN_SCREENER")
 
+            @JvmField val OPEN_ENTITLEMENT_CONSENT = of("OPEN_ENTITLEMENT_CONSENT")
+
             @JvmStatic fun of(value: String) = Capability(JsonField.of(value))
         }
 
@@ -612,6 +614,7 @@ private constructor(
             PREFILL_ORDER,
             OPEN_CHART,
             OPEN_SCREENER,
+            OPEN_ENTITLEMENT_CONSENT,
         }
 
         /**
@@ -627,6 +630,7 @@ private constructor(
             PREFILL_ORDER,
             OPEN_CHART,
             OPEN_SCREENER,
+            OPEN_ENTITLEMENT_CONSENT,
             /**
              * An enum member indicating that [Capability] was instantiated with an unknown value.
              */
@@ -645,6 +649,7 @@ private constructor(
                 PREFILL_ORDER -> Value.PREFILL_ORDER
                 OPEN_CHART -> Value.OPEN_CHART
                 OPEN_SCREENER -> Value.OPEN_SCREENER
+                OPEN_ENTITLEMENT_CONSENT -> Value.OPEN_ENTITLEMENT_CONSENT
                 else -> Value._UNKNOWN
             }
 
@@ -662,6 +667,7 @@ private constructor(
                 PREFILL_ORDER -> Known.PREFILL_ORDER
                 OPEN_CHART -> Known.OPEN_CHART
                 OPEN_SCREENER -> Known.OPEN_SCREENER
+                OPEN_ENTITLEMENT_CONSENT -> Known.OPEN_ENTITLEMENT_CONSENT
                 else -> throw ClearStreetInvalidDataException("Unknown Capability: $value")
             }
 
