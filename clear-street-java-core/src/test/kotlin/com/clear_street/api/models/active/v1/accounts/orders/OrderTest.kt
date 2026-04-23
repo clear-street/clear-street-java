@@ -17,8 +17,9 @@ internal class OrderTest {
     fun create() {
         val order =
             Order.builder()
-                .id("my-ref-id-20251001-001")
+                .id("0195f6c7-4f64-7e3c-8b0a-1d8e4f5e6a7b")
                 .accountId(19816L)
+                .clientOrderId("my-ref-id-20251001-001")
                 .createdAt(OffsetDateTime.parse("2025-10-31T13:30:00.000000000Z"))
                 .filledQuantity("50")
                 .leavesQuantity("50")
@@ -53,8 +54,9 @@ internal class OrderTest {
                 .trailingWatermarkTs(OffsetDateTime.parse("2025-10-31T13:35:10.000000000Z"))
                 .build()
 
-        assertThat(order.id()).isEqualTo("my-ref-id-20251001-001")
+        assertThat(order.id()).isEqualTo("0195f6c7-4f64-7e3c-8b0a-1d8e4f5e6a7b")
         assertThat(order.accountId()).isEqualTo(19816L)
+        assertThat(order.clientOrderId()).isEqualTo("my-ref-id-20251001-001")
         assertThat(order.createdAt())
             .isEqualTo(OffsetDateTime.parse("2025-10-31T13:30:00.000000000Z"))
         assertThat(order.filledQuantity()).isEqualTo("50")
@@ -101,8 +103,9 @@ internal class OrderTest {
         val jsonMapper = jsonMapper()
         val order =
             Order.builder()
-                .id("my-ref-id-20251001-001")
+                .id("0195f6c7-4f64-7e3c-8b0a-1d8e4f5e6a7b")
                 .accountId(19816L)
+                .clientOrderId("my-ref-id-20251001-001")
                 .createdAt(OffsetDateTime.parse("2025-10-31T13:30:00.000000000Z"))
                 .filledQuantity("50")
                 .leavesQuantity("50")

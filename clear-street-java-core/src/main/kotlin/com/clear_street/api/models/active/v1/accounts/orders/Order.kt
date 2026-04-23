@@ -33,6 +33,7 @@ class Order
 private constructor(
     private val id: JsonField<String>,
     private val accountId: JsonField<Long>,
+    private val clientOrderId: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val filledQuantity: JsonField<String>,
     private val leavesQuantity: JsonField<String>,
@@ -65,6 +66,9 @@ private constructor(
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("account_id") @ExcludeMissing accountId: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("client_order_id")
+        @ExcludeMissing
+        clientOrderId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("created_at")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -131,6 +135,7 @@ private constructor(
     ) : this(
         id,
         accountId,
+        clientOrderId,
         createdAt,
         filledQuantity,
         leavesQuantity,
@@ -160,7 +165,7 @@ private constructor(
     )
 
     /**
-     * Client-provided unique identifier for this order
+     * Engine-assigned unique identifier for this order (UUID).
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -174,6 +179,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun accountId(): Long = accountId.getRequired("account_id")
+
+    /**
+     * Client-provided identifier echoed back (FIX tag 11).
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun clientOrderId(): String = clientOrderId.getRequired("client_order_id")
 
     /**
      * Timestamp when order was created (UTC)
@@ -392,6 +405,15 @@ private constructor(
      * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("account_id") @ExcludeMissing fun _accountId(): JsonField<Long> = accountId
+
+    /**
+     * Returns the raw JSON value of [clientOrderId].
+     *
+     * Unlike [clientOrderId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("client_order_id")
+    @ExcludeMissing
+    fun _clientOrderId(): JsonField<String> = clientOrderId
 
     /**
      * Returns the raw JSON value of [createdAt].
@@ -623,6 +645,7 @@ private constructor(
          * ```java
          * .id()
          * .accountId()
+         * .clientOrderId()
          * .createdAt()
          * .filledQuantity()
          * .leavesQuantity()
@@ -647,6 +670,7 @@ private constructor(
 
         private var id: JsonField<String>? = null
         private var accountId: JsonField<Long>? = null
+        private var clientOrderId: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var filledQuantity: JsonField<String>? = null
         private var leavesQuantity: JsonField<String>? = null
@@ -678,6 +702,7 @@ private constructor(
         internal fun from(order: Order) = apply {
             id = order.id
             accountId = order.accountId
+            clientOrderId = order.clientOrderId
             createdAt = order.createdAt
             filledQuantity = order.filledQuantity
             leavesQuantity = order.leavesQuantity
@@ -706,7 +731,7 @@ private constructor(
             additionalProperties = order.additionalProperties.toMutableMap()
         }
 
-        /** Client-provided unique identifier for this order */
+        /** Engine-assigned unique identifier for this order (UUID). */
         fun id(id: String) = id(JsonField.of(id))
 
         /**
@@ -727,6 +752,20 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
+
+        /** Client-provided identifier echoed back (FIX tag 11). */
+        fun clientOrderId(clientOrderId: String) = clientOrderId(JsonField.of(clientOrderId))
+
+        /**
+         * Sets [Builder.clientOrderId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.clientOrderId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun clientOrderId(clientOrderId: JsonField<String>) = apply {
+            this.clientOrderId = clientOrderId
+        }
 
         /** Timestamp when order was created (UTC) */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
@@ -1160,6 +1199,7 @@ private constructor(
          * ```java
          * .id()
          * .accountId()
+         * .clientOrderId()
          * .createdAt()
          * .filledQuantity()
          * .leavesQuantity()
@@ -1182,6 +1222,7 @@ private constructor(
             Order(
                 checkRequired("id", id),
                 checkRequired("accountId", accountId),
+                checkRequired("clientOrderId", clientOrderId),
                 checkRequired("createdAt", createdAt),
                 checkRequired("filledQuantity", filledQuantity),
                 checkRequired("leavesQuantity", leavesQuantity),
@@ -1220,6 +1261,7 @@ private constructor(
 
         id()
         accountId()
+        clientOrderId()
         createdAt()
         filledQuantity()
         leavesQuantity()
@@ -1265,6 +1307,7 @@ private constructor(
     internal fun validity(): Int =
         (if (id.asKnown().isPresent) 1 else 0) +
             (if (accountId.asKnown().isPresent) 1 else 0) +
+            (if (clientOrderId.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (filledQuantity.asKnown().isPresent) 1 else 0) +
             (if (leavesQuantity.asKnown().isPresent) 1 else 0) +
@@ -1299,6 +1342,7 @@ private constructor(
         return other is Order &&
             id == other.id &&
             accountId == other.accountId &&
+            clientOrderId == other.clientOrderId &&
             createdAt == other.createdAt &&
             filledQuantity == other.filledQuantity &&
             leavesQuantity == other.leavesQuantity &&
@@ -1331,6 +1375,7 @@ private constructor(
         Objects.hash(
             id,
             accountId,
+            clientOrderId,
             createdAt,
             filledQuantity,
             leavesQuantity,
@@ -1363,5 +1408,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, securityId=$securityId, securityIdSource=$securityIdSource, securityType=$securityType, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, limitOffset=$limitOffset, limitPrice=$limitPrice, stopPrice=$stopPrice, strategy=$strategy, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, securityId=$securityId, securityIdSource=$securityIdSource, securityType=$securityType, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, limitOffset=$limitOffset, limitPrice=$limitPrice, stopPrice=$stopPrice, strategy=$strategy, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, additionalProperties=$additionalProperties}"
 }
