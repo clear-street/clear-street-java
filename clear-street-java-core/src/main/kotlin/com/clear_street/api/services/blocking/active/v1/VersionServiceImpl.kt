@@ -12,10 +12,13 @@ import com.clear_street.api.core.http.HttpRequest
 import com.clear_street.api.core.http.HttpResponse
 import com.clear_street.api.core.http.HttpResponse.Handler
 import com.clear_street.api.core.http.HttpResponseFor
+import com.clear_street.api.core.http.json
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
 import com.clear_street.api.models.active.v1.version.VersionGetVersionParams
 import com.clear_street.api.models.active.v1.version.VersionGetVersionResponse
+import com.clear_street.api.models.active.v1.version.VersionUpdateVersionParams
+import com.clear_street.api.models.active.v1.version.VersionUpdateVersionResponse
 import java.util.function.Consumer
 
 /** Endpoints for API service metadata. */
@@ -37,6 +40,13 @@ class VersionServiceImpl internal constructor(private val clientOptions: ClientO
     ): VersionGetVersionResponse =
         // get /active/v1/version
         withRawResponse().getVersion(params, requestOptions).parse()
+
+    override fun updateVersion(
+        params: VersionUpdateVersionParams,
+        requestOptions: RequestOptions,
+    ): VersionUpdateVersionResponse =
+        // patch /active/v1/version
+        withRawResponse().updateVersion(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         VersionService.WithRawResponse {
@@ -70,6 +80,34 @@ class VersionServiceImpl internal constructor(private val clientOptions: ClientO
             return errorHandler.handle(response).parseable {
                 response
                     .use { getVersionHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val updateVersionHandler: Handler<VersionUpdateVersionResponse> =
+            jsonHandler<VersionUpdateVersionResponse>(clientOptions.jsonMapper)
+
+        override fun updateVersion(
+            params: VersionUpdateVersionParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<VersionUpdateVersionResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PATCH)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("active", "v1", "version")
+                    .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { updateVersionHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

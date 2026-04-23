@@ -12,6 +12,7 @@ import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsResponse
 import com.clear_street.api.models.active.v1.accounts.AccountPatchAccountByIdParams
 import com.clear_street.api.models.active.v1.accounts.AccountPatchAccountByIdResponse
 import com.clear_street.api.services.async.active.v1.accounts.BalanceServiceAsync
+import com.clear_street.api.services.async.active.v1.accounts.LocateServiceAsync
 import com.clear_street.api.services.async.active.v1.accounts.OrderServiceAsync
 import com.clear_street.api.services.async.active.v1.accounts.PortfolioHistoryServiceAsync
 import com.clear_street.api.services.async.active.v1.accounts.PositionServiceAsync
@@ -35,6 +36,9 @@ interface AccountServiceAsync {
 
     /** Manage trading accounts and view balances. */
     fun balances(): BalanceServiceAsync
+
+    /** Manage locate requests for short selling. */
+    fun locates(): LocateServiceAsync
 
     /** Place, monitor, and manage trading orders. */
     fun orders(): OrderServiceAsync
@@ -156,6 +160,9 @@ interface AccountServiceAsync {
 
         /** Manage trading accounts and view balances. */
         fun balances(): BalanceServiceAsync.WithRawResponse
+
+        /** Manage locate requests for short selling. */
+        fun locates(): LocateServiceAsync.WithRawResponse
 
         /** Place, monitor, and manage trading orders. */
         fun orders(): OrderServiceAsync.WithRawResponse

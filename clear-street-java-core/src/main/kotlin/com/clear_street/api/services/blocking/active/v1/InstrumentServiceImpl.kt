@@ -25,6 +25,10 @@ import com.clear_street.api.services.blocking.active.v1.instruments.EventService
 import com.clear_street.api.services.blocking.active.v1.instruments.EventServiceImpl
 import com.clear_street.api.services.blocking.active.v1.instruments.OptionService
 import com.clear_street.api.services.blocking.active.v1.instruments.OptionServiceImpl
+import com.clear_street.api.services.blocking.active.v1.instruments.ReportingService
+import com.clear_street.api.services.blocking.active.v1.instruments.ReportingServiceImpl
+import com.clear_street.api.services.blocking.active.v1.instruments.VenueService
+import com.clear_street.api.services.blocking.active.v1.instruments.VenueServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -44,6 +48,10 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
 
     private val options: OptionService by lazy { OptionServiceImpl(clientOptions) }
 
+    private val reporting: ReportingService by lazy { ReportingServiceImpl(clientOptions) }
+
+    private val venues: VenueService by lazy { VenueServiceImpl(clientOptions) }
+
     override fun withRawResponse(): InstrumentService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): InstrumentService =
@@ -56,6 +64,12 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
     override fun events(): EventService = events
 
     override fun options(): OptionService = options
+
+    /** Retrieve details and lists of tradable instruments. */
+    override fun reporting(): ReportingService = reporting
+
+    /** Retrieve details and lists of tradable instruments. */
+    override fun venues(): VenueService = venues
 
     override fun getInstrumentById(
         params: InstrumentGetInstrumentByIdParams,
@@ -89,6 +103,14 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
             OptionServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val reporting: ReportingService.WithRawResponse by lazy {
+            ReportingServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val venues: VenueService.WithRawResponse by lazy {
+            VenueServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): InstrumentService.WithRawResponse =
@@ -103,6 +125,12 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
         override fun events(): EventService.WithRawResponse = events
 
         override fun options(): OptionService.WithRawResponse = options
+
+        /** Retrieve details and lists of tradable instruments. */
+        override fun reporting(): ReportingService.WithRawResponse = reporting
+
+        /** Retrieve details and lists of tradable instruments. */
+        override fun venues(): VenueService.WithRawResponse = venues
 
         private val getInstrumentByIdHandler: Handler<InstrumentGetInstrumentByIdResponse> =
             jsonHandler<InstrumentGetInstrumentByIdResponse>(clientOptions.jsonMapper)

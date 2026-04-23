@@ -25,6 +25,10 @@ import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsy
 import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.instruments.OptionServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.OptionServiceAsyncImpl
+import com.clear_street.api.services.async.active.v1.instruments.ReportingServiceAsync
+import com.clear_street.api.services.async.active.v1.instruments.ReportingServiceAsyncImpl
+import com.clear_street.api.services.async.active.v1.instruments.VenueServiceAsync
+import com.clear_street.api.services.async.active.v1.instruments.VenueServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -45,6 +49,12 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
 
     private val options: OptionServiceAsync by lazy { OptionServiceAsyncImpl(clientOptions) }
 
+    private val reporting: ReportingServiceAsync by lazy {
+        ReportingServiceAsyncImpl(clientOptions)
+    }
+
+    private val venues: VenueServiceAsync by lazy { VenueServiceAsyncImpl(clientOptions) }
+
     override fun withRawResponse(): InstrumentServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): InstrumentServiceAsync =
@@ -57,6 +67,12 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
     override fun events(): EventServiceAsync = events
 
     override fun options(): OptionServiceAsync = options
+
+    /** Retrieve details and lists of tradable instruments. */
+    override fun reporting(): ReportingServiceAsync = reporting
+
+    /** Retrieve details and lists of tradable instruments. */
+    override fun venues(): VenueServiceAsync = venues
 
     override fun getInstrumentById(
         params: InstrumentGetInstrumentByIdParams,
@@ -90,6 +106,14 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
             OptionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val reporting: ReportingServiceAsync.WithRawResponse by lazy {
+            ReportingServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val venues: VenueServiceAsync.WithRawResponse by lazy {
+            VenueServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): InstrumentServiceAsync.WithRawResponse =
@@ -105,6 +129,12 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
         override fun events(): EventServiceAsync.WithRawResponse = events
 
         override fun options(): OptionServiceAsync.WithRawResponse = options
+
+        /** Retrieve details and lists of tradable instruments. */
+        override fun reporting(): ReportingServiceAsync.WithRawResponse = reporting
+
+        /** Retrieve details and lists of tradable instruments. */
+        override fun venues(): VenueServiceAsync.WithRawResponse = venues
 
         private val getInstrumentByIdHandler: Handler<InstrumentGetInstrumentByIdResponse> =
             jsonHandler<InstrumentGetInstrumentByIdResponse>(clientOptions.jsonMapper)
