@@ -42,8 +42,9 @@ internal class OrderGetOrdersResponseTest {
                 )
                 .addData(
                     Order.builder()
-                        .id("my-ref-id-20251001-001")
+                        .id("0195f6c7-4f64-7e3c-8b0a-1d8e4f5e6a7b")
                         .accountId(19816L)
+                        .clientOrderId("my-ref-id-20251001-001")
                         .createdAt(OffsetDateTime.parse("2025-10-31T13:30:00.000000000Z"))
                         .filledQuantity("50")
                         .leavesQuantity("50")
@@ -106,8 +107,9 @@ internal class OrderGetOrdersResponseTest {
         assertThat(orderGetOrdersResponse.data())
             .containsExactly(
                 Order.builder()
-                    .id("my-ref-id-20251001-001")
+                    .id("0195f6c7-4f64-7e3c-8b0a-1d8e4f5e6a7b")
                     .accountId(19816L)
+                    .clientOrderId("my-ref-id-20251001-001")
                     .createdAt(OffsetDateTime.parse("2025-10-31T13:30:00.000000000Z"))
                     .filledQuantity("50")
                     .leavesQuantity("50")
@@ -172,8 +174,9 @@ internal class OrderGetOrdersResponseTest {
                 )
                 .addData(
                     Order.builder()
-                        .id("my-ref-id-20251001-001")
+                        .id("0195f6c7-4f64-7e3c-8b0a-1d8e4f5e6a7b")
                         .accountId(19816L)
+                        .clientOrderId("my-ref-id-20251001-001")
                         .createdAt(OffsetDateTime.parse("2025-10-31T13:30:00.000000000Z"))
                         .filledQuantity("50")
                         .leavesQuantity("50")
