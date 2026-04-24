@@ -30,7 +30,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve details and lists of tradable instruments. */
+/** Create and manage watchlists. */
 class WatchlistServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     WatchlistServiceAsync {
 
@@ -45,7 +45,7 @@ class WatchlistServiceAsyncImpl internal constructor(private val clientOptions: 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): WatchlistServiceAsync =
         WatchlistServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Create and manage watchlists. */
     override fun items(): ItemServiceAsync = items
 
     override fun createWatchlist(
@@ -93,7 +93,7 @@ class WatchlistServiceAsyncImpl internal constructor(private val clientOptions: 
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Create and manage watchlists. */
         override fun items(): ItemServiceAsync.WithRawResponse = items
 
         private val createWatchlistHandler: Handler<WatchlistCreateWatchlistResponse> =

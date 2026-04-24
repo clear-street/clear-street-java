@@ -10,7 +10,7 @@ import com.clear_street.api.models.active.v1.accounts.portfoliohistory.Portfolio
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Manage trading accounts and view balances. */
+/** Manage trading accounts, balances, and portfolio history. */
 interface PortfolioHistoryServiceAsync {
 
     /**

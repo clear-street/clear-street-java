@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Manage trading accounts and view balances. */
+/** Manage trading accounts, balances, and portfolio history. */
 class BalanceServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     BalanceServiceAsync {
 

@@ -33,7 +33,7 @@ import com.clear_street.api.services.blocking.active.v1.accounts.PositionService
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Manage trading accounts and view balances. */
+/** Manage trading accounts, balances, and portfolio history. */
 class AccountServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     AccountService {
 
@@ -56,13 +56,13 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountService =
         AccountServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     override fun balances(): BalanceService = balances
 
     /** Place, monitor, and manage trading orders. */
     override fun orders(): OrderService = orders
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     override fun portfolioHistory(): PortfolioHistoryService = portfolioHistory
 
     /** View account positions. */
@@ -118,13 +118,13 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         override fun balances(): BalanceService.WithRawResponse = balances
 
         /** Place, monitor, and manage trading orders. */
         override fun orders(): OrderService.WithRawResponse = orders
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         override fun portfolioHistory(): PortfolioHistoryService.WithRawResponse = portfolioHistory
 
         /** View account positions. */

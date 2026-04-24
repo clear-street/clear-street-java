@@ -20,7 +20,7 @@ import com.clear_street.api.models.active.v1.accounts.portfoliohistory.Portfolio
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Manage trading accounts and view balances. */
+/** Manage trading accounts, balances, and portfolio history. */
 class PortfolioHistoryServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     PortfolioHistoryService {
 

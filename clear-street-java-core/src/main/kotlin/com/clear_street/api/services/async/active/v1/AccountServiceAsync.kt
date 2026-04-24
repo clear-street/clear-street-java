@@ -18,7 +18,7 @@ import com.clear_street.api.services.async.active.v1.accounts.PositionServiceAsy
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Manage trading accounts and view balances. */
+/** Manage trading accounts, balances, and portfolio history. */
 interface AccountServiceAsync {
 
     /**
@@ -33,13 +33,13 @@ interface AccountServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountServiceAsync
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     fun balances(): BalanceServiceAsync
 
     /** Place, monitor, and manage trading orders. */
     fun orders(): OrderServiceAsync
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     fun portfolioHistory(): PortfolioHistoryServiceAsync
 
     /** View account positions. */
@@ -154,13 +154,13 @@ interface AccountServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): AccountServiceAsync.WithRawResponse
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         fun balances(): BalanceServiceAsync.WithRawResponse
 
         /** Place, monitor, and manage trading orders. */
         fun orders(): OrderServiceAsync.WithRawResponse
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         fun portfolioHistory(): PortfolioHistoryServiceAsync.WithRawResponse
 
         /** View account positions. */

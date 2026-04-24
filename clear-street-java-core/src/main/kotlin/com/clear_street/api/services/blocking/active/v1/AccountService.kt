@@ -18,7 +18,7 @@ import com.clear_street.api.services.blocking.active.v1.accounts.PositionService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
-/** Manage trading accounts and view balances. */
+/** Manage trading accounts, balances, and portfolio history. */
 interface AccountService {
 
     /**
@@ -33,13 +33,13 @@ interface AccountService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountService
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     fun balances(): BalanceService
 
     /** Place, monitor, and manage trading orders. */
     fun orders(): OrderService
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     fun portfolioHistory(): PortfolioHistoryService
 
     /** View account positions. */
@@ -143,13 +143,13 @@ interface AccountService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountService.WithRawResponse
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         fun balances(): BalanceService.WithRawResponse
 
         /** Place, monitor, and manage trading orders. */
         fun orders(): OrderService.WithRawResponse
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         fun portfolioHistory(): PortfolioHistoryService.WithRawResponse
 
         /** View account positions. */

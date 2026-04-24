@@ -34,7 +34,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Manage trading accounts and view balances. */
+/** Manage trading accounts, balances, and portfolio history. */
 class AccountServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     AccountServiceAsync {
 
@@ -57,13 +57,13 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountServiceAsync =
         AccountServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     override fun balances(): BalanceServiceAsync = balances
 
     /** Place, monitor, and manage trading orders. */
     override fun orders(): OrderServiceAsync = orders
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     override fun portfolioHistory(): PortfolioHistoryServiceAsync = portfolioHistory
 
     /** View account positions. */
@@ -119,13 +119,13 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         override fun balances(): BalanceServiceAsync.WithRawResponse = balances
 
         /** Place, monitor, and manage trading orders. */
         override fun orders(): OrderServiceAsync.WithRawResponse = orders
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         override fun portfolioHistory(): PortfolioHistoryServiceAsync.WithRawResponse =
             portfolioHistory
 

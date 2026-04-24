@@ -18,7 +18,7 @@ import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerReplace
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
-/** Retrieve details and lists of tradable instruments. */
+/** Search and manage saved screeners. */
 interface SavedScreenerService {
 
     /**

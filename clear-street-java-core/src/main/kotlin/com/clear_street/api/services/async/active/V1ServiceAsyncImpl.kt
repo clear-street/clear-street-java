@@ -77,7 +77,7 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1ServiceAsync =
         V1ServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     override fun accounts(): AccountServiceAsync = accounts
 
     /** Manage API keys for authentication. */
@@ -93,21 +93,21 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     override fun marketData(): MarketDataServiceAsync = marketData
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Retrieve market news and related instrument metadata. */
     override fun news(): NewsServiceAsync = news
 
     override fun omniAi(): OmniAiServiceAsync = omniAi
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Search and manage saved screeners. */
     override fun savedScreeners(): SavedScreenerServiceAsync = savedScreeners
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Search and manage saved screeners. */
     override fun screener(): ScreenerServiceAsync = screener
 
     /** Endpoints for API service metadata. */
     override fun version(): VersionServiceAsync = version
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Create and manage watchlists. */
     override fun watchlists(): WatchlistServiceAsync = watchlists
 
     /** Active Websocket. */
@@ -175,7 +175,7 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         override fun accounts(): AccountServiceAsync.WithRawResponse = accounts
 
         /** Manage API keys for authentication. */
@@ -191,21 +191,21 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         override fun marketData(): MarketDataServiceAsync.WithRawResponse = marketData
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Retrieve market news and related instrument metadata. */
         override fun news(): NewsServiceAsync.WithRawResponse = news
 
         override fun omniAi(): OmniAiServiceAsync.WithRawResponse = omniAi
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Search and manage saved screeners. */
         override fun savedScreeners(): SavedScreenerServiceAsync.WithRawResponse = savedScreeners
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Search and manage saved screeners. */
         override fun screener(): ScreenerServiceAsync.WithRawResponse = screener
 
         /** Endpoints for API service metadata. */
         override fun version(): VersionServiceAsync.WithRawResponse = version
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Create and manage watchlists. */
         override fun watchlists(): WatchlistServiceAsync.WithRawResponse = watchlists
 
         /** Active Websocket. */

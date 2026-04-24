@@ -23,7 +23,7 @@ import com.clear_street.api.models.active.v1.watchlists.items.ItemDeleteWatchlis
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve details and lists of tradable instruments. */
+/** Create and manage watchlists. */
 class ItemServiceImpl internal constructor(private val clientOptions: ClientOptions) : ItemService {
 
     private val withRawResponse: ItemService.WithRawResponse by lazy {

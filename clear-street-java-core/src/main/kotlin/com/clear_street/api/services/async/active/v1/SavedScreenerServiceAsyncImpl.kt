@@ -30,7 +30,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve details and lists of tradable instruments. */
+/** Search and manage saved screeners. */
 class SavedScreenerServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     SavedScreenerServiceAsync {
 

@@ -21,7 +21,7 @@ import com.clear_street.api.models.active.v1.screener.ScreenerSearchScreenerPara
 import com.clear_street.api.models.active.v1.screener.ScreenerSearchScreenerResponse
 import java.util.function.Consumer
 
-/** Retrieve details and lists of tradable instruments. */
+/** Search and manage saved screeners. */
 class ScreenerServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     ScreenerService {
 
