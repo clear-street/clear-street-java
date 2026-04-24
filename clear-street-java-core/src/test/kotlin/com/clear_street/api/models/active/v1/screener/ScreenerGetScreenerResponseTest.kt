@@ -42,6 +42,7 @@ internal class ScreenerGetScreenerResponseTest {
                 )
                 .addData(
                     ScreenerItem.builder()
+                        .instrumentId("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
                         .price("175.05")
                         .securityId("AAPL")
                         .securityIdSource(SecurityIdSource.CMS)
@@ -118,6 +119,7 @@ internal class ScreenerGetScreenerResponseTest {
         assertThat(screenerGetScreenerResponse.data())
             .containsExactly(
                 ScreenerItem.builder()
+                    .instrumentId("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
                     .price("175.05")
                     .securityId("AAPL")
                     .securityIdSource(SecurityIdSource.CMS)
@@ -196,6 +198,7 @@ internal class ScreenerGetScreenerResponseTest {
                 )
                 .addData(
                     ScreenerItem.builder()
+                        .instrumentId("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
                         .price("175.05")
                         .securityId("AAPL")
                         .securityIdSource(SecurityIdSource.CMS)

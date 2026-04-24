@@ -24,6 +24,7 @@ import kotlin.jvm.optionals.getOrNull
 class ScreenerItem
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val instrumentId: JsonField<String>,
     private val price: JsonField<String>,
     private val securityId: JsonField<String>,
     private val securityIdSource: JsonField<SecurityIdSource>,
@@ -75,6 +76,9 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("instrument_id")
+        @ExcludeMissing
+        instrumentId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("price") @ExcludeMissing price: JsonField<String> = JsonMissing.of(),
         @JsonProperty("security_id")
         @ExcludeMissing
@@ -198,6 +202,7 @@ private constructor(
         @ExcludeMissing
         ytdChangePct: JsonField<String> = JsonMissing.of(),
     ) : this(
+        instrumentId,
         price,
         securityId,
         securityIdSource,
@@ -246,6 +251,15 @@ private constructor(
         ytdChangePct,
         mutableMapOf(),
     )
+
+    /**
+     * The OEMS instrument ID (`instrument.instruments.id`). Always present regardless of
+     * `field_filter`.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun instrumentId(): String = instrumentId.getRequired("instrument_id")
 
     /**
      * The latest price for the instrument
@@ -624,6 +638,15 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun ytdChangePct(): Optional<String> = ytdChangePct.getOptional("ytd_change_pct")
+
+    /**
+     * Returns the raw JSON value of [instrumentId].
+     *
+     * Unlike [instrumentId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("instrument_id")
+    @ExcludeMissing
+    fun _instrumentId(): JsonField<String> = instrumentId
 
     /**
      * Returns the raw JSON value of [price].
@@ -1054,6 +1077,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .instrumentId()
          * .price()
          * .securityId()
          * .securityIdSource()
@@ -1067,6 +1091,7 @@ private constructor(
     /** A builder for [ScreenerItem]. */
     class Builder internal constructor() {
 
+        private var instrumentId: JsonField<String>? = null
         private var price: JsonField<String>? = null
         private var securityId: JsonField<String>? = null
         private var securityIdSource: JsonField<SecurityIdSource>? = null
@@ -1117,6 +1142,7 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(screenerItem: ScreenerItem) = apply {
+            instrumentId = screenerItem.instrumentId
             price = screenerItem.price
             securityId = screenerItem.securityId
             securityIdSource = screenerItem.securityIdSource
@@ -1164,6 +1190,23 @@ private constructor(
             yearToDateOpen = screenerItem.yearToDateOpen
             ytdChangePct = screenerItem.ytdChangePct
             additionalProperties = screenerItem.additionalProperties.toMutableMap()
+        }
+
+        /**
+         * The OEMS instrument ID (`instrument.instruments.id`). Always present regardless of
+         * `field_filter`.
+         */
+        fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
+
+        /**
+         * Sets [Builder.instrumentId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.instrumentId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun instrumentId(instrumentId: JsonField<String>) = apply {
+            this.instrumentId = instrumentId
         }
 
         /** The latest price for the instrument */
@@ -2002,6 +2045,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .instrumentId()
          * .price()
          * .securityId()
          * .securityIdSource()
@@ -2013,6 +2057,7 @@ private constructor(
          */
         fun build(): ScreenerItem =
             ScreenerItem(
+                checkRequired("instrumentId", instrumentId),
                 checkRequired("price", price),
                 checkRequired("securityId", securityId),
                 checkRequired("securityIdSource", securityIdSource),
@@ -2070,6 +2115,7 @@ private constructor(
             return@apply
         }
 
+        instrumentId()
         price()
         securityId()
         securityIdSource().validate()
@@ -2134,7 +2180,8 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (if (price.asKnown().isPresent) 1 else 0) +
+        (if (instrumentId.asKnown().isPresent) 1 else 0) +
+            (if (price.asKnown().isPresent) 1 else 0) +
             (if (securityId.asKnown().isPresent) 1 else 0) +
             (securityIdSource.asKnown().getOrNull()?.validity() ?: 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
@@ -2187,6 +2234,7 @@ private constructor(
         }
 
         return other is ScreenerItem &&
+            instrumentId == other.instrumentId &&
             price == other.price &&
             securityId == other.securityId &&
             securityIdSource == other.securityIdSource &&
@@ -2238,6 +2286,7 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            instrumentId,
             price,
             securityId,
             securityIdSource,
@@ -2291,5 +2340,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ScreenerItem{price=$price, securityId=$securityId, securityIdSource=$securityIdSource, symbol=$symbol, totalRatings=$totalRatings, consensusPriceTarget=$consensusPriceTarget, consensusRating=$consensusRating, countryOfIssue=$countryOfIssue, debtToEquityTtm=$debtToEquityTtm, description=$description, dividendYieldTtm=$dividendYieldTtm, earningsPerShareTtm=$earningsPerShareTtm, exchange=$exchange, fiftyTwoWeekHigh=$fiftyTwoWeekHigh, fiftyTwoWeekLow=$fiftyTwoWeekLow, gapFrom52wHighPct=$gapFrom52wHighPct, gapFrom52wLowPct=$gapFrom52wLowPct, industry=$industry, listDate=$listDate, marketCap=$marketCap, monthAvgVolume=$monthAvgVolume, name=$name, oneMonthAgoClose=$oneMonthAgoClose, oneMonthAgoOpen=$oneMonthAgoOpen, oneMonthChangePct=$oneMonthChangePct, oneWeekAgoClose=$oneWeekAgoClose, oneWeekAgoOpen=$oneWeekAgoOpen, oneWeekChangePct=$oneWeekChangePct, oneYearAgoClose=$oneYearAgoClose, oneYearAgoOpen=$oneYearAgoOpen, oneYearChangePct=$oneYearChangePct, percentChange=$percentChange, prevDayClose=$prevDayClose, priceToEarningsTtm=$priceToEarningsTtm, sector=$sector, securityType=$securityType, sixMonthChangePct=$sixMonthChangePct, sixMonthsAgoClose=$sixMonthsAgoClose, sixMonthsAgoOpen=$sixMonthsAgoOpen, threeMonthChangePct=$threeMonthChangePct, threeMonthsAgoClose=$threeMonthsAgoClose, threeMonthsAgoOpen=$threeMonthsAgoOpen, volume=$volume, weekAvgVolume=$weekAvgVolume, yearToDateOpen=$yearToDateOpen, ytdChangePct=$ytdChangePct, additionalProperties=$additionalProperties}"
+        "ScreenerItem{instrumentId=$instrumentId, price=$price, securityId=$securityId, securityIdSource=$securityIdSource, symbol=$symbol, totalRatings=$totalRatings, consensusPriceTarget=$consensusPriceTarget, consensusRating=$consensusRating, countryOfIssue=$countryOfIssue, debtToEquityTtm=$debtToEquityTtm, description=$description, dividendYieldTtm=$dividendYieldTtm, earningsPerShareTtm=$earningsPerShareTtm, exchange=$exchange, fiftyTwoWeekHigh=$fiftyTwoWeekHigh, fiftyTwoWeekLow=$fiftyTwoWeekLow, gapFrom52wHighPct=$gapFrom52wHighPct, gapFrom52wLowPct=$gapFrom52wLowPct, industry=$industry, listDate=$listDate, marketCap=$marketCap, monthAvgVolume=$monthAvgVolume, name=$name, oneMonthAgoClose=$oneMonthAgoClose, oneMonthAgoOpen=$oneMonthAgoOpen, oneMonthChangePct=$oneMonthChangePct, oneWeekAgoClose=$oneWeekAgoClose, oneWeekAgoOpen=$oneWeekAgoOpen, oneWeekChangePct=$oneWeekChangePct, oneYearAgoClose=$oneYearAgoClose, oneYearAgoOpen=$oneYearAgoOpen, oneYearChangePct=$oneYearChangePct, percentChange=$percentChange, prevDayClose=$prevDayClose, priceToEarningsTtm=$priceToEarningsTtm, sector=$sector, securityType=$securityType, sixMonthChangePct=$sixMonthChangePct, sixMonthsAgoClose=$sixMonthsAgoClose, sixMonthsAgoOpen=$sixMonthsAgoOpen, threeMonthChangePct=$threeMonthChangePct, threeMonthsAgoClose=$threeMonthsAgoClose, threeMonthsAgoOpen=$threeMonthsAgoOpen, volume=$volume, weekAvgVolume=$weekAvgVolume, yearToDateOpen=$yearToDateOpen, ytdChangePct=$ytdChangePct, additionalProperties=$additionalProperties}"
 }

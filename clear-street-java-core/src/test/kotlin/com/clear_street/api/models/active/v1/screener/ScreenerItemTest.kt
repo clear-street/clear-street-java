@@ -16,6 +16,7 @@ internal class ScreenerItemTest {
     fun create() {
         val screenerItem =
             ScreenerItem.builder()
+                .instrumentId("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
                 .price("175.05")
                 .securityId("AAPL")
                 .securityIdSource(SecurityIdSource.CMS)
@@ -64,6 +65,7 @@ internal class ScreenerItemTest {
                 .ytdChangePct("12.50")
                 .build()
 
+        assertThat(screenerItem.instrumentId()).isEqualTo("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
         assertThat(screenerItem.price()).isEqualTo("175.05")
         assertThat(screenerItem.securityId()).isEqualTo("AAPL")
         assertThat(screenerItem.securityIdSource()).isEqualTo(SecurityIdSource.CMS)
@@ -118,6 +120,7 @@ internal class ScreenerItemTest {
         val jsonMapper = jsonMapper()
         val screenerItem =
             ScreenerItem.builder()
+                .instrumentId("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
                 .price("175.05")
                 .securityId("AAPL")
                 .securityIdSource(SecurityIdSource.CMS)
