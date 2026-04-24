@@ -17,7 +17,7 @@ import com.clear_street.api.services.async.active.v1.watchlists.ItemServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Retrieve details and lists of tradable instruments. */
+/** Create and manage watchlists. */
 interface WatchlistServiceAsync {
 
     /**
@@ -32,7 +32,7 @@ interface WatchlistServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): WatchlistServiceAsync
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Create and manage watchlists. */
     fun items(): ItemServiceAsync
 
     /** Create Watchlist */
@@ -158,7 +158,7 @@ interface WatchlistServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): WatchlistServiceAsync.WithRawResponse
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Create and manage watchlists. */
         fun items(): ItemServiceAsync.WithRawResponse
 
         /**

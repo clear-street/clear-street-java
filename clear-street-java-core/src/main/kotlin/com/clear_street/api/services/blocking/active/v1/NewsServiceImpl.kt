@@ -18,7 +18,7 @@ import com.clear_street.api.models.active.v1.news.NewsGetNewsParams
 import com.clear_street.api.models.active.v1.news.NewsGetNewsResponse
 import java.util.function.Consumer
 
-/** Retrieve details and lists of tradable instruments. */
+/** Retrieve market news and related instrument metadata. */
 class NewsServiceImpl internal constructor(private val clientOptions: ClientOptions) : NewsService {
 
     private val withRawResponse: NewsService.WithRawResponse by lazy {

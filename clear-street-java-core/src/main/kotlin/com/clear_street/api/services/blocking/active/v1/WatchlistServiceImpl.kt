@@ -29,7 +29,7 @@ import com.clear_street.api.services.blocking.active.v1.watchlists.ItemServiceIm
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve details and lists of tradable instruments. */
+/** Create and manage watchlists. */
 class WatchlistServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     WatchlistService {
 
@@ -44,7 +44,7 @@ class WatchlistServiceImpl internal constructor(private val clientOptions: Clien
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): WatchlistService =
         WatchlistServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Create and manage watchlists. */
     override fun items(): ItemService = items
 
     override fun createWatchlist(
@@ -93,7 +93,7 @@ class WatchlistServiceImpl internal constructor(private val clientOptions: Clien
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Create and manage watchlists. */
         override fun items(): ItemService.WithRawResponse = items
 
         private val createWatchlistHandler: Handler<WatchlistCreateWatchlistResponse> =

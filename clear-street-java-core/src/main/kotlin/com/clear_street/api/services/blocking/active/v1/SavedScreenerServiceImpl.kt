@@ -29,7 +29,7 @@ import com.clear_street.api.models.active.v1.savedscreeners.SavedScreenerReplace
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve details and lists of tradable instruments. */
+/** Search and manage saved screeners. */
 class SavedScreenerServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     SavedScreenerService {
 

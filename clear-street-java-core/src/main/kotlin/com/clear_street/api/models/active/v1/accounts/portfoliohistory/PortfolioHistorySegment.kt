@@ -140,7 +140,8 @@ private constructor(
     fun netPnl(): Optional<String> = netPnl.getOptional("net_pnl")
 
     /**
-     * Sum of the profit and loss from the previous trading day.
+     * P&L attributable to start-of-day (carried) positions from market movement during this trading
+     * day.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -413,7 +414,10 @@ private constructor(
          */
         fun netPnl(netPnl: JsonField<String>) = apply { this.netPnl = netPnl }
 
-        /** Sum of the profit and loss from the previous trading day. */
+        /**
+         * P&L attributable to start-of-day (carried) positions from market movement during this
+         * trading day.
+         */
         fun positionPnl(positionPnl: String?) = positionPnl(JsonField.ofNullable(positionPnl))
 
         /** Alias for calling [Builder.positionPnl] with `positionPnl.orElse(null)`. */

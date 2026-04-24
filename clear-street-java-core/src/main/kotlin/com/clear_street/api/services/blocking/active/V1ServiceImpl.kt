@@ -70,7 +70,7 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1Service =
         V1ServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     override fun accounts(): AccountService = accounts
 
     /** Manage API keys for authentication. */
@@ -86,21 +86,21 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     override fun marketData(): MarketDataService = marketData
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Retrieve market news and related instrument metadata. */
     override fun news(): NewsService = news
 
     override fun omniAi(): OmniAiService = omniAi
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Search and manage saved screeners. */
     override fun savedScreeners(): SavedScreenerService = savedScreeners
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Search and manage saved screeners. */
     override fun screener(): ScreenerService = screener
 
     /** Endpoints for API service metadata. */
     override fun version(): VersionService = version
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Create and manage watchlists. */
     override fun watchlists(): WatchlistService = watchlists
 
     /** Active Websocket. */
@@ -168,7 +168,7 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         override fun accounts(): AccountService.WithRawResponse = accounts
 
         /** Manage API keys for authentication. */
@@ -184,21 +184,21 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         override fun marketData(): MarketDataService.WithRawResponse = marketData
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Retrieve market news and related instrument metadata. */
         override fun news(): NewsService.WithRawResponse = news
 
         override fun omniAi(): OmniAiService.WithRawResponse = omniAi
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Search and manage saved screeners. */
         override fun savedScreeners(): SavedScreenerService.WithRawResponse = savedScreeners
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Search and manage saved screeners. */
         override fun screener(): ScreenerService.WithRawResponse = screener
 
         /** Endpoints for API service metadata. */
         override fun version(): VersionService.WithRawResponse = version
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Create and manage watchlists. */
         override fun watchlists(): WatchlistService.WithRawResponse = watchlists
 
         /** Active Websocket. */

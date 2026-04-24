@@ -24,7 +24,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
-/** Retrieve details and lists of tradable instruments. */
+/** Create and manage watchlists. */
 class ItemServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     ItemServiceAsync {
 

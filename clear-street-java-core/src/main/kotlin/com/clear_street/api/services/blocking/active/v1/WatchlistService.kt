@@ -17,7 +17,7 @@ import com.clear_street.api.services.blocking.active.v1.watchlists.ItemService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
-/** Retrieve details and lists of tradable instruments. */
+/** Create and manage watchlists. */
 interface WatchlistService {
 
     /**
@@ -32,7 +32,7 @@ interface WatchlistService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): WatchlistService
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Create and manage watchlists. */
     fun items(): ItemService
 
     /** Create Watchlist */
@@ -142,7 +142,7 @@ interface WatchlistService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): WatchlistService.WithRawResponse
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Create and manage watchlists. */
         fun items(): ItemService.WithRawResponse
 
         /**

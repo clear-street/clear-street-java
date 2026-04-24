@@ -12,7 +12,7 @@ import com.clear_street.api.models.active.v1.watchlists.items.ItemDeleteWatchlis
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Retrieve details and lists of tradable instruments. */
+/** Create and manage watchlists. */
 interface ItemServiceAsync {
 
     /**

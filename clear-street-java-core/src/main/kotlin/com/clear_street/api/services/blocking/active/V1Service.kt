@@ -32,7 +32,7 @@ interface V1Service {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1Service
 
-    /** Manage trading accounts and view balances. */
+    /** Manage trading accounts, balances, and portfolio history. */
     fun accounts(): AccountService
 
     /** Manage API keys for authentication. */
@@ -48,21 +48,21 @@ interface V1Service {
 
     fun marketData(): MarketDataService
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Retrieve market news and related instrument metadata. */
     fun news(): NewsService
 
     fun omniAi(): OmniAiService
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Search and manage saved screeners. */
     fun savedScreeners(): SavedScreenerService
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Search and manage saved screeners. */
     fun screener(): ScreenerService
 
     /** Endpoints for API service metadata. */
     fun version(): VersionService
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Create and manage watchlists. */
     fun watchlists(): WatchlistService
 
     /** Active Websocket. */
@@ -78,7 +78,7 @@ interface V1Service {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1Service.WithRawResponse
 
-        /** Manage trading accounts and view balances. */
+        /** Manage trading accounts, balances, and portfolio history. */
         fun accounts(): AccountService.WithRawResponse
 
         /** Manage API keys for authentication. */
@@ -94,21 +94,21 @@ interface V1Service {
 
         fun marketData(): MarketDataService.WithRawResponse
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Retrieve market news and related instrument metadata. */
         fun news(): NewsService.WithRawResponse
 
         fun omniAi(): OmniAiService.WithRawResponse
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Search and manage saved screeners. */
         fun savedScreeners(): SavedScreenerService.WithRawResponse
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Search and manage saved screeners. */
         fun screener(): ScreenerService.WithRawResponse
 
         /** Endpoints for API service metadata. */
         fun version(): VersionService.WithRawResponse
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Create and manage watchlists. */
         fun watchlists(): WatchlistService.WithRawResponse
 
         /** Active Websocket. */
