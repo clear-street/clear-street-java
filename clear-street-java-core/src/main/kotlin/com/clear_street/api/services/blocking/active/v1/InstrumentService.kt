@@ -11,6 +11,7 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrument
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentsResponse
 import com.clear_street.api.services.blocking.active.v1.instruments.AnalystReportingService
 import com.clear_street.api.services.blocking.active.v1.instruments.EventService
+import com.clear_street.api.services.blocking.active.v1.instruments.FundamentalService
 import com.clear_street.api.services.blocking.active.v1.instruments.OptionService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
@@ -35,6 +36,9 @@ interface InstrumentService {
 
     /** Retrieve details and lists of tradable instruments. */
     fun events(): EventService
+
+    /** Retrieve details and lists of tradable instruments. */
+    fun fundamentals(): FundamentalService
 
     fun options(): OptionService
 
@@ -100,6 +104,9 @@ interface InstrumentService {
 
         /** Retrieve details and lists of tradable instruments. */
         fun events(): EventService.WithRawResponse
+
+        /** Retrieve details and lists of tradable instruments. */
+        fun fundamentals(): FundamentalService.WithRawResponse
 
         fun options(): OptionService.WithRawResponse
 

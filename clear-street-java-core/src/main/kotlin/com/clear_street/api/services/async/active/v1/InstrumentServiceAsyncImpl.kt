@@ -23,6 +23,8 @@ import com.clear_street.api.services.async.active.v1.instruments.AnalystReportin
 import com.clear_street.api.services.async.active.v1.instruments.AnalystReportingServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsyncImpl
+import com.clear_street.api.services.async.active.v1.instruments.FundamentalServiceAsync
+import com.clear_street.api.services.async.active.v1.instruments.FundamentalServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.instruments.OptionServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.OptionServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
@@ -43,6 +45,10 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
 
     private val events: EventServiceAsync by lazy { EventServiceAsyncImpl(clientOptions) }
 
+    private val fundamentals: FundamentalServiceAsync by lazy {
+        FundamentalServiceAsyncImpl(clientOptions)
+    }
+
     private val options: OptionServiceAsync by lazy { OptionServiceAsyncImpl(clientOptions) }
 
     override fun withRawResponse(): InstrumentServiceAsync.WithRawResponse = withRawResponse
@@ -55,6 +61,9 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
 
     /** Retrieve details and lists of tradable instruments. */
     override fun events(): EventServiceAsync = events
+
+    /** Retrieve details and lists of tradable instruments. */
+    override fun fundamentals(): FundamentalServiceAsync = fundamentals
 
     override fun options(): OptionServiceAsync = options
 
@@ -86,6 +95,10 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
             EventServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val fundamentals: FundamentalServiceAsync.WithRawResponse by lazy {
+            FundamentalServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val options: OptionServiceAsync.WithRawResponse by lazy {
             OptionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -103,6 +116,9 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
 
         /** Retrieve details and lists of tradable instruments. */
         override fun events(): EventServiceAsync.WithRawResponse = events
+
+        /** Retrieve details and lists of tradable instruments. */
+        override fun fundamentals(): FundamentalServiceAsync.WithRawResponse = fundamentals
 
         override fun options(): OptionServiceAsync.WithRawResponse = options
 

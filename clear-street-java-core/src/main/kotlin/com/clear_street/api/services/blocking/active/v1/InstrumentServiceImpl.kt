@@ -23,6 +23,8 @@ import com.clear_street.api.services.blocking.active.v1.instruments.AnalystRepor
 import com.clear_street.api.services.blocking.active.v1.instruments.AnalystReportingServiceImpl
 import com.clear_street.api.services.blocking.active.v1.instruments.EventService
 import com.clear_street.api.services.blocking.active.v1.instruments.EventServiceImpl
+import com.clear_street.api.services.blocking.active.v1.instruments.FundamentalService
+import com.clear_street.api.services.blocking.active.v1.instruments.FundamentalServiceImpl
 import com.clear_street.api.services.blocking.active.v1.instruments.OptionService
 import com.clear_street.api.services.blocking.active.v1.instruments.OptionServiceImpl
 import java.util.function.Consumer
@@ -42,6 +44,8 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
 
     private val events: EventService by lazy { EventServiceImpl(clientOptions) }
 
+    private val fundamentals: FundamentalService by lazy { FundamentalServiceImpl(clientOptions) }
+
     private val options: OptionService by lazy { OptionServiceImpl(clientOptions) }
 
     override fun withRawResponse(): InstrumentService.WithRawResponse = withRawResponse
@@ -54,6 +58,9 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
 
     /** Retrieve details and lists of tradable instruments. */
     override fun events(): EventService = events
+
+    /** Retrieve details and lists of tradable instruments. */
+    override fun fundamentals(): FundamentalService = fundamentals
 
     override fun options(): OptionService = options
 
@@ -85,6 +92,10 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
             EventServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val fundamentals: FundamentalService.WithRawResponse by lazy {
+            FundamentalServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val options: OptionService.WithRawResponse by lazy {
             OptionServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -101,6 +112,9 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
 
         /** Retrieve details and lists of tradable instruments. */
         override fun events(): EventService.WithRawResponse = events
+
+        /** Retrieve details and lists of tradable instruments. */
+        override fun fundamentals(): FundamentalService.WithRawResponse = fundamentals
 
         override fun options(): OptionService.WithRawResponse = options
 
