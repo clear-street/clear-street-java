@@ -11,6 +11,7 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrument
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentsResponse
 import com.clear_street.api.services.async.active.v1.instruments.AnalystReportingServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsync
+import com.clear_street.api.services.async.active.v1.instruments.FundamentalServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.OptionServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -35,6 +36,9 @@ interface InstrumentServiceAsync {
 
     /** Retrieve details and lists of tradable instruments. */
     fun events(): EventServiceAsync
+
+    /** Retrieve details and lists of tradable instruments. */
+    fun fundamentals(): FundamentalServiceAsync
 
     fun options(): OptionServiceAsync
 
@@ -107,6 +111,9 @@ interface InstrumentServiceAsync {
 
         /** Retrieve details and lists of tradable instruments. */
         fun events(): EventServiceAsync.WithRawResponse
+
+        /** Retrieve details and lists of tradable instruments. */
+        fun fundamentals(): FundamentalServiceAsync.WithRawResponse
 
         fun options(): OptionServiceAsync.WithRawResponse
 

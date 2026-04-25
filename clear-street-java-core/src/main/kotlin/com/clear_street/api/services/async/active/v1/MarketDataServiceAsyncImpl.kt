@@ -3,6 +3,8 @@
 package com.clear_street.api.services.async.active.v1
 
 import com.clear_street.api.core.ClientOptions
+import com.clear_street.api.services.async.active.v1.marketdata.DailySummaryServiceAsync
+import com.clear_street.api.services.async.active.v1.marketdata.DailySummaryServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.marketdata.SnapshotServiceAsync
 import com.clear_street.api.services.async.active.v1.marketdata.SnapshotServiceAsyncImpl
 import java.util.function.Consumer
@@ -14,6 +16,10 @@ class MarketDataServiceAsyncImpl internal constructor(private val clientOptions:
         WithRawResponseImpl(clientOptions)
     }
 
+    private val dailySummary: DailySummaryServiceAsync by lazy {
+        DailySummaryServiceAsyncImpl(clientOptions)
+    }
+
     private val snapshot: SnapshotServiceAsync by lazy { SnapshotServiceAsyncImpl(clientOptions) }
 
     override fun withRawResponse(): MarketDataServiceAsync.WithRawResponse = withRawResponse
@@ -22,10 +28,17 @@ class MarketDataServiceAsyncImpl internal constructor(private val clientOptions:
         MarketDataServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     /** Real-time market data snapshots. */
+    override fun dailySummary(): DailySummaryServiceAsync = dailySummary
+
+    /** Real-time market data snapshots. */
     override fun snapshot(): SnapshotServiceAsync = snapshot
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         MarketDataServiceAsync.WithRawResponse {
+
+        private val dailySummary: DailySummaryServiceAsync.WithRawResponse by lazy {
+            DailySummaryServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
 
         private val snapshot: SnapshotServiceAsync.WithRawResponse by lazy {
             SnapshotServiceAsyncImpl.WithRawResponseImpl(clientOptions)
@@ -37,6 +50,9 @@ class MarketDataServiceAsyncImpl internal constructor(private val clientOptions:
             MarketDataServiceAsyncImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
+
+        /** Real-time market data snapshots. */
+        override fun dailySummary(): DailySummaryServiceAsync.WithRawResponse = dailySummary
 
         /** Real-time market data snapshots. */
         override fun snapshot(): SnapshotServiceAsync.WithRawResponse = snapshot
