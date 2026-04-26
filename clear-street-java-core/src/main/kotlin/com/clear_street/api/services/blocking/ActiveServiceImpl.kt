@@ -21,6 +21,7 @@ class ActiveServiceImpl internal constructor(private val clientOptions: ClientOp
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): ActiveService =
         ActiveServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    /** Active Websocket. */
     override fun v1(): V1Service = v1
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -37,6 +38,7 @@ class ActiveServiceImpl internal constructor(private val clientOptions: ClientOp
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        /** Active Websocket. */
         override fun v1(): V1Service.WithRawResponse = v1
     }
 }

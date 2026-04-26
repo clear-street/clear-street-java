@@ -3,6 +3,17 @@
 package com.clear_street.api.services.async.active
 
 import com.clear_street.api.core.ClientOptions
+import com.clear_street.api.core.RequestOptions
+import com.clear_street.api.core.handlers.emptyHandler
+import com.clear_street.api.core.handlers.errorBodyHandler
+import com.clear_street.api.core.handlers.errorHandler
+import com.clear_street.api.core.http.HttpMethod
+import com.clear_street.api.core.http.HttpRequest
+import com.clear_street.api.core.http.HttpResponse
+import com.clear_street.api.core.http.HttpResponse.Handler
+import com.clear_street.api.core.http.parseable
+import com.clear_street.api.core.prepareAsync
+import com.clear_street.api.models.active.v1.V1WsParams
 import com.clear_street.api.services.async.active.v1.AccountServiceAsync
 import com.clear_street.api.services.async.active.v1.AccountServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.ApiKeyServiceAsync
@@ -25,12 +36,12 @@ import com.clear_street.api.services.async.active.v1.ScreenerServiceAsync
 import com.clear_street.api.services.async.active.v1.ScreenerServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.VersionServiceAsync
 import com.clear_street.api.services.async.active.v1.VersionServiceAsyncImpl
-import com.clear_street.api.services.async.active.v1.WServiceAsync
-import com.clear_street.api.services.async.active.v1.WServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.WatchlistServiceAsync
 import com.clear_street.api.services.async.active.v1.WatchlistServiceAsyncImpl
+import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Active Websocket. */
 class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     V1ServiceAsync {
 
@@ -70,8 +81,6 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         WatchlistServiceAsyncImpl(clientOptions)
     }
 
-    private val ws: WServiceAsync by lazy { WServiceAsyncImpl(clientOptions) }
-
     override fun withRawResponse(): V1ServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): V1ServiceAsync =
@@ -110,11 +119,15 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     /** Create and manage watchlists. */
     override fun watchlists(): WatchlistServiceAsync = watchlists
 
-    /** Active Websocket. */
-    override fun ws(): WServiceAsync = ws
+    override fun ws(params: V1WsParams, requestOptions: RequestOptions): CompletableFuture<Void?> =
+        // get /active/v1/ws
+        withRawResponse().ws(params, requestOptions).thenAccept {}
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1ServiceAsync.WithRawResponse {
+
+        private val errorHandler: Handler<HttpResponse> =
+            errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
         private val accounts: AccountServiceAsync.WithRawResponse by lazy {
             AccountServiceAsyncImpl.WithRawResponseImpl(clientOptions)
@@ -164,10 +177,6 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             WatchlistServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val ws: WServiceAsync.WithRawResponse by lazy {
-            WServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): V1ServiceAsync.WithRawResponse =
@@ -208,7 +217,27 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         /** Create and manage watchlists. */
         override fun watchlists(): WatchlistServiceAsync.WithRawResponse = watchlists
 
-        /** Active Websocket. */
-        override fun ws(): WServiceAsync.WithRawResponse = ws
+        private val wsHandler: Handler<Void?> = emptyHandler()
+
+        override fun ws(
+            params: V1WsParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("active", "v1", "ws")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response.use { wsHandler.handle(it) }
+                    }
+                }
+        }
     }
 }

@@ -20,6 +20,7 @@ interface ActiveServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ActiveServiceAsync
 
+    /** Active Websocket. */
     fun v1(): V1ServiceAsync
 
     /**
@@ -36,6 +37,7 @@ interface ActiveServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): ActiveServiceAsync.WithRawResponse
 
+        /** Active Websocket. */
         fun v1(): V1ServiceAsync.WithRawResponse
     }
 }

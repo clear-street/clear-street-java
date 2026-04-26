@@ -3,6 +3,9 @@
 package com.clear_street.api.services.async.active
 
 import com.clear_street.api.core.ClientOptions
+import com.clear_street.api.core.RequestOptions
+import com.clear_street.api.core.http.HttpResponse
+import com.clear_street.api.models.active.v1.V1WsParams
 import com.clear_street.api.services.async.active.v1.AccountServiceAsync
 import com.clear_street.api.services.async.active.v1.ApiKeyServiceAsync
 import com.clear_street.api.services.async.active.v1.CalendarServiceAsync
@@ -14,10 +17,11 @@ import com.clear_street.api.services.async.active.v1.OmniAiServiceAsync
 import com.clear_street.api.services.async.active.v1.SavedScreenerServiceAsync
 import com.clear_street.api.services.async.active.v1.ScreenerServiceAsync
 import com.clear_street.api.services.async.active.v1.VersionServiceAsync
-import com.clear_street.api.services.async.active.v1.WServiceAsync
 import com.clear_street.api.services.async.active.v1.WatchlistServiceAsync
+import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
+/** Active Websocket. */
 interface V1ServiceAsync {
 
     /**
@@ -65,8 +69,22 @@ interface V1ServiceAsync {
     /** Create and manage watchlists. */
     fun watchlists(): WatchlistServiceAsync
 
-    /** Active Websocket. */
-    fun ws(): WServiceAsync
+    /** Upgrade the HTTP connection to a WebSocket and echo incoming messages. */
+    fun ws(): CompletableFuture<Void?> = ws(V1WsParams.none())
+
+    /** @see ws */
+    fun ws(
+        params: V1WsParams = V1WsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<Void?>
+
+    /** @see ws */
+    fun ws(params: V1WsParams = V1WsParams.none()): CompletableFuture<Void?> =
+        ws(params, RequestOptions.none())
+
+    /** @see ws */
+    fun ws(requestOptions: RequestOptions): CompletableFuture<Void?> =
+        ws(V1WsParams.none(), requestOptions)
 
     /** A view of [V1ServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -111,7 +129,24 @@ interface V1ServiceAsync {
         /** Create and manage watchlists. */
         fun watchlists(): WatchlistServiceAsync.WithRawResponse
 
-        /** Active Websocket. */
-        fun ws(): WServiceAsync.WithRawResponse
+        /**
+         * Returns a raw HTTP response for `get /active/v1/ws`, but is otherwise the same as
+         * [V1ServiceAsync.ws].
+         */
+        fun ws(): CompletableFuture<HttpResponse> = ws(V1WsParams.none())
+
+        /** @see ws */
+        fun ws(
+            params: V1WsParams = V1WsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponse>
+
+        /** @see ws */
+        fun ws(params: V1WsParams = V1WsParams.none()): CompletableFuture<HttpResponse> =
+            ws(params, RequestOptions.none())
+
+        /** @see ws */
+        fun ws(requestOptions: RequestOptions): CompletableFuture<HttpResponse> =
+            ws(V1WsParams.none(), requestOptions)
     }
 }

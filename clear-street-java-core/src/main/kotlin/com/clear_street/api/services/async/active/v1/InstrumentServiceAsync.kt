@@ -9,6 +9,8 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrument
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentByIdResponse
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentsParams
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentsResponse
+import com.clear_street.api.models.active.v1.instruments.InstrumentSearchParams
+import com.clear_street.api.models.active.v1.instruments.InstrumentSearchResponse
 import com.clear_street.api.services.async.active.v1.instruments.AnalystReportingServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.FundamentalServiceAsync
@@ -40,6 +42,7 @@ interface InstrumentServiceAsync {
     /** Retrieve details and lists of tradable instruments. */
     fun fundamentals(): FundamentalServiceAsync
 
+    /** Retrieve details and lists of tradable instruments. */
     fun options(): OptionServiceAsync
 
     /** Retrieves detailed information for a specific instrument. */
@@ -92,6 +95,25 @@ interface InstrumentServiceAsync {
         getInstruments(InstrumentGetInstrumentsParams.none(), requestOptions)
 
     /**
+     * Fast in-memory typeahead search over the loaded instrument universe.
+     *
+     * Supports three independent match dimensions in a single `q` parameter: ticker symbol (exact >
+     * prefix > substring), alt-id exact (CUSIP / ISIN / OPRA root / CMS), and company name (token +
+     * character-trigram). Results are ranked by a composite score that includes ADV (log-scaled),
+     * listing status, marginable / ETB flags, and OTC / restricted / liquidation-only penalties.
+     * Defaults to the `EQUITY` asset class (common stock + ETFs + exchange-traded mutual funds);
+     * pass `asset_class=OPTION` for option chains.
+     */
+    fun search(params: InstrumentSearchParams): CompletableFuture<InstrumentSearchResponse> =
+        search(params, RequestOptions.none())
+
+    /** @see search */
+    fun search(
+        params: InstrumentSearchParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<InstrumentSearchResponse>
+
+    /**
      * A view of [InstrumentServiceAsync] that provides access to raw HTTP responses for each
      * method.
      */
@@ -115,6 +137,7 @@ interface InstrumentServiceAsync {
         /** Retrieve details and lists of tradable instruments. */
         fun fundamentals(): FundamentalServiceAsync.WithRawResponse
 
+        /** Retrieve details and lists of tradable instruments. */
         fun options(): OptionServiceAsync.WithRawResponse
 
         /**
@@ -172,5 +195,20 @@ interface InstrumentServiceAsync {
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<InstrumentGetInstrumentsResponse>> =
             getInstruments(InstrumentGetInstrumentsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /active/v1/instruments/search`, but is otherwise the
+         * same as [InstrumentServiceAsync.search].
+         */
+        fun search(
+            params: InstrumentSearchParams
+        ): CompletableFuture<HttpResponseFor<InstrumentSearchResponse>> =
+            search(params, RequestOptions.none())
+
+        /** @see search */
+        fun search(
+            params: InstrumentSearchParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<InstrumentSearchResponse>>
     }
 }

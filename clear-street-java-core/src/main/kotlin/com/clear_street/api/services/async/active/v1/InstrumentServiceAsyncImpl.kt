@@ -19,6 +19,8 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrument
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentByIdResponse
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentsParams
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentsResponse
+import com.clear_street.api.models.active.v1.instruments.InstrumentSearchParams
+import com.clear_street.api.models.active.v1.instruments.InstrumentSearchResponse
 import com.clear_street.api.services.async.active.v1.instruments.AnalystReportingServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.AnalystReportingServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsync
@@ -65,6 +67,7 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
     /** Retrieve details and lists of tradable instruments. */
     override fun fundamentals(): FundamentalServiceAsync = fundamentals
 
+    /** Retrieve details and lists of tradable instruments. */
     override fun options(): OptionServiceAsync = options
 
     override fun getInstrumentById(
@@ -80,6 +83,13 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
     ): CompletableFuture<InstrumentGetInstrumentsResponse> =
         // get /active/v1/instruments
         withRawResponse().getInstruments(params, requestOptions).thenApply { it.parse() }
+
+    override fun search(
+        params: InstrumentSearchParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<InstrumentSearchResponse> =
+        // get /active/v1/instruments/search
+        withRawResponse().search(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         InstrumentServiceAsync.WithRawResponse {
@@ -120,6 +130,7 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
         /** Retrieve details and lists of tradable instruments. */
         override fun fundamentals(): FundamentalServiceAsync.WithRawResponse = fundamentals
 
+        /** Retrieve details and lists of tradable instruments. */
         override fun options(): OptionServiceAsync.WithRawResponse = options
 
         private val getInstrumentByIdHandler: Handler<InstrumentGetInstrumentByIdResponse> =
@@ -182,6 +193,36 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
                     errorHandler.handle(response).parseable {
                         response
                             .use { getInstrumentsHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val searchHandler: Handler<InstrumentSearchResponse> =
+            jsonHandler<InstrumentSearchResponse>(clientOptions.jsonMapper)
+
+        override fun search(
+            params: InstrumentSearchParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<InstrumentSearchResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("active", "v1", "instruments", "search")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { searchHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

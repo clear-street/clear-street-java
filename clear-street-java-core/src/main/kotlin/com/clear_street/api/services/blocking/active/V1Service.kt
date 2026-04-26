@@ -3,6 +3,9 @@
 package com.clear_street.api.services.blocking.active
 
 import com.clear_street.api.core.ClientOptions
+import com.clear_street.api.core.RequestOptions
+import com.clear_street.api.core.http.HttpResponse
+import com.clear_street.api.models.active.v1.V1WsParams
 import com.clear_street.api.services.blocking.active.v1.AccountService
 import com.clear_street.api.services.blocking.active.v1.ApiKeyService
 import com.clear_street.api.services.blocking.active.v1.CalendarService
@@ -14,10 +17,11 @@ import com.clear_street.api.services.blocking.active.v1.OmniAiService
 import com.clear_street.api.services.blocking.active.v1.SavedScreenerService
 import com.clear_street.api.services.blocking.active.v1.ScreenerService
 import com.clear_street.api.services.blocking.active.v1.VersionService
-import com.clear_street.api.services.blocking.active.v1.WService
 import com.clear_street.api.services.blocking.active.v1.WatchlistService
+import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
+/** Active Websocket. */
 interface V1Service {
 
     /**
@@ -65,8 +69,20 @@ interface V1Service {
     /** Create and manage watchlists. */
     fun watchlists(): WatchlistService
 
-    /** Active Websocket. */
-    fun ws(): WService
+    /** Upgrade the HTTP connection to a WebSocket and echo incoming messages. */
+    fun ws() = ws(V1WsParams.none())
+
+    /** @see ws */
+    fun ws(
+        params: V1WsParams = V1WsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    )
+
+    /** @see ws */
+    fun ws(params: V1WsParams = V1WsParams.none()) = ws(params, RequestOptions.none())
+
+    /** @see ws */
+    fun ws(requestOptions: RequestOptions) = ws(V1WsParams.none(), requestOptions)
 
     /** A view of [V1Service] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -111,7 +127,26 @@ interface V1Service {
         /** Create and manage watchlists. */
         fun watchlists(): WatchlistService.WithRawResponse
 
-        /** Active Websocket. */
-        fun ws(): WService.WithRawResponse
+        /**
+         * Returns a raw HTTP response for `get /active/v1/ws`, but is otherwise the same as
+         * [V1Service.ws].
+         */
+        @MustBeClosed fun ws(): HttpResponse = ws(V1WsParams.none())
+
+        /** @see ws */
+        @MustBeClosed
+        fun ws(
+            params: V1WsParams = V1WsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponse
+
+        /** @see ws */
+        @MustBeClosed
+        fun ws(params: V1WsParams = V1WsParams.none()): HttpResponse =
+            ws(params, RequestOptions.none())
+
+        /** @see ws */
+        @MustBeClosed
+        fun ws(requestOptions: RequestOptions): HttpResponse = ws(V1WsParams.none(), requestOptions)
     }
 }
