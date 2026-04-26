@@ -3,6 +3,17 @@
 package com.clear_street.api.services.blocking.active
 
 import com.clear_street.api.core.ClientOptions
+import com.clear_street.api.core.RequestOptions
+import com.clear_street.api.core.handlers.emptyHandler
+import com.clear_street.api.core.handlers.errorBodyHandler
+import com.clear_street.api.core.handlers.errorHandler
+import com.clear_street.api.core.http.HttpMethod
+import com.clear_street.api.core.http.HttpRequest
+import com.clear_street.api.core.http.HttpResponse
+import com.clear_street.api.core.http.HttpResponse.Handler
+import com.clear_street.api.core.http.parseable
+import com.clear_street.api.core.prepare
+import com.clear_street.api.models.active.v1.V1WsParams
 import com.clear_street.api.services.blocking.active.v1.AccountService
 import com.clear_street.api.services.blocking.active.v1.AccountServiceImpl
 import com.clear_street.api.services.blocking.active.v1.ApiKeyService
@@ -25,12 +36,11 @@ import com.clear_street.api.services.blocking.active.v1.ScreenerService
 import com.clear_street.api.services.blocking.active.v1.ScreenerServiceImpl
 import com.clear_street.api.services.blocking.active.v1.VersionService
 import com.clear_street.api.services.blocking.active.v1.VersionServiceImpl
-import com.clear_street.api.services.blocking.active.v1.WService
-import com.clear_street.api.services.blocking.active.v1.WServiceImpl
 import com.clear_street.api.services.blocking.active.v1.WatchlistService
 import com.clear_street.api.services.blocking.active.v1.WatchlistServiceImpl
 import java.util.function.Consumer
 
+/** Active Websocket. */
 class V1ServiceImpl internal constructor(private val clientOptions: ClientOptions) : V1Service {
 
     private val withRawResponse: V1Service.WithRawResponse by lazy {
@@ -62,8 +72,6 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     private val version: VersionService by lazy { VersionServiceImpl(clientOptions) }
 
     private val watchlists: WatchlistService by lazy { WatchlistServiceImpl(clientOptions) }
-
-    private val ws: WService by lazy { WServiceImpl(clientOptions) }
 
     override fun withRawResponse(): V1Service.WithRawResponse = withRawResponse
 
@@ -103,11 +111,16 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     /** Create and manage watchlists. */
     override fun watchlists(): WatchlistService = watchlists
 
-    /** Active Websocket. */
-    override fun ws(): WService = ws
+    override fun ws(params: V1WsParams, requestOptions: RequestOptions) {
+        // get /active/v1/ws
+        withRawResponse().ws(params, requestOptions)
+    }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1Service.WithRawResponse {
+
+        private val errorHandler: Handler<HttpResponse> =
+            errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
         private val accounts: AccountService.WithRawResponse by lazy {
             AccountServiceImpl.WithRawResponseImpl(clientOptions)
@@ -157,10 +170,6 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
             WatchlistServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val ws: WService.WithRawResponse by lazy {
-            WServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): V1Service.WithRawResponse =
@@ -201,7 +210,19 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
         /** Create and manage watchlists. */
         override fun watchlists(): WatchlistService.WithRawResponse = watchlists
 
-        /** Active Websocket. */
-        override fun ws(): WService.WithRawResponse = ws
+        private val wsHandler: Handler<Void?> = emptyHandler()
+
+        override fun ws(params: V1WsParams, requestOptions: RequestOptions): HttpResponse {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("active", "v1", "ws")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable { response.use { wsHandler.handle(it) } }
+        }
     }
 }

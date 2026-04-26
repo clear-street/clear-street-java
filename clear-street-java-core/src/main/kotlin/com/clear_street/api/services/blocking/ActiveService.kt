@@ -20,6 +20,7 @@ interface ActiveService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ActiveService
 
+    /** Active Websocket. */
     fun v1(): V1Service
 
     /** A view of [ActiveService] that provides access to raw HTTP responses for each method. */
@@ -32,6 +33,7 @@ interface ActiveService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): ActiveService.WithRawResponse
 
+        /** Active Websocket. */
         fun v1(): V1Service.WithRawResponse
     }
 }

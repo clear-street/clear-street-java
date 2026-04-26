@@ -19,6 +19,8 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrument
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentByIdResponse
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentsParams
 import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrumentsResponse
+import com.clear_street.api.models.active.v1.instruments.InstrumentSearchParams
+import com.clear_street.api.models.active.v1.instruments.InstrumentSearchResponse
 import com.clear_street.api.services.blocking.active.v1.instruments.AnalystReportingService
 import com.clear_street.api.services.blocking.active.v1.instruments.AnalystReportingServiceImpl
 import com.clear_street.api.services.blocking.active.v1.instruments.EventService
@@ -62,6 +64,7 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
     /** Retrieve details and lists of tradable instruments. */
     override fun fundamentals(): FundamentalService = fundamentals
 
+    /** Retrieve details and lists of tradable instruments. */
     override fun options(): OptionService = options
 
     override fun getInstrumentById(
@@ -77,6 +80,13 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
     ): InstrumentGetInstrumentsResponse =
         // get /active/v1/instruments
         withRawResponse().getInstruments(params, requestOptions).parse()
+
+    override fun search(
+        params: InstrumentSearchParams,
+        requestOptions: RequestOptions,
+    ): InstrumentSearchResponse =
+        // get /active/v1/instruments/search
+        withRawResponse().search(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         InstrumentService.WithRawResponse {
@@ -116,6 +126,7 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
         /** Retrieve details and lists of tradable instruments. */
         override fun fundamentals(): FundamentalService.WithRawResponse = fundamentals
 
+        /** Retrieve details and lists of tradable instruments. */
         override fun options(): OptionService.WithRawResponse = options
 
         private val getInstrumentByIdHandler: Handler<InstrumentGetInstrumentByIdResponse> =
@@ -173,6 +184,33 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
             return errorHandler.handle(response).parseable {
                 response
                     .use { getInstrumentsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val searchHandler: Handler<InstrumentSearchResponse> =
+            jsonHandler<InstrumentSearchResponse>(clientOptions.jsonMapper)
+
+        override fun search(
+            params: InstrumentSearchParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<InstrumentSearchResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("active", "v1", "instruments", "search")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { searchHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

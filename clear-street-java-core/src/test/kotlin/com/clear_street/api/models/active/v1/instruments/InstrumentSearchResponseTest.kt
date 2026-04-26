@@ -13,12 +13,12 @@ import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class InstrumentGetInstrumentsResponseTest {
+internal class InstrumentSearchResponseTest {
 
     @Test
     fun create() {
-        val instrumentGetInstrumentsResponse =
-            InstrumentGetInstrumentsResponse.builder()
+        val instrumentSearchResponse =
+            InstrumentSearchResponse.builder()
                 .metadata(
                     ResponseMetadata.builder()
                         .requestId("request_id")
@@ -80,7 +80,7 @@ internal class InstrumentGetInstrumentsResponseTest {
                 )
                 .build()
 
-        assertThat(instrumentGetInstrumentsResponse.metadata())
+        assertThat(instrumentSearchResponse.metadata())
             .isEqualTo(
                 ResponseMetadata.builder()
                     .requestId("request_id")
@@ -91,7 +91,7 @@ internal class InstrumentGetInstrumentsResponseTest {
                     .totalPages(0)
                     .build()
             )
-        assertThat(instrumentGetInstrumentsResponse.error())
+        assertThat(instrumentSearchResponse.error())
             .contains(
                 ApiError.builder()
                     .code(400)
@@ -103,7 +103,7 @@ internal class InstrumentGetInstrumentsResponseTest {
                     )
                     .build()
             )
-        assertThat(instrumentGetInstrumentsResponse.data())
+        assertThat(instrumentSearchResponse.data())
             .containsExactly(
                 InstrumentCore.builder()
                     .id("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
@@ -147,8 +147,8 @@ internal class InstrumentGetInstrumentsResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val instrumentGetInstrumentsResponse =
-            InstrumentGetInstrumentsResponse.builder()
+        val instrumentSearchResponse =
+            InstrumentSearchResponse.builder()
                 .metadata(
                     ResponseMetadata.builder()
                         .requestId("request_id")
@@ -210,13 +210,12 @@ internal class InstrumentGetInstrumentsResponseTest {
                 )
                 .build()
 
-        val roundtrippedInstrumentGetInstrumentsResponse =
+        val roundtrippedInstrumentSearchResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(instrumentGetInstrumentsResponse),
-                jacksonTypeRef<InstrumentGetInstrumentsResponse>(),
+                jsonMapper.writeValueAsString(instrumentSearchResponse),
+                jacksonTypeRef<InstrumentSearchResponse>(),
             )
 
-        assertThat(roundtrippedInstrumentGetInstrumentsResponse)
-            .isEqualTo(instrumentGetInstrumentsResponse)
+        assertThat(roundtrippedInstrumentSearchResponse).isEqualTo(instrumentSearchResponse)
     }
 }

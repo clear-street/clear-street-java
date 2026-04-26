@@ -11,8 +11,9 @@ import com.clear_street.api.models.active.v1.omniai.threads.ThreadGetThreadParam
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadGetThreadResponse
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadListThreadsParams
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadListThreadsResponse
+import com.clear_street.api.models.active.v1.omniai.threads.ThreadResponseParams
+import com.clear_street.api.models.active.v1.omniai.threads.ThreadResponseResponse
 import com.clear_street.api.services.async.active.v1.omniai.threads.MessageServiceAsync
-import com.clear_street.api.services.async.active.v1.omniai.threads.ResponseServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -43,14 +44,6 @@ interface ThreadServiceAsync {
      * endpoints are caller-scoped and use trading_account_ids.
      */
     fun messages(): MessageServiceAsync
-
-    /**
-     * Thread-centric AI assistant for conversational trading. Create threads to start
-     * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
-     */
-    fun response(): ResponseServiceAsync
 
     /**
      * Create a new conversation thread.
@@ -120,6 +113,38 @@ interface ThreadServiceAsync {
     ): CompletableFuture<ThreadListThreadsResponse>
 
     /**
+     * Get the active response for a thread.
+     *
+     * Convenience endpoint to look up the currently active response for a thread without knowing
+     * the `response_id`. Useful when reloading a thread whose last finalized message is a `USER`
+     * message — this indicates an assistant turn is likely in progress.
+     *
+     * Returns **404** if no active response exists (the thread is idle).
+     */
+    fun response(
+        threadId: String,
+        params: ThreadResponseParams,
+    ): CompletableFuture<ThreadResponseResponse> = response(threadId, params, RequestOptions.none())
+
+    /** @see response */
+    fun response(
+        threadId: String,
+        params: ThreadResponseParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ThreadResponseResponse> =
+        response(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+    /** @see response */
+    fun response(params: ThreadResponseParams): CompletableFuture<ThreadResponseResponse> =
+        response(params, RequestOptions.none())
+
+    /** @see response */
+    fun response(
+        params: ThreadResponseParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ThreadResponseResponse>
+
+    /**
      * A view of [ThreadServiceAsync] that provides access to raw HTTP responses for each method.
      */
     interface WithRawResponse {
@@ -140,14 +165,6 @@ interface ThreadServiceAsync {
          * Entitlement endpoints are caller-scoped and use trading_account_ids.
          */
         fun messages(): MessageServiceAsync.WithRawResponse
-
-        /**
-         * Thread-centric AI assistant for conversational trading. Create threads to start
-         * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
-         */
-        fun response(): ResponseServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /active/v1/omni-ai/threads`, but is otherwise the
@@ -208,5 +225,35 @@ interface ThreadServiceAsync {
             params: ThreadListThreadsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<ThreadListThreadsResponse>>
+
+        /**
+         * Returns a raw HTTP response for `get /active/v1/omni-ai/threads/{thread_id}/response`,
+         * but is otherwise the same as [ThreadServiceAsync.response].
+         */
+        fun response(
+            threadId: String,
+            params: ThreadResponseParams,
+        ): CompletableFuture<HttpResponseFor<ThreadResponseResponse>> =
+            response(threadId, params, RequestOptions.none())
+
+        /** @see response */
+        fun response(
+            threadId: String,
+            params: ThreadResponseParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ThreadResponseResponse>> =
+            response(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+        /** @see response */
+        fun response(
+            params: ThreadResponseParams
+        ): CompletableFuture<HttpResponseFor<ThreadResponseResponse>> =
+            response(params, RequestOptions.none())
+
+        /** @see response */
+        fun response(
+            params: ThreadResponseParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ThreadResponseResponse>>
     }
 }

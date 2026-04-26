@@ -11,8 +11,9 @@ import com.clear_street.api.models.active.v1.omniai.threads.ThreadGetThreadParam
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadGetThreadResponse
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadListThreadsParams
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadListThreadsResponse
+import com.clear_street.api.models.active.v1.omniai.threads.ThreadResponseParams
+import com.clear_street.api.models.active.v1.omniai.threads.ThreadResponseResponse
 import com.clear_street.api.services.blocking.active.v1.omniai.threads.MessageService
-import com.clear_street.api.services.blocking.active.v1.omniai.threads.ResponseService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -43,14 +44,6 @@ interface ThreadService {
      * endpoints are caller-scoped and use trading_account_ids.
      */
     fun messages(): MessageService
-
-    /**
-     * Thread-centric AI assistant for conversational trading. Create threads to start
-     * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
-     */
-    fun response(): ResponseService
 
     /**
      * Create a new conversation thread.
@@ -115,6 +108,36 @@ interface ThreadService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ThreadListThreadsResponse
 
+    /**
+     * Get the active response for a thread.
+     *
+     * Convenience endpoint to look up the currently active response for a thread without knowing
+     * the `response_id`. Useful when reloading a thread whose last finalized message is a `USER`
+     * message — this indicates an assistant turn is likely in progress.
+     *
+     * Returns **404** if no active response exists (the thread is idle).
+     */
+    fun response(threadId: String, params: ThreadResponseParams): ThreadResponseResponse =
+        response(threadId, params, RequestOptions.none())
+
+    /** @see response */
+    fun response(
+        threadId: String,
+        params: ThreadResponseParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ThreadResponseResponse =
+        response(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+    /** @see response */
+    fun response(params: ThreadResponseParams): ThreadResponseResponse =
+        response(params, RequestOptions.none())
+
+    /** @see response */
+    fun response(
+        params: ThreadResponseParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ThreadResponseResponse
+
     /** A view of [ThreadService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -132,14 +155,6 @@ interface ThreadService {
          * Entitlement endpoints are caller-scoped and use trading_account_ids.
          */
         fun messages(): MessageService.WithRawResponse
-
-        /**
-         * Thread-centric AI assistant for conversational trading. Create threads to start
-         * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
-         */
-        fun response(): ResponseService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /active/v1/omni-ai/threads`, but is otherwise the
@@ -204,5 +219,37 @@ interface ThreadService {
             params: ThreadListThreadsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<ThreadListThreadsResponse>
+
+        /**
+         * Returns a raw HTTP response for `get /active/v1/omni-ai/threads/{thread_id}/response`,
+         * but is otherwise the same as [ThreadService.response].
+         */
+        @MustBeClosed
+        fun response(
+            threadId: String,
+            params: ThreadResponseParams,
+        ): HttpResponseFor<ThreadResponseResponse> =
+            response(threadId, params, RequestOptions.none())
+
+        /** @see response */
+        @MustBeClosed
+        fun response(
+            threadId: String,
+            params: ThreadResponseParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ThreadResponseResponse> =
+            response(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+        /** @see response */
+        @MustBeClosed
+        fun response(params: ThreadResponseParams): HttpResponseFor<ThreadResponseResponse> =
+            response(params, RequestOptions.none())
+
+        /** @see response */
+        @MustBeClosed
+        fun response(
+            params: ThreadResponseParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ThreadResponseResponse>
     }
 }

@@ -22,10 +22,10 @@ import com.clear_street.api.models.active.v1.omniai.threads.ThreadGetThreadParam
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadGetThreadResponse
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadListThreadsParams
 import com.clear_street.api.models.active.v1.omniai.threads.ThreadListThreadsResponse
+import com.clear_street.api.models.active.v1.omniai.threads.ThreadResponseParams
+import com.clear_street.api.models.active.v1.omniai.threads.ThreadResponseResponse
 import com.clear_street.api.services.blocking.active.v1.omniai.threads.MessageService
 import com.clear_street.api.services.blocking.active.v1.omniai.threads.MessageServiceImpl
-import com.clear_street.api.services.blocking.active.v1.omniai.threads.ResponseService
-import com.clear_street.api.services.blocking.active.v1.omniai.threads.ResponseServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -44,8 +44,6 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
 
     private val messages: MessageService by lazy { MessageServiceImpl(clientOptions) }
 
-    private val response: ResponseService by lazy { ResponseServiceImpl(clientOptions) }
-
     override fun withRawResponse(): ThreadService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): ThreadService =
@@ -58,14 +56,6 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
      * endpoints are caller-scoped and use trading_account_ids.
      */
     override fun messages(): MessageService = messages
-
-    /**
-     * Thread-centric AI assistant for conversational trading. Create threads to start
-     * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
-     */
-    override fun response(): ResponseService = response
 
     override fun createThread(
         params: ThreadCreateThreadParams,
@@ -88,6 +78,13 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
         // get /active/v1/omni-ai/threads
         withRawResponse().listThreads(params, requestOptions).parse()
 
+    override fun response(
+        params: ThreadResponseParams,
+        requestOptions: RequestOptions,
+    ): ThreadResponseResponse =
+        // get /active/v1/omni-ai/threads/{thread_id}/response
+        withRawResponse().response(params, requestOptions).parse()
+
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         ThreadService.WithRawResponse {
 
@@ -96,10 +93,6 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
 
         private val messages: MessageService.WithRawResponse by lazy {
             MessageServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val response: ResponseService.WithRawResponse by lazy {
-            ResponseServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -116,14 +109,6 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
          * Entitlement endpoints are caller-scoped and use trading_account_ids.
          */
         override fun messages(): MessageService.WithRawResponse = messages
-
-        /**
-         * Thread-centric AI assistant for conversational trading. Create threads to start
-         * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
-         */
-        override fun response(): ResponseService.WithRawResponse = response
 
         private val createThreadHandler: Handler<ThreadCreateThreadResponse> =
             jsonHandler<ThreadCreateThreadResponse>(clientOptions.jsonMapper)
@@ -202,6 +187,43 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
             return errorHandler.handle(response).parseable {
                 response
                     .use { listThreadsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val responseHandler: Handler<ThreadResponseResponse> =
+            jsonHandler<ThreadResponseResponse>(clientOptions.jsonMapper)
+
+        override fun response(
+            params: ThreadResponseParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<ThreadResponseResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("threadId", params.threadId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "active",
+                        "v1",
+                        "omni-ai",
+                        "threads",
+                        params._pathParam(0),
+                        "response",
+                    )
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { responseHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

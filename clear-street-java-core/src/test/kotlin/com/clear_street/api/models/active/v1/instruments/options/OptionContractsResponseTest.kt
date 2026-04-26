@@ -1,24 +1,28 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.models.active.v1.instruments
+package com.clear_street.api.models.active.v1.instruments.options
 
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.ResponseMetadata
 import com.clear_street.api.models.active.v1.SecurityIdSource
-import com.clear_street.api.models.active.v1.SecurityType
+import com.clear_street.api.models.active.v1.instruments.ContractType
+import com.clear_street.api.models.active.v1.instruments.ExerciseStyle
+import com.clear_street.api.models.active.v1.instruments.InstrumentSecurityId
+import com.clear_street.api.models.active.v1.instruments.ListingType
+import com.clear_street.api.models.active.v1.instruments.OptionsContract
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class InstrumentGetInstrumentsResponseTest {
+internal class OptionContractsResponseTest {
 
     @Test
     fun create() {
-        val instrumentGetInstrumentsResponse =
-            InstrumentGetInstrumentsResponse.builder()
+        val optionContractsResponse =
+            OptionContractsResponse.builder()
                 .metadata(
                     ResponseMetadata.builder()
                         .requestId("request_id")
@@ -41,46 +45,33 @@ internal class InstrumentGetInstrumentsResponseTest {
                         .build()
                 )
                 .addData(
-                    InstrumentCore.builder()
-                        .id("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
-                        .countryOfIssue("US")
+                    OptionsContract.builder()
+                        .id("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
+                        .contractType(ContractType.CALL)
                         .currency("USD")
-                        .easyToBorrow(true)
-                        .isLiquidationOnly(false)
+                        .exchange("BATO")
+                        .exerciseStyle(ExerciseStyle.AMERICAN)
+                        .expiry(LocalDate.parse("2026-03-18"))
+                        .isLiquidationOnly(true)
                         .isMarginable(true)
-                        .isRestricted(false)
-                        .isShortProhibited(false)
-                        .isThresholdSecurity(false)
-                        .securityId("AAPL")
-                        .securityIdSource(SecurityIdSource.CMS)
+                        .isRestricted(true)
+                        .listingType(ListingType.STANDARD)
+                        .multiplier("100")
                         .addSecurityId(
                             InstrumentSecurityId.builder()
                                 .securityId("AAPL")
                                 .securityIdSource(SecurityIdSource.CMS)
                                 .build()
                         )
-                        .addSecurityId(
-                            InstrumentSecurityId.builder()
-                                .securityId("037833100")
-                                .securityIdSource(SecurityIdSource.CUSIP)
-                                .build()
-                        )
-                        .symbol("AAPL")
-                        .venue("XNMS")
-                        .adv("75000000")
-                        .expiry(LocalDate.parse("2024-12-20"))
-                        .longMarginRate("0.25")
-                        .name("Apple Inc.")
-                        .notionalAdv("15815250000")
-                        .previousClose("210.87")
-                        .securityType(SecurityType.COMMON_STOCK)
-                        .shortMarginRate("0.25")
                         .strikePrice("150.00")
+                        .symbol("AAPL  251219C00150000")
+                        .openInterest(0L)
+                        .underlierInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
 
-        assertThat(instrumentGetInstrumentsResponse.metadata())
+        assertThat(optionContractsResponse.metadata())
             .isEqualTo(
                 ResponseMetadata.builder()
                     .requestId("request_id")
@@ -91,7 +82,7 @@ internal class InstrumentGetInstrumentsResponseTest {
                     .totalPages(0)
                     .build()
             )
-        assertThat(instrumentGetInstrumentsResponse.error())
+        assertThat(optionContractsResponse.error())
             .contains(
                 ApiError.builder()
                     .code(400)
@@ -103,43 +94,30 @@ internal class InstrumentGetInstrumentsResponseTest {
                     )
                     .build()
             )
-        assertThat(instrumentGetInstrumentsResponse.data())
+        assertThat(optionContractsResponse.data())
             .containsExactly(
-                InstrumentCore.builder()
-                    .id("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
-                    .countryOfIssue("US")
+                OptionsContract.builder()
+                    .id("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
+                    .contractType(ContractType.CALL)
                     .currency("USD")
-                    .easyToBorrow(true)
-                    .isLiquidationOnly(false)
+                    .exchange("BATO")
+                    .exerciseStyle(ExerciseStyle.AMERICAN)
+                    .expiry(LocalDate.parse("2026-03-18"))
+                    .isLiquidationOnly(true)
                     .isMarginable(true)
-                    .isRestricted(false)
-                    .isShortProhibited(false)
-                    .isThresholdSecurity(false)
-                    .securityId("AAPL")
-                    .securityIdSource(SecurityIdSource.CMS)
+                    .isRestricted(true)
+                    .listingType(ListingType.STANDARD)
+                    .multiplier("100")
                     .addSecurityId(
                         InstrumentSecurityId.builder()
                             .securityId("AAPL")
                             .securityIdSource(SecurityIdSource.CMS)
                             .build()
                     )
-                    .addSecurityId(
-                        InstrumentSecurityId.builder()
-                            .securityId("037833100")
-                            .securityIdSource(SecurityIdSource.CUSIP)
-                            .build()
-                    )
-                    .symbol("AAPL")
-                    .venue("XNMS")
-                    .adv("75000000")
-                    .expiry(LocalDate.parse("2024-12-20"))
-                    .longMarginRate("0.25")
-                    .name("Apple Inc.")
-                    .notionalAdv("15815250000")
-                    .previousClose("210.87")
-                    .securityType(SecurityType.COMMON_STOCK)
-                    .shortMarginRate("0.25")
                     .strikePrice("150.00")
+                    .symbol("AAPL  251219C00150000")
+                    .openInterest(0L)
+                    .underlierInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
     }
@@ -147,8 +125,8 @@ internal class InstrumentGetInstrumentsResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val instrumentGetInstrumentsResponse =
-            InstrumentGetInstrumentsResponse.builder()
+        val optionContractsResponse =
+            OptionContractsResponse.builder()
                 .metadata(
                     ResponseMetadata.builder()
                         .requestId("request_id")
@@ -171,52 +149,38 @@ internal class InstrumentGetInstrumentsResponseTest {
                         .build()
                 )
                 .addData(
-                    InstrumentCore.builder()
-                        .id("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
-                        .countryOfIssue("US")
+                    OptionsContract.builder()
+                        .id("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
+                        .contractType(ContractType.CALL)
                         .currency("USD")
-                        .easyToBorrow(true)
-                        .isLiquidationOnly(false)
+                        .exchange("BATO")
+                        .exerciseStyle(ExerciseStyle.AMERICAN)
+                        .expiry(LocalDate.parse("2026-03-18"))
+                        .isLiquidationOnly(true)
                         .isMarginable(true)
-                        .isRestricted(false)
-                        .isShortProhibited(false)
-                        .isThresholdSecurity(false)
-                        .securityId("AAPL")
-                        .securityIdSource(SecurityIdSource.CMS)
+                        .isRestricted(true)
+                        .listingType(ListingType.STANDARD)
+                        .multiplier("100")
                         .addSecurityId(
                             InstrumentSecurityId.builder()
                                 .securityId("AAPL")
                                 .securityIdSource(SecurityIdSource.CMS)
                                 .build()
                         )
-                        .addSecurityId(
-                            InstrumentSecurityId.builder()
-                                .securityId("037833100")
-                                .securityIdSource(SecurityIdSource.CUSIP)
-                                .build()
-                        )
-                        .symbol("AAPL")
-                        .venue("XNMS")
-                        .adv("75000000")
-                        .expiry(LocalDate.parse("2024-12-20"))
-                        .longMarginRate("0.25")
-                        .name("Apple Inc.")
-                        .notionalAdv("15815250000")
-                        .previousClose("210.87")
-                        .securityType(SecurityType.COMMON_STOCK)
-                        .shortMarginRate("0.25")
                         .strikePrice("150.00")
+                        .symbol("AAPL  251219C00150000")
+                        .openInterest(0L)
+                        .underlierInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
 
-        val roundtrippedInstrumentGetInstrumentsResponse =
+        val roundtrippedOptionContractsResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(instrumentGetInstrumentsResponse),
-                jacksonTypeRef<InstrumentGetInstrumentsResponse>(),
+                jsonMapper.writeValueAsString(optionContractsResponse),
+                jacksonTypeRef<OptionContractsResponse>(),
             )
 
-        assertThat(roundtrippedInstrumentGetInstrumentsResponse)
-            .isEqualTo(instrumentGetInstrumentsResponse)
+        assertThat(roundtrippedOptionContractsResponse).isEqualTo(optionContractsResponse)
     }
 }

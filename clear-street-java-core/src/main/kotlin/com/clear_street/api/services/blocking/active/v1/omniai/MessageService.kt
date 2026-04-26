@@ -5,9 +5,10 @@ package com.clear_street.api.services.blocking.active.v1.omniai
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
+import com.clear_street.api.models.active.v1.omniai.messages.MessageFeedbackParams
+import com.clear_street.api.models.active.v1.omniai.messages.MessageFeedbackResponse
 import com.clear_street.api.models.active.v1.omniai.messages.MessageGetMessageParams
 import com.clear_street.api.models.active.v1.omniai.messages.MessageGetMessageResponse
-import com.clear_street.api.services.blocking.active.v1.omniai.messages.FeedbackService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -32,12 +33,31 @@ interface MessageService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): MessageService
 
     /**
-     * Thread-centric AI assistant for conversational trading. Create threads to start
-     * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
+     * Create feedback on a finalized assistant message.
+     *
+     * Attaches a score and optional comment to a finalized assistant message. Feedback is only
+     * valid for messages with role `ASSISTANT` that have reached a terminal outcome.
      */
-    fun feedback(): FeedbackService
+    fun feedback(messageId: String, params: MessageFeedbackParams): MessageFeedbackResponse =
+        feedback(messageId, params, RequestOptions.none())
+
+    /** @see feedback */
+    fun feedback(
+        messageId: String,
+        params: MessageFeedbackParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): MessageFeedbackResponse =
+        feedback(params.toBuilder().messageId(messageId).build(), requestOptions)
+
+    /** @see feedback */
+    fun feedback(params: MessageFeedbackParams): MessageFeedbackResponse =
+        feedback(params, RequestOptions.none())
+
+    /** @see feedback */
+    fun feedback(
+        params: MessageFeedbackParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): MessageFeedbackResponse
 
     /**
      * Get a finalized message by ID.
@@ -78,12 +98,36 @@ interface MessageService {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): MessageService.WithRawResponse
 
         /**
-         * Thread-centric AI assistant for conversational trading. Create threads to start
-         * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
+         * Returns a raw HTTP response for `post /active/v1/omni-ai/messages/{message_id}/feedback`,
+         * but is otherwise the same as [MessageService.feedback].
          */
-        fun feedback(): FeedbackService.WithRawResponse
+        @MustBeClosed
+        fun feedback(
+            messageId: String,
+            params: MessageFeedbackParams,
+        ): HttpResponseFor<MessageFeedbackResponse> =
+            feedback(messageId, params, RequestOptions.none())
+
+        /** @see feedback */
+        @MustBeClosed
+        fun feedback(
+            messageId: String,
+            params: MessageFeedbackParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<MessageFeedbackResponse> =
+            feedback(params.toBuilder().messageId(messageId).build(), requestOptions)
+
+        /** @see feedback */
+        @MustBeClosed
+        fun feedback(params: MessageFeedbackParams): HttpResponseFor<MessageFeedbackResponse> =
+            feedback(params, RequestOptions.none())
+
+        /** @see feedback */
+        @MustBeClosed
+        fun feedback(
+            params: MessageFeedbackParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<MessageFeedbackResponse>
 
         /**
          * Returns a raw HTTP response for `get /active/v1/omni-ai/messages/{message_id}`, but is

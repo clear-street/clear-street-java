@@ -40,9 +40,12 @@ private constructor(
     private val securityIds: JsonField<List<InstrumentSecurityId>>,
     private val symbol: JsonField<String>,
     private val venue: JsonField<String>,
+    private val adv: JsonField<String>,
     private val expiry: JsonField<LocalDate>,
     private val longMarginRate: JsonField<String>,
     private val name: JsonField<String>,
+    private val notionalAdv: JsonField<String>,
+    private val previousClose: JsonField<String>,
     private val securityType: JsonField<SecurityType>,
     private val shortMarginRate: JsonField<String>,
     private val strikePrice: JsonField<String>,
@@ -61,7 +64,6 @@ private constructor(
     private val longConcentrationLimit: JsonField<String>,
     private val marketCap: JsonField<String>,
     private val optionsExpiryDates: JsonField<List<LocalDate>>,
-    private val previousClose: JsonField<String>,
     private val priceToEarnings: JsonField<String>,
     private val quote: JsonField<InstrumentQuote>,
     private val sector: JsonField<String>,
@@ -105,11 +107,18 @@ private constructor(
         securityIds: JsonField<List<InstrumentSecurityId>> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("venue") @ExcludeMissing venue: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("adv") @ExcludeMissing adv: JsonField<String> = JsonMissing.of(),
         @JsonProperty("expiry") @ExcludeMissing expiry: JsonField<LocalDate> = JsonMissing.of(),
         @JsonProperty("long_margin_rate")
         @ExcludeMissing
         longMarginRate: JsonField<String> = JsonMissing.of(),
         @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("notional_adv")
+        @ExcludeMissing
+        notionalAdv: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("previous_close")
+        @ExcludeMissing
+        previousClose: JsonField<String> = JsonMissing.of(),
         @JsonProperty("security_type")
         @ExcludeMissing
         securityType: JsonField<SecurityType> = JsonMissing.of(),
@@ -154,9 +163,6 @@ private constructor(
         @JsonProperty("options_expiry_dates")
         @ExcludeMissing
         optionsExpiryDates: JsonField<List<LocalDate>> = JsonMissing.of(),
-        @JsonProperty("previous_close")
-        @ExcludeMissing
-        previousClose: JsonField<String> = JsonMissing.of(),
         @JsonProperty("price_to_earnings")
         @ExcludeMissing
         priceToEarnings: JsonField<String> = JsonMissing.of(),
@@ -180,9 +186,12 @@ private constructor(
         securityIds,
         symbol,
         venue,
+        adv,
         expiry,
         longMarginRate,
         name,
+        notionalAdv,
+        previousClose,
         securityType,
         shortMarginRate,
         strikePrice,
@@ -201,7 +210,6 @@ private constructor(
         longConcentrationLimit,
         marketCap,
         optionsExpiryDates,
-        previousClose,
         priceToEarnings,
         quote,
         sector,
@@ -225,9 +233,12 @@ private constructor(
             .securityIds(securityIds)
             .symbol(symbol)
             .venue(venue)
+            .adv(adv)
             .expiry(expiry)
             .longMarginRate(longMarginRate)
             .name(name)
+            .notionalAdv(notionalAdv)
+            .previousClose(previousClose)
             .securityType(securityType)
             .shortMarginRate(shortMarginRate)
             .strikePrice(strikePrice)
@@ -350,6 +361,14 @@ private constructor(
     fun venue(): String = venue.getRequired("venue")
 
     /**
+     * Average daily share volume from the security definition.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun adv(): Optional<String> = adv.getOptional("adv")
+
+    /**
      * The expiration date for options instruments
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -372,6 +391,24 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun name(): Optional<String> = name.getOptional("name")
+
+    /**
+     * Notional ADV (`adv × previous_close`). The primary liquidity signal used by
+     * `/instruments/search` ranking. Computed at response time so it stays consistent with whatever
+     * `adv` and `previous_close` show.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun notionalAdv(): Optional<String> = notionalAdv.getOptional("notional_adv")
+
+    /**
+     * Last close price from the security definition.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun previousClose(): Optional<String> = previousClose.getOptional("previous_close")
 
     /**
      * The type of security (e.g., Common Stock, ETF)
@@ -519,14 +556,6 @@ private constructor(
      */
     fun optionsExpiryDates(): Optional<List<LocalDate>> =
         optionsExpiryDates.getOptional("options_expiry_dates")
-
-    /**
-     * The closing price from the previous trading day
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun previousClose(): Optional<String> = previousClose.getOptional("previous_close")
 
     /**
      * The price-to-earnings (P/E) ratio for the trailing twelve months (TTM)
@@ -685,6 +714,13 @@ private constructor(
     @JsonProperty("venue") @ExcludeMissing fun _venue(): JsonField<String> = venue
 
     /**
+     * Returns the raw JSON value of [adv].
+     *
+     * Unlike [adv], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("adv") @ExcludeMissing fun _adv(): JsonField<String> = adv
+
+    /**
      * Returns the raw JSON value of [expiry].
      *
      * Unlike [expiry], this method doesn't throw if the JSON field has an unexpected type.
@@ -706,6 +742,24 @@ private constructor(
      * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
+
+    /**
+     * Returns the raw JSON value of [notionalAdv].
+     *
+     * Unlike [notionalAdv], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("notional_adv")
+    @ExcludeMissing
+    fun _notionalAdv(): JsonField<String> = notionalAdv
+
+    /**
+     * Returns the raw JSON value of [previousClose].
+     *
+     * Unlike [previousClose], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("previous_close")
+    @ExcludeMissing
+    fun _previousClose(): JsonField<String> = previousClose
 
     /**
      * Returns the raw JSON value of [securityType].
@@ -861,15 +915,6 @@ private constructor(
     fun _optionsExpiryDates(): JsonField<List<LocalDate>> = optionsExpiryDates
 
     /**
-     * Returns the raw JSON value of [previousClose].
-     *
-     * Unlike [previousClose], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("previous_close")
-    @ExcludeMissing
-    fun _previousClose(): JsonField<String> = previousClose
-
-    /**
      * Returns the raw JSON value of [priceToEarnings].
      *
      * Unlike [priceToEarnings], this method doesn't throw if the JSON field has an unexpected type.
@@ -957,9 +1002,12 @@ private constructor(
         private var securityIds: JsonField<MutableList<InstrumentSecurityId>>? = null
         private var symbol: JsonField<String>? = null
         private var venue: JsonField<String>? = null
+        private var adv: JsonField<String> = JsonMissing.of()
         private var expiry: JsonField<LocalDate> = JsonMissing.of()
         private var longMarginRate: JsonField<String> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
+        private var notionalAdv: JsonField<String> = JsonMissing.of()
+        private var previousClose: JsonField<String> = JsonMissing.of()
         private var securityType: JsonField<SecurityType> = JsonMissing.of()
         private var shortMarginRate: JsonField<String> = JsonMissing.of()
         private var strikePrice: JsonField<String> = JsonMissing.of()
@@ -978,7 +1026,6 @@ private constructor(
         private var longConcentrationLimit: JsonField<String> = JsonMissing.of()
         private var marketCap: JsonField<String> = JsonMissing.of()
         private var optionsExpiryDates: JsonField<MutableList<LocalDate>>? = null
-        private var previousClose: JsonField<String> = JsonMissing.of()
         private var priceToEarnings: JsonField<String> = JsonMissing.of()
         private var quote: JsonField<InstrumentQuote> = JsonMissing.of()
         private var sector: JsonField<String> = JsonMissing.of()
@@ -1001,9 +1048,12 @@ private constructor(
             securityIds = instrument.securityIds.map { it.toMutableList() }
             symbol = instrument.symbol
             venue = instrument.venue
+            adv = instrument.adv
             expiry = instrument.expiry
             longMarginRate = instrument.longMarginRate
             name = instrument.name
+            notionalAdv = instrument.notionalAdv
+            previousClose = instrument.previousClose
             securityType = instrument.securityType
             shortMarginRate = instrument.shortMarginRate
             strikePrice = instrument.strikePrice
@@ -1022,7 +1072,6 @@ private constructor(
             longConcentrationLimit = instrument.longConcentrationLimit
             marketCap = instrument.marketCap
             optionsExpiryDates = instrument.optionsExpiryDates.map { it.toMutableList() }
-            previousClose = instrument.previousClose
             priceToEarnings = instrument.priceToEarnings
             quote = instrument.quote
             sector = instrument.sector
@@ -1239,6 +1288,20 @@ private constructor(
          */
         fun venue(venue: JsonField<String>) = apply { this.venue = venue }
 
+        /** Average daily share volume from the security definition. */
+        fun adv(adv: String?) = adv(JsonField.ofNullable(adv))
+
+        /** Alias for calling [Builder.adv] with `adv.orElse(null)`. */
+        fun adv(adv: Optional<String>) = adv(adv.getOrNull())
+
+        /**
+         * Sets [Builder.adv] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.adv] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun adv(adv: JsonField<String>) = apply { this.adv = adv }
+
         /** The expiration date for options instruments */
         fun expiry(expiry: LocalDate?) = expiry(JsonField.ofNullable(expiry))
 
@@ -1286,6 +1349,44 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
+
+        /**
+         * Notional ADV (`adv × previous_close`). The primary liquidity signal used by
+         * `/instruments/search` ranking. Computed at response time so it stays consistent with
+         * whatever `adv` and `previous_close` show.
+         */
+        fun notionalAdv(notionalAdv: String?) = notionalAdv(JsonField.ofNullable(notionalAdv))
+
+        /** Alias for calling [Builder.notionalAdv] with `notionalAdv.orElse(null)`. */
+        fun notionalAdv(notionalAdv: Optional<String>) = notionalAdv(notionalAdv.getOrNull())
+
+        /**
+         * Sets [Builder.notionalAdv] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.notionalAdv] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun notionalAdv(notionalAdv: JsonField<String>) = apply { this.notionalAdv = notionalAdv }
+
+        /** Last close price from the security definition. */
+        fun previousClose(previousClose: String?) =
+            previousClose(JsonField.ofNullable(previousClose))
+
+        /** Alias for calling [Builder.previousClose] with `previousClose.orElse(null)`. */
+        fun previousClose(previousClose: Optional<String>) =
+            previousClose(previousClose.getOrNull())
+
+        /**
+         * Sets [Builder.previousClose] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.previousClose] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun previousClose(previousClose: JsonField<String>) = apply {
+            this.previousClose = previousClose
+        }
 
         /** The type of security (e.g., Common Stock, ETF) */
         fun securityType(securityType: SecurityType?) =
@@ -1627,25 +1728,6 @@ private constructor(
                 }
         }
 
-        /** The closing price from the previous trading day */
-        fun previousClose(previousClose: String?) =
-            previousClose(JsonField.ofNullable(previousClose))
-
-        /** Alias for calling [Builder.previousClose] with `previousClose.orElse(null)`. */
-        fun previousClose(previousClose: Optional<String>) =
-            previousClose(previousClose.getOrNull())
-
-        /**
-         * Sets [Builder.previousClose] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.previousClose] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun previousClose(previousClose: JsonField<String>) = apply {
-            this.previousClose = previousClose
-        }
-
         /** The price-to-earnings (P/E) ratio for the trailing twelve months (TTM) */
         fun priceToEarnings(priceToEarnings: String?) =
             priceToEarnings(JsonField.ofNullable(priceToEarnings))
@@ -1778,9 +1860,12 @@ private constructor(
                 checkRequired("securityIds", securityIds).map { it.toImmutable() },
                 checkRequired("symbol", symbol),
                 checkRequired("venue", venue),
+                adv,
                 expiry,
                 longMarginRate,
                 name,
+                notionalAdv,
+                previousClose,
                 securityType,
                 shortMarginRate,
                 strikePrice,
@@ -1799,7 +1884,6 @@ private constructor(
                 longConcentrationLimit,
                 marketCap,
                 (optionsExpiryDates ?: JsonMissing.of()).map { it.toImmutable() },
-                previousClose,
                 priceToEarnings,
                 quote,
                 sector,
@@ -1829,9 +1913,12 @@ private constructor(
         securityIds().forEach { it.validate() }
         symbol()
         venue()
+        adv()
         expiry()
         longMarginRate()
         name()
+        notionalAdv()
+        previousClose()
         securityType().ifPresent { it.validate() }
         shortMarginRate()
         strikePrice()
@@ -1850,7 +1937,6 @@ private constructor(
         longConcentrationLimit()
         marketCap()
         optionsExpiryDates()
-        previousClose()
         priceToEarnings()
         quote().ifPresent { it.validate() }
         sector()
@@ -1887,9 +1973,12 @@ private constructor(
             (securityIds.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (venue.asKnown().isPresent) 1 else 0) +
+            (if (adv.asKnown().isPresent) 1 else 0) +
             (if (expiry.asKnown().isPresent) 1 else 0) +
             (if (longMarginRate.asKnown().isPresent) 1 else 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
+            (if (notionalAdv.asKnown().isPresent) 1 else 0) +
+            (if (previousClose.asKnown().isPresent) 1 else 0) +
             (securityType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (shortMarginRate.asKnown().isPresent) 1 else 0) +
             (if (strikePrice.asKnown().isPresent) 1 else 0) +
@@ -1908,7 +1997,6 @@ private constructor(
             (if (longConcentrationLimit.asKnown().isPresent) 1 else 0) +
             (if (marketCap.asKnown().isPresent) 1 else 0) +
             (optionsExpiryDates.asKnown().getOrNull()?.size ?: 0) +
-            (if (previousClose.asKnown().isPresent) 1 else 0) +
             (if (priceToEarnings.asKnown().isPresent) 1 else 0) +
             (quote.asKnown().getOrNull()?.validity() ?: 0) +
             (if (sector.asKnown().isPresent) 1 else 0) +
@@ -1934,9 +2022,12 @@ private constructor(
             securityIds == other.securityIds &&
             symbol == other.symbol &&
             venue == other.venue &&
+            adv == other.adv &&
             expiry == other.expiry &&
             longMarginRate == other.longMarginRate &&
             name == other.name &&
+            notionalAdv == other.notionalAdv &&
+            previousClose == other.previousClose &&
             securityType == other.securityType &&
             shortMarginRate == other.shortMarginRate &&
             strikePrice == other.strikePrice &&
@@ -1955,7 +2046,6 @@ private constructor(
             longConcentrationLimit == other.longConcentrationLimit &&
             marketCap == other.marketCap &&
             optionsExpiryDates == other.optionsExpiryDates &&
-            previousClose == other.previousClose &&
             priceToEarnings == other.priceToEarnings &&
             quote == other.quote &&
             sector == other.sector &&
@@ -1979,9 +2069,12 @@ private constructor(
             securityIds,
             symbol,
             venue,
+            adv,
             expiry,
             longMarginRate,
             name,
+            notionalAdv,
+            previousClose,
             securityType,
             shortMarginRate,
             strikePrice,
@@ -2000,7 +2093,6 @@ private constructor(
             longConcentrationLimit,
             marketCap,
             optionsExpiryDates,
-            previousClose,
             priceToEarnings,
             quote,
             sector,
@@ -2012,5 +2104,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Instrument{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, securityId=$securityId, securityIdSource=$securityIdSource, securityIds=$securityIds, symbol=$symbol, venue=$venue, expiry=$expiry, longMarginRate=$longMarginRate, name=$name, securityType=$securityType, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, availableToBorrow=$availableToBorrow, averageVolume=$averageVolume, beta=$beta, borrowFee=$borrowFee, description=$description, dividendYield=$dividendYield, earningsPerShare=$earningsPerShare, fiftyTwoWeekHigh=$fiftyTwoWeekHigh, fiftyTwoWeekLow=$fiftyTwoWeekLow, industry=$industry, listDate=$listDate, logoUrl=$logoUrl, longConcentrationLimit=$longConcentrationLimit, marketCap=$marketCap, optionsExpiryDates=$optionsExpiryDates, previousClose=$previousClose, priceToEarnings=$priceToEarnings, quote=$quote, sector=$sector, shortConcentrationLimit=$shortConcentrationLimit, additionalProperties=$additionalProperties}"
+        "Instrument{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, securityId=$securityId, securityIdSource=$securityIdSource, securityIds=$securityIds, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, securityType=$securityType, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, availableToBorrow=$availableToBorrow, averageVolume=$averageVolume, beta=$beta, borrowFee=$borrowFee, description=$description, dividendYield=$dividendYield, earningsPerShare=$earningsPerShare, fiftyTwoWeekHigh=$fiftyTwoWeekHigh, fiftyTwoWeekLow=$fiftyTwoWeekLow, industry=$industry, listDate=$listDate, logoUrl=$logoUrl, longConcentrationLimit=$longConcentrationLimit, marketCap=$marketCap, optionsExpiryDates=$optionsExpiryDates, priceToEarnings=$priceToEarnings, quote=$quote, sector=$sector, shortConcentrationLimit=$shortConcentrationLimit, additionalProperties=$additionalProperties}"
 }
