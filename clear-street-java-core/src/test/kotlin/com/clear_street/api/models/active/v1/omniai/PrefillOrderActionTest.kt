@@ -19,9 +19,9 @@ internal class PrefillOrderActionTest {
             PrefillOrderAction.builder()
                 .addOrder(
                     OrderPayload.builder()
+                        .instrumentType(SecurityType.COMMON_STOCK)
                         .orderType(OrderType.LIMIT)
                         .quantity("100")
-                        .securityType(SecurityType.COMMON_STOCK)
                         .side(Side.BUY)
                         .symbol("AAPL")
                         .timeInForce(TimeInForce.DAY)
@@ -36,9 +36,9 @@ internal class PrefillOrderActionTest {
         assertThat(prefillOrderAction.orders())
             .containsExactly(
                 OrderPayload.builder()
+                    .instrumentType(SecurityType.COMMON_STOCK)
                     .orderType(OrderType.LIMIT)
                     .quantity("100")
-                    .securityType(SecurityType.COMMON_STOCK)
                     .side(Side.BUY)
                     .symbol("AAPL")
                     .timeInForce(TimeInForce.DAY)
@@ -57,9 +57,9 @@ internal class PrefillOrderActionTest {
             PrefillOrderAction.builder()
                 .addOrder(
                     OrderPayload.builder()
+                        .instrumentType(SecurityType.COMMON_STOCK)
                         .orderType(OrderType.LIMIT)
                         .quantity("100")
-                        .securityType(SecurityType.COMMON_STOCK)
                         .side(Side.BUY)
                         .symbol("AAPL")
                         .timeInForce(TimeInForce.DAY)

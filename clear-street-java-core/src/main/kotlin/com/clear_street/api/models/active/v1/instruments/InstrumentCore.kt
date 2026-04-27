@@ -41,11 +41,11 @@ private constructor(
     private val venue: JsonField<String>,
     private val adv: JsonField<String>,
     private val expiry: JsonField<LocalDate>,
+    private val instrumentType: JsonField<SecurityType>,
     private val longMarginRate: JsonField<String>,
     private val name: JsonField<String>,
     private val notionalAdv: JsonField<String>,
     private val previousClose: JsonField<String>,
-    private val securityType: JsonField<SecurityType>,
     private val shortMarginRate: JsonField<String>,
     private val strikePrice: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -89,6 +89,9 @@ private constructor(
         @JsonProperty("venue") @ExcludeMissing venue: JsonField<String> = JsonMissing.of(),
         @JsonProperty("adv") @ExcludeMissing adv: JsonField<String> = JsonMissing.of(),
         @JsonProperty("expiry") @ExcludeMissing expiry: JsonField<LocalDate> = JsonMissing.of(),
+        @JsonProperty("instrument_type")
+        @ExcludeMissing
+        instrumentType: JsonField<SecurityType> = JsonMissing.of(),
         @JsonProperty("long_margin_rate")
         @ExcludeMissing
         longMarginRate: JsonField<String> = JsonMissing.of(),
@@ -99,9 +102,6 @@ private constructor(
         @JsonProperty("previous_close")
         @ExcludeMissing
         previousClose: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("security_type")
-        @ExcludeMissing
-        securityType: JsonField<SecurityType> = JsonMissing.of(),
         @JsonProperty("short_margin_rate")
         @ExcludeMissing
         shortMarginRate: JsonField<String> = JsonMissing.of(),
@@ -125,11 +125,11 @@ private constructor(
         venue,
         adv,
         expiry,
+        instrumentType,
         longMarginRate,
         name,
         notionalAdv,
         previousClose,
-        securityType,
         shortMarginRate,
         strikePrice,
         mutableMapOf(),
@@ -268,6 +268,14 @@ private constructor(
     fun expiry(): Optional<LocalDate> = expiry.getOptional("expiry")
 
     /**
+     * The type of security (e.g., Common Stock, ETF)
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun instrumentType(): Optional<SecurityType> = instrumentType.getOptional("instrument_type")
+
+    /**
      * The percent of a long position's value you must post as margin
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -300,14 +308,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun previousClose(): Optional<String> = previousClose.getOptional("previous_close")
-
-    /**
-     * The type of security (e.g., Common Stock, ETF)
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun securityType(): Optional<SecurityType> = securityType.getOptional("security_type")
 
     /**
      * The percent of a short position's value you must post as margin
@@ -463,6 +463,15 @@ private constructor(
     @JsonProperty("expiry") @ExcludeMissing fun _expiry(): JsonField<LocalDate> = expiry
 
     /**
+     * Returns the raw JSON value of [instrumentType].
+     *
+     * Unlike [instrumentType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("instrument_type")
+    @ExcludeMissing
+    fun _instrumentType(): JsonField<SecurityType> = instrumentType
+
+    /**
      * Returns the raw JSON value of [longMarginRate].
      *
      * Unlike [longMarginRate], this method doesn't throw if the JSON field has an unexpected type.
@@ -495,15 +504,6 @@ private constructor(
     @JsonProperty("previous_close")
     @ExcludeMissing
     fun _previousClose(): JsonField<String> = previousClose
-
-    /**
-     * Returns the raw JSON value of [securityType].
-     *
-     * Unlike [securityType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("security_type")
-    @ExcludeMissing
-    fun _securityType(): JsonField<SecurityType> = securityType
 
     /**
      * Returns the raw JSON value of [shortMarginRate].
@@ -580,11 +580,11 @@ private constructor(
         private var venue: JsonField<String>? = null
         private var adv: JsonField<String> = JsonMissing.of()
         private var expiry: JsonField<LocalDate> = JsonMissing.of()
+        private var instrumentType: JsonField<SecurityType> = JsonMissing.of()
         private var longMarginRate: JsonField<String> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
         private var notionalAdv: JsonField<String> = JsonMissing.of()
         private var previousClose: JsonField<String> = JsonMissing.of()
-        private var securityType: JsonField<SecurityType> = JsonMissing.of()
         private var shortMarginRate: JsonField<String> = JsonMissing.of()
         private var strikePrice: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -607,11 +607,11 @@ private constructor(
             venue = instrumentCore.venue
             adv = instrumentCore.adv
             expiry = instrumentCore.expiry
+            instrumentType = instrumentCore.instrumentType
             longMarginRate = instrumentCore.longMarginRate
             name = instrumentCore.name
             notionalAdv = instrumentCore.notionalAdv
             previousClose = instrumentCore.previousClose
-            securityType = instrumentCore.securityType
             shortMarginRate = instrumentCore.shortMarginRate
             strikePrice = instrumentCore.strikePrice
             additionalProperties = instrumentCore.additionalProperties.toMutableMap()
@@ -855,6 +855,25 @@ private constructor(
          */
         fun expiry(expiry: JsonField<LocalDate>) = apply { this.expiry = expiry }
 
+        /** The type of security (e.g., Common Stock, ETF) */
+        fun instrumentType(instrumentType: SecurityType?) =
+            instrumentType(JsonField.ofNullable(instrumentType))
+
+        /** Alias for calling [Builder.instrumentType] with `instrumentType.orElse(null)`. */
+        fun instrumentType(instrumentType: Optional<SecurityType>) =
+            instrumentType(instrumentType.getOrNull())
+
+        /**
+         * Sets [Builder.instrumentType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.instrumentType] with a well-typed [SecurityType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun instrumentType(instrumentType: JsonField<SecurityType>) = apply {
+            this.instrumentType = instrumentType
+        }
+
         /** The percent of a long position's value you must post as margin */
         fun longMarginRate(longMarginRate: String?) =
             longMarginRate(JsonField.ofNullable(longMarginRate))
@@ -924,25 +943,6 @@ private constructor(
          */
         fun previousClose(previousClose: JsonField<String>) = apply {
             this.previousClose = previousClose
-        }
-
-        /** The type of security (e.g., Common Stock, ETF) */
-        fun securityType(securityType: SecurityType?) =
-            securityType(JsonField.ofNullable(securityType))
-
-        /** Alias for calling [Builder.securityType] with `securityType.orElse(null)`. */
-        fun securityType(securityType: Optional<SecurityType>) =
-            securityType(securityType.getOrNull())
-
-        /**
-         * Sets [Builder.securityType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.securityType] with a well-typed [SecurityType] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun securityType(securityType: JsonField<SecurityType>) = apply {
-            this.securityType = securityType
         }
 
         /** The percent of a short position's value you must post as margin */
@@ -1041,11 +1041,11 @@ private constructor(
                 checkRequired("venue", venue),
                 adv,
                 expiry,
+                instrumentType,
                 longMarginRate,
                 name,
                 notionalAdv,
                 previousClose,
-                securityType,
                 shortMarginRate,
                 strikePrice,
                 additionalProperties.toMutableMap(),
@@ -1075,11 +1075,11 @@ private constructor(
         venue()
         adv()
         expiry()
+        instrumentType().ifPresent { it.validate() }
         longMarginRate()
         name()
         notionalAdv()
         previousClose()
-        securityType().ifPresent { it.validate() }
         shortMarginRate()
         strikePrice()
         validated = true
@@ -1116,11 +1116,11 @@ private constructor(
             (if (venue.asKnown().isPresent) 1 else 0) +
             (if (adv.asKnown().isPresent) 1 else 0) +
             (if (expiry.asKnown().isPresent) 1 else 0) +
+            (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (longMarginRate.asKnown().isPresent) 1 else 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
             (if (notionalAdv.asKnown().isPresent) 1 else 0) +
             (if (previousClose.asKnown().isPresent) 1 else 0) +
-            (securityType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (shortMarginRate.asKnown().isPresent) 1 else 0) +
             (if (strikePrice.asKnown().isPresent) 1 else 0)
 
@@ -1146,11 +1146,11 @@ private constructor(
             venue == other.venue &&
             adv == other.adv &&
             expiry == other.expiry &&
+            instrumentType == other.instrumentType &&
             longMarginRate == other.longMarginRate &&
             name == other.name &&
             notionalAdv == other.notionalAdv &&
             previousClose == other.previousClose &&
-            securityType == other.securityType &&
             shortMarginRate == other.shortMarginRate &&
             strikePrice == other.strikePrice &&
             additionalProperties == other.additionalProperties
@@ -1174,11 +1174,11 @@ private constructor(
             venue,
             adv,
             expiry,
+            instrumentType,
             longMarginRate,
             name,
             notionalAdv,
             previousClose,
-            securityType,
             shortMarginRate,
             strikePrice,
             additionalProperties,
@@ -1188,5 +1188,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, securityId=$securityId, securityIdSource=$securityIdSource, securityIds=$securityIds, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, securityType=$securityType, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, additionalProperties=$additionalProperties}"
+        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, securityId=$securityId, securityIdSource=$securityIdSource, securityIds=$securityIds, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, additionalProperties=$additionalProperties}"
 }

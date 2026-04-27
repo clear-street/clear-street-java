@@ -13,6 +13,7 @@ internal class InstrumentGetInstrumentsParamsTest {
         InstrumentGetInstrumentsParams.builder()
             .easyToBorrow(true)
             .idFilter("id_filter")
+            .instrumentType(InstrumentGetInstrumentsParams.InstrumentType.COMMON_STOCK)
             .isLiquidationOnly(true)
             .isMarginable(true)
             .isRestricted(true)
@@ -22,7 +23,6 @@ internal class InstrumentGetInstrumentsParamsTest {
             .pageToken("U3RhaW5sZXNzIHJvY2tz")
             .addSecurityId("string")
             .addSecurityIdSource("string")
-            .securityType(InstrumentGetInstrumentsParams.SecurityType.COMMON_STOCK)
             .build()
     }
 
@@ -32,6 +32,7 @@ internal class InstrumentGetInstrumentsParamsTest {
             InstrumentGetInstrumentsParams.builder()
                 .easyToBorrow(true)
                 .idFilter("id_filter")
+                .instrumentType(InstrumentGetInstrumentsParams.InstrumentType.COMMON_STOCK)
                 .isLiquidationOnly(true)
                 .isMarginable(true)
                 .isRestricted(true)
@@ -41,7 +42,6 @@ internal class InstrumentGetInstrumentsParamsTest {
                 .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .addSecurityId("string")
                 .addSecurityIdSource("string")
-                .securityType(InstrumentGetInstrumentsParams.SecurityType.COMMON_STOCK)
                 .build()
 
         val queryParams = params._queryParams()
@@ -51,6 +51,7 @@ internal class InstrumentGetInstrumentsParamsTest {
                 QueryParams.builder()
                     .put("easy_to_borrow", "true")
                     .put("id_filter", "id_filter")
+                    .put("instrument_type", "COMMON_STOCK")
                     .put("is_liquidation_only", "true")
                     .put("is_marginable", "true")
                     .put("is_restricted", "true")
@@ -60,7 +61,6 @@ internal class InstrumentGetInstrumentsParamsTest {
                     .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
                     .put("security_id[0]", "string")
                     .put("security_id_source[0]", "string")
-                    .put("security_type", "COMMON_STOCK")
                     .build()
             )
     }

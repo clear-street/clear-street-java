@@ -24,9 +24,9 @@ import kotlin.jvm.optionals.getOrNull
 class OrderCancelAllOpenOrdersParams
 private constructor(
     private val accountId: Long?,
+    private val instrumentType: InstrumentType?,
     private val securityId: List<String>?,
     private val securityIdSource: List<String>?,
-    private val securityType: SecurityType?,
     private val side: Side?,
     private val type: Type?,
     private val additionalHeaders: Headers,
@@ -35,6 +35,9 @@ private constructor(
 ) : Params {
 
     fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
+
+    /** Filter by instrument type (e.g., COMMON_STOCK, OPTION) */
+    fun instrumentType(): Optional<InstrumentType> = Optional.ofNullable(instrumentType)
 
     /**
      * Filter by security ID(s). Accepts single value or indexed array.
@@ -53,9 +56,6 @@ private constructor(
      * - Multiple: `security_id_source[0]=CUSIP&security_id_source[1]=FIGI`
      */
     fun securityIdSource(): Optional<List<String>> = Optional.ofNullable(securityIdSource)
-
-    /** Filter by security type (e.g., COMMON_STOCK, OPTION) */
-    fun securityType(): Optional<SecurityType> = Optional.ofNullable(securityType)
 
     /** Filter by order side (BUY or SELL) */
     fun side(): Optional<Side> = Optional.ofNullable(side)
@@ -89,9 +89,9 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: Long? = null
+        private var instrumentType: InstrumentType? = null
         private var securityId: MutableList<String>? = null
         private var securityIdSource: MutableList<String>? = null
-        private var securityType: SecurityType? = null
         private var side: Side? = null
         private var type: Type? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -101,9 +101,9 @@ private constructor(
         @JvmSynthetic
         internal fun from(orderCancelAllOpenOrdersParams: OrderCancelAllOpenOrdersParams) = apply {
             accountId = orderCancelAllOpenOrdersParams.accountId
+            instrumentType = orderCancelAllOpenOrdersParams.instrumentType
             securityId = orderCancelAllOpenOrdersParams.securityId?.toMutableList()
             securityIdSource = orderCancelAllOpenOrdersParams.securityIdSource?.toMutableList()
-            securityType = orderCancelAllOpenOrdersParams.securityType
             side = orderCancelAllOpenOrdersParams.side
             type = orderCancelAllOpenOrdersParams.type
             additionalHeaders = orderCancelAllOpenOrdersParams.additionalHeaders.toBuilder()
@@ -123,6 +123,15 @@ private constructor(
 
         /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
         fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
+
+        /** Filter by instrument type (e.g., COMMON_STOCK, OPTION) */
+        fun instrumentType(instrumentType: InstrumentType?) = apply {
+            this.instrumentType = instrumentType
+        }
+
+        /** Alias for calling [Builder.instrumentType] with `instrumentType.orElse(null)`. */
+        fun instrumentType(instrumentType: Optional<InstrumentType>) =
+            instrumentType(instrumentType.getOrNull())
 
         /**
          * Filter by security ID(s). Accepts single value or indexed array.
@@ -171,13 +180,6 @@ private constructor(
             this.securityIdSource =
                 (this.securityIdSource ?: mutableListOf()).apply { add(securityIdSource) }
         }
-
-        /** Filter by security type (e.g., COMMON_STOCK, OPTION) */
-        fun securityType(securityType: SecurityType?) = apply { this.securityType = securityType }
-
-        /** Alias for calling [Builder.securityType] with `securityType.orElse(null)`. */
-        fun securityType(securityType: Optional<SecurityType>) =
-            securityType(securityType.getOrNull())
 
         /** Filter by order side (BUY or SELL) */
         fun side(side: Side?) = apply { this.side = side }
@@ -319,9 +321,9 @@ private constructor(
         fun build(): OrderCancelAllOpenOrdersParams =
             OrderCancelAllOpenOrdersParams(
                 accountId,
+                instrumentType,
                 securityId?.toImmutable(),
                 securityIdSource?.toImmutable(),
-                securityType,
                 side,
                 type,
                 additionalHeaders.build(),
@@ -344,19 +346,19 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
+                instrumentType?.let { put("instrument_type", it.toString()) }
                 securityId?.forEachIndexed { index, it -> put("security_id[$index]", it) }
                 securityIdSource?.forEachIndexed { index, it ->
                     put("security_id_source[$index]", it)
                 }
-                securityType?.let { put("security_type", it.toString()) }
                 side?.let { put("side", it.toString()) }
                 type?.let { put("type", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()
 
-    /** Filter by security type (e.g., COMMON_STOCK, OPTION) */
-    class SecurityType @JsonCreator private constructor(private val value: JsonField<String>) :
+    /** Filter by instrument type (e.g., COMMON_STOCK, OPTION) */
+    class InstrumentType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
         /**
@@ -387,10 +389,10 @@ private constructor(
 
             @JvmField val OTHER = of("OTHER")
 
-            @JvmStatic fun of(value: String) = SecurityType(JsonField.of(value))
+            @JvmStatic fun of(value: String) = InstrumentType(JsonField.of(value))
         }
 
-        /** An enum containing [SecurityType]'s known values. */
+        /** An enum containing [InstrumentType]'s known values. */
         enum class Known {
             COMMON_STOCK,
             PREFERRED_STOCK,
@@ -403,9 +405,9 @@ private constructor(
         }
 
         /**
-         * An enum containing [SecurityType]'s known values, as well as an [_UNKNOWN] member.
+         * An enum containing [InstrumentType]'s known values, as well as an [_UNKNOWN] member.
          *
-         * An instance of [SecurityType] can contain an unknown value in a couple of cases:
+         * An instance of [InstrumentType] can contain an unknown value in a couple of cases:
          * - It was deserialized from data that doesn't match any known member. For example, if the
          *   SDK is on an older version than the API, then the API may respond with new members that
          *   the SDK is unaware of.
@@ -421,7 +423,8 @@ private constructor(
             CASH,
             OTHER,
             /**
-             * An enum member indicating that [SecurityType] was instantiated with an unknown value.
+             * An enum member indicating that [InstrumentType] was instantiated with an unknown
+             * value.
              */
             _UNKNOWN,
         }
@@ -465,7 +468,7 @@ private constructor(
                 WARRANT -> Known.WARRANT
                 CASH -> Known.CASH
                 OTHER -> Known.OTHER
-                else -> throw ClearStreetInvalidDataException("Unknown SecurityType: $value")
+                else -> throw ClearStreetInvalidDataException("Unknown InstrumentType: $value")
             }
 
         /**
@@ -484,7 +487,7 @@ private constructor(
 
         private var validated: Boolean = false
 
-        fun validate(): SecurityType = apply {
+        fun validate(): InstrumentType = apply {
             if (validated) {
                 return@apply
             }
@@ -514,7 +517,7 @@ private constructor(
                 return true
             }
 
-            return other is SecurityType && value == other.value
+            return other is InstrumentType && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -827,9 +830,9 @@ private constructor(
 
         return other is OrderCancelAllOpenOrdersParams &&
             accountId == other.accountId &&
+            instrumentType == other.instrumentType &&
             securityId == other.securityId &&
             securityIdSource == other.securityIdSource &&
-            securityType == other.securityType &&
             side == other.side &&
             type == other.type &&
             additionalHeaders == other.additionalHeaders &&
@@ -840,9 +843,9 @@ private constructor(
     override fun hashCode(): Int =
         Objects.hash(
             accountId,
+            instrumentType,
             securityId,
             securityIdSource,
-            securityType,
             side,
             type,
             additionalHeaders,
@@ -851,5 +854,5 @@ private constructor(
         )
 
     override fun toString() =
-        "OrderCancelAllOpenOrdersParams{accountId=$accountId, securityId=$securityId, securityIdSource=$securityIdSource, securityType=$securityType, side=$side, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "OrderCancelAllOpenOrdersParams{accountId=$accountId, instrumentType=$instrumentType, securityId=$securityId, securityIdSource=$securityIdSource, side=$side, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }

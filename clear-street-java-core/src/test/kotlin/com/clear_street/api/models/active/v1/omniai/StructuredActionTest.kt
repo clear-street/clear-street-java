@@ -25,9 +25,9 @@ internal class StructuredActionTest {
             StructuredAction.PrefillOrder.builder()
                 .addOrder(
                     OrderPayload.builder()
+                        .instrumentType(SecurityType.COMMON_STOCK)
                         .orderType(OrderType.LIMIT)
                         .quantity("100")
-                        .securityType(SecurityType.COMMON_STOCK)
                         .side(Side.BUY)
                         .symbol("AAPL")
                         .timeInForce(TimeInForce.DAY)
@@ -56,9 +56,9 @@ internal class StructuredActionTest {
                 StructuredAction.PrefillOrder.builder()
                     .addOrder(
                         OrderPayload.builder()
+                            .instrumentType(SecurityType.COMMON_STOCK)
                             .orderType(OrderType.LIMIT)
                             .quantity("100")
-                            .securityType(SecurityType.COMMON_STOCK)
                             .side(Side.BUY)
                             .symbol("AAPL")
                             .timeInForce(TimeInForce.DAY)

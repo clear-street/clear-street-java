@@ -17,9 +17,9 @@ internal class OrderSubmitOrdersParamsTest {
                     .legs(
                         listOf(
                             OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                .instrumentType(SecurityType.OPTION)
                                 .ratio("ratio")
                                 .security("0193bb84-447a-706f-996f-097254663f02")
-                                .securityType(SecurityType.OPTION)
                                 .side(Side.BUY)
                                 .id("1")
                                 .positionEffect(
@@ -29,9 +29,9 @@ internal class OrderSubmitOrdersParamsTest {
                                 )
                                 .build(),
                             OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                .instrumentType(SecurityType.OPTION)
                                 .ratio("ratio")
                                 .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
-                                .securityType(SecurityType.OPTION)
                                 .side(Side.SELL)
                                 .id("2")
                                 .positionEffect(
@@ -41,9 +41,9 @@ internal class OrderSubmitOrdersParamsTest {
                                 )
                                 .build(),
                             OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                .instrumentType(SecurityType.OPTION)
                                 .ratio("ratio")
                                 .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
-                                .securityType(SecurityType.OPTION)
                                 .side(Side.BUY)
                                 .id("3")
                                 .positionEffect(
@@ -74,21 +74,21 @@ internal class OrderSubmitOrdersParamsTest {
                         .legs(
                             listOf(
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-447a-706f-996f-097254663f02")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.BUY)
                                     .build(),
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.SELL)
                                     .build(),
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.BUY)
                                     .build(),
                             )
@@ -114,9 +114,9 @@ internal class OrderSubmitOrdersParamsTest {
                         .legs(
                             listOf(
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-447a-706f-996f-097254663f02")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.BUY)
                                     .id("1")
                                     .positionEffect(
@@ -126,9 +126,9 @@ internal class OrderSubmitOrdersParamsTest {
                                     )
                                     .build(),
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.SELL)
                                     .id("2")
                                     .positionEffect(
@@ -138,9 +138,9 @@ internal class OrderSubmitOrdersParamsTest {
                                     )
                                     .build(),
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.BUY)
                                     .id("3")
                                     .positionEffect(
@@ -169,9 +169,9 @@ internal class OrderSubmitOrdersParamsTest {
                         .legs(
                             listOf(
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-447a-706f-996f-097254663f02")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.BUY)
                                     .id("1")
                                     .positionEffect(
@@ -181,9 +181,9 @@ internal class OrderSubmitOrdersParamsTest {
                                     )
                                     .build(),
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.SELL)
                                     .id("2")
                                     .positionEffect(
@@ -193,9 +193,9 @@ internal class OrderSubmitOrdersParamsTest {
                                     )
                                     .build(),
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.BUY)
                                     .id("3")
                                     .positionEffect(
@@ -226,21 +226,21 @@ internal class OrderSubmitOrdersParamsTest {
                         .legs(
                             listOf(
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-447a-706f-996f-097254663f02")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.BUY)
                                     .build(),
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.SELL)
                                     .build(),
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.BUY)
                                     .build(),
                             )
@@ -260,21 +260,21 @@ internal class OrderSubmitOrdersParamsTest {
                         .legs(
                             listOf(
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-447a-706f-996f-097254663f02")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.BUY)
                                     .build(),
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.SELL)
                                     .build(),
                                 OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                    .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
-                                    .securityType(SecurityType.OPTION)
                                     .side(Side.BUY)
                                     .build(),
                             )

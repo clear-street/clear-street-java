@@ -19,6 +19,7 @@ class InstrumentGetInstrumentsParams
 private constructor(
     private val easyToBorrow: Boolean?,
     private val idFilter: String?,
+    private val instrumentType: InstrumentType?,
     private val isLiquidationOnly: Boolean?,
     private val isMarginable: Boolean?,
     private val isRestricted: Boolean?,
@@ -28,7 +29,6 @@ private constructor(
     private val pageToken: String?,
     private val securityId: List<String>?,
     private val securityIdSource: List<String>?,
-    private val securityType: SecurityType?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -37,10 +37,13 @@ private constructor(
     fun easyToBorrow(): Optional<Boolean> = Optional.ofNullable(easyToBorrow)
 
     /**
-     * Filter IDs to those containing this substring. For options, and when security_type is omitted
-     * and no security_id/security_id_source filters are provided, this is required.
+     * Filter IDs to those containing this substring. For options, and when instrument_type is
+     * omitted and no security_id/security_id_source filters are provided, this is required.
      */
     fun idFilter(): Optional<String> = Optional.ofNullable(idFilter)
+
+    /** Filter by instrument type. If omitted, returns all types. */
+    fun instrumentType(): Optional<InstrumentType> = Optional.ofNullable(instrumentType)
 
     /** Filter by liquidation only status */
     fun isLiquidationOnly(): Optional<Boolean> = Optional.ofNullable(isLiquidationOnly)
@@ -83,9 +86,6 @@ private constructor(
      */
     fun securityIdSource(): Optional<List<String>> = Optional.ofNullable(securityIdSource)
 
-    /** Filter by security type. If omitted, returns all types. */
-    fun securityType(): Optional<SecurityType> = Optional.ofNullable(securityType)
-
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
 
@@ -110,6 +110,7 @@ private constructor(
 
         private var easyToBorrow: Boolean? = null
         private var idFilter: String? = null
+        private var instrumentType: InstrumentType? = null
         private var isLiquidationOnly: Boolean? = null
         private var isMarginable: Boolean? = null
         private var isRestricted: Boolean? = null
@@ -119,7 +120,6 @@ private constructor(
         private var pageToken: String? = null
         private var securityId: MutableList<String>? = null
         private var securityIdSource: MutableList<String>? = null
-        private var securityType: SecurityType? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -127,6 +127,7 @@ private constructor(
         internal fun from(instrumentGetInstrumentsParams: InstrumentGetInstrumentsParams) = apply {
             easyToBorrow = instrumentGetInstrumentsParams.easyToBorrow
             idFilter = instrumentGetInstrumentsParams.idFilter
+            instrumentType = instrumentGetInstrumentsParams.instrumentType
             isLiquidationOnly = instrumentGetInstrumentsParams.isLiquidationOnly
             isMarginable = instrumentGetInstrumentsParams.isMarginable
             isRestricted = instrumentGetInstrumentsParams.isRestricted
@@ -136,7 +137,6 @@ private constructor(
             pageToken = instrumentGetInstrumentsParams.pageToken
             securityId = instrumentGetInstrumentsParams.securityId?.toMutableList()
             securityIdSource = instrumentGetInstrumentsParams.securityIdSource?.toMutableList()
-            securityType = instrumentGetInstrumentsParams.securityType
             additionalHeaders = instrumentGetInstrumentsParams.additionalHeaders.toBuilder()
             additionalQueryParams = instrumentGetInstrumentsParams.additionalQueryParams.toBuilder()
         }
@@ -155,13 +155,22 @@ private constructor(
         fun easyToBorrow(easyToBorrow: Optional<Boolean>) = easyToBorrow(easyToBorrow.getOrNull())
 
         /**
-         * Filter IDs to those containing this substring. For options, and when security_type is
+         * Filter IDs to those containing this substring. For options, and when instrument_type is
          * omitted and no security_id/security_id_source filters are provided, this is required.
          */
         fun idFilter(idFilter: String?) = apply { this.idFilter = idFilter }
 
         /** Alias for calling [Builder.idFilter] with `idFilter.orElse(null)`. */
         fun idFilter(idFilter: Optional<String>) = idFilter(idFilter.getOrNull())
+
+        /** Filter by instrument type. If omitted, returns all types. */
+        fun instrumentType(instrumentType: InstrumentType?) = apply {
+            this.instrumentType = instrumentType
+        }
+
+        /** Alias for calling [Builder.instrumentType] with `instrumentType.orElse(null)`. */
+        fun instrumentType(instrumentType: Optional<InstrumentType>) =
+            instrumentType(instrumentType.getOrNull())
 
         /** Filter by liquidation only status */
         fun isLiquidationOnly(isLiquidationOnly: Boolean?) = apply {
@@ -311,13 +320,6 @@ private constructor(
                 (this.securityIdSource ?: mutableListOf()).apply { add(securityIdSource) }
         }
 
-        /** Filter by security type. If omitted, returns all types. */
-        fun securityType(securityType: SecurityType?) = apply { this.securityType = securityType }
-
-        /** Alias for calling [Builder.securityType] with `securityType.orElse(null)`. */
-        fun securityType(securityType: Optional<SecurityType>) =
-            securityType(securityType.getOrNull())
-
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
             putAllAdditionalHeaders(additionalHeaders)
@@ -425,6 +427,7 @@ private constructor(
             InstrumentGetInstrumentsParams(
                 easyToBorrow,
                 idFilter,
+                instrumentType,
                 isLiquidationOnly,
                 isMarginable,
                 isRestricted,
@@ -434,7 +437,6 @@ private constructor(
                 pageToken,
                 securityId?.toImmutable(),
                 securityIdSource?.toImmutable(),
-                securityType,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -447,6 +449,7 @@ private constructor(
             .apply {
                 easyToBorrow?.let { put("easy_to_borrow", it.toString()) }
                 idFilter?.let { put("id_filter", it) }
+                instrumentType?.let { put("instrument_type", it.toString()) }
                 isLiquidationOnly?.let { put("is_liquidation_only", it.toString()) }
                 isMarginable?.let { put("is_marginable", it.toString()) }
                 isRestricted?.let { put("is_restricted", it.toString()) }
@@ -458,13 +461,12 @@ private constructor(
                 securityIdSource?.forEachIndexed { index, it ->
                     put("security_id_source[$index]", it)
                 }
-                securityType?.let { put("security_type", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()
 
-    /** Filter by security type. If omitted, returns all types. */
-    class SecurityType @JsonCreator private constructor(private val value: JsonField<String>) :
+    /** Filter by instrument type. If omitted, returns all types. */
+    class InstrumentType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
         /**
@@ -495,10 +497,10 @@ private constructor(
 
             @JvmField val OTHER = of("OTHER")
 
-            @JvmStatic fun of(value: String) = SecurityType(JsonField.of(value))
+            @JvmStatic fun of(value: String) = InstrumentType(JsonField.of(value))
         }
 
-        /** An enum containing [SecurityType]'s known values. */
+        /** An enum containing [InstrumentType]'s known values. */
         enum class Known {
             COMMON_STOCK,
             PREFERRED_STOCK,
@@ -511,9 +513,9 @@ private constructor(
         }
 
         /**
-         * An enum containing [SecurityType]'s known values, as well as an [_UNKNOWN] member.
+         * An enum containing [InstrumentType]'s known values, as well as an [_UNKNOWN] member.
          *
-         * An instance of [SecurityType] can contain an unknown value in a couple of cases:
+         * An instance of [InstrumentType] can contain an unknown value in a couple of cases:
          * - It was deserialized from data that doesn't match any known member. For example, if the
          *   SDK is on an older version than the API, then the API may respond with new members that
          *   the SDK is unaware of.
@@ -529,7 +531,8 @@ private constructor(
             CASH,
             OTHER,
             /**
-             * An enum member indicating that [SecurityType] was instantiated with an unknown value.
+             * An enum member indicating that [InstrumentType] was instantiated with an unknown
+             * value.
              */
             _UNKNOWN,
         }
@@ -573,7 +576,7 @@ private constructor(
                 WARRANT -> Known.WARRANT
                 CASH -> Known.CASH
                 OTHER -> Known.OTHER
-                else -> throw ClearStreetInvalidDataException("Unknown SecurityType: $value")
+                else -> throw ClearStreetInvalidDataException("Unknown InstrumentType: $value")
             }
 
         /**
@@ -592,7 +595,7 @@ private constructor(
 
         private var validated: Boolean = false
 
-        fun validate(): SecurityType = apply {
+        fun validate(): InstrumentType = apply {
             if (validated) {
                 return@apply
             }
@@ -622,7 +625,7 @@ private constructor(
                 return true
             }
 
-            return other is SecurityType && value == other.value
+            return other is InstrumentType && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -638,6 +641,7 @@ private constructor(
         return other is InstrumentGetInstrumentsParams &&
             easyToBorrow == other.easyToBorrow &&
             idFilter == other.idFilter &&
+            instrumentType == other.instrumentType &&
             isLiquidationOnly == other.isLiquidationOnly &&
             isMarginable == other.isMarginable &&
             isRestricted == other.isRestricted &&
@@ -647,7 +651,6 @@ private constructor(
             pageToken == other.pageToken &&
             securityId == other.securityId &&
             securityIdSource == other.securityIdSource &&
-            securityType == other.securityType &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -656,6 +659,7 @@ private constructor(
         Objects.hash(
             easyToBorrow,
             idFilter,
+            instrumentType,
             isLiquidationOnly,
             isMarginable,
             isRestricted,
@@ -665,11 +669,10 @@ private constructor(
             pageToken,
             securityId,
             securityIdSource,
-            securityType,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "InstrumentGetInstrumentsParams{easyToBorrow=$easyToBorrow, idFilter=$idFilter, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, pageSize=$pageSize, pageToken=$pageToken, securityId=$securityId, securityIdSource=$securityIdSource, securityType=$securityType, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentGetInstrumentsParams{easyToBorrow=$easyToBorrow, idFilter=$idFilter, instrumentType=$instrumentType, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, pageSize=$pageSize, pageToken=$pageToken, securityId=$securityId, securityIdSource=$securityIdSource, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

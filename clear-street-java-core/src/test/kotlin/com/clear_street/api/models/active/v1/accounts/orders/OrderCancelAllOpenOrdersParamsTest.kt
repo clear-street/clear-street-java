@@ -12,9 +12,9 @@ internal class OrderCancelAllOpenOrdersParamsTest {
     fun create() {
         OrderCancelAllOpenOrdersParams.builder()
             .accountId(0L)
+            .instrumentType(OrderCancelAllOpenOrdersParams.InstrumentType.COMMON_STOCK)
             .addSecurityId("string")
             .addSecurityIdSource("string")
-            .securityType(OrderCancelAllOpenOrdersParams.SecurityType.COMMON_STOCK)
             .side(OrderCancelAllOpenOrdersParams.Side.BUY)
             .type(OrderCancelAllOpenOrdersParams.Type.MARKET)
             .build()
@@ -34,9 +34,9 @@ internal class OrderCancelAllOpenOrdersParamsTest {
         val params =
             OrderCancelAllOpenOrdersParams.builder()
                 .accountId(0L)
+                .instrumentType(OrderCancelAllOpenOrdersParams.InstrumentType.COMMON_STOCK)
                 .addSecurityId("string")
                 .addSecurityIdSource("string")
-                .securityType(OrderCancelAllOpenOrdersParams.SecurityType.COMMON_STOCK)
                 .side(OrderCancelAllOpenOrdersParams.Side.BUY)
                 .type(OrderCancelAllOpenOrdersParams.Type.MARKET)
                 .build()
@@ -46,9 +46,9 @@ internal class OrderCancelAllOpenOrdersParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
+                    .put("instrument_type", "COMMON_STOCK")
                     .put("security_id[0]", "string")
                     .put("security_id_source[0]", "string")
-                    .put("security_type", "COMMON_STOCK")
                     .put("side", "BUY")
                     .put("type", "MARKET")
                     .build()

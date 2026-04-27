@@ -43,6 +43,7 @@ private constructor(
     private val gapFrom52wHighPct: JsonField<String>,
     private val gapFrom52wLowPct: JsonField<String>,
     private val industry: JsonField<String>,
+    private val instrumentType: JsonField<String>,
     private val listDate: JsonField<LocalDate>,
     private val marketCap: JsonField<String>,
     private val monthAvgVolume: JsonField<String>,
@@ -60,7 +61,6 @@ private constructor(
     private val prevDayClose: JsonField<String>,
     private val priceToEarningsTtm: JsonField<String>,
     private val sector: JsonField<String>,
-    private val securityType: JsonField<String>,
     private val sixMonthChangePct: JsonField<String>,
     private val sixMonthsAgoClose: JsonField<String>,
     private val sixMonthsAgoOpen: JsonField<String>,
@@ -125,6 +125,9 @@ private constructor(
         @ExcludeMissing
         gapFrom52wLowPct: JsonField<String> = JsonMissing.of(),
         @JsonProperty("industry") @ExcludeMissing industry: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("instrument_type")
+        @ExcludeMissing
+        instrumentType: JsonField<String> = JsonMissing.of(),
         @JsonProperty("list_date")
         @ExcludeMissing
         listDate: JsonField<LocalDate> = JsonMissing.of(),
@@ -170,9 +173,6 @@ private constructor(
         @ExcludeMissing
         priceToEarningsTtm: JsonField<String> = JsonMissing.of(),
         @JsonProperty("sector") @ExcludeMissing sector: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("security_type")
-        @ExcludeMissing
-        securityType: JsonField<String> = JsonMissing.of(),
         @JsonProperty("six_month_change_pct")
         @ExcludeMissing
         sixMonthChangePct: JsonField<String> = JsonMissing.of(),
@@ -221,6 +221,7 @@ private constructor(
         gapFrom52wHighPct,
         gapFrom52wLowPct,
         industry,
+        instrumentType,
         listDate,
         marketCap,
         monthAvgVolume,
@@ -238,7 +239,6 @@ private constructor(
         prevDayClose,
         priceToEarningsTtm,
         sector,
-        securityType,
         sixMonthChangePct,
         sixMonthsAgoClose,
         sixMonthsAgoOpen,
@@ -409,6 +409,14 @@ private constructor(
     fun industry(): Optional<String> = industry.getOptional("industry")
 
     /**
+     * The type of instrument
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun instrumentType(): Optional<String> = instrumentType.getOptional("instrument_type")
+
+    /**
      * The date the instrument was first listed
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -545,14 +553,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun sector(): Optional<String> = sector.getOptional("sector")
-
-    /**
-     * The type of security
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun securityType(): Optional<String> = securityType.getOptional("security_type")
 
     /**
      * Percent change from six months ago close to previous day close
@@ -806,6 +806,15 @@ private constructor(
     @JsonProperty("industry") @ExcludeMissing fun _industry(): JsonField<String> = industry
 
     /**
+     * Returns the raw JSON value of [instrumentType].
+     *
+     * Unlike [instrumentType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("instrument_type")
+    @ExcludeMissing
+    fun _instrumentType(): JsonField<String> = instrumentType
+
+    /**
      * Returns the raw JSON value of [listDate].
      *
      * Unlike [listDate], this method doesn't throw if the JSON field has an unexpected type.
@@ -956,15 +965,6 @@ private constructor(
     @JsonProperty("sector") @ExcludeMissing fun _sector(): JsonField<String> = sector
 
     /**
-     * Returns the raw JSON value of [securityType].
-     *
-     * Unlike [securityType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("security_type")
-    @ExcludeMissing
-    fun _securityType(): JsonField<String> = securityType
-
-    /**
      * Returns the raw JSON value of [sixMonthChangePct].
      *
      * Unlike [sixMonthChangePct], this method doesn't throw if the JSON field has an unexpected
@@ -1110,6 +1110,7 @@ private constructor(
         private var gapFrom52wHighPct: JsonField<String> = JsonMissing.of()
         private var gapFrom52wLowPct: JsonField<String> = JsonMissing.of()
         private var industry: JsonField<String> = JsonMissing.of()
+        private var instrumentType: JsonField<String> = JsonMissing.of()
         private var listDate: JsonField<LocalDate> = JsonMissing.of()
         private var marketCap: JsonField<String> = JsonMissing.of()
         private var monthAvgVolume: JsonField<String> = JsonMissing.of()
@@ -1127,7 +1128,6 @@ private constructor(
         private var prevDayClose: JsonField<String> = JsonMissing.of()
         private var priceToEarningsTtm: JsonField<String> = JsonMissing.of()
         private var sector: JsonField<String> = JsonMissing.of()
-        private var securityType: JsonField<String> = JsonMissing.of()
         private var sixMonthChangePct: JsonField<String> = JsonMissing.of()
         private var sixMonthsAgoClose: JsonField<String> = JsonMissing.of()
         private var sixMonthsAgoOpen: JsonField<String> = JsonMissing.of()
@@ -1161,6 +1161,7 @@ private constructor(
             gapFrom52wHighPct = screenerItem.gapFrom52wHighPct
             gapFrom52wLowPct = screenerItem.gapFrom52wLowPct
             industry = screenerItem.industry
+            instrumentType = screenerItem.instrumentType
             listDate = screenerItem.listDate
             marketCap = screenerItem.marketCap
             monthAvgVolume = screenerItem.monthAvgVolume
@@ -1178,7 +1179,6 @@ private constructor(
             prevDayClose = screenerItem.prevDayClose
             priceToEarningsTtm = screenerItem.priceToEarningsTtm
             sector = screenerItem.sector
-            securityType = screenerItem.securityType
             sixMonthChangePct = screenerItem.sixMonthChangePct
             sixMonthsAgoClose = screenerItem.sixMonthsAgoClose
             sixMonthsAgoOpen = screenerItem.sixMonthsAgoOpen
@@ -1508,6 +1508,25 @@ private constructor(
          */
         fun industry(industry: JsonField<String>) = apply { this.industry = industry }
 
+        /** The type of instrument */
+        fun instrumentType(instrumentType: String?) =
+            instrumentType(JsonField.ofNullable(instrumentType))
+
+        /** Alias for calling [Builder.instrumentType] with `instrumentType.orElse(null)`. */
+        fun instrumentType(instrumentType: Optional<String>) =
+            instrumentType(instrumentType.getOrNull())
+
+        /**
+         * Sets [Builder.instrumentType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.instrumentType] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun instrumentType(instrumentType: JsonField<String>) = apply {
+            this.instrumentType = instrumentType
+        }
+
         /** The date the instrument was first listed */
         fun listDate(listDate: LocalDate?) = listDate(JsonField.ofNullable(listDate))
 
@@ -1813,23 +1832,6 @@ private constructor(
          */
         fun sector(sector: JsonField<String>) = apply { this.sector = sector }
 
-        /** The type of security */
-        fun securityType(securityType: String?) = securityType(JsonField.ofNullable(securityType))
-
-        /** Alias for calling [Builder.securityType] with `securityType.orElse(null)`. */
-        fun securityType(securityType: Optional<String>) = securityType(securityType.getOrNull())
-
-        /**
-         * Sets [Builder.securityType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.securityType] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun securityType(securityType: JsonField<String>) = apply {
-            this.securityType = securityType
-        }
-
         /** Percent change from six months ago close to previous day close */
         fun sixMonthChangePct(sixMonthChangePct: String?) =
             sixMonthChangePct(JsonField.ofNullable(sixMonthChangePct))
@@ -2076,6 +2078,7 @@ private constructor(
                 gapFrom52wHighPct,
                 gapFrom52wLowPct,
                 industry,
+                instrumentType,
                 listDate,
                 marketCap,
                 monthAvgVolume,
@@ -2093,7 +2096,6 @@ private constructor(
                 prevDayClose,
                 priceToEarningsTtm,
                 sector,
-                securityType,
                 sixMonthChangePct,
                 sixMonthsAgoClose,
                 sixMonthsAgoOpen,
@@ -2134,6 +2136,7 @@ private constructor(
         gapFrom52wHighPct()
         gapFrom52wLowPct()
         industry()
+        instrumentType()
         listDate()
         marketCap()
         monthAvgVolume()
@@ -2151,7 +2154,6 @@ private constructor(
         prevDayClose()
         priceToEarningsTtm()
         sector()
-        securityType()
         sixMonthChangePct()
         sixMonthsAgoClose()
         sixMonthsAgoOpen()
@@ -2199,6 +2201,7 @@ private constructor(
             (if (gapFrom52wHighPct.asKnown().isPresent) 1 else 0) +
             (if (gapFrom52wLowPct.asKnown().isPresent) 1 else 0) +
             (if (industry.asKnown().isPresent) 1 else 0) +
+            (if (instrumentType.asKnown().isPresent) 1 else 0) +
             (if (listDate.asKnown().isPresent) 1 else 0) +
             (if (marketCap.asKnown().isPresent) 1 else 0) +
             (if (monthAvgVolume.asKnown().isPresent) 1 else 0) +
@@ -2216,7 +2219,6 @@ private constructor(
             (if (prevDayClose.asKnown().isPresent) 1 else 0) +
             (if (priceToEarningsTtm.asKnown().isPresent) 1 else 0) +
             (if (sector.asKnown().isPresent) 1 else 0) +
-            (if (securityType.asKnown().isPresent) 1 else 0) +
             (if (sixMonthChangePct.asKnown().isPresent) 1 else 0) +
             (if (sixMonthsAgoClose.asKnown().isPresent) 1 else 0) +
             (if (sixMonthsAgoOpen.asKnown().isPresent) 1 else 0) +
@@ -2253,6 +2255,7 @@ private constructor(
             gapFrom52wHighPct == other.gapFrom52wHighPct &&
             gapFrom52wLowPct == other.gapFrom52wLowPct &&
             industry == other.industry &&
+            instrumentType == other.instrumentType &&
             listDate == other.listDate &&
             marketCap == other.marketCap &&
             monthAvgVolume == other.monthAvgVolume &&
@@ -2270,7 +2273,6 @@ private constructor(
             prevDayClose == other.prevDayClose &&
             priceToEarningsTtm == other.priceToEarningsTtm &&
             sector == other.sector &&
-            securityType == other.securityType &&
             sixMonthChangePct == other.sixMonthChangePct &&
             sixMonthsAgoClose == other.sixMonthsAgoClose &&
             sixMonthsAgoOpen == other.sixMonthsAgoOpen &&
@@ -2305,6 +2307,7 @@ private constructor(
             gapFrom52wHighPct,
             gapFrom52wLowPct,
             industry,
+            instrumentType,
             listDate,
             marketCap,
             monthAvgVolume,
@@ -2322,7 +2325,6 @@ private constructor(
             prevDayClose,
             priceToEarningsTtm,
             sector,
-            securityType,
             sixMonthChangePct,
             sixMonthsAgoClose,
             sixMonthsAgoOpen,
@@ -2340,5 +2342,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ScreenerItem{instrumentId=$instrumentId, price=$price, securityId=$securityId, securityIdSource=$securityIdSource, symbol=$symbol, totalRatings=$totalRatings, consensusPriceTarget=$consensusPriceTarget, consensusRating=$consensusRating, countryOfIssue=$countryOfIssue, debtToEquityTtm=$debtToEquityTtm, description=$description, dividendYieldTtm=$dividendYieldTtm, earningsPerShareTtm=$earningsPerShareTtm, exchange=$exchange, fiftyTwoWeekHigh=$fiftyTwoWeekHigh, fiftyTwoWeekLow=$fiftyTwoWeekLow, gapFrom52wHighPct=$gapFrom52wHighPct, gapFrom52wLowPct=$gapFrom52wLowPct, industry=$industry, listDate=$listDate, marketCap=$marketCap, monthAvgVolume=$monthAvgVolume, name=$name, oneMonthAgoClose=$oneMonthAgoClose, oneMonthAgoOpen=$oneMonthAgoOpen, oneMonthChangePct=$oneMonthChangePct, oneWeekAgoClose=$oneWeekAgoClose, oneWeekAgoOpen=$oneWeekAgoOpen, oneWeekChangePct=$oneWeekChangePct, oneYearAgoClose=$oneYearAgoClose, oneYearAgoOpen=$oneYearAgoOpen, oneYearChangePct=$oneYearChangePct, percentChange=$percentChange, prevDayClose=$prevDayClose, priceToEarningsTtm=$priceToEarningsTtm, sector=$sector, securityType=$securityType, sixMonthChangePct=$sixMonthChangePct, sixMonthsAgoClose=$sixMonthsAgoClose, sixMonthsAgoOpen=$sixMonthsAgoOpen, threeMonthChangePct=$threeMonthChangePct, threeMonthsAgoClose=$threeMonthsAgoClose, threeMonthsAgoOpen=$threeMonthsAgoOpen, volume=$volume, weekAvgVolume=$weekAvgVolume, yearToDateOpen=$yearToDateOpen, ytdChangePct=$ytdChangePct, additionalProperties=$additionalProperties}"
+        "ScreenerItem{instrumentId=$instrumentId, price=$price, securityId=$securityId, securityIdSource=$securityIdSource, symbol=$symbol, totalRatings=$totalRatings, consensusPriceTarget=$consensusPriceTarget, consensusRating=$consensusRating, countryOfIssue=$countryOfIssue, debtToEquityTtm=$debtToEquityTtm, description=$description, dividendYieldTtm=$dividendYieldTtm, earningsPerShareTtm=$earningsPerShareTtm, exchange=$exchange, fiftyTwoWeekHigh=$fiftyTwoWeekHigh, fiftyTwoWeekLow=$fiftyTwoWeekLow, gapFrom52wHighPct=$gapFrom52wHighPct, gapFrom52wLowPct=$gapFrom52wLowPct, industry=$industry, instrumentType=$instrumentType, listDate=$listDate, marketCap=$marketCap, monthAvgVolume=$monthAvgVolume, name=$name, oneMonthAgoClose=$oneMonthAgoClose, oneMonthAgoOpen=$oneMonthAgoOpen, oneMonthChangePct=$oneMonthChangePct, oneWeekAgoClose=$oneWeekAgoClose, oneWeekAgoOpen=$oneWeekAgoOpen, oneWeekChangePct=$oneWeekChangePct, oneYearAgoClose=$oneYearAgoClose, oneYearAgoOpen=$oneYearAgoOpen, oneYearChangePct=$oneYearChangePct, percentChange=$percentChange, prevDayClose=$prevDayClose, priceToEarningsTtm=$priceToEarningsTtm, sector=$sector, sixMonthChangePct=$sixMonthChangePct, sixMonthsAgoClose=$sixMonthsAgoClose, sixMonthsAgoOpen=$sixMonthsAgoOpen, threeMonthChangePct=$threeMonthChangePct, threeMonthsAgoClose=$threeMonthsAgoClose, threeMonthsAgoOpen=$threeMonthsAgoOpen, volume=$volume, weekAvgVolume=$weekAvgVolume, yearToDateOpen=$yearToDateOpen, ytdChangePct=$ytdChangePct, additionalProperties=$additionalProperties}"
 }
