@@ -124,11 +124,11 @@ internal class OrderServiceTest {
             orderService.submitOrders(
                 OrderSubmitOrdersParams.builder()
                     .accountId(0L)
-                    .addBody(
-                        OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.builder()
+                    .addOrder(
+                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.builder()
                             .legs(
                                 listOf(
-                                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .builder()
                                         .instrumentType(SecurityType.OPTION)
                                         .ratio("ratio")
@@ -136,12 +136,13 @@ internal class OrderServiceTest {
                                         .side(Side.BUY)
                                         .id("1")
                                         .positionEffect(
-                                            OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest
+                                                .Leg
                                                 .PositionEffect
                                                 .OPEN
                                         )
                                         .build(),
-                                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .builder()
                                         .instrumentType(SecurityType.OPTION)
                                         .ratio("ratio")
@@ -149,12 +150,13 @@ internal class OrderServiceTest {
                                         .side(Side.SELL)
                                         .id("2")
                                         .positionEffect(
-                                            OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest
+                                                .Leg
                                                 .PositionEffect
                                                 .OPEN
                                         )
                                         .build(),
-                                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .builder()
                                         .instrumentType(SecurityType.OPTION)
                                         .ratio("ratio")
@@ -162,7 +164,8 @@ internal class OrderServiceTest {
                                         .side(Side.BUY)
                                         .id("3")
                                         .positionEffect(
-                                            OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest
+                                                .Leg
                                                 .PositionEffect
                                                 .OPEN
                                         )

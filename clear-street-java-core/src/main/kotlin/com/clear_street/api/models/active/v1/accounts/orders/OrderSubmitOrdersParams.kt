@@ -41,14 +41,14 @@ import kotlin.jvm.optionals.getOrNull
 class OrderSubmitOrdersParams
 private constructor(
     private val accountId: Long?,
-    private val body: List<Body>,
+    private val orders: List<Order>,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
-    fun body(): List<Body> = body
+    fun orders(): List<Order> = orders
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -65,7 +65,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .body()
+         * .orders()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -75,14 +75,14 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: Long? = null
-        private var body: MutableList<Body>? = null
+        private var orders: MutableList<Order>? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(orderSubmitOrdersParams: OrderSubmitOrdersParams) = apply {
             accountId = orderSubmitOrdersParams.accountId
-            body = orderSubmitOrdersParams.body.toMutableList()
+            orders = orderSubmitOrdersParams.orders.toMutableList()
             additionalHeaders = orderSubmitOrdersParams.additionalHeaders.toBuilder()
             additionalQueryParams = orderSubmitOrdersParams.additionalQueryParams.toBuilder()
         }
@@ -99,27 +99,27 @@ private constructor(
         /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
         fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
-        fun body(body: List<Body>) = apply { this.body = body.toMutableList() }
+        fun orders(orders: List<Order>) = apply { this.orders = orders.toMutableList() }
 
         /**
-         * Adds a single [Body] to [Builder.body].
+         * Adds a single [Order] to [orders].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addBody(body: Body) = apply {
-            this.body = (this.body ?: mutableListOf()).apply { add(body) }
+        fun addOrder(order: Order) = apply {
+            orders = (orders ?: mutableListOf()).apply { add(order) }
         }
 
         /**
-         * Alias for calling [addBody] with
-         * `Body.ofNewOrderMultilegRequest(newOrderMultilegRequest)`.
+         * Alias for calling [addOrder] with
+         * `Order.ofNewOrderMultilegRequest(newOrderMultilegRequest)`.
          */
-        fun addBody(newOrderMultilegRequest: Body.NewOrderMultilegRequest) =
-            addBody(Body.ofNewOrderMultilegRequest(newOrderMultilegRequest))
+        fun addOrder(newOrderMultilegRequest: Order.NewOrderMultilegRequest) =
+            addOrder(Order.ofNewOrderMultilegRequest(newOrderMultilegRequest))
 
-        /** Alias for calling [addBody] with `Body.ofNewOrderRequest(newOrderRequest)`. */
-        fun addBody(newOrderRequest: Body.NewOrderRequest) =
-            addBody(Body.ofNewOrderRequest(newOrderRequest))
+        /** Alias for calling [addOrder] with `Order.ofNewOrderRequest(newOrderRequest)`. */
+        fun addOrder(newOrderRequest: Order.NewOrderRequest) =
+            addOrder(Order.ofNewOrderRequest(newOrderRequest))
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -226,7 +226,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .body()
+         * .orders()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -234,13 +234,13 @@ private constructor(
         fun build(): OrderSubmitOrdersParams =
             OrderSubmitOrdersParams(
                 accountId,
-                checkRequired("body", body).toImmutable(),
+                checkRequired("orders", orders).toImmutable(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): List<Body> = body
+    fun _body(): List<Order> = orders
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -258,9 +258,9 @@ private constructor(
      * Existing single-leg payloads are still accepted as-is. Multileg payloads are identified by
      * the required `legs` field.
      */
-    @JsonDeserialize(using = Body.Deserializer::class)
-    @JsonSerialize(using = Body.Serializer::class)
-    class Body
+    @JsonDeserialize(using = Order.Deserializer::class)
+    @JsonSerialize(using = Order.Serializer::class)
+    class Order
     private constructor(
         private val newOrderMultilegRequest: NewOrderMultilegRequest? = null,
         private val newOrderRequest: NewOrderRequest? = null,
@@ -297,7 +297,7 @@ private constructor(
 
         private var validated: Boolean = false
 
-        fun validate(): Body = apply {
+        fun validate(): Order = apply {
             if (validated) {
                 return@apply
             }
@@ -352,7 +352,7 @@ private constructor(
                 return true
             }
 
-            return other is Body &&
+            return other is Order &&
                 newOrderMultilegRequest == other.newOrderMultilegRequest &&
                 newOrderRequest == other.newOrderRequest
         }
@@ -362,10 +362,10 @@ private constructor(
         override fun toString(): String =
             when {
                 newOrderMultilegRequest != null ->
-                    "Body{newOrderMultilegRequest=$newOrderMultilegRequest}"
-                newOrderRequest != null -> "Body{newOrderRequest=$newOrderRequest}"
-                _json != null -> "Body{_unknown=$_json}"
-                else -> throw IllegalStateException("Invalid Body")
+                    "Order{newOrderMultilegRequest=$newOrderMultilegRequest}"
+                newOrderRequest != null -> "Order{newOrderRequest=$newOrderRequest}"
+                _json != null -> "Order{_unknown=$_json}"
+                else -> throw IllegalStateException("Invalid Order")
             }
 
         companion object {
@@ -373,15 +373,15 @@ private constructor(
             /** Multileg strategy order request */
             @JvmStatic
             fun ofNewOrderMultilegRequest(newOrderMultilegRequest: NewOrderMultilegRequest) =
-                Body(newOrderMultilegRequest = newOrderMultilegRequest)
+                Order(newOrderMultilegRequest = newOrderMultilegRequest)
 
             /** Single-leg order request */
             @JvmStatic
             fun ofNewOrderRequest(newOrderRequest: NewOrderRequest) =
-                Body(newOrderRequest = newOrderRequest)
+                Order(newOrderRequest = newOrderRequest)
         }
 
-        /** An interface that defines how to map each variant of [Body] to a value of type [T]. */
+        /** An interface that defines how to map each variant of [Order] to a value of type [T]. */
         interface Visitor<out T> {
 
             /** Multileg strategy order request */
@@ -391,31 +391,32 @@ private constructor(
             fun visitNewOrderRequest(newOrderRequest: NewOrderRequest): T
 
             /**
-             * Maps an unknown variant of [Body] to a value of type [T].
+             * Maps an unknown variant of [Order] to a value of type [T].
              *
-             * An instance of [Body] can contain an unknown variant if it was deserialized from data
-             * that doesn't match any known variant. For example, if the SDK is on an older version
-             * than the API, then the API may respond with new variants that the SDK is unaware of.
+             * An instance of [Order] can contain an unknown variant if it was deserialized from
+             * data that doesn't match any known variant. For example, if the SDK is on an older
+             * version than the API, then the API may respond with new variants that the SDK is
+             * unaware of.
              *
              * @throws ClearStreetInvalidDataException in the default implementation.
              */
             fun unknown(json: JsonValue?): T {
-                throw ClearStreetInvalidDataException("Unknown Body: $json")
+                throw ClearStreetInvalidDataException("Unknown Order: $json")
             }
         }
 
-        internal class Deserializer : BaseDeserializer<Body>(Body::class) {
+        internal class Deserializer : BaseDeserializer<Order>(Order::class) {
 
-            override fun ObjectCodec.deserialize(node: JsonNode): Body {
+            override fun ObjectCodec.deserialize(node: JsonNode): Order {
                 val json = JsonValue.fromJsonNode(node)
 
                 val bestMatches =
                     sequenceOf(
                             tryDeserialize(node, jacksonTypeRef<NewOrderMultilegRequest>())?.let {
-                                Body(newOrderMultilegRequest = it, _json = json)
+                                Order(newOrderMultilegRequest = it, _json = json)
                             },
                             tryDeserialize(node, jacksonTypeRef<NewOrderRequest>())?.let {
-                                Body(newOrderRequest = it, _json = json)
+                                Order(newOrderRequest = it, _json = json)
                             },
                         )
                         .filterNotNull()
@@ -424,7 +425,7 @@ private constructor(
                 return when (bestMatches.size) {
                     // This can happen if what we're deserializing is completely incompatible with
                     // all the possible variants (e.g. deserializing from boolean).
-                    0 -> Body(_json = json)
+                    0 -> Order(_json = json)
                     1 -> bestMatches.single()
                     // If there's more than one match with the highest validity, then use the first
                     // completely valid match, or simply the first match if none are completely
@@ -434,10 +435,10 @@ private constructor(
             }
         }
 
-        internal class Serializer : BaseSerializer<Body>(Body::class) {
+        internal class Serializer : BaseSerializer<Order>(Order::class) {
 
             override fun serialize(
-                value: Body,
+                value: Order,
                 generator: JsonGenerator,
                 provider: SerializerProvider,
             ) {
@@ -446,7 +447,7 @@ private constructor(
                         generator.writeObject(value.newOrderMultilegRequest)
                     value.newOrderRequest != null -> generator.writeObject(value.newOrderRequest)
                     value._json != null -> generator.writeObject(value._json)
-                    else -> throw IllegalStateException("Invalid Body")
+                    else -> throw IllegalStateException("Invalid Order")
                 }
             }
         }
@@ -2974,14 +2975,14 @@ private constructor(
 
         return other is OrderSubmitOrdersParams &&
             accountId == other.accountId &&
-            body == other.body &&
+            orders == other.orders &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(accountId, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(accountId, orders, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "OrderSubmitOrdersParams{accountId=$accountId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "OrderSubmitOrdersParams{accountId=$accountId, orders=$orders, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
