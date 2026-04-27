@@ -12,8 +12,11 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrument
 import com.clear_street.api.models.active.v1.instruments.InstrumentSearchParams
 import com.clear_street.api.models.active.v1.instruments.InstrumentSearchResponse
 import com.clear_street.api.services.async.active.v1.instruments.AnalystReportingServiceAsync
+import com.clear_street.api.services.async.active.v1.instruments.BalanceSheetServiceAsync
+import com.clear_street.api.services.async.active.v1.instruments.CashFlowStatementServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.FundamentalServiceAsync
+import com.clear_street.api.services.async.active.v1.instruments.IncomeStatementServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.OptionServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -37,10 +40,19 @@ interface InstrumentServiceAsync {
     fun analystReporting(): AnalystReportingServiceAsync
 
     /** Retrieve details and lists of tradable instruments. */
+    fun balanceSheets(): BalanceSheetServiceAsync
+
+    /** Retrieve details and lists of tradable instruments. */
+    fun cashFlowStatements(): CashFlowStatementServiceAsync
+
+    /** Retrieve details and lists of tradable instruments. */
     fun events(): EventServiceAsync
 
     /** Retrieve details and lists of tradable instruments. */
     fun fundamentals(): FundamentalServiceAsync
+
+    /** Retrieve details and lists of tradable instruments. */
+    fun incomeStatements(): IncomeStatementServiceAsync
 
     /** Retrieve details and lists of tradable instruments. */
     fun options(): OptionServiceAsync
@@ -132,10 +144,19 @@ interface InstrumentServiceAsync {
         fun analystReporting(): AnalystReportingServiceAsync.WithRawResponse
 
         /** Retrieve details and lists of tradable instruments. */
+        fun balanceSheets(): BalanceSheetServiceAsync.WithRawResponse
+
+        /** Retrieve details and lists of tradable instruments. */
+        fun cashFlowStatements(): CashFlowStatementServiceAsync.WithRawResponse
+
+        /** Retrieve details and lists of tradable instruments. */
         fun events(): EventServiceAsync.WithRawResponse
 
         /** Retrieve details and lists of tradable instruments. */
         fun fundamentals(): FundamentalServiceAsync.WithRawResponse
+
+        /** Retrieve details and lists of tradable instruments. */
+        fun incomeStatements(): IncomeStatementServiceAsync.WithRawResponse
 
         /** Retrieve details and lists of tradable instruments. */
         fun options(): OptionServiceAsync.WithRawResponse

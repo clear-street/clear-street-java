@@ -23,10 +23,16 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentSearchParams
 import com.clear_street.api.models.active.v1.instruments.InstrumentSearchResponse
 import com.clear_street.api.services.blocking.active.v1.instruments.AnalystReportingService
 import com.clear_street.api.services.blocking.active.v1.instruments.AnalystReportingServiceImpl
+import com.clear_street.api.services.blocking.active.v1.instruments.BalanceSheetService
+import com.clear_street.api.services.blocking.active.v1.instruments.BalanceSheetServiceImpl
+import com.clear_street.api.services.blocking.active.v1.instruments.CashFlowStatementService
+import com.clear_street.api.services.blocking.active.v1.instruments.CashFlowStatementServiceImpl
 import com.clear_street.api.services.blocking.active.v1.instruments.EventService
 import com.clear_street.api.services.blocking.active.v1.instruments.EventServiceImpl
 import com.clear_street.api.services.blocking.active.v1.instruments.FundamentalService
 import com.clear_street.api.services.blocking.active.v1.instruments.FundamentalServiceImpl
+import com.clear_street.api.services.blocking.active.v1.instruments.IncomeStatementService
+import com.clear_street.api.services.blocking.active.v1.instruments.IncomeStatementServiceImpl
 import com.clear_street.api.services.blocking.active.v1.instruments.OptionService
 import com.clear_street.api.services.blocking.active.v1.instruments.OptionServiceImpl
 import java.util.function.Consumer
@@ -44,9 +50,21 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
         AnalystReportingServiceImpl(clientOptions)
     }
 
+    private val balanceSheets: BalanceSheetService by lazy {
+        BalanceSheetServiceImpl(clientOptions)
+    }
+
+    private val cashFlowStatements: CashFlowStatementService by lazy {
+        CashFlowStatementServiceImpl(clientOptions)
+    }
+
     private val events: EventService by lazy { EventServiceImpl(clientOptions) }
 
     private val fundamentals: FundamentalService by lazy { FundamentalServiceImpl(clientOptions) }
+
+    private val incomeStatements: IncomeStatementService by lazy {
+        IncomeStatementServiceImpl(clientOptions)
+    }
 
     private val options: OptionService by lazy { OptionServiceImpl(clientOptions) }
 
@@ -59,10 +77,19 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
     override fun analystReporting(): AnalystReportingService = analystReporting
 
     /** Retrieve details and lists of tradable instruments. */
+    override fun balanceSheets(): BalanceSheetService = balanceSheets
+
+    /** Retrieve details and lists of tradable instruments. */
+    override fun cashFlowStatements(): CashFlowStatementService = cashFlowStatements
+
+    /** Retrieve details and lists of tradable instruments. */
     override fun events(): EventService = events
 
     /** Retrieve details and lists of tradable instruments. */
     override fun fundamentals(): FundamentalService = fundamentals
+
+    /** Retrieve details and lists of tradable instruments. */
+    override fun incomeStatements(): IncomeStatementService = incomeStatements
 
     /** Retrieve details and lists of tradable instruments. */
     override fun options(): OptionService = options
@@ -98,12 +125,24 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
             AnalystReportingServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val balanceSheets: BalanceSheetService.WithRawResponse by lazy {
+            BalanceSheetServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val cashFlowStatements: CashFlowStatementService.WithRawResponse by lazy {
+            CashFlowStatementServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val events: EventService.WithRawResponse by lazy {
             EventServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val fundamentals: FundamentalService.WithRawResponse by lazy {
             FundamentalServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val incomeStatements: IncomeStatementService.WithRawResponse by lazy {
+            IncomeStatementServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val options: OptionService.WithRawResponse by lazy {
@@ -121,10 +160,20 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
         override fun analystReporting(): AnalystReportingService.WithRawResponse = analystReporting
 
         /** Retrieve details and lists of tradable instruments. */
+        override fun balanceSheets(): BalanceSheetService.WithRawResponse = balanceSheets
+
+        /** Retrieve details and lists of tradable instruments. */
+        override fun cashFlowStatements(): CashFlowStatementService.WithRawResponse =
+            cashFlowStatements
+
+        /** Retrieve details and lists of tradable instruments. */
         override fun events(): EventService.WithRawResponse = events
 
         /** Retrieve details and lists of tradable instruments. */
         override fun fundamentals(): FundamentalService.WithRawResponse = fundamentals
+
+        /** Retrieve details and lists of tradable instruments. */
+        override fun incomeStatements(): IncomeStatementService.WithRawResponse = incomeStatements
 
         /** Retrieve details and lists of tradable instruments. */
         override fun options(): OptionService.WithRawResponse = options

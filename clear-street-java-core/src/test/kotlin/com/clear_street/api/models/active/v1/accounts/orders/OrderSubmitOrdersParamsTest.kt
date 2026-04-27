@@ -12,42 +12,42 @@ internal class OrderSubmitOrdersParamsTest {
     fun create() {
         OrderSubmitOrdersParams.builder()
             .accountId(0L)
-            .addBody(
-                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.builder()
+            .addOrder(
+                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.builder()
                     .legs(
                         listOf(
-                            OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                 .instrumentType(SecurityType.OPTION)
                                 .ratio("ratio")
                                 .security("0193bb84-447a-706f-996f-097254663f02")
                                 .side(Side.BUY)
                                 .id("1")
                                 .positionEffect(
-                                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .PositionEffect
                                         .OPEN
                                 )
                                 .build(),
-                            OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                 .instrumentType(SecurityType.OPTION)
                                 .ratio("ratio")
                                 .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                 .side(Side.SELL)
                                 .id("2")
                                 .positionEffect(
-                                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .PositionEffect
                                         .OPEN
                                 )
                                 .build(),
-                            OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                 .instrumentType(SecurityType.OPTION)
                                 .ratio("ratio")
                                 .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
                                 .side(Side.BUY)
                                 .id("3")
                                 .positionEffect(
-                                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .PositionEffect
                                         .OPEN
                                 )
@@ -69,23 +69,23 @@ internal class OrderSubmitOrdersParamsTest {
         val params =
             OrderSubmitOrdersParams.builder()
                 .accountId(0L)
-                .addBody(
-                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.builder()
+                .addOrder(
+                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.builder()
                         .legs(
                             listOf(
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-447a-706f-996f-097254663f02")
                                     .side(Side.BUY)
                                     .build(),
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                     .side(Side.SELL)
                                     .build(),
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
@@ -109,42 +109,42 @@ internal class OrderSubmitOrdersParamsTest {
         val params =
             OrderSubmitOrdersParams.builder()
                 .accountId(0L)
-                .addBody(
-                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.builder()
+                .addOrder(
+                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.builder()
                         .legs(
                             listOf(
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-447a-706f-996f-097254663f02")
                                     .side(Side.BUY)
                                     .id("1")
                                     .positionEffect(
-                                        OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                             .PositionEffect
                                             .OPEN
                                     )
                                     .build(),
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                     .side(Side.SELL)
                                     .id("2")
                                     .positionEffect(
-                                        OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                             .PositionEffect
                                             .OPEN
                                     )
                                     .build(),
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
                                     .side(Side.BUY)
                                     .id("3")
                                     .positionEffect(
-                                        OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                             .PositionEffect
                                             .OPEN
                                     )
@@ -164,42 +164,42 @@ internal class OrderSubmitOrdersParamsTest {
 
         assertThat(body)
             .containsExactly(
-                OrderSubmitOrdersParams.Body.ofNewOrderMultilegRequest(
-                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.builder()
+                OrderSubmitOrdersParams.Order.ofNewOrderMultilegRequest(
+                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.builder()
                         .legs(
                             listOf(
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-447a-706f-996f-097254663f02")
                                     .side(Side.BUY)
                                     .id("1")
                                     .positionEffect(
-                                        OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                             .PositionEffect
                                             .OPEN
                                     )
                                     .build(),
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                     .side(Side.SELL)
                                     .id("2")
                                     .positionEffect(
-                                        OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                             .PositionEffect
                                             .OPEN
                                     )
                                     .build(),
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
                                     .side(Side.BUY)
                                     .id("3")
                                     .positionEffect(
-                                        OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
+                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                             .PositionEffect
                                             .OPEN
                                     )
@@ -221,23 +221,23 @@ internal class OrderSubmitOrdersParamsTest {
         val params =
             OrderSubmitOrdersParams.builder()
                 .accountId(0L)
-                .addBody(
-                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.builder()
+                .addOrder(
+                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.builder()
                         .legs(
                             listOf(
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-447a-706f-996f-097254663f02")
                                     .side(Side.BUY)
                                     .build(),
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                     .side(Side.SELL)
                                     .build(),
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
@@ -255,23 +255,23 @@ internal class OrderSubmitOrdersParamsTest {
 
         assertThat(body)
             .containsExactly(
-                OrderSubmitOrdersParams.Body.ofNewOrderMultilegRequest(
-                    OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.builder()
+                OrderSubmitOrdersParams.Order.ofNewOrderMultilegRequest(
+                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.builder()
                         .legs(
                             listOf(
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-447a-706f-996f-097254663f02")
                                     .side(Side.BUY)
                                     .build(),
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                     .side(Side.SELL)
                                     .build(),
-                                OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg.builder()
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
                                     .ratio("ratio")
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
