@@ -4,11 +4,11 @@ package com.clear_street.api.services.blocking.active.v1.watchlists
 
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
-import com.clear_street.api.core.http.HttpResponse
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.models.active.v1.watchlists.items.ItemAddWatchlistItemParams
 import com.clear_street.api.models.active.v1.watchlists.items.ItemAddWatchlistItemResponse
 import com.clear_street.api.models.active.v1.watchlists.items.ItemDeleteWatchlistItemParams
+import com.clear_street.api.models.active.v1.watchlists.items.ItemDeleteWatchlistItemResponse
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -63,25 +63,29 @@ interface ItemService {
         addWatchlistItem(watchlistId, ItemAddWatchlistItemParams.none(), requestOptions)
 
     /** Delete an instrument from a watchlist */
-    fun deleteWatchlistItem(itemId: String, params: ItemDeleteWatchlistItemParams) =
-        deleteWatchlistItem(itemId, params, RequestOptions.none())
+    fun deleteWatchlistItem(
+        itemId: String,
+        params: ItemDeleteWatchlistItemParams,
+    ): ItemDeleteWatchlistItemResponse = deleteWatchlistItem(itemId, params, RequestOptions.none())
 
     /** @see deleteWatchlistItem */
     fun deleteWatchlistItem(
         itemId: String,
         params: ItemDeleteWatchlistItemParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ) = deleteWatchlistItem(params.toBuilder().itemId(itemId).build(), requestOptions)
+    ): ItemDeleteWatchlistItemResponse =
+        deleteWatchlistItem(params.toBuilder().itemId(itemId).build(), requestOptions)
 
     /** @see deleteWatchlistItem */
-    fun deleteWatchlistItem(params: ItemDeleteWatchlistItemParams) =
-        deleteWatchlistItem(params, RequestOptions.none())
+    fun deleteWatchlistItem(
+        params: ItemDeleteWatchlistItemParams
+    ): ItemDeleteWatchlistItemResponse = deleteWatchlistItem(params, RequestOptions.none())
 
     /** @see deleteWatchlistItem */
     fun deleteWatchlistItem(
         params: ItemDeleteWatchlistItemParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    )
+    ): ItemDeleteWatchlistItemResponse
 
     /** A view of [ItemService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -149,7 +153,8 @@ interface ItemService {
         fun deleteWatchlistItem(
             itemId: String,
             params: ItemDeleteWatchlistItemParams,
-        ): HttpResponse = deleteWatchlistItem(itemId, params, RequestOptions.none())
+        ): HttpResponseFor<ItemDeleteWatchlistItemResponse> =
+            deleteWatchlistItem(itemId, params, RequestOptions.none())
 
         /** @see deleteWatchlistItem */
         @MustBeClosed
@@ -157,12 +162,14 @@ interface ItemService {
             itemId: String,
             params: ItemDeleteWatchlistItemParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponse =
+        ): HttpResponseFor<ItemDeleteWatchlistItemResponse> =
             deleteWatchlistItem(params.toBuilder().itemId(itemId).build(), requestOptions)
 
         /** @see deleteWatchlistItem */
         @MustBeClosed
-        fun deleteWatchlistItem(params: ItemDeleteWatchlistItemParams): HttpResponse =
+        fun deleteWatchlistItem(
+            params: ItemDeleteWatchlistItemParams
+        ): HttpResponseFor<ItemDeleteWatchlistItemResponse> =
             deleteWatchlistItem(params, RequestOptions.none())
 
         /** @see deleteWatchlistItem */
@@ -170,6 +177,6 @@ interface ItemService {
         fun deleteWatchlistItem(
             params: ItemDeleteWatchlistItemParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponse
+        ): HttpResponseFor<ItemDeleteWatchlistItemResponse>
     }
 }

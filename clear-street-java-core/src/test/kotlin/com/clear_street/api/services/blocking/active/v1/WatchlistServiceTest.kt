@@ -29,7 +29,9 @@ internal class WatchlistServiceTest {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
         val watchlistService = client.active().v1().watchlists()
 
-        watchlistService.deleteWatchlist("550e8400-e29b-41d4-a716-446655440000")
+        val response = watchlistService.deleteWatchlist("550e8400-e29b-41d4-a716-446655440000")
+
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")

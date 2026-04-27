@@ -4,11 +4,11 @@ package com.clear_street.api.services.async.active.v1.watchlists
 
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
-import com.clear_street.api.core.http.HttpResponse
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.models.active.v1.watchlists.items.ItemAddWatchlistItemParams
 import com.clear_street.api.models.active.v1.watchlists.items.ItemAddWatchlistItemResponse
 import com.clear_street.api.models.active.v1.watchlists.items.ItemDeleteWatchlistItemParams
+import com.clear_street.api.models.active.v1.watchlists.items.ItemDeleteWatchlistItemResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -69,25 +69,28 @@ interface ItemServiceAsync {
     fun deleteWatchlistItem(
         itemId: String,
         params: ItemDeleteWatchlistItemParams,
-    ): CompletableFuture<Void?> = deleteWatchlistItem(itemId, params, RequestOptions.none())
+    ): CompletableFuture<ItemDeleteWatchlistItemResponse> =
+        deleteWatchlistItem(itemId, params, RequestOptions.none())
 
     /** @see deleteWatchlistItem */
     fun deleteWatchlistItem(
         itemId: String,
         params: ItemDeleteWatchlistItemParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<Void?> =
+    ): CompletableFuture<ItemDeleteWatchlistItemResponse> =
         deleteWatchlistItem(params.toBuilder().itemId(itemId).build(), requestOptions)
 
     /** @see deleteWatchlistItem */
-    fun deleteWatchlistItem(params: ItemDeleteWatchlistItemParams): CompletableFuture<Void?> =
+    fun deleteWatchlistItem(
+        params: ItemDeleteWatchlistItemParams
+    ): CompletableFuture<ItemDeleteWatchlistItemResponse> =
         deleteWatchlistItem(params, RequestOptions.none())
 
     /** @see deleteWatchlistItem */
     fun deleteWatchlistItem(
         params: ItemDeleteWatchlistItemParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<Void?>
+    ): CompletableFuture<ItemDeleteWatchlistItemResponse>
 
     /** A view of [ItemServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -150,7 +153,7 @@ interface ItemServiceAsync {
         fun deleteWatchlistItem(
             itemId: String,
             params: ItemDeleteWatchlistItemParams,
-        ): CompletableFuture<HttpResponse> =
+        ): CompletableFuture<HttpResponseFor<ItemDeleteWatchlistItemResponse>> =
             deleteWatchlistItem(itemId, params, RequestOptions.none())
 
         /** @see deleteWatchlistItem */
@@ -158,18 +161,19 @@ interface ItemServiceAsync {
             itemId: String,
             params: ItemDeleteWatchlistItemParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponse> =
+        ): CompletableFuture<HttpResponseFor<ItemDeleteWatchlistItemResponse>> =
             deleteWatchlistItem(params.toBuilder().itemId(itemId).build(), requestOptions)
 
         /** @see deleteWatchlistItem */
         fun deleteWatchlistItem(
             params: ItemDeleteWatchlistItemParams
-        ): CompletableFuture<HttpResponse> = deleteWatchlistItem(params, RequestOptions.none())
+        ): CompletableFuture<HttpResponseFor<ItemDeleteWatchlistItemResponse>> =
+            deleteWatchlistItem(params, RequestOptions.none())
 
         /** @see deleteWatchlistItem */
         fun deleteWatchlistItem(
             params: ItemDeleteWatchlistItemParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponse>
+        ): CompletableFuture<HttpResponseFor<ItemDeleteWatchlistItemResponse>>
     }
 }

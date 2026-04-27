@@ -5,7 +5,6 @@ package com.clear_street.api.services.async.active.v1.watchlists
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.checkRequired
-import com.clear_street.api.core.handlers.emptyHandler
 import com.clear_street.api.core.handlers.errorBodyHandler
 import com.clear_street.api.core.handlers.errorHandler
 import com.clear_street.api.core.handlers.jsonHandler
@@ -20,6 +19,7 @@ import com.clear_street.api.core.prepareAsync
 import com.clear_street.api.models.active.v1.watchlists.items.ItemAddWatchlistItemParams
 import com.clear_street.api.models.active.v1.watchlists.items.ItemAddWatchlistItemResponse
 import com.clear_street.api.models.active.v1.watchlists.items.ItemDeleteWatchlistItemParams
+import com.clear_street.api.models.active.v1.watchlists.items.ItemDeleteWatchlistItemResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -47,9 +47,9 @@ class ItemServiceAsyncImpl internal constructor(private val clientOptions: Clien
     override fun deleteWatchlistItem(
         params: ItemDeleteWatchlistItemParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<Void?> =
+    ): CompletableFuture<ItemDeleteWatchlistItemResponse> =
         // delete /active/v1/watchlists/{watchlist_id}/items/{item_id}
-        withRawResponse().deleteWatchlistItem(params, requestOptions).thenAccept {}
+        withRawResponse().deleteWatchlistItem(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         ItemServiceAsync.WithRawResponse {
@@ -98,12 +98,13 @@ class ItemServiceAsyncImpl internal constructor(private val clientOptions: Clien
                 }
         }
 
-        private val deleteWatchlistItemHandler: Handler<Void?> = emptyHandler()
+        private val deleteWatchlistItemHandler: Handler<ItemDeleteWatchlistItemResponse> =
+            jsonHandler<ItemDeleteWatchlistItemResponse>(clientOptions.jsonMapper)
 
         override fun deleteWatchlistItem(
             params: ItemDeleteWatchlistItemParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponse> {
+        ): CompletableFuture<HttpResponseFor<ItemDeleteWatchlistItemResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("itemId", params.itemId().getOrNull())
@@ -127,7 +128,13 @@ class ItemServiceAsyncImpl internal constructor(private val clientOptions: Clien
                 .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
-                        response.use { deleteWatchlistItemHandler.handle(it) }
+                        response
+                            .use { deleteWatchlistItemHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
                     }
                 }
         }
