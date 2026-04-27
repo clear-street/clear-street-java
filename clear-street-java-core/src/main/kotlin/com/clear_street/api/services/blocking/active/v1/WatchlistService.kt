@@ -4,11 +4,11 @@ package com.clear_street.api.services.blocking.active.v1
 
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
-import com.clear_street.api.core.http.HttpResponse
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.models.active.v1.watchlists.WatchlistCreateWatchlistParams
 import com.clear_street.api.models.active.v1.watchlists.WatchlistCreateWatchlistResponse
 import com.clear_street.api.models.active.v1.watchlists.WatchlistDeleteWatchlistParams
+import com.clear_street.api.models.active.v1.watchlists.WatchlistDeleteWatchlistResponse
 import com.clear_street.api.models.active.v1.watchlists.WatchlistGetWatchlistByIdParams
 import com.clear_street.api.models.active.v1.watchlists.WatchlistGetWatchlistByIdResponse
 import com.clear_street.api.models.active.v1.watchlists.WatchlistGetWatchlistsParams
@@ -46,7 +46,7 @@ interface WatchlistService {
     ): WatchlistCreateWatchlistResponse
 
     /** Delete a watchlist and all its items */
-    fun deleteWatchlist(watchlistId: String) =
+    fun deleteWatchlist(watchlistId: String): WatchlistDeleteWatchlistResponse =
         deleteWatchlist(watchlistId, WatchlistDeleteWatchlistParams.none())
 
     /** @see deleteWatchlist */
@@ -54,26 +54,31 @@ interface WatchlistService {
         watchlistId: String,
         params: WatchlistDeleteWatchlistParams = WatchlistDeleteWatchlistParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ) = deleteWatchlist(params.toBuilder().watchlistId(watchlistId).build(), requestOptions)
+    ): WatchlistDeleteWatchlistResponse =
+        deleteWatchlist(params.toBuilder().watchlistId(watchlistId).build(), requestOptions)
 
     /** @see deleteWatchlist */
     fun deleteWatchlist(
         watchlistId: String,
         params: WatchlistDeleteWatchlistParams = WatchlistDeleteWatchlistParams.none(),
-    ) = deleteWatchlist(watchlistId, params, RequestOptions.none())
+    ): WatchlistDeleteWatchlistResponse =
+        deleteWatchlist(watchlistId, params, RequestOptions.none())
 
     /** @see deleteWatchlist */
     fun deleteWatchlist(
         params: WatchlistDeleteWatchlistParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    )
+    ): WatchlistDeleteWatchlistResponse
 
     /** @see deleteWatchlist */
-    fun deleteWatchlist(params: WatchlistDeleteWatchlistParams) =
+    fun deleteWatchlist(params: WatchlistDeleteWatchlistParams): WatchlistDeleteWatchlistResponse =
         deleteWatchlist(params, RequestOptions.none())
 
     /** @see deleteWatchlist */
-    fun deleteWatchlist(watchlistId: String, requestOptions: RequestOptions) =
+    fun deleteWatchlist(
+        watchlistId: String,
+        requestOptions: RequestOptions,
+    ): WatchlistDeleteWatchlistResponse =
         deleteWatchlist(watchlistId, WatchlistDeleteWatchlistParams.none(), requestOptions)
 
     /** Get a watchlist by ID with all its items */
@@ -167,7 +172,9 @@ interface WatchlistService {
          * otherwise the same as [WatchlistService.deleteWatchlist].
          */
         @MustBeClosed
-        fun deleteWatchlist(watchlistId: String): HttpResponse =
+        fun deleteWatchlist(
+            watchlistId: String
+        ): HttpResponseFor<WatchlistDeleteWatchlistResponse> =
             deleteWatchlist(watchlistId, WatchlistDeleteWatchlistParams.none())
 
         /** @see deleteWatchlist */
@@ -176,7 +183,7 @@ interface WatchlistService {
             watchlistId: String,
             params: WatchlistDeleteWatchlistParams = WatchlistDeleteWatchlistParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponse =
+        ): HttpResponseFor<WatchlistDeleteWatchlistResponse> =
             deleteWatchlist(params.toBuilder().watchlistId(watchlistId).build(), requestOptions)
 
         /** @see deleteWatchlist */
@@ -184,23 +191,29 @@ interface WatchlistService {
         fun deleteWatchlist(
             watchlistId: String,
             params: WatchlistDeleteWatchlistParams = WatchlistDeleteWatchlistParams.none(),
-        ): HttpResponse = deleteWatchlist(watchlistId, params, RequestOptions.none())
+        ): HttpResponseFor<WatchlistDeleteWatchlistResponse> =
+            deleteWatchlist(watchlistId, params, RequestOptions.none())
 
         /** @see deleteWatchlist */
         @MustBeClosed
         fun deleteWatchlist(
             params: WatchlistDeleteWatchlistParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponse
+        ): HttpResponseFor<WatchlistDeleteWatchlistResponse>
 
         /** @see deleteWatchlist */
         @MustBeClosed
-        fun deleteWatchlist(params: WatchlistDeleteWatchlistParams): HttpResponse =
+        fun deleteWatchlist(
+            params: WatchlistDeleteWatchlistParams
+        ): HttpResponseFor<WatchlistDeleteWatchlistResponse> =
             deleteWatchlist(params, RequestOptions.none())
 
         /** @see deleteWatchlist */
         @MustBeClosed
-        fun deleteWatchlist(watchlistId: String, requestOptions: RequestOptions): HttpResponse =
+        fun deleteWatchlist(
+            watchlistId: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<WatchlistDeleteWatchlistResponse> =
             deleteWatchlist(watchlistId, WatchlistDeleteWatchlistParams.none(), requestOptions)
 
         /**

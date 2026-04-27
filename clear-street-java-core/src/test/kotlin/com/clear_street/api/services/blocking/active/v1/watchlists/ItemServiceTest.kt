@@ -36,11 +36,14 @@ internal class ItemServiceTest {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
         val itemService = client.active().v1().watchlists().items()
 
-        itemService.deleteWatchlistItem(
-            ItemDeleteWatchlistItemParams.builder()
-                .watchlistId("550e8400-e29b-41d4-a716-446655440000")
-                .itemId("660e8400-e29b-41d4-a716-446655440001")
-                .build()
-        )
+        val response =
+            itemService.deleteWatchlistItem(
+                ItemDeleteWatchlistItemParams.builder()
+                    .watchlistId("550e8400-e29b-41d4-a716-446655440000")
+                    .itemId("660e8400-e29b-41d4-a716-446655440001")
+                    .build()
+            )
+
+        response.validate()
     }
 }

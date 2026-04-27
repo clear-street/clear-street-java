@@ -37,7 +37,7 @@ internal class ItemServiceAsyncTest {
         val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
         val itemServiceAsync = client.active().v1().watchlists().items()
 
-        val future =
+        val responseFuture =
             itemServiceAsync.deleteWatchlistItem(
                 ItemDeleteWatchlistItemParams.builder()
                     .watchlistId("550e8400-e29b-41d4-a716-446655440000")
@@ -45,6 +45,7 @@ internal class ItemServiceAsyncTest {
                     .build()
             )
 
-        val response = future.get()
+        val response = responseFuture.get()
+        response.validate()
     }
 }

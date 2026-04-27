@@ -30,9 +30,11 @@ internal class WatchlistServiceAsyncTest {
         val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
         val watchlistServiceAsync = client.active().v1().watchlists()
 
-        val future = watchlistServiceAsync.deleteWatchlist("550e8400-e29b-41d4-a716-446655440000")
+        val responseFuture =
+            watchlistServiceAsync.deleteWatchlist("550e8400-e29b-41d4-a716-446655440000")
 
-        val response = future.get()
+        val response = responseFuture.get()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")

@@ -5,7 +5,6 @@ package com.clear_street.api.services.blocking.active.v1
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.checkRequired
-import com.clear_street.api.core.handlers.emptyHandler
 import com.clear_street.api.core.handlers.errorBodyHandler
 import com.clear_street.api.core.handlers.errorHandler
 import com.clear_street.api.core.handlers.jsonHandler
@@ -20,6 +19,7 @@ import com.clear_street.api.core.prepare
 import com.clear_street.api.models.active.v1.watchlists.WatchlistCreateWatchlistParams
 import com.clear_street.api.models.active.v1.watchlists.WatchlistCreateWatchlistResponse
 import com.clear_street.api.models.active.v1.watchlists.WatchlistDeleteWatchlistParams
+import com.clear_street.api.models.active.v1.watchlists.WatchlistDeleteWatchlistResponse
 import com.clear_street.api.models.active.v1.watchlists.WatchlistGetWatchlistByIdParams
 import com.clear_street.api.models.active.v1.watchlists.WatchlistGetWatchlistByIdResponse
 import com.clear_street.api.models.active.v1.watchlists.WatchlistGetWatchlistsParams
@@ -57,10 +57,9 @@ class WatchlistServiceImpl internal constructor(private val clientOptions: Clien
     override fun deleteWatchlist(
         params: WatchlistDeleteWatchlistParams,
         requestOptions: RequestOptions,
-    ) {
+    ): WatchlistDeleteWatchlistResponse =
         // delete /active/v1/watchlists/{watchlist_id}
-        withRawResponse().deleteWatchlist(params, requestOptions)
-    }
+        withRawResponse().deleteWatchlist(params, requestOptions).parse()
 
     override fun getWatchlistById(
         params: WatchlistGetWatchlistByIdParams,
@@ -124,12 +123,13 @@ class WatchlistServiceImpl internal constructor(private val clientOptions: Clien
             }
         }
 
-        private val deleteWatchlistHandler: Handler<Void?> = emptyHandler()
+        private val deleteWatchlistHandler: Handler<WatchlistDeleteWatchlistResponse> =
+            jsonHandler<WatchlistDeleteWatchlistResponse>(clientOptions.jsonMapper)
 
         override fun deleteWatchlist(
             params: WatchlistDeleteWatchlistParams,
             requestOptions: RequestOptions,
-        ): HttpResponse {
+        ): HttpResponseFor<WatchlistDeleteWatchlistResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("watchlistId", params.watchlistId().getOrNull())
@@ -144,7 +144,13 @@ class WatchlistServiceImpl internal constructor(private val clientOptions: Clien
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
-                response.use { deleteWatchlistHandler.handle(it) }
+                response
+                    .use { deleteWatchlistHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
             }
         }
 
