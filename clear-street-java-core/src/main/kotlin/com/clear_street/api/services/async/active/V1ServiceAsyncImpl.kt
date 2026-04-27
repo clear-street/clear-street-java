@@ -16,8 +16,6 @@ import com.clear_street.api.core.prepareAsync
 import com.clear_street.api.models.active.v1.V1WsParams
 import com.clear_street.api.services.async.active.v1.AccountServiceAsync
 import com.clear_street.api.services.async.active.v1.AccountServiceAsyncImpl
-import com.clear_street.api.services.async.active.v1.ApiKeyServiceAsync
-import com.clear_street.api.services.async.active.v1.ApiKeyServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.CalendarServiceAsync
 import com.clear_street.api.services.async.active.v1.CalendarServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.ClockServiceAsync
@@ -50,8 +48,6 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     }
 
     private val accounts: AccountServiceAsync by lazy { AccountServiceAsyncImpl(clientOptions) }
-
-    private val apiKeys: ApiKeyServiceAsync by lazy { ApiKeyServiceAsyncImpl(clientOptions) }
 
     private val calendars: CalendarServiceAsync by lazy { CalendarServiceAsyncImpl(clientOptions) }
 
@@ -88,9 +84,6 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     /** Manage trading accounts, balances, and portfolio history. */
     override fun accounts(): AccountServiceAsync = accounts
-
-    /** Manage API keys for authentication. */
-    override fun apiKeys(): ApiKeyServiceAsync = apiKeys
 
     override fun calendars(): CalendarServiceAsync = calendars
 
@@ -131,10 +124,6 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         private val accounts: AccountServiceAsync.WithRawResponse by lazy {
             AccountServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val apiKeys: ApiKeyServiceAsync.WithRawResponse by lazy {
-            ApiKeyServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val calendars: CalendarServiceAsync.WithRawResponse by lazy {
@@ -186,9 +175,6 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         /** Manage trading accounts, balances, and portfolio history. */
         override fun accounts(): AccountServiceAsync.WithRawResponse = accounts
-
-        /** Manage API keys for authentication. */
-        override fun apiKeys(): ApiKeyServiceAsync.WithRawResponse = apiKeys
 
         override fun calendars(): CalendarServiceAsync.WithRawResponse = calendars
 
