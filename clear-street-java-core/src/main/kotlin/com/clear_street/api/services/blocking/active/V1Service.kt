@@ -7,6 +7,7 @@ import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponse
 import com.clear_street.api.models.active.v1.V1WsParams
 import com.clear_street.api.services.blocking.active.v1.AccountService
+import com.clear_street.api.services.blocking.active.v1.ApiKeyService
 import com.clear_street.api.services.blocking.active.v1.CalendarService
 import com.clear_street.api.services.blocking.active.v1.ClockService
 import com.clear_street.api.services.blocking.active.v1.InstrumentService
@@ -37,6 +38,9 @@ interface V1Service {
 
     /** Manage trading accounts, balances, and portfolio history. */
     fun accounts(): AccountService
+
+    /** Manage API keys for authentication. */
+    fun apiKeys(): ApiKeyService
 
     fun calendars(): CalendarService
 
@@ -92,6 +96,9 @@ interface V1Service {
 
         /** Manage trading accounts, balances, and portfolio history. */
         fun accounts(): AccountService.WithRawResponse
+
+        /** Manage API keys for authentication. */
+        fun apiKeys(): ApiKeyService.WithRawResponse
 
         fun calendars(): CalendarService.WithRawResponse
 

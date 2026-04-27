@@ -12,11 +12,8 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentGetInstrument
 import com.clear_street.api.models.active.v1.instruments.InstrumentSearchParams
 import com.clear_street.api.models.active.v1.instruments.InstrumentSearchResponse
 import com.clear_street.api.services.blocking.active.v1.instruments.AnalystReportingService
-import com.clear_street.api.services.blocking.active.v1.instruments.BalanceSheetService
-import com.clear_street.api.services.blocking.active.v1.instruments.CashFlowStatementService
 import com.clear_street.api.services.blocking.active.v1.instruments.EventService
 import com.clear_street.api.services.blocking.active.v1.instruments.FundamentalService
-import com.clear_street.api.services.blocking.active.v1.instruments.IncomeStatementService
 import com.clear_street.api.services.blocking.active.v1.instruments.OptionService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
@@ -40,19 +37,10 @@ interface InstrumentService {
     fun analystReporting(): AnalystReportingService
 
     /** Retrieve details and lists of tradable instruments. */
-    fun balanceSheets(): BalanceSheetService
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun cashFlowStatements(): CashFlowStatementService
-
-    /** Retrieve details and lists of tradable instruments. */
     fun events(): EventService
 
     /** Retrieve details and lists of tradable instruments. */
     fun fundamentals(): FundamentalService
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun incomeStatements(): IncomeStatementService
 
     /** Retrieve details and lists of tradable instruments. */
     fun options(): OptionService
@@ -137,19 +125,10 @@ interface InstrumentService {
         fun analystReporting(): AnalystReportingService.WithRawResponse
 
         /** Retrieve details and lists of tradable instruments. */
-        fun balanceSheets(): BalanceSheetService.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun cashFlowStatements(): CashFlowStatementService.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
         fun events(): EventService.WithRawResponse
 
         /** Retrieve details and lists of tradable instruments. */
         fun fundamentals(): FundamentalService.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun incomeStatements(): IncomeStatementService.WithRawResponse
 
         /** Retrieve details and lists of tradable instruments. */
         fun options(): OptionService.WithRawResponse

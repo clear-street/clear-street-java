@@ -16,6 +16,8 @@ import com.clear_street.api.core.prepare
 import com.clear_street.api.models.active.v1.V1WsParams
 import com.clear_street.api.services.blocking.active.v1.AccountService
 import com.clear_street.api.services.blocking.active.v1.AccountServiceImpl
+import com.clear_street.api.services.blocking.active.v1.ApiKeyService
+import com.clear_street.api.services.blocking.active.v1.ApiKeyServiceImpl
 import com.clear_street.api.services.blocking.active.v1.CalendarService
 import com.clear_street.api.services.blocking.active.v1.CalendarServiceImpl
 import com.clear_street.api.services.blocking.active.v1.ClockService
@@ -47,6 +49,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     private val accounts: AccountService by lazy { AccountServiceImpl(clientOptions) }
 
+    private val apiKeys: ApiKeyService by lazy { ApiKeyServiceImpl(clientOptions) }
+
     private val calendars: CalendarService by lazy { CalendarServiceImpl(clientOptions) }
 
     private val clock: ClockService by lazy { ClockServiceImpl(clientOptions) }
@@ -76,6 +80,9 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     /** Manage trading accounts, balances, and portfolio history. */
     override fun accounts(): AccountService = accounts
+
+    /** Manage API keys for authentication. */
+    override fun apiKeys(): ApiKeyService = apiKeys
 
     override fun calendars(): CalendarService = calendars
 
@@ -117,6 +124,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         private val accounts: AccountService.WithRawResponse by lazy {
             AccountServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val apiKeys: ApiKeyService.WithRawResponse by lazy {
+            ApiKeyServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val calendars: CalendarService.WithRawResponse by lazy {
@@ -168,6 +179,9 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         /** Manage trading accounts, balances, and portfolio history. */
         override fun accounts(): AccountService.WithRawResponse = accounts
+
+        /** Manage API keys for authentication. */
+        override fun apiKeys(): ApiKeyService.WithRawResponse = apiKeys
 
         override fun calendars(): CalendarService.WithRawResponse = calendars
 
