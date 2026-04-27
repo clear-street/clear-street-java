@@ -828,9 +828,9 @@ private constructor(
             class Leg
             @JsonCreator(mode = JsonCreator.Mode.DISABLED)
             private constructor(
+                private val instrumentType: JsonField<SecurityType>,
                 private val ratio: JsonField<String>,
                 private val security: JsonField<Security>,
-                private val securityType: JsonField<SecurityType>,
                 private val side: JsonField<Side>,
                 private val id: JsonField<String>,
                 private val positionEffect: JsonField<PositionEffect>,
@@ -839,21 +839,30 @@ private constructor(
 
                 @JsonCreator
                 private constructor(
+                    @JsonProperty("instrument_type")
+                    @ExcludeMissing
+                    instrumentType: JsonField<SecurityType> = JsonMissing.of(),
                     @JsonProperty("ratio")
                     @ExcludeMissing
                     ratio: JsonField<String> = JsonMissing.of(),
                     @JsonProperty("security")
                     @ExcludeMissing
                     security: JsonField<Security> = JsonMissing.of(),
-                    @JsonProperty("security_type")
-                    @ExcludeMissing
-                    securityType: JsonField<SecurityType> = JsonMissing.of(),
                     @JsonProperty("side") @ExcludeMissing side: JsonField<Side> = JsonMissing.of(),
                     @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
                     @JsonProperty("position_effect")
                     @ExcludeMissing
                     positionEffect: JsonField<PositionEffect> = JsonMissing.of(),
-                ) : this(ratio, security, securityType, side, id, positionEffect, mutableMapOf())
+                ) : this(instrumentType, ratio, security, side, id, positionEffect, mutableMapOf())
+
+                /**
+                 * Security type for the leg.
+                 *
+                 * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type
+                 *   or is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun instrumentType(): SecurityType = instrumentType.getRequired("instrument_type")
 
                 /**
                  * Ratio for the leg.
@@ -872,15 +881,6 @@ private constructor(
                  *   unexpected value).
                  */
                 fun security(): Security = security.getRequired("security")
-
-                /**
-                 * Security type for the leg.
-                 *
-                 * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type
-                 *   or is unexpectedly missing or null (e.g. if the server responded with an
-                 *   unexpected value).
-                 */
-                fun securityType(): SecurityType = securityType.getRequired("security_type")
 
                 /**
                  * Leg side.
@@ -909,6 +909,16 @@ private constructor(
                     positionEffect.getOptional("position_effect")
 
                 /**
+                 * Returns the raw JSON value of [instrumentType].
+                 *
+                 * Unlike [instrumentType], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("instrument_type")
+                @ExcludeMissing
+                fun _instrumentType(): JsonField<SecurityType> = instrumentType
+
+                /**
                  * Returns the raw JSON value of [ratio].
                  *
                  * Unlike [ratio], this method doesn't throw if the JSON field has an unexpected
@@ -925,16 +935,6 @@ private constructor(
                 @JsonProperty("security")
                 @ExcludeMissing
                 fun _security(): JsonField<Security> = security
-
-                /**
-                 * Returns the raw JSON value of [securityType].
-                 *
-                 * Unlike [securityType], this method doesn't throw if the JSON field has an
-                 * unexpected type.
-                 */
-                @JsonProperty("security_type")
-                @ExcludeMissing
-                fun _securityType(): JsonField<SecurityType> = securityType
 
                 /**
                  * Returns the raw JSON value of [side].
@@ -980,9 +980,9 @@ private constructor(
                      *
                      * The following fields are required:
                      * ```java
+                     * .instrumentType()
                      * .ratio()
                      * .security()
-                     * .securityType()
                      * .side()
                      * ```
                      */
@@ -992,9 +992,9 @@ private constructor(
                 /** A builder for [Leg]. */
                 class Builder internal constructor() {
 
+                    private var instrumentType: JsonField<SecurityType>? = null
                     private var ratio: JsonField<String>? = null
                     private var security: JsonField<Security>? = null
-                    private var securityType: JsonField<SecurityType>? = null
                     private var side: JsonField<Side>? = null
                     private var id: JsonField<String> = JsonMissing.of()
                     private var positionEffect: JsonField<PositionEffect> = JsonMissing.of()
@@ -1002,13 +1002,28 @@ private constructor(
 
                     @JvmSynthetic
                     internal fun from(leg: Leg) = apply {
+                        instrumentType = leg.instrumentType
                         ratio = leg.ratio
                         security = leg.security
-                        securityType = leg.securityType
                         side = leg.side
                         id = leg.id
                         positionEffect = leg.positionEffect
                         additionalProperties = leg.additionalProperties.toMutableMap()
+                    }
+
+                    /** Security type for the leg. */
+                    fun instrumentType(instrumentType: SecurityType) =
+                        instrumentType(JsonField.of(instrumentType))
+
+                    /**
+                     * Sets [Builder.instrumentType] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.instrumentType] with a well-typed
+                     * [SecurityType] value instead. This method is primarily for setting the field
+                     * to an undocumented or not yet supported value.
+                     */
+                    fun instrumentType(instrumentType: JsonField<SecurityType>) = apply {
+                        this.instrumentType = instrumentType
                     }
 
                     /** Ratio for the leg. */
@@ -1041,21 +1056,6 @@ private constructor(
                     /** Alias for calling [security] with `Security.ofIdPair(idPair)`. */
                     fun security(idPair: Security.SecurityIdPair) =
                         security(Security.ofIdPair(idPair))
-
-                    /** Security type for the leg. */
-                    fun securityType(securityType: SecurityType) =
-                        securityType(JsonField.of(securityType))
-
-                    /**
-                     * Sets [Builder.securityType] to an arbitrary JSON value.
-                     *
-                     * You should usually call [Builder.securityType] with a well-typed
-                     * [SecurityType] value instead. This method is primarily for setting the field
-                     * to an undocumented or not yet supported value.
-                     */
-                    fun securityType(securityType: JsonField<SecurityType>) = apply {
-                        this.securityType = securityType
-                    }
 
                     /** Leg side. */
                     fun side(side: Side) = side(JsonField.of(side))
@@ -1135,9 +1135,9 @@ private constructor(
                      *
                      * The following fields are required:
                      * ```java
+                     * .instrumentType()
                      * .ratio()
                      * .security()
-                     * .securityType()
                      * .side()
                      * ```
                      *
@@ -1145,9 +1145,9 @@ private constructor(
                      */
                     fun build(): Leg =
                         Leg(
+                            checkRequired("instrumentType", instrumentType),
                             checkRequired("ratio", ratio),
                             checkRequired("security", security),
-                            checkRequired("securityType", securityType),
                             checkRequired("side", side),
                             id,
                             positionEffect,
@@ -1162,9 +1162,9 @@ private constructor(
                         return@apply
                     }
 
+                    instrumentType().validate()
                     ratio()
                     security().validate()
-                    securityType().validate()
                     side().validate()
                     id()
                     positionEffect().ifPresent { it.validate() }
@@ -1187,9 +1187,9 @@ private constructor(
                  */
                 @JvmSynthetic
                 internal fun validity(): Int =
-                    (if (ratio.asKnown().isPresent) 1 else 0) +
+                    (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (ratio.asKnown().isPresent) 1 else 0) +
                         (security.asKnown().getOrNull()?.validity() ?: 0) +
-                        (securityType.asKnown().getOrNull()?.validity() ?: 0) +
                         (side.asKnown().getOrNull()?.validity() ?: 0) +
                         (if (id.asKnown().isPresent) 1 else 0) +
                         (positionEffect.asKnown().getOrNull()?.validity() ?: 0)
@@ -1730,9 +1730,9 @@ private constructor(
                     }
 
                     return other is Leg &&
+                        instrumentType == other.instrumentType &&
                         ratio == other.ratio &&
                         security == other.security &&
-                        securityType == other.securityType &&
                         side == other.side &&
                         id == other.id &&
                         positionEffect == other.positionEffect &&
@@ -1741,9 +1741,9 @@ private constructor(
 
                 private val hashCode: Int by lazy {
                     Objects.hash(
+                        instrumentType,
                         ratio,
                         security,
-                        securityType,
                         side,
                         id,
                         positionEffect,
@@ -1754,7 +1754,7 @@ private constructor(
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "Leg{ratio=$ratio, security=$security, securityType=$securityType, side=$side, id=$id, positionEffect=$positionEffect, additionalProperties=$additionalProperties}"
+                    "Leg{instrumentType=$instrumentType, ratio=$ratio, security=$security, side=$side, id=$id, positionEffect=$positionEffect, additionalProperties=$additionalProperties}"
             }
 
             override fun equals(other: Any?): Boolean {
@@ -1794,9 +1794,9 @@ private constructor(
         class NewOrderRequest
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
+            private val instrumentType: JsonField<SecurityType>,
             private val orderType: JsonField<OrderType>,
             private val quantity: JsonField<String>,
-            private val securityType: JsonField<SecurityType>,
             private val side: JsonField<Side>,
             private val timeInForce: JsonField<TimeInForce>,
             private val id: JsonField<String>,
@@ -1817,15 +1817,15 @@ private constructor(
 
             @JsonCreator
             private constructor(
+                @JsonProperty("instrument_type")
+                @ExcludeMissing
+                instrumentType: JsonField<SecurityType> = JsonMissing.of(),
                 @JsonProperty("order_type")
                 @ExcludeMissing
                 orderType: JsonField<OrderType> = JsonMissing.of(),
                 @JsonProperty("quantity")
                 @ExcludeMissing
                 quantity: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("security_type")
-                @ExcludeMissing
-                securityType: JsonField<SecurityType> = JsonMissing.of(),
                 @JsonProperty("side") @ExcludeMissing side: JsonField<Side> = JsonMissing.of(),
                 @JsonProperty("time_in_force")
                 @ExcludeMissing
@@ -1868,9 +1868,9 @@ private constructor(
                 @ExcludeMissing
                 trailingOffsetAmtType: JsonField<TrailingOffsetType> = JsonMissing.of(),
             ) : this(
+                instrumentType,
                 orderType,
                 quantity,
-                securityType,
                 side,
                 timeInForce,
                 id,
@@ -1890,6 +1890,15 @@ private constructor(
             )
 
             /**
+             * Type of security
+             *
+             * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or
+             *   is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun instrumentType(): SecurityType = instrumentType.getRequired("instrument_type")
+
+            /**
              * Type of order
              *
              * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or
@@ -1907,15 +1916,6 @@ private constructor(
              *   value).
              */
             fun quantity(): String = quantity.getRequired("quantity")
-
-            /**
-             * Type of security
-             *
-             * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or
-             *   is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun securityType(): SecurityType = securityType.getRequired("security_type")
 
             /**
              * Side of the order
@@ -1978,8 +1978,8 @@ private constructor(
             fun limitPrice(): Optional<String> = limitPrice.getOptional("limit_price")
 
             /**
-             * Required when security_type is OPTION. Specifies whether the order opens or closes a
-             * position.
+             * Required when instrument_type is OPTION. Specifies whether the order opens or closes
+             * a position.
              *
              * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -2024,7 +2024,7 @@ private constructor(
             /**
              * Trading symbol. For equities, use the ticker symbol (e.g., "AAPL"). For options, use
              * the OSI symbol (e.g., "AAPL 250117C00190000"). If provided without security_id, the
-             * system will derive security_id and source based on security_type (CMS for equities,
+             * system will derive security_id and source based on instrument_type (CMS for equities,
              * OPRA for options).
              *
              * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type
@@ -2051,6 +2051,16 @@ private constructor(
                 trailingOffsetAmtType.getOptional("trailing_offset_amt_type")
 
             /**
+             * Returns the raw JSON value of [instrumentType].
+             *
+             * Unlike [instrumentType], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("instrument_type")
+            @ExcludeMissing
+            fun _instrumentType(): JsonField<SecurityType> = instrumentType
+
+            /**
              * Returns the raw JSON value of [orderType].
              *
              * Unlike [orderType], this method doesn't throw if the JSON field has an unexpected
@@ -2067,16 +2077,6 @@ private constructor(
              * type.
              */
             @JsonProperty("quantity") @ExcludeMissing fun _quantity(): JsonField<String> = quantity
-
-            /**
-             * Returns the raw JSON value of [securityType].
-             *
-             * Unlike [securityType], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("security_type")
-            @ExcludeMissing
-            fun _securityType(): JsonField<SecurityType> = securityType
 
             /**
              * Returns the raw JSON value of [side].
@@ -2238,9 +2238,9 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```java
+                 * .instrumentType()
                  * .orderType()
                  * .quantity()
-                 * .securityType()
                  * .side()
                  * .timeInForce()
                  * ```
@@ -2251,9 +2251,9 @@ private constructor(
             /** A builder for [NewOrderRequest]. */
             class Builder internal constructor() {
 
+                private var instrumentType: JsonField<SecurityType>? = null
                 private var orderType: JsonField<OrderType>? = null
                 private var quantity: JsonField<String>? = null
-                private var securityType: JsonField<SecurityType>? = null
                 private var side: JsonField<Side>? = null
                 private var timeInForce: JsonField<TimeInForce>? = null
                 private var id: JsonField<String> = JsonMissing.of()
@@ -2273,9 +2273,9 @@ private constructor(
 
                 @JvmSynthetic
                 internal fun from(newOrderRequest: NewOrderRequest) = apply {
+                    instrumentType = newOrderRequest.instrumentType
                     orderType = newOrderRequest.orderType
                     quantity = newOrderRequest.quantity
-                    securityType = newOrderRequest.securityType
                     side = newOrderRequest.side
                     timeInForce = newOrderRequest.timeInForce
                     id = newOrderRequest.id
@@ -2292,6 +2292,21 @@ private constructor(
                     trailingOffsetAmt = newOrderRequest.trailingOffsetAmt
                     trailingOffsetAmtType = newOrderRequest.trailingOffsetAmtType
                     additionalProperties = newOrderRequest.additionalProperties.toMutableMap()
+                }
+
+                /** Type of security */
+                fun instrumentType(instrumentType: SecurityType) =
+                    instrumentType(JsonField.of(instrumentType))
+
+                /**
+                 * Sets [Builder.instrumentType] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.instrumentType] with a well-typed [SecurityType]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun instrumentType(instrumentType: JsonField<SecurityType>) = apply {
+                    this.instrumentType = instrumentType
                 }
 
                 /** Type of order */
@@ -2322,21 +2337,6 @@ private constructor(
                  * yet supported value.
                  */
                 fun quantity(quantity: JsonField<String>) = apply { this.quantity = quantity }
-
-                /** Type of security */
-                fun securityType(securityType: SecurityType) =
-                    securityType(JsonField.of(securityType))
-
-                /**
-                 * Sets [Builder.securityType] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.securityType] with a well-typed [SecurityType]
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun securityType(securityType: JsonField<SecurityType>) = apply {
-                    this.securityType = securityType
-                }
 
                 /** Side of the order */
                 fun side(side: Side) = side(JsonField.of(side))
@@ -2468,7 +2468,7 @@ private constructor(
                 }
 
                 /**
-                 * Required when security_type is OPTION. Specifies whether the order opens or
+                 * Required when instrument_type is OPTION. Specifies whether the order opens or
                  * closes a position.
                  */
                 fun positionEffect(positionEffect: PositionEffect) =
@@ -2583,8 +2583,8 @@ private constructor(
                 /**
                  * Trading symbol. For equities, use the ticker symbol (e.g., "AAPL"). For options,
                  * use the OSI symbol (e.g., "AAPL 250117C00190000"). If provided without
-                 * security_id, the system will derive security_id and source based on security_type
-                 * (CMS for equities, OPRA for options).
+                 * security_id, the system will derive security_id and source based on
+                 * instrument_type (CMS for equities, OPRA for options).
                  */
                 fun symbol(symbol: String?) = symbol(JsonField.ofNullable(symbol))
 
@@ -2674,9 +2674,9 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```java
+                 * .instrumentType()
                  * .orderType()
                  * .quantity()
-                 * .securityType()
                  * .side()
                  * .timeInForce()
                  * ```
@@ -2685,9 +2685,9 @@ private constructor(
                  */
                 fun build(): NewOrderRequest =
                     NewOrderRequest(
+                        checkRequired("instrumentType", instrumentType),
                         checkRequired("orderType", orderType),
                         checkRequired("quantity", quantity),
-                        checkRequired("securityType", securityType),
                         checkRequired("side", side),
                         checkRequired("timeInForce", timeInForce),
                         id,
@@ -2714,9 +2714,9 @@ private constructor(
                     return@apply
                 }
 
+                instrumentType().validate()
                 orderType().validate()
                 quantity()
-                securityType().validate()
                 side().validate()
                 timeInForce().validate()
                 id()
@@ -2751,9 +2751,9 @@ private constructor(
              */
             @JvmSynthetic
             internal fun validity(): Int =
-                (orderType.asKnown().getOrNull()?.validity() ?: 0) +
+                (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
+                    (orderType.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (quantity.asKnown().isPresent) 1 else 0) +
-                    (securityType.asKnown().getOrNull()?.validity() ?: 0) +
                     (side.asKnown().getOrNull()?.validity() ?: 0) +
                     (timeInForce.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (id.asKnown().isPresent) 1 else 0) +
@@ -2771,8 +2771,8 @@ private constructor(
                     (trailingOffsetAmtType.asKnown().getOrNull()?.validity() ?: 0)
 
             /**
-             * Required when security_type is OPTION. Specifies whether the order opens or closes a
-             * position.
+             * Required when instrument_type is OPTION. Specifies whether the order opens or closes
+             * a position.
              */
             class PositionEffect
             @JsonCreator
@@ -2915,9 +2915,9 @@ private constructor(
                 }
 
                 return other is NewOrderRequest &&
+                    instrumentType == other.instrumentType &&
                     orderType == other.orderType &&
                     quantity == other.quantity &&
-                    securityType == other.securityType &&
                     side == other.side &&
                     timeInForce == other.timeInForce &&
                     id == other.id &&
@@ -2938,9 +2938,9 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
+                    instrumentType,
                     orderType,
                     quantity,
-                    securityType,
                     side,
                     timeInForce,
                     id,
@@ -2963,7 +2963,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "NewOrderRequest{orderType=$orderType, quantity=$quantity, securityType=$securityType, side=$side, timeInForce=$timeInForce, id=$id, expireAt=$expireAt, extendedHours=$extendedHours, limitOffset=$limitOffset, limitPrice=$limitPrice, positionEffect=$positionEffect, securityId=$securityId, securityIdSource=$securityIdSource, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, additionalProperties=$additionalProperties}"
+                "NewOrderRequest{instrumentType=$instrumentType, orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expireAt=$expireAt, extendedHours=$extendedHours, limitOffset=$limitOffset, limitPrice=$limitPrice, positionEffect=$positionEffect, securityId=$securityId, securityIdSource=$securityIdSource, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, additionalProperties=$additionalProperties}"
         }
     }
 

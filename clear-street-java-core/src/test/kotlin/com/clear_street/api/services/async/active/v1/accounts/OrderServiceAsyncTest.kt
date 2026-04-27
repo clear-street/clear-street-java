@@ -29,9 +29,9 @@ internal class OrderServiceAsyncTest {
             orderServiceAsync.cancelAllOpenOrders(
                 OrderCancelAllOpenOrdersParams.builder()
                     .accountId(0L)
+                    .instrumentType(OrderCancelAllOpenOrdersParams.InstrumentType.COMMON_STOCK)
                     .addSecurityId("string")
                     .addSecurityIdSource("string")
-                    .securityType(OrderCancelAllOpenOrdersParams.SecurityType.COMMON_STOCK)
                     .side(OrderCancelAllOpenOrdersParams.Side.BUY)
                     .type(OrderCancelAllOpenOrdersParams.Type.MARKET)
                     .build()
@@ -82,11 +82,11 @@ internal class OrderServiceAsyncTest {
                 OrderGetOrdersParams.builder()
                     .accountId(0L)
                     .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .instrumentType(OrderGetOrdersParams.InstrumentType.COMMON_STOCK)
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .addSecurityId("string")
                     .addSecurityIdSource("string")
-                    .securityType(OrderGetOrdersParams.SecurityType.COMMON_STOCK)
                     .addStatus(OrderGetOrdersParams.Status.PENDING_NEW)
                     .symbol("symbol")
                     .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -135,9 +135,9 @@ internal class OrderServiceAsyncTest {
                                 listOf(
                                     OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
                                         .builder()
+                                        .instrumentType(SecurityType.OPTION)
                                         .ratio("ratio")
                                         .security("0193bb84-447a-706f-996f-097254663f02")
-                                        .securityType(SecurityType.OPTION)
                                         .side(Side.BUY)
                                         .id("1")
                                         .positionEffect(
@@ -148,9 +148,9 @@ internal class OrderServiceAsyncTest {
                                         .build(),
                                     OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
                                         .builder()
+                                        .instrumentType(SecurityType.OPTION)
                                         .ratio("ratio")
                                         .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
-                                        .securityType(SecurityType.OPTION)
                                         .side(Side.SELL)
                                         .id("2")
                                         .positionEffect(
@@ -161,9 +161,9 @@ internal class OrderServiceAsyncTest {
                                         .build(),
                                     OrderSubmitOrdersParams.Body.NewOrderMultilegRequest.Leg
                                         .builder()
+                                        .instrumentType(SecurityType.OPTION)
                                         .ratio("ratio")
                                         .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
-                                        .securityType(SecurityType.OPTION)
                                         .side(Side.BUY)
                                         .id("3")
                                         .positionEffect(

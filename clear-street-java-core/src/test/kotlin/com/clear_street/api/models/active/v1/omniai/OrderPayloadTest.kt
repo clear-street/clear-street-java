@@ -17,9 +17,9 @@ internal class OrderPayloadTest {
     fun create() {
         val orderPayload =
             OrderPayload.builder()
+                .instrumentType(SecurityType.COMMON_STOCK)
                 .orderType(OrderType.LIMIT)
                 .quantity("100")
-                .securityType(SecurityType.COMMON_STOCK)
                 .side(Side.BUY)
                 .symbol("AAPL")
                 .timeInForce(TimeInForce.DAY)
@@ -28,9 +28,9 @@ internal class OrderPayloadTest {
                 .strategy(OrderStrategyType.SOR)
                 .build()
 
+        assertThat(orderPayload.instrumentType()).isEqualTo(SecurityType.COMMON_STOCK)
         assertThat(orderPayload.orderType()).isEqualTo(OrderType.LIMIT)
         assertThat(orderPayload.quantity()).isEqualTo("100")
-        assertThat(orderPayload.securityType()).isEqualTo(SecurityType.COMMON_STOCK)
         assertThat(orderPayload.side()).isEqualTo(Side.BUY)
         assertThat(orderPayload.symbol()).isEqualTo("AAPL")
         assertThat(orderPayload.timeInForce()).isEqualTo(TimeInForce.DAY)
@@ -44,9 +44,9 @@ internal class OrderPayloadTest {
         val jsonMapper = jsonMapper()
         val orderPayload =
             OrderPayload.builder()
+                .instrumentType(SecurityType.COMMON_STOCK)
                 .orderType(OrderType.LIMIT)
                 .quantity("100")
-                .securityType(SecurityType.COMMON_STOCK)
                 .side(Side.BUY)
                 .symbol("AAPL")
                 .timeInForce(TimeInForce.DAY)

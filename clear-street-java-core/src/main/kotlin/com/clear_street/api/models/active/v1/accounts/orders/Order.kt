@@ -36,12 +36,12 @@ private constructor(
     private val clientOrderId: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val filledQuantity: JsonField<String>,
+    private val instrumentType: JsonField<SecurityType>,
     private val leavesQuantity: JsonField<String>,
     private val orderType: JsonField<OrderType>,
     private val quantity: JsonField<String>,
     private val securityId: JsonField<String>,
     private val securityIdSource: JsonField<SecurityIdSource>,
-    private val securityType: JsonField<SecurityType>,
     private val side: JsonField<Side>,
     private val status: JsonField<OrderStatus>,
     private val symbol: JsonField<String>,
@@ -75,6 +75,9 @@ private constructor(
         @JsonProperty("filled_quantity")
         @ExcludeMissing
         filledQuantity: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("instrument_type")
+        @ExcludeMissing
+        instrumentType: JsonField<SecurityType> = JsonMissing.of(),
         @JsonProperty("leaves_quantity")
         @ExcludeMissing
         leavesQuantity: JsonField<String> = JsonMissing.of(),
@@ -88,9 +91,6 @@ private constructor(
         @JsonProperty("security_id_source")
         @ExcludeMissing
         securityIdSource: JsonField<SecurityIdSource> = JsonMissing.of(),
-        @JsonProperty("security_type")
-        @ExcludeMissing
-        securityType: JsonField<SecurityType> = JsonMissing.of(),
         @JsonProperty("side") @ExcludeMissing side: JsonField<Side> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<OrderStatus> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
@@ -138,12 +138,12 @@ private constructor(
         clientOrderId,
         createdAt,
         filledQuantity,
+        instrumentType,
         leavesQuantity,
         orderType,
         quantity,
         securityId,
         securityIdSource,
-        securityType,
         side,
         status,
         symbol,
@@ -205,6 +205,14 @@ private constructor(
     fun filledQuantity(): String = filledQuantity.getRequired("filled_quantity")
 
     /**
+     * Type of security
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun instrumentType(): SecurityType = instrumentType.getRequired("instrument_type")
+
+    /**
      * Remaining unfilled quantity
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -244,14 +252,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun securityIdSource(): SecurityIdSource = securityIdSource.getRequired("security_id_source")
-
-    /**
-     * Type of security
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun securityType(): SecurityType = securityType.getRequired("security_type")
 
     /**
      * Side of the order (BUY, SELL, SELL_SHORT)
@@ -434,6 +434,15 @@ private constructor(
     fun _filledQuantity(): JsonField<String> = filledQuantity
 
     /**
+     * Returns the raw JSON value of [instrumentType].
+     *
+     * Unlike [instrumentType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("instrument_type")
+    @ExcludeMissing
+    fun _instrumentType(): JsonField<SecurityType> = instrumentType
+
+    /**
      * Returns the raw JSON value of [leavesQuantity].
      *
      * Unlike [leavesQuantity], this method doesn't throw if the JSON field has an unexpected type.
@@ -472,15 +481,6 @@ private constructor(
     @JsonProperty("security_id_source")
     @ExcludeMissing
     fun _securityIdSource(): JsonField<SecurityIdSource> = securityIdSource
-
-    /**
-     * Returns the raw JSON value of [securityType].
-     *
-     * Unlike [securityType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("security_type")
-    @ExcludeMissing
-    fun _securityType(): JsonField<SecurityType> = securityType
 
     /**
      * Returns the raw JSON value of [side].
@@ -648,12 +648,12 @@ private constructor(
          * .clientOrderId()
          * .createdAt()
          * .filledQuantity()
+         * .instrumentType()
          * .leavesQuantity()
          * .orderType()
          * .quantity()
          * .securityId()
          * .securityIdSource()
-         * .securityType()
          * .side()
          * .status()
          * .symbol()
@@ -673,12 +673,12 @@ private constructor(
         private var clientOrderId: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var filledQuantity: JsonField<String>? = null
+        private var instrumentType: JsonField<SecurityType>? = null
         private var leavesQuantity: JsonField<String>? = null
         private var orderType: JsonField<OrderType>? = null
         private var quantity: JsonField<String>? = null
         private var securityId: JsonField<String>? = null
         private var securityIdSource: JsonField<SecurityIdSource>? = null
-        private var securityType: JsonField<SecurityType>? = null
         private var side: JsonField<Side>? = null
         private var status: JsonField<OrderStatus>? = null
         private var symbol: JsonField<String>? = null
@@ -705,12 +705,12 @@ private constructor(
             clientOrderId = order.clientOrderId
             createdAt = order.createdAt
             filledQuantity = order.filledQuantity
+            instrumentType = order.instrumentType
             leavesQuantity = order.leavesQuantity
             orderType = order.orderType
             quantity = order.quantity
             securityId = order.securityId
             securityIdSource = order.securityIdSource
-            securityType = order.securityType
             side = order.side
             status = order.status
             symbol = order.symbol
@@ -793,6 +793,21 @@ private constructor(
             this.filledQuantity = filledQuantity
         }
 
+        /** Type of security */
+        fun instrumentType(instrumentType: SecurityType) =
+            instrumentType(JsonField.of(instrumentType))
+
+        /**
+         * Sets [Builder.instrumentType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.instrumentType] with a well-typed [SecurityType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun instrumentType(instrumentType: JsonField<SecurityType>) = apply {
+            this.instrumentType = instrumentType
+        }
+
         /** Remaining unfilled quantity */
         fun leavesQuantity(leavesQuantity: String) = leavesQuantity(JsonField.of(leavesQuantity))
 
@@ -858,20 +873,6 @@ private constructor(
          */
         fun securityIdSource(securityIdSource: JsonField<SecurityIdSource>) = apply {
             this.securityIdSource = securityIdSource
-        }
-
-        /** Type of security */
-        fun securityType(securityType: SecurityType) = securityType(JsonField.of(securityType))
-
-        /**
-         * Sets [Builder.securityType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.securityType] with a well-typed [SecurityType] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun securityType(securityType: JsonField<SecurityType>) = apply {
-            this.securityType = securityType
         }
 
         /** Side of the order (BUY, SELL, SELL_SHORT) */
@@ -1202,12 +1203,12 @@ private constructor(
          * .clientOrderId()
          * .createdAt()
          * .filledQuantity()
+         * .instrumentType()
          * .leavesQuantity()
          * .orderType()
          * .quantity()
          * .securityId()
          * .securityIdSource()
-         * .securityType()
          * .side()
          * .status()
          * .symbol()
@@ -1225,12 +1226,12 @@ private constructor(
                 checkRequired("clientOrderId", clientOrderId),
                 checkRequired("createdAt", createdAt),
                 checkRequired("filledQuantity", filledQuantity),
+                checkRequired("instrumentType", instrumentType),
                 checkRequired("leavesQuantity", leavesQuantity),
                 checkRequired("orderType", orderType),
                 checkRequired("quantity", quantity),
                 checkRequired("securityId", securityId),
                 checkRequired("securityIdSource", securityIdSource),
-                checkRequired("securityType", securityType),
                 checkRequired("side", side),
                 checkRequired("status", status),
                 checkRequired("symbol", symbol),
@@ -1264,12 +1265,12 @@ private constructor(
         clientOrderId()
         createdAt()
         filledQuantity()
+        instrumentType().validate()
         leavesQuantity()
         orderType().validate()
         quantity()
         securityId()
         securityIdSource().validate()
-        securityType().validate()
         side().validate()
         status().validate()
         symbol()
@@ -1310,12 +1311,12 @@ private constructor(
             (if (clientOrderId.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (filledQuantity.asKnown().isPresent) 1 else 0) +
+            (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (leavesQuantity.asKnown().isPresent) 1 else 0) +
             (orderType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (quantity.asKnown().isPresent) 1 else 0) +
             (if (securityId.asKnown().isPresent) 1 else 0) +
             (securityIdSource.asKnown().getOrNull()?.validity() ?: 0) +
-            (securityType.asKnown().getOrNull()?.validity() ?: 0) +
             (side.asKnown().getOrNull()?.validity() ?: 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
@@ -1345,12 +1346,12 @@ private constructor(
             clientOrderId == other.clientOrderId &&
             createdAt == other.createdAt &&
             filledQuantity == other.filledQuantity &&
+            instrumentType == other.instrumentType &&
             leavesQuantity == other.leavesQuantity &&
             orderType == other.orderType &&
             quantity == other.quantity &&
             securityId == other.securityId &&
             securityIdSource == other.securityIdSource &&
-            securityType == other.securityType &&
             side == other.side &&
             status == other.status &&
             symbol == other.symbol &&
@@ -1378,12 +1379,12 @@ private constructor(
             clientOrderId,
             createdAt,
             filledQuantity,
+            instrumentType,
             leavesQuantity,
             orderType,
             quantity,
             securityId,
             securityIdSource,
-            securityType,
             side,
             status,
             symbol,
@@ -1408,5 +1409,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, securityId=$securityId, securityIdSource=$securityIdSource, securityType=$securityType, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, limitOffset=$limitOffset, limitPrice=$limitPrice, stopPrice=$stopPrice, strategy=$strategy, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, instrumentType=$instrumentType, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, securityId=$securityId, securityIdSource=$securityIdSource, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, limitOffset=$limitOffset, limitPrice=$limitPrice, stopPrice=$stopPrice, strategy=$strategy, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, additionalProperties=$additionalProperties}"
 }

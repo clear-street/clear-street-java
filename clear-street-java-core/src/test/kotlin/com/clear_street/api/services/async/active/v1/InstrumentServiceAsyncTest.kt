@@ -42,6 +42,7 @@ internal class InstrumentServiceAsyncTest {
                 InstrumentGetInstrumentsParams.builder()
                     .easyToBorrow(true)
                     .idFilter("id_filter")
+                    .instrumentType(InstrumentGetInstrumentsParams.InstrumentType.COMMON_STOCK)
                     .isLiquidationOnly(true)
                     .isMarginable(true)
                     .isRestricted(true)
@@ -51,7 +52,6 @@ internal class InstrumentServiceAsyncTest {
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .addSecurityId("string")
                     .addSecurityIdSource("string")
-                    .securityType(InstrumentGetInstrumentsParams.SecurityType.COMMON_STOCK)
                     .build()
             )
 

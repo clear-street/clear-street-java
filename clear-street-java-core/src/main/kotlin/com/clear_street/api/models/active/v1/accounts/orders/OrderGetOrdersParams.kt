@@ -21,11 +21,11 @@ class OrderGetOrdersParams
 private constructor(
     private val accountId: Long?,
     private val from: OffsetDateTime?,
+    private val instrumentType: InstrumentType?,
     private val pageSize: Long?,
     private val pageToken: String?,
     private val securityId: List<String>?,
     private val securityIdSource: List<String>?,
-    private val securityType: SecurityType?,
     private val status: List<Status>?,
     private val symbol: String?,
     private val to: OffsetDateTime?,
@@ -37,6 +37,9 @@ private constructor(
 
     /** The start date and time for the query range, inclusive (ISO 8601 format) */
     fun from(): Optional<OffsetDateTime> = Optional.ofNullable(from)
+
+    /** Instrument type filter (e.g., COMMON_STOCK, OPTION) */
+    fun instrumentType(): Optional<InstrumentType> = Optional.ofNullable(instrumentType)
 
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
@@ -63,9 +66,6 @@ private constructor(
      * - Multiple: `security_id_source[0]=CUSIP&security_id_source[1]=FIGI`
      */
     fun securityIdSource(): Optional<List<String>> = Optional.ofNullable(securityIdSource)
-
-    /** Security type filter (e.g., COMMON_STOCK, PREFERRED_STOCK) */
-    fun securityType(): Optional<SecurityType> = Optional.ofNullable(securityType)
 
     /** Comma-separated order statuses to filter by */
     fun status(): Optional<List<Status>> = Optional.ofNullable(status)
@@ -97,11 +97,11 @@ private constructor(
 
         private var accountId: Long? = null
         private var from: OffsetDateTime? = null
+        private var instrumentType: InstrumentType? = null
         private var pageSize: Long? = null
         private var pageToken: String? = null
         private var securityId: MutableList<String>? = null
         private var securityIdSource: MutableList<String>? = null
-        private var securityType: SecurityType? = null
         private var status: MutableList<Status>? = null
         private var symbol: String? = null
         private var to: OffsetDateTime? = null
@@ -112,11 +112,11 @@ private constructor(
         internal fun from(orderGetOrdersParams: OrderGetOrdersParams) = apply {
             accountId = orderGetOrdersParams.accountId
             from = orderGetOrdersParams.from
+            instrumentType = orderGetOrdersParams.instrumentType
             pageSize = orderGetOrdersParams.pageSize
             pageToken = orderGetOrdersParams.pageToken
             securityId = orderGetOrdersParams.securityId?.toMutableList()
             securityIdSource = orderGetOrdersParams.securityIdSource?.toMutableList()
-            securityType = orderGetOrdersParams.securityType
             status = orderGetOrdersParams.status?.toMutableList()
             symbol = orderGetOrdersParams.symbol
             to = orderGetOrdersParams.to
@@ -141,6 +141,15 @@ private constructor(
 
         /** Alias for calling [Builder.from] with `from.orElse(null)`. */
         fun from(from: Optional<OffsetDateTime>) = from(from.getOrNull())
+
+        /** Instrument type filter (e.g., COMMON_STOCK, OPTION) */
+        fun instrumentType(instrumentType: InstrumentType?) = apply {
+            this.instrumentType = instrumentType
+        }
+
+        /** Alias for calling [Builder.instrumentType] with `instrumentType.orElse(null)`. */
+        fun instrumentType(instrumentType: Optional<InstrumentType>) =
+            instrumentType(instrumentType.getOrNull())
 
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
@@ -210,13 +219,6 @@ private constructor(
             this.securityIdSource =
                 (this.securityIdSource ?: mutableListOf()).apply { add(securityIdSource) }
         }
-
-        /** Security type filter (e.g., COMMON_STOCK, PREFERRED_STOCK) */
-        fun securityType(securityType: SecurityType?) = apply { this.securityType = securityType }
-
-        /** Alias for calling [Builder.securityType] with `securityType.orElse(null)`. */
-        fun securityType(securityType: Optional<SecurityType>) =
-            securityType(securityType.getOrNull())
 
         /** Comma-separated order statuses to filter by */
         fun status(status: List<Status>?) = apply { this.status = status?.toMutableList() }
@@ -352,11 +354,11 @@ private constructor(
             OrderGetOrdersParams(
                 accountId,
                 from,
+                instrumentType,
                 pageSize,
                 pageToken,
                 securityId?.toImmutable(),
                 securityIdSource?.toImmutable(),
-                securityType,
                 status?.toImmutable(),
                 symbol,
                 to,
@@ -377,13 +379,13 @@ private constructor(
         QueryParams.builder()
             .apply {
                 from?.let { put("from", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
+                instrumentType?.let { put("instrument_type", it.toString()) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 securityId?.forEachIndexed { index, it -> put("security_id[$index]", it) }
                 securityIdSource?.forEachIndexed { index, it ->
                     put("security_id_source[$index]", it)
                 }
-                securityType?.let { put("security_type", it.toString()) }
                 status?.forEachIndexed { index, it -> put("status[$index]", it.toString()) }
                 symbol?.let { put("symbol", it) }
                 to?.let { put("to", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
@@ -391,8 +393,8 @@ private constructor(
             }
             .build()
 
-    /** Security type filter (e.g., COMMON_STOCK, PREFERRED_STOCK) */
-    class SecurityType @JsonCreator private constructor(private val value: JsonField<String>) :
+    /** Instrument type filter (e.g., COMMON_STOCK, OPTION) */
+    class InstrumentType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
         /**
@@ -423,10 +425,10 @@ private constructor(
 
             @JvmField val OTHER = of("OTHER")
 
-            @JvmStatic fun of(value: String) = SecurityType(JsonField.of(value))
+            @JvmStatic fun of(value: String) = InstrumentType(JsonField.of(value))
         }
 
-        /** An enum containing [SecurityType]'s known values. */
+        /** An enum containing [InstrumentType]'s known values. */
         enum class Known {
             COMMON_STOCK,
             PREFERRED_STOCK,
@@ -439,9 +441,9 @@ private constructor(
         }
 
         /**
-         * An enum containing [SecurityType]'s known values, as well as an [_UNKNOWN] member.
+         * An enum containing [InstrumentType]'s known values, as well as an [_UNKNOWN] member.
          *
-         * An instance of [SecurityType] can contain an unknown value in a couple of cases:
+         * An instance of [InstrumentType] can contain an unknown value in a couple of cases:
          * - It was deserialized from data that doesn't match any known member. For example, if the
          *   SDK is on an older version than the API, then the API may respond with new members that
          *   the SDK is unaware of.
@@ -457,7 +459,8 @@ private constructor(
             CASH,
             OTHER,
             /**
-             * An enum member indicating that [SecurityType] was instantiated with an unknown value.
+             * An enum member indicating that [InstrumentType] was instantiated with an unknown
+             * value.
              */
             _UNKNOWN,
         }
@@ -501,7 +504,7 @@ private constructor(
                 WARRANT -> Known.WARRANT
                 CASH -> Known.CASH
                 OTHER -> Known.OTHER
-                else -> throw ClearStreetInvalidDataException("Unknown SecurityType: $value")
+                else -> throw ClearStreetInvalidDataException("Unknown InstrumentType: $value")
             }
 
         /**
@@ -520,7 +523,7 @@ private constructor(
 
         private var validated: Boolean = false
 
-        fun validate(): SecurityType = apply {
+        fun validate(): InstrumentType = apply {
             if (validated) {
                 return@apply
             }
@@ -550,7 +553,7 @@ private constructor(
                 return true
             }
 
-            return other is SecurityType && value == other.value
+            return other is InstrumentType && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -772,11 +775,11 @@ private constructor(
         return other is OrderGetOrdersParams &&
             accountId == other.accountId &&
             from == other.from &&
+            instrumentType == other.instrumentType &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
             securityId == other.securityId &&
             securityIdSource == other.securityIdSource &&
-            securityType == other.securityType &&
             status == other.status &&
             symbol == other.symbol &&
             to == other.to &&
@@ -788,11 +791,11 @@ private constructor(
         Objects.hash(
             accountId,
             from,
+            instrumentType,
             pageSize,
             pageToken,
             securityId,
             securityIdSource,
-            securityType,
             status,
             symbol,
             to,
@@ -801,5 +804,5 @@ private constructor(
         )
 
     override fun toString() =
-        "OrderGetOrdersParams{accountId=$accountId, from=$from, pageSize=$pageSize, pageToken=$pageToken, securityId=$securityId, securityIdSource=$securityIdSource, securityType=$securityType, status=$status, symbol=$symbol, to=$to, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "OrderGetOrdersParams{accountId=$accountId, from=$from, instrumentType=$instrumentType, pageSize=$pageSize, pageToken=$pageToken, securityId=$securityId, securityIdSource=$securityIdSource, status=$status, symbol=$symbol, to=$to, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

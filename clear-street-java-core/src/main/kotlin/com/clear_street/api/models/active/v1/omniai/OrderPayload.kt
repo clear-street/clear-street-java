@@ -30,9 +30,9 @@ import kotlin.jvm.optionals.getOrNull
 class OrderPayload
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val instrumentType: JsonField<SecurityType>,
     private val orderType: JsonField<OrderType>,
     private val quantity: JsonField<String>,
-    private val securityType: JsonField<SecurityType>,
     private val side: JsonField<Side>,
     private val symbol: JsonField<String>,
     private val timeInForce: JsonField<TimeInForce>,
@@ -44,13 +44,13 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("instrument_type")
+        @ExcludeMissing
+        instrumentType: JsonField<SecurityType> = JsonMissing.of(),
         @JsonProperty("order_type")
         @ExcludeMissing
         orderType: JsonField<OrderType> = JsonMissing.of(),
         @JsonProperty("quantity") @ExcludeMissing quantity: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("security_type")
-        @ExcludeMissing
-        securityType: JsonField<SecurityType> = JsonMissing.of(),
         @JsonProperty("side") @ExcludeMissing side: JsonField<Side> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("time_in_force")
@@ -64,9 +64,9 @@ private constructor(
         @ExcludeMissing
         strategy: JsonField<OrderStrategyType> = JsonMissing.of(),
     ) : this(
+        instrumentType,
         orderType,
         quantity,
-        securityType,
         side,
         symbol,
         timeInForce,
@@ -75,6 +75,14 @@ private constructor(
         strategy,
         mutableMapOf(),
     )
+
+    /**
+     * Type of security
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun instrumentType(): SecurityType = instrumentType.getRequired("instrument_type")
 
     /**
      * Order type
@@ -91,14 +99,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun quantity(): String = quantity.getRequired("quantity")
-
-    /**
-     * Type of security
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun securityType(): SecurityType = securityType.getRequired("security_type")
 
     /**
      * Order side
@@ -149,6 +149,15 @@ private constructor(
     fun strategy(): Optional<OrderStrategyType> = strategy.getOptional("strategy")
 
     /**
+     * Returns the raw JSON value of [instrumentType].
+     *
+     * Unlike [instrumentType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("instrument_type")
+    @ExcludeMissing
+    fun _instrumentType(): JsonField<SecurityType> = instrumentType
+
+    /**
      * Returns the raw JSON value of [orderType].
      *
      * Unlike [orderType], this method doesn't throw if the JSON field has an unexpected type.
@@ -161,15 +170,6 @@ private constructor(
      * Unlike [quantity], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("quantity") @ExcludeMissing fun _quantity(): JsonField<String> = quantity
-
-    /**
-     * Returns the raw JSON value of [securityType].
-     *
-     * Unlike [securityType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("security_type")
-    @ExcludeMissing
-    fun _securityType(): JsonField<SecurityType> = securityType
 
     /**
      * Returns the raw JSON value of [side].
@@ -236,9 +236,9 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .instrumentType()
          * .orderType()
          * .quantity()
-         * .securityType()
          * .side()
          * .symbol()
          * .timeInForce()
@@ -250,9 +250,9 @@ private constructor(
     /** A builder for [OrderPayload]. */
     class Builder internal constructor() {
 
+        private var instrumentType: JsonField<SecurityType>? = null
         private var orderType: JsonField<OrderType>? = null
         private var quantity: JsonField<String>? = null
-        private var securityType: JsonField<SecurityType>? = null
         private var side: JsonField<Side>? = null
         private var symbol: JsonField<String>? = null
         private var timeInForce: JsonField<TimeInForce>? = null
@@ -263,9 +263,9 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(orderPayload: OrderPayload) = apply {
+            instrumentType = orderPayload.instrumentType
             orderType = orderPayload.orderType
             quantity = orderPayload.quantity
-            securityType = orderPayload.securityType
             side = orderPayload.side
             symbol = orderPayload.symbol
             timeInForce = orderPayload.timeInForce
@@ -273,6 +273,21 @@ private constructor(
             stopPrice = orderPayload.stopPrice
             strategy = orderPayload.strategy
             additionalProperties = orderPayload.additionalProperties.toMutableMap()
+        }
+
+        /** Type of security */
+        fun instrumentType(instrumentType: SecurityType) =
+            instrumentType(JsonField.of(instrumentType))
+
+        /**
+         * Sets [Builder.instrumentType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.instrumentType] with a well-typed [SecurityType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun instrumentType(instrumentType: JsonField<SecurityType>) = apply {
+            this.instrumentType = instrumentType
         }
 
         /** Order type */
@@ -297,20 +312,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun quantity(quantity: JsonField<String>) = apply { this.quantity = quantity }
-
-        /** Type of security */
-        fun securityType(securityType: SecurityType) = securityType(JsonField.of(securityType))
-
-        /**
-         * Sets [Builder.securityType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.securityType] with a well-typed [SecurityType] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun securityType(securityType: JsonField<SecurityType>) = apply {
-            this.securityType = securityType
-        }
 
         /** Order side */
         fun side(side: Side) = side(JsonField.of(side))
@@ -419,9 +420,9 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .instrumentType()
          * .orderType()
          * .quantity()
-         * .securityType()
          * .side()
          * .symbol()
          * .timeInForce()
@@ -431,9 +432,9 @@ private constructor(
          */
         fun build(): OrderPayload =
             OrderPayload(
+                checkRequired("instrumentType", instrumentType),
                 checkRequired("orderType", orderType),
                 checkRequired("quantity", quantity),
-                checkRequired("securityType", securityType),
                 checkRequired("side", side),
                 checkRequired("symbol", symbol),
                 checkRequired("timeInForce", timeInForce),
@@ -451,9 +452,9 @@ private constructor(
             return@apply
         }
 
+        instrumentType().validate()
         orderType().validate()
         quantity()
-        securityType().validate()
         side().validate()
         symbol()
         timeInForce().validate()
@@ -478,9 +479,9 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (orderType.asKnown().getOrNull()?.validity() ?: 0) +
+        (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
+            (orderType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (quantity.asKnown().isPresent) 1 else 0) +
-            (securityType.asKnown().getOrNull()?.validity() ?: 0) +
             (side.asKnown().getOrNull()?.validity() ?: 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (timeInForce.asKnown().getOrNull()?.validity() ?: 0) +
@@ -494,9 +495,9 @@ private constructor(
         }
 
         return other is OrderPayload &&
+            instrumentType == other.instrumentType &&
             orderType == other.orderType &&
             quantity == other.quantity &&
-            securityType == other.securityType &&
             side == other.side &&
             symbol == other.symbol &&
             timeInForce == other.timeInForce &&
@@ -508,9 +509,9 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            instrumentType,
             orderType,
             quantity,
-            securityType,
             side,
             symbol,
             timeInForce,
@@ -524,5 +525,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OrderPayload{orderType=$orderType, quantity=$quantity, securityType=$securityType, side=$side, symbol=$symbol, timeInForce=$timeInForce, limitPrice=$limitPrice, stopPrice=$stopPrice, strategy=$strategy, additionalProperties=$additionalProperties}"
+        "OrderPayload{instrumentType=$instrumentType, orderType=$orderType, quantity=$quantity, side=$side, symbol=$symbol, timeInForce=$timeInForce, limitPrice=$limitPrice, stopPrice=$stopPrice, strategy=$strategy, additionalProperties=$additionalProperties}"
 }
