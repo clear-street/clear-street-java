@@ -23,16 +23,10 @@ import com.clear_street.api.models.active.v1.instruments.InstrumentSearchParams
 import com.clear_street.api.models.active.v1.instruments.InstrumentSearchResponse
 import com.clear_street.api.services.async.active.v1.instruments.AnalystReportingServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.AnalystReportingServiceAsyncImpl
-import com.clear_street.api.services.async.active.v1.instruments.BalanceSheetServiceAsync
-import com.clear_street.api.services.async.active.v1.instruments.BalanceSheetServiceAsyncImpl
-import com.clear_street.api.services.async.active.v1.instruments.CashFlowStatementServiceAsync
-import com.clear_street.api.services.async.active.v1.instruments.CashFlowStatementServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.EventServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.instruments.FundamentalServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.FundamentalServiceAsyncImpl
-import com.clear_street.api.services.async.active.v1.instruments.IncomeStatementServiceAsync
-import com.clear_street.api.services.async.active.v1.instruments.IncomeStatementServiceAsyncImpl
 import com.clear_street.api.services.async.active.v1.instruments.OptionServiceAsync
 import com.clear_street.api.services.async.active.v1.instruments.OptionServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
@@ -51,22 +45,10 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
         AnalystReportingServiceAsyncImpl(clientOptions)
     }
 
-    private val balanceSheets: BalanceSheetServiceAsync by lazy {
-        BalanceSheetServiceAsyncImpl(clientOptions)
-    }
-
-    private val cashFlowStatements: CashFlowStatementServiceAsync by lazy {
-        CashFlowStatementServiceAsyncImpl(clientOptions)
-    }
-
     private val events: EventServiceAsync by lazy { EventServiceAsyncImpl(clientOptions) }
 
     private val fundamentals: FundamentalServiceAsync by lazy {
         FundamentalServiceAsyncImpl(clientOptions)
-    }
-
-    private val incomeStatements: IncomeStatementServiceAsync by lazy {
-        IncomeStatementServiceAsyncImpl(clientOptions)
     }
 
     private val options: OptionServiceAsync by lazy { OptionServiceAsyncImpl(clientOptions) }
@@ -80,19 +62,10 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
     override fun analystReporting(): AnalystReportingServiceAsync = analystReporting
 
     /** Retrieve details and lists of tradable instruments. */
-    override fun balanceSheets(): BalanceSheetServiceAsync = balanceSheets
-
-    /** Retrieve details and lists of tradable instruments. */
-    override fun cashFlowStatements(): CashFlowStatementServiceAsync = cashFlowStatements
-
-    /** Retrieve details and lists of tradable instruments. */
     override fun events(): EventServiceAsync = events
 
     /** Retrieve details and lists of tradable instruments. */
     override fun fundamentals(): FundamentalServiceAsync = fundamentals
-
-    /** Retrieve details and lists of tradable instruments. */
-    override fun incomeStatements(): IncomeStatementServiceAsync = incomeStatements
 
     /** Retrieve details and lists of tradable instruments. */
     override fun options(): OptionServiceAsync = options
@@ -128,24 +101,12 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
             AnalystReportingServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val balanceSheets: BalanceSheetServiceAsync.WithRawResponse by lazy {
-            BalanceSheetServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val cashFlowStatements: CashFlowStatementServiceAsync.WithRawResponse by lazy {
-            CashFlowStatementServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val events: EventServiceAsync.WithRawResponse by lazy {
             EventServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val fundamentals: FundamentalServiceAsync.WithRawResponse by lazy {
             FundamentalServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val incomeStatements: IncomeStatementServiceAsync.WithRawResponse by lazy {
-            IncomeStatementServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val options: OptionServiceAsync.WithRawResponse by lazy {
@@ -164,21 +125,10 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
             analystReporting
 
         /** Retrieve details and lists of tradable instruments. */
-        override fun balanceSheets(): BalanceSheetServiceAsync.WithRawResponse = balanceSheets
-
-        /** Retrieve details and lists of tradable instruments. */
-        override fun cashFlowStatements(): CashFlowStatementServiceAsync.WithRawResponse =
-            cashFlowStatements
-
-        /** Retrieve details and lists of tradable instruments. */
         override fun events(): EventServiceAsync.WithRawResponse = events
 
         /** Retrieve details and lists of tradable instruments. */
         override fun fundamentals(): FundamentalServiceAsync.WithRawResponse = fundamentals
-
-        /** Retrieve details and lists of tradable instruments. */
-        override fun incomeStatements(): IncomeStatementServiceAsync.WithRawResponse =
-            incomeStatements
 
         /** Retrieve details and lists of tradable instruments. */
         override fun options(): OptionServiceAsync.WithRawResponse = options

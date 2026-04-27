@@ -7,6 +7,7 @@ import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponse
 import com.clear_street.api.models.active.v1.V1WsParams
 import com.clear_street.api.services.async.active.v1.AccountServiceAsync
+import com.clear_street.api.services.async.active.v1.ApiKeyServiceAsync
 import com.clear_street.api.services.async.active.v1.CalendarServiceAsync
 import com.clear_street.api.services.async.active.v1.ClockServiceAsync
 import com.clear_street.api.services.async.active.v1.InstrumentServiceAsync
@@ -37,6 +38,9 @@ interface V1ServiceAsync {
 
     /** Manage trading accounts, balances, and portfolio history. */
     fun accounts(): AccountServiceAsync
+
+    /** Manage API keys for authentication. */
+    fun apiKeys(): ApiKeyServiceAsync
 
     fun calendars(): CalendarServiceAsync
 
@@ -94,6 +98,9 @@ interface V1ServiceAsync {
 
         /** Manage trading accounts, balances, and portfolio history. */
         fun accounts(): AccountServiceAsync.WithRawResponse
+
+        /** Manage API keys for authentication. */
+        fun apiKeys(): ApiKeyServiceAsync.WithRawResponse
 
         fun calendars(): CalendarServiceAsync.WithRawResponse
 
