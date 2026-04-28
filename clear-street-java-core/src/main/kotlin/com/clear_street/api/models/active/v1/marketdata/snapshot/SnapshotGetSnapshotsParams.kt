@@ -20,7 +20,7 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** Comma-separated OEMS instrument UUIDs */
+    /** Comma-separated OEMS instrument UUIDs. */
     fun ids(): Optional<String> = Optional.ofNullable(ids)
 
     /**
@@ -77,7 +77,7 @@ private constructor(
             additionalQueryParams = snapshotGetSnapshotsParams.additionalQueryParams.toBuilder()
         }
 
-        /** Comma-separated OEMS instrument UUIDs */
+        /** Comma-separated OEMS instrument UUIDs. */
         fun ids(ids: String?) = apply { this.ids = ids }
 
         /** Alias for calling [Builder.ids] with `ids.orElse(null)`. */
