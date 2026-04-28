@@ -24,6 +24,7 @@ internal class OrderPayloadTest {
                 .symbol("AAPL")
                 .timeInForce(TimeInForce.DAY)
                 .limitPrice("150.00")
+                .orderId("order_id")
                 .stopPrice("148.00")
                 .strategy(OrderStrategyType.SOR)
                 .build()
@@ -35,6 +36,7 @@ internal class OrderPayloadTest {
         assertThat(orderPayload.symbol()).isEqualTo("AAPL")
         assertThat(orderPayload.timeInForce()).isEqualTo(TimeInForce.DAY)
         assertThat(orderPayload.limitPrice()).contains("150.00")
+        assertThat(orderPayload.orderId()).contains("order_id")
         assertThat(orderPayload.stopPrice()).contains("148.00")
         assertThat(orderPayload.strategy()).contains(OrderStrategyType.SOR)
     }
@@ -51,6 +53,7 @@ internal class OrderPayloadTest {
                 .symbol("AAPL")
                 .timeInForce(TimeInForce.DAY)
                 .limitPrice("150.00")
+                .orderId("order_id")
                 .stopPrice("148.00")
                 .strategy(OrderStrategyType.SOR)
                 .build()

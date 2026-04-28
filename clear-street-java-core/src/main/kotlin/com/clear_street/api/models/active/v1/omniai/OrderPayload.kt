@@ -37,6 +37,7 @@ private constructor(
     private val symbol: JsonField<String>,
     private val timeInForce: JsonField<TimeInForce>,
     private val limitPrice: JsonField<String>,
+    private val orderId: JsonField<String>,
     private val stopPrice: JsonField<String>,
     private val strategy: JsonField<OrderStrategyType>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -59,6 +60,7 @@ private constructor(
         @JsonProperty("limit_price")
         @ExcludeMissing
         limitPrice: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("order_id") @ExcludeMissing orderId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
         @JsonProperty("strategy")
         @ExcludeMissing
@@ -71,6 +73,7 @@ private constructor(
         symbol,
         timeInForce,
         limitPrice,
+        orderId,
         stopPrice,
         strategy,
         mutableMapOf(),
@@ -131,6 +134,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun limitPrice(): Optional<String> = limitPrice.getOptional("limit_price")
+
+    /**
+     * Existing order identifier. Required for cancel actions.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun orderId(): Optional<String> = orderId.getOptional("order_id")
 
     /**
      * Stop price (required for STOP and STOP_LIMIT orders)
@@ -202,6 +213,13 @@ private constructor(
     @JsonProperty("limit_price") @ExcludeMissing fun _limitPrice(): JsonField<String> = limitPrice
 
     /**
+     * Returns the raw JSON value of [orderId].
+     *
+     * Unlike [orderId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("order_id") @ExcludeMissing fun _orderId(): JsonField<String> = orderId
+
+    /**
      * Returns the raw JSON value of [stopPrice].
      *
      * Unlike [stopPrice], this method doesn't throw if the JSON field has an unexpected type.
@@ -257,6 +275,7 @@ private constructor(
         private var symbol: JsonField<String>? = null
         private var timeInForce: JsonField<TimeInForce>? = null
         private var limitPrice: JsonField<String> = JsonMissing.of()
+        private var orderId: JsonField<String> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
         private var strategy: JsonField<OrderStrategyType> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -270,6 +289,7 @@ private constructor(
             symbol = orderPayload.symbol
             timeInForce = orderPayload.timeInForce
             limitPrice = orderPayload.limitPrice
+            orderId = orderPayload.orderId
             stopPrice = orderPayload.stopPrice
             strategy = orderPayload.strategy
             additionalProperties = orderPayload.additionalProperties.toMutableMap()
@@ -364,6 +384,20 @@ private constructor(
          */
         fun limitPrice(limitPrice: JsonField<String>) = apply { this.limitPrice = limitPrice }
 
+        /** Existing order identifier. Required for cancel actions. */
+        fun orderId(orderId: String?) = orderId(JsonField.ofNullable(orderId))
+
+        /** Alias for calling [Builder.orderId] with `orderId.orElse(null)`. */
+        fun orderId(orderId: Optional<String>) = orderId(orderId.getOrNull())
+
+        /**
+         * Sets [Builder.orderId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.orderId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun orderId(orderId: JsonField<String>) = apply { this.orderId = orderId }
+
         /** Stop price (required for STOP and STOP_LIMIT orders) */
         fun stopPrice(stopPrice: String?) = stopPrice(JsonField.ofNullable(stopPrice))
 
@@ -439,6 +473,7 @@ private constructor(
                 checkRequired("symbol", symbol),
                 checkRequired("timeInForce", timeInForce),
                 limitPrice,
+                orderId,
                 stopPrice,
                 strategy,
                 additionalProperties.toMutableMap(),
@@ -459,6 +494,7 @@ private constructor(
         symbol()
         timeInForce().validate()
         limitPrice()
+        orderId()
         stopPrice()
         strategy().ifPresent { it.validate() }
         validated = true
@@ -486,6 +522,7 @@ private constructor(
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (timeInForce.asKnown().getOrNull()?.validity() ?: 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
+            (if (orderId.asKnown().isPresent) 1 else 0) +
             (if (stopPrice.asKnown().isPresent) 1 else 0) +
             (strategy.asKnown().getOrNull()?.validity() ?: 0)
 
@@ -502,6 +539,7 @@ private constructor(
             symbol == other.symbol &&
             timeInForce == other.timeInForce &&
             limitPrice == other.limitPrice &&
+            orderId == other.orderId &&
             stopPrice == other.stopPrice &&
             strategy == other.strategy &&
             additionalProperties == other.additionalProperties
@@ -516,6 +554,7 @@ private constructor(
             symbol,
             timeInForce,
             limitPrice,
+            orderId,
             stopPrice,
             strategy,
             additionalProperties,
@@ -525,5 +564,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OrderPayload{instrumentType=$instrumentType, orderType=$orderType, quantity=$quantity, side=$side, symbol=$symbol, timeInForce=$timeInForce, limitPrice=$limitPrice, stopPrice=$stopPrice, strategy=$strategy, additionalProperties=$additionalProperties}"
+        "OrderPayload{instrumentType=$instrumentType, orderType=$orderType, quantity=$quantity, side=$side, symbol=$symbol, timeInForce=$timeInForce, limitPrice=$limitPrice, orderId=$orderId, stopPrice=$stopPrice, strategy=$strategy, additionalProperties=$additionalProperties}"
 }

@@ -23,21 +23,25 @@ internal class StructuredActionTest {
     fun ofPrefillOrder() {
         val prefillOrder =
             StructuredAction.PrefillOrder.builder()
-                .addOrder(
-                    OrderPayload.builder()
-                        .instrumentType(SecurityType.COMMON_STOCK)
-                        .orderType(OrderType.LIMIT)
-                        .quantity("100")
-                        .side(Side.BUY)
-                        .symbol("AAPL")
-                        .timeInForce(TimeInForce.DAY)
-                        .limitPrice("150.00")
-                        .stopPrice("148.00")
-                        .strategy(OrderStrategyType.SOR)
+                .prefillOrder(
+                    PrefillOrderAction.builder()
+                        .actionType(PrefillOrderActionType.NEW)
+                        .addOrder(
+                            OrderPayload.builder()
+                                .instrumentType(SecurityType.COMMON_STOCK)
+                                .orderType(OrderType.LIMIT)
+                                .quantity("100")
+                                .side(Side.BUY)
+                                .symbol("AAPL")
+                                .timeInForce(TimeInForce.DAY)
+                                .limitPrice("150.00")
+                                .orderId("order_id")
+                                .stopPrice("148.00")
+                                .strategy(OrderStrategyType.SOR)
+                                .build()
+                        )
                         .build()
                 )
-                .accountId(19816L)
-                .actionType(StructuredAction.PrefillOrder.ActionType.PREFILL_ORDER)
                 .build()
 
         val structuredAction = StructuredAction.ofPrefillOrder(prefillOrder)
@@ -54,21 +58,25 @@ internal class StructuredActionTest {
         val structuredAction =
             StructuredAction.ofPrefillOrder(
                 StructuredAction.PrefillOrder.builder()
-                    .addOrder(
-                        OrderPayload.builder()
-                            .instrumentType(SecurityType.COMMON_STOCK)
-                            .orderType(OrderType.LIMIT)
-                            .quantity("100")
-                            .side(Side.BUY)
-                            .symbol("AAPL")
-                            .timeInForce(TimeInForce.DAY)
-                            .limitPrice("150.00")
-                            .stopPrice("148.00")
-                            .strategy(OrderStrategyType.SOR)
+                    .prefillOrder(
+                        PrefillOrderAction.builder()
+                            .actionType(PrefillOrderActionType.NEW)
+                            .addOrder(
+                                OrderPayload.builder()
+                                    .instrumentType(SecurityType.COMMON_STOCK)
+                                    .orderType(OrderType.LIMIT)
+                                    .quantity("100")
+                                    .side(Side.BUY)
+                                    .symbol("AAPL")
+                                    .timeInForce(TimeInForce.DAY)
+                                    .limitPrice("150.00")
+                                    .orderId("order_id")
+                                    .stopPrice("148.00")
+                                    .strategy(OrderStrategyType.SOR)
+                                    .build()
+                            )
                             .build()
                     )
-                    .accountId(19816L)
-                    .actionType(StructuredAction.PrefillOrder.ActionType.PREFILL_ORDER)
                     .build()
             )
 
@@ -85,10 +93,13 @@ internal class StructuredActionTest {
     fun ofOpenChart() {
         val openChart =
             StructuredAction.OpenChart.builder()
-                .symbol("AAPL")
-                .extras(JsonValue.from(mapOf<String, Any>()))
-                .timeframe("1M")
-                .actionType(StructuredAction.OpenChart.ActionType.OPEN_CHART)
+                .openChart(
+                    OpenChartAction.builder()
+                        .symbol("AAPL")
+                        .extras(JsonValue.from(mapOf<String, Any>()))
+                        .timeframe("1M")
+                        .build()
+                )
                 .build()
 
         val structuredAction = StructuredAction.ofOpenChart(openChart)
@@ -105,10 +116,13 @@ internal class StructuredActionTest {
         val structuredAction =
             StructuredAction.ofOpenChart(
                 StructuredAction.OpenChart.builder()
-                    .symbol("AAPL")
-                    .extras(JsonValue.from(mapOf<String, Any>()))
-                    .timeframe("1M")
-                    .actionType(StructuredAction.OpenChart.ActionType.OPEN_CHART)
+                    .openChart(
+                        OpenChartAction.builder()
+                            .symbol("AAPL")
+                            .extras(JsonValue.from(mapOf<String, Any>()))
+                            .timeframe("1M")
+                            .build()
+                    )
                     .build()
             )
 
@@ -125,25 +139,28 @@ internal class StructuredActionTest {
     fun ofOpenScreener() {
         val openScreener =
             StructuredAction.OpenScreener.builder()
-                .addFilter(
-                    ScreenerFilter.builder()
-                        .field("sector")
-                        .operator("eq")
-                        .value(JsonValue.from("Technology"))
+                .openScreener(
+                    OpenScreenerAction.builder()
+                        .addFilter(
+                            ScreenerFilter.builder()
+                                .field("sector")
+                                .operator("eq")
+                                .value(JsonValue.from("Technology"))
+                                .build()
+                        )
+                        .addFilter(
+                            ScreenerFilter.builder()
+                                .field("market_cap")
+                                .operator("gte")
+                                .value(JsonValue.from(10000000000))
+                                .build()
+                        )
+                        .addFieldFilter("string")
+                        .pageSize(0)
+                        .sortBy("sort_by")
+                        .sortDirection("sort_direction")
                         .build()
                 )
-                .addFilter(
-                    ScreenerFilter.builder()
-                        .field("market_cap")
-                        .operator("gte")
-                        .value(JsonValue.from(10000000000))
-                        .build()
-                )
-                .addFieldFilter("string")
-                .pageSize(0)
-                .sortBy("sort_by")
-                .sortDirection("sort_direction")
-                .actionType(StructuredAction.OpenScreener.ActionType.OPEN_SCREENER)
                 .build()
 
         val structuredAction = StructuredAction.ofOpenScreener(openScreener)
@@ -160,25 +177,28 @@ internal class StructuredActionTest {
         val structuredAction =
             StructuredAction.ofOpenScreener(
                 StructuredAction.OpenScreener.builder()
-                    .addFilter(
-                        ScreenerFilter.builder()
-                            .field("sector")
-                            .operator("eq")
-                            .value(JsonValue.from("Technology"))
+                    .openScreener(
+                        OpenScreenerAction.builder()
+                            .addFilter(
+                                ScreenerFilter.builder()
+                                    .field("sector")
+                                    .operator("eq")
+                                    .value(JsonValue.from("Technology"))
+                                    .build()
+                            )
+                            .addFilter(
+                                ScreenerFilter.builder()
+                                    .field("market_cap")
+                                    .operator("gte")
+                                    .value(JsonValue.from(10000000000))
+                                    .build()
+                            )
+                            .addFieldFilter("string")
+                            .pageSize(0)
+                            .sortBy("sort_by")
+                            .sortDirection("sort_direction")
                             .build()
                     )
-                    .addFilter(
-                        ScreenerFilter.builder()
-                            .field("market_cap")
-                            .operator("gte")
-                            .value(JsonValue.from(10000000000))
-                            .build()
-                    )
-                    .addFieldFilter("string")
-                    .pageSize(0)
-                    .sortBy("sort_by")
-                    .sortDirection("sort_direction")
-                    .actionType(StructuredAction.OpenScreener.ActionType.OPEN_SCREENER)
                     .build()
             )
 
@@ -195,12 +215,13 @@ internal class StructuredActionTest {
     fun ofOpenEntitlementConsent() {
         val openEntitlementConsent =
             StructuredAction.OpenEntitlementConsent.builder()
-                .agreementKey("omni_account_data_access")
-                .reason("Portfolio analysis requires Omni consent to access account data.")
-                .addRequestedEntitlementCode("omni.account_data")
-                .addTradingAccountId(100019L)
-                .actionType(
-                    StructuredAction.OpenEntitlementConsent.ActionType.OPEN_ENTITLEMENT_CONSENT
+                .openEntitlementConsent(
+                    OpenEntitlementConsentAction.builder()
+                        .agreementKey("omni_account_data_access")
+                        .reason("Portfolio analysis requires Omni consent to access account data.")
+                        .addRequestedEntitlementCode("omni.account_data")
+                        .addTradingAccountId(100019L)
+                        .build()
                 )
                 .build()
 
@@ -218,12 +239,15 @@ internal class StructuredActionTest {
         val structuredAction =
             StructuredAction.ofOpenEntitlementConsent(
                 StructuredAction.OpenEntitlementConsent.builder()
-                    .agreementKey("omni_account_data_access")
-                    .reason("Portfolio analysis requires Omni consent to access account data.")
-                    .addRequestedEntitlementCode("omni.account_data")
-                    .addTradingAccountId(100019L)
-                    .actionType(
-                        StructuredAction.OpenEntitlementConsent.ActionType.OPEN_ENTITLEMENT_CONSENT
+                    .openEntitlementConsent(
+                        OpenEntitlementConsentAction.builder()
+                            .agreementKey("omni_account_data_access")
+                            .reason(
+                                "Portfolio analysis requires Omni consent to access account data."
+                            )
+                            .addRequestedEntitlementCode("omni.account_data")
+                            .addTradingAccountId(100019L)
+                            .build()
                     )
                     .build()
             )

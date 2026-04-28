@@ -17,6 +17,7 @@ internal class PrefillOrderActionTest {
     fun create() {
         val prefillOrderAction =
             PrefillOrderAction.builder()
+                .actionType(PrefillOrderActionType.NEW)
                 .addOrder(
                     OrderPayload.builder()
                         .instrumentType(SecurityType.COMMON_STOCK)
@@ -26,13 +27,14 @@ internal class PrefillOrderActionTest {
                         .symbol("AAPL")
                         .timeInForce(TimeInForce.DAY)
                         .limitPrice("150.00")
+                        .orderId("order_id")
                         .stopPrice("148.00")
                         .strategy(OrderStrategyType.SOR)
                         .build()
                 )
-                .accountId(19816L)
                 .build()
 
+        assertThat(prefillOrderAction.actionType()).isEqualTo(PrefillOrderActionType.NEW)
         assertThat(prefillOrderAction.orders())
             .containsExactly(
                 OrderPayload.builder()
@@ -43,11 +45,11 @@ internal class PrefillOrderActionTest {
                     .symbol("AAPL")
                     .timeInForce(TimeInForce.DAY)
                     .limitPrice("150.00")
+                    .orderId("order_id")
                     .stopPrice("148.00")
                     .strategy(OrderStrategyType.SOR)
                     .build()
             )
-        assertThat(prefillOrderAction.accountId()).contains(19816L)
     }
 
     @Test
@@ -55,6 +57,7 @@ internal class PrefillOrderActionTest {
         val jsonMapper = jsonMapper()
         val prefillOrderAction =
             PrefillOrderAction.builder()
+                .actionType(PrefillOrderActionType.NEW)
                 .addOrder(
                     OrderPayload.builder()
                         .instrumentType(SecurityType.COMMON_STOCK)
@@ -64,11 +67,11 @@ internal class PrefillOrderActionTest {
                         .symbol("AAPL")
                         .timeInForce(TimeInForce.DAY)
                         .limitPrice("150.00")
+                        .orderId("order_id")
                         .stopPrice("148.00")
                         .strategy(OrderStrategyType.SOR)
                         .build()
                 )
-                .accountId(19816L)
                 .build()
 
         val roundtrippedPrefillOrderAction =

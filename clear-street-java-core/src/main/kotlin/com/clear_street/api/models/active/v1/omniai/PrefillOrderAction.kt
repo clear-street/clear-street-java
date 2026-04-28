@@ -16,7 +16,6 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
-import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
@@ -29,18 +28,28 @@ import kotlin.jvm.optionals.getOrNull
 class PrefillOrderAction
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val actionType: JsonField<PrefillOrderActionType>,
     private val orders: JsonField<List<OrderPayload>>,
-    private val accountId: JsonField<Long>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
+        @JsonProperty("action_type")
+        @ExcludeMissing
+        actionType: JsonField<PrefillOrderActionType> = JsonMissing.of(),
         @JsonProperty("orders")
         @ExcludeMissing
         orders: JsonField<List<OrderPayload>> = JsonMissing.of(),
-        @JsonProperty("account_id") @ExcludeMissing accountId: JsonField<Long> = JsonMissing.of(),
-    ) : this(orders, accountId, mutableMapOf())
+    ) : this(actionType, orders, mutableMapOf())
+
+    /**
+     * Order operation represented by this prefill action.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun actionType(): PrefillOrderActionType = actionType.getRequired("action_type")
 
     /**
      * The orders to prefill
@@ -51,12 +60,13 @@ private constructor(
     fun orders(): List<OrderPayload> = orders.getRequired("orders")
 
     /**
-     * Account to prefill for (if known from context)
+     * Returns the raw JSON value of [actionType].
      *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
+     * Unlike [actionType], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun accountId(): Optional<Long> = accountId.getOptional("account_id")
+    @JsonProperty("action_type")
+    @ExcludeMissing
+    fun _actionType(): JsonField<PrefillOrderActionType> = actionType
 
     /**
      * Returns the raw JSON value of [orders].
@@ -64,13 +74,6 @@ private constructor(
      * Unlike [orders], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("orders") @ExcludeMissing fun _orders(): JsonField<List<OrderPayload>> = orders
-
-    /**
-     * Returns the raw JSON value of [accountId].
-     *
-     * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("account_id") @ExcludeMissing fun _accountId(): JsonField<Long> = accountId
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -91,6 +94,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .actionType()
          * .orders()
          * ```
          */
@@ -100,15 +104,29 @@ private constructor(
     /** A builder for [PrefillOrderAction]. */
     class Builder internal constructor() {
 
+        private var actionType: JsonField<PrefillOrderActionType>? = null
         private var orders: JsonField<MutableList<OrderPayload>>? = null
-        private var accountId: JsonField<Long> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(prefillOrderAction: PrefillOrderAction) = apply {
+            actionType = prefillOrderAction.actionType
             orders = prefillOrderAction.orders.map { it.toMutableList() }
-            accountId = prefillOrderAction.accountId
             additionalProperties = prefillOrderAction.additionalProperties.toMutableMap()
+        }
+
+        /** Order operation represented by this prefill action. */
+        fun actionType(actionType: PrefillOrderActionType) = actionType(JsonField.of(actionType))
+
+        /**
+         * Sets [Builder.actionType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.actionType] with a well-typed [PrefillOrderActionType]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun actionType(actionType: JsonField<PrefillOrderActionType>) = apply {
+            this.actionType = actionType
         }
 
         /** The orders to prefill */
@@ -137,27 +155,6 @@ private constructor(
                 }
         }
 
-        /** Account to prefill for (if known from context) */
-        fun accountId(accountId: Long?) = accountId(JsonField.ofNullable(accountId))
-
-        /**
-         * Alias for [Builder.accountId].
-         *
-         * This unboxed primitive overload exists for backwards compatibility.
-         */
-        fun accountId(accountId: Long) = accountId(accountId as Long?)
-
-        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
-        fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
-
-        /**
-         * Sets [Builder.accountId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.accountId] with a well-typed [Long] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -184,6 +181,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .actionType()
          * .orders()
          * ```
          *
@@ -191,8 +189,8 @@ private constructor(
          */
         fun build(): PrefillOrderAction =
             PrefillOrderAction(
+                checkRequired("actionType", actionType),
                 checkRequired("orders", orders).map { it.toImmutable() },
-                accountId,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -204,8 +202,8 @@ private constructor(
             return@apply
         }
 
+        actionType().validate()
         orders().forEach { it.validate() }
-        accountId()
         validated = true
     }
 
@@ -224,8 +222,8 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (orders.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-            (if (accountId.asKnown().isPresent) 1 else 0)
+        (actionType.asKnown().getOrNull()?.validity() ?: 0) +
+            (orders.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -233,15 +231,15 @@ private constructor(
         }
 
         return other is PrefillOrderAction &&
+            actionType == other.actionType &&
             orders == other.orders &&
-            accountId == other.accountId &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(orders, accountId, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(actionType, orders, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PrefillOrderAction{orders=$orders, accountId=$accountId, additionalProperties=$additionalProperties}"
+        "PrefillOrderAction{actionType=$actionType, orders=$orders, additionalProperties=$additionalProperties}"
 }
