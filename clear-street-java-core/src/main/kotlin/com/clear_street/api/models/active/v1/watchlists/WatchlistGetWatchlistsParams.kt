@@ -6,13 +6,25 @@ import com.clear_street.api.core.Params
 import com.clear_street.api.core.http.Headers
 import com.clear_street.api.core.http.QueryParams
 import java.util.Objects
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 /** List watchlists for the authenticated user */
 class WatchlistGetWatchlistsParams
 private constructor(
+    private val pageSize: Long?,
+    private val pageToken: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
+
+    fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
+
+    /**
+     * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+     * offset). When provided, page_size is ignored.
+     */
+    fun pageToken(): Optional<String> = Optional.ofNullable(pageToken)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -35,14 +47,39 @@ private constructor(
     /** A builder for [WatchlistGetWatchlistsParams]. */
     class Builder internal constructor() {
 
+        private var pageSize: Long? = null
+        private var pageToken: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(watchlistGetWatchlistsParams: WatchlistGetWatchlistsParams) = apply {
+            pageSize = watchlistGetWatchlistsParams.pageSize
+            pageToken = watchlistGetWatchlistsParams.pageToken
             additionalHeaders = watchlistGetWatchlistsParams.additionalHeaders.toBuilder()
             additionalQueryParams = watchlistGetWatchlistsParams.additionalQueryParams.toBuilder()
         }
+
+        fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
+
+        /**
+         * Alias for [Builder.pageSize].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun pageSize(pageSize: Long) = pageSize(pageSize as Long?)
+
+        /** Alias for calling [Builder.pageSize] with `pageSize.orElse(null)`. */
+        fun pageSize(pageSize: Optional<Long>) = pageSize(pageSize.getOrNull())
+
+        /**
+         * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+         * offset). When provided, page_size is ignored.
+         */
+        fun pageToken(pageToken: String?) = apply { this.pageToken = pageToken }
+
+        /** Alias for calling [Builder.pageToken] with `pageToken.orElse(null)`. */
+        fun pageToken(pageToken: Optional<String>) = pageToken(pageToken.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -148,12 +185,24 @@ private constructor(
          * Further updates to this [Builder] will not mutate the returned instance.
          */
         fun build(): WatchlistGetWatchlistsParams =
-            WatchlistGetWatchlistsParams(additionalHeaders.build(), additionalQueryParams.build())
+            WatchlistGetWatchlistsParams(
+                pageSize,
+                pageToken,
+                additionalHeaders.build(),
+                additionalQueryParams.build(),
+            )
     }
 
     override fun _headers(): Headers = additionalHeaders
 
-    override fun _queryParams(): QueryParams = additionalQueryParams
+    override fun _queryParams(): QueryParams =
+        QueryParams.builder()
+            .apply {
+                pageSize?.let { put("page_size", it.toString()) }
+                pageToken?.let { put("page_token", it) }
+                putAll(additionalQueryParams)
+            }
+            .build()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -161,12 +210,15 @@ private constructor(
         }
 
         return other is WatchlistGetWatchlistsParams &&
+            pageSize == other.pageSize &&
+            pageToken == other.pageToken &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int = Objects.hash(additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int =
+        Objects.hash(pageSize, pageToken, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "WatchlistGetWatchlistsParams{additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "WatchlistGetWatchlistsParams{pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -4,6 +4,7 @@ package com.clear_street.api.services.blocking.active.v1
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
 import com.clear_street.api.models.active.v1.watchlists.WatchlistCreateWatchlistParams
+import com.clear_street.api.models.active.v1.watchlists.WatchlistGetWatchlistsParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -51,7 +52,13 @@ internal class WatchlistServiceTest {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
         val watchlistService = client.active().v1().watchlists()
 
-        val response = watchlistService.getWatchlists()
+        val response =
+            watchlistService.getWatchlists(
+                WatchlistGetWatchlistsParams.builder()
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .build()
+            )
 
         response.validate()
     }
