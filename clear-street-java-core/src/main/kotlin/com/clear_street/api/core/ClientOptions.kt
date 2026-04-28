@@ -385,6 +385,14 @@ private constructor(
         fun fromEnv() = apply {
             (System.getProperty("clearstreet.baseUrl") ?: System.getenv("CLEAR_STREET_BASE_URL"))
                 ?.let { baseUrl(it) }
+            System.getenv("CLEAR_STREET_CUSTOM_HEADERS")?.let { customHeadersEnv ->
+                for (line in customHeadersEnv.split("\n")) {
+                    val colon = line.indexOf(':')
+                    if (colon >= 0) {
+                        putHeader(line.substring(0, colon).trim(), line.substring(colon + 1).trim())
+                    }
+                }
+            }
         }
 
         /**
