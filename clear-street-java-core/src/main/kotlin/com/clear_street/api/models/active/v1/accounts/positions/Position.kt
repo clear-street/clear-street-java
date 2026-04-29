@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.LocalDate
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -34,6 +35,7 @@ private constructor(
     private val symbol: JsonField<String>,
     private val avgPrice: JsonField<String>,
     private val closingPrice: JsonField<String>,
+    private val closingPriceDate: JsonField<LocalDate>,
     private val costBasis: JsonField<String>,
     private val dailyUnrealizedPnl: JsonField<String>,
     private val dailyUnrealizedPnlPct: JsonField<String>,
@@ -71,6 +73,9 @@ private constructor(
         @JsonProperty("closing_price")
         @ExcludeMissing
         closingPrice: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("closing_price_date")
+        @ExcludeMissing
+        closingPriceDate: JsonField<LocalDate> = JsonMissing.of(),
         @JsonProperty("cost_basis") @ExcludeMissing costBasis: JsonField<String> = JsonMissing.of(),
         @JsonProperty("daily_unrealized_pnl")
         @ExcludeMissing
@@ -102,6 +107,7 @@ private constructor(
         symbol,
         avgPrice,
         closingPrice,
+        closingPriceDate,
         costBasis,
         dailyUnrealizedPnl,
         dailyUnrealizedPnlPct,
@@ -200,6 +206,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun closingPrice(): Optional<String> = closingPrice.getOptional("closing_price")
+
+    /**
+     * The market date associated with `closing_price`
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun closingPriceDate(): Optional<LocalDate> = closingPriceDate.getOptional("closing_price_date")
 
     /**
      * The total cost basis for this position
@@ -354,6 +368,16 @@ private constructor(
     fun _closingPrice(): JsonField<String> = closingPrice
 
     /**
+     * Returns the raw JSON value of [closingPriceDate].
+     *
+     * Unlike [closingPriceDate], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("closing_price_date")
+    @ExcludeMissing
+    fun _closingPriceDate(): JsonField<LocalDate> = closingPriceDate
+
+    /**
      * Returns the raw JSON value of [costBasis].
      *
      * Unlike [costBasis], this method doesn't throw if the JSON field has an unexpected type.
@@ -465,6 +489,7 @@ private constructor(
         private var symbol: JsonField<String>? = null
         private var avgPrice: JsonField<String> = JsonMissing.of()
         private var closingPrice: JsonField<String> = JsonMissing.of()
+        private var closingPriceDate: JsonField<LocalDate> = JsonMissing.of()
         private var costBasis: JsonField<String> = JsonMissing.of()
         private var dailyUnrealizedPnl: JsonField<String> = JsonMissing.of()
         private var dailyUnrealizedPnlPct: JsonField<String> = JsonMissing.of()
@@ -487,6 +512,7 @@ private constructor(
             symbol = position.symbol
             avgPrice = position.avgPrice
             closingPrice = position.closingPrice
+            closingPriceDate = position.closingPriceDate
             costBasis = position.costBasis
             dailyUnrealizedPnl = position.dailyUnrealizedPnl
             dailyUnrealizedPnlPct = position.dailyUnrealizedPnlPct
@@ -645,6 +671,25 @@ private constructor(
          */
         fun closingPrice(closingPrice: JsonField<String>) = apply {
             this.closingPrice = closingPrice
+        }
+
+        /** The market date associated with `closing_price` */
+        fun closingPriceDate(closingPriceDate: LocalDate?) =
+            closingPriceDate(JsonField.ofNullable(closingPriceDate))
+
+        /** Alias for calling [Builder.closingPriceDate] with `closingPriceDate.orElse(null)`. */
+        fun closingPriceDate(closingPriceDate: Optional<LocalDate>) =
+            closingPriceDate(closingPriceDate.getOrNull())
+
+        /**
+         * Sets [Builder.closingPriceDate] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.closingPriceDate] with a well-typed [LocalDate] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun closingPriceDate(closingPriceDate: JsonField<LocalDate>) = apply {
+            this.closingPriceDate = closingPriceDate
         }
 
         /** The total cost basis for this position */
@@ -838,6 +883,7 @@ private constructor(
                 checkRequired("symbol", symbol),
                 avgPrice,
                 closingPrice,
+                closingPriceDate,
                 costBasis,
                 dailyUnrealizedPnl,
                 dailyUnrealizedPnlPct,
@@ -867,6 +913,7 @@ private constructor(
         symbol()
         avgPrice()
         closingPrice()
+        closingPriceDate()
         costBasis()
         dailyUnrealizedPnl()
         dailyUnrealizedPnlPct()
@@ -903,6 +950,7 @@ private constructor(
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (avgPrice.asKnown().isPresent) 1 else 0) +
             (if (closingPrice.asKnown().isPresent) 1 else 0) +
+            (if (closingPriceDate.asKnown().isPresent) 1 else 0) +
             (if (costBasis.asKnown().isPresent) 1 else 0) +
             (if (dailyUnrealizedPnl.asKnown().isPresent) 1 else 0) +
             (if (dailyUnrealizedPnlPct.asKnown().isPresent) 1 else 0) +
@@ -928,6 +976,7 @@ private constructor(
             symbol == other.symbol &&
             avgPrice == other.avgPrice &&
             closingPrice == other.closingPrice &&
+            closingPriceDate == other.closingPriceDate &&
             costBasis == other.costBasis &&
             dailyUnrealizedPnl == other.dailyUnrealizedPnl &&
             dailyUnrealizedPnlPct == other.dailyUnrealizedPnlPct &&
@@ -951,6 +1000,7 @@ private constructor(
             symbol,
             avgPrice,
             closingPrice,
+            closingPriceDate,
             costBasis,
             dailyUnrealizedPnl,
             dailyUnrealizedPnlPct,
@@ -965,5 +1015,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Position{accountId=$accountId, availableQuantity=$availableQuantity, instrumentType=$instrumentType, marketValue=$marketValue, positionType=$positionType, quantity=$quantity, securityId=$securityId, securityIdSource=$securityIdSource, symbol=$symbol, avgPrice=$avgPrice, closingPrice=$closingPrice, costBasis=$costBasis, dailyUnrealizedPnl=$dailyUnrealizedPnl, dailyUnrealizedPnlPct=$dailyUnrealizedPnlPct, marketPrice=$marketPrice, underlierInstrumentId=$underlierInstrumentId, unrealizedPnl=$unrealizedPnl, unrealizedPnlPct=$unrealizedPnlPct, additionalProperties=$additionalProperties}"
+        "Position{accountId=$accountId, availableQuantity=$availableQuantity, instrumentType=$instrumentType, marketValue=$marketValue, positionType=$positionType, quantity=$quantity, securityId=$securityId, securityIdSource=$securityIdSource, symbol=$symbol, avgPrice=$avgPrice, closingPrice=$closingPrice, closingPriceDate=$closingPriceDate, costBasis=$costBasis, dailyUnrealizedPnl=$dailyUnrealizedPnl, dailyUnrealizedPnlPct=$dailyUnrealizedPnlPct, marketPrice=$marketPrice, underlierInstrumentId=$underlierInstrumentId, unrealizedPnl=$unrealizedPnl, unrealizedPnlPct=$unrealizedPnlPct, additionalProperties=$additionalProperties}"
 }
