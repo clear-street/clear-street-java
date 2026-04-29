@@ -6,6 +6,7 @@ import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.models.active.v1.SecurityIdSource
 import com.clear_street.api.models.active.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -26,6 +27,7 @@ internal class PositionTest {
                 .symbol("AAPL")
                 .avgPrice("145.00")
                 .closingPrice("150.50")
+                .closingPriceDate(LocalDate.parse("2025-10-31"))
                 .costBasis("14500.00")
                 .dailyUnrealizedPnl("550.00")
                 .dailyUnrealizedPnlPct("3.65")
@@ -46,6 +48,7 @@ internal class PositionTest {
         assertThat(position.symbol()).isEqualTo("AAPL")
         assertThat(position.avgPrice()).contains("145.00")
         assertThat(position.closingPrice()).contains("150.50")
+        assertThat(position.closingPriceDate()).contains(LocalDate.parse("2025-10-31"))
         assertThat(position.costBasis()).contains("14500.00")
         assertThat(position.dailyUnrealizedPnl()).contains("550.00")
         assertThat(position.dailyUnrealizedPnlPct()).contains("3.65")
@@ -72,6 +75,7 @@ internal class PositionTest {
                 .symbol("AAPL")
                 .avgPrice("145.00")
                 .closingPrice("150.50")
+                .closingPriceDate(LocalDate.parse("2025-10-31"))
                 .costBasis("14500.00")
                 .dailyUnrealizedPnl("550.00")
                 .dailyUnrealizedPnlPct("3.65")

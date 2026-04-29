@@ -9,6 +9,7 @@ import com.clear_street.api.models.ResponseMetadata
 import com.clear_street.api.models.active.v1.SecurityIdSource
 import com.clear_street.api.models.active.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -52,6 +53,7 @@ internal class PositionGetPositionsResponseTest {
                         .symbol("AAPL")
                         .avgPrice("145.00")
                         .closingPrice("150.50")
+                        .closingPriceDate(LocalDate.parse("2025-10-31"))
                         .costBasis("14500.00")
                         .dailyUnrealizedPnl("550.00")
                         .dailyUnrealizedPnlPct("3.65")
@@ -100,6 +102,7 @@ internal class PositionGetPositionsResponseTest {
                     .symbol("AAPL")
                     .avgPrice("145.00")
                     .closingPrice("150.50")
+                    .closingPriceDate(LocalDate.parse("2025-10-31"))
                     .costBasis("14500.00")
                     .dailyUnrealizedPnl("550.00")
                     .dailyUnrealizedPnlPct("3.65")
@@ -150,6 +153,7 @@ internal class PositionGetPositionsResponseTest {
                         .symbol("AAPL")
                         .avgPrice("145.00")
                         .closingPrice("150.50")
+                        .closingPriceDate(LocalDate.parse("2025-10-31"))
                         .costBasis("14500.00")
                         .dailyUnrealizedPnl("550.00")
                         .dailyUnrealizedPnlPct("3.65")
