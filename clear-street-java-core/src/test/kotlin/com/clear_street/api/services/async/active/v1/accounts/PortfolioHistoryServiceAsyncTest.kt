@@ -20,8 +20,8 @@ internal class PortfolioHistoryServiceAsyncTest {
             portfolioHistoryServiceAsync.getPortfolioHistory(
                 PortfolioHistoryGetPortfolioHistoryParams.builder()
                     .accountId(0L)
-                    .endDate(LocalDate.parse("2019-12-27"))
                     .startDate(LocalDate.parse("2019-12-27"))
+                    .endDate(LocalDate.parse("2019-12-27"))
                     .build()
             )
 

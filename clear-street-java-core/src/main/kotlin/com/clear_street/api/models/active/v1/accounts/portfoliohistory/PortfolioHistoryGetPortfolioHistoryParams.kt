@@ -15,17 +15,18 @@ import kotlin.jvm.optionals.getOrNull
 class PortfolioHistoryGetPortfolioHistoryParams
 private constructor(
     private val accountId: Long?,
-    private val endDate: LocalDate,
     private val startDate: LocalDate,
+    private val endDate: LocalDate?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
-    fun endDate(): LocalDate = endDate
-
     fun startDate(): LocalDate = startDate
+
+    /** Defaults to today in America/New_York when omitted. */
+    fun endDate(): Optional<LocalDate> = Optional.ofNullable(endDate)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -43,7 +44,6 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .endDate()
          * .startDate()
          * ```
          */
@@ -54,8 +54,8 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: Long? = null
-        private var endDate: LocalDate? = null
         private var startDate: LocalDate? = null
+        private var endDate: LocalDate? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -64,8 +64,8 @@ private constructor(
             portfolioHistoryGetPortfolioHistoryParams: PortfolioHistoryGetPortfolioHistoryParams
         ) = apply {
             accountId = portfolioHistoryGetPortfolioHistoryParams.accountId
-            endDate = portfolioHistoryGetPortfolioHistoryParams.endDate
             startDate = portfolioHistoryGetPortfolioHistoryParams.startDate
+            endDate = portfolioHistoryGetPortfolioHistoryParams.endDate
             additionalHeaders =
                 portfolioHistoryGetPortfolioHistoryParams.additionalHeaders.toBuilder()
             additionalQueryParams =
@@ -84,9 +84,13 @@ private constructor(
         /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
         fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
-        fun endDate(endDate: LocalDate) = apply { this.endDate = endDate }
-
         fun startDate(startDate: LocalDate) = apply { this.startDate = startDate }
+
+        /** Defaults to today in America/New_York when omitted. */
+        fun endDate(endDate: LocalDate?) = apply { this.endDate = endDate }
+
+        /** Alias for calling [Builder.endDate] with `endDate.orElse(null)`. */
+        fun endDate(endDate: Optional<LocalDate>) = endDate(endDate.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -193,7 +197,6 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .endDate()
          * .startDate()
          * ```
          *
@@ -202,8 +205,8 @@ private constructor(
         fun build(): PortfolioHistoryGetPortfolioHistoryParams =
             PortfolioHistoryGetPortfolioHistoryParams(
                 accountId,
-                checkRequired("endDate", endDate),
                 checkRequired("startDate", startDate),
+                endDate,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -220,8 +223,8 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                put("end_date", endDate.toString())
                 put("start_date", startDate.toString())
+                endDate?.let { put("end_date", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -233,15 +236,15 @@ private constructor(
 
         return other is PortfolioHistoryGetPortfolioHistoryParams &&
             accountId == other.accountId &&
-            endDate == other.endDate &&
             startDate == other.startDate &&
+            endDate == other.endDate &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(accountId, endDate, startDate, additionalHeaders, additionalQueryParams)
+        Objects.hash(accountId, startDate, endDate, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "PortfolioHistoryGetPortfolioHistoryParams{accountId=$accountId, endDate=$endDate, startDate=$startDate, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "PortfolioHistoryGetPortfolioHistoryParams{accountId=$accountId, startDate=$startDate, endDate=$endDate, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

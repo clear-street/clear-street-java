@@ -13,8 +13,8 @@ internal class PortfolioHistoryGetPortfolioHistoryParamsTest {
     fun create() {
         PortfolioHistoryGetPortfolioHistoryParams.builder()
             .accountId(0L)
-            .endDate(LocalDate.parse("2019-12-27"))
             .startDate(LocalDate.parse("2019-12-27"))
+            .endDate(LocalDate.parse("2019-12-27"))
             .build()
     }
 
@@ -23,7 +23,6 @@ internal class PortfolioHistoryGetPortfolioHistoryParamsTest {
         val params =
             PortfolioHistoryGetPortfolioHistoryParams.builder()
                 .accountId(0L)
-                .endDate(LocalDate.parse("2019-12-27"))
                 .startDate(LocalDate.parse("2019-12-27"))
                 .build()
 
@@ -37,8 +36,8 @@ internal class PortfolioHistoryGetPortfolioHistoryParamsTest {
         val params =
             PortfolioHistoryGetPortfolioHistoryParams.builder()
                 .accountId(0L)
-                .endDate(LocalDate.parse("2019-12-27"))
                 .startDate(LocalDate.parse("2019-12-27"))
+                .endDate(LocalDate.parse("2019-12-27"))
                 .build()
 
         val queryParams = params._queryParams()
@@ -46,9 +45,23 @@ internal class PortfolioHistoryGetPortfolioHistoryParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put("end_date", "2019-12-27")
                     .put("start_date", "2019-12-27")
+                    .put("end_date", "2019-12-27")
                     .build()
             )
+    }
+
+    @Test
+    fun queryParamsWithoutOptionalFields() {
+        val params =
+            PortfolioHistoryGetPortfolioHistoryParams.builder()
+                .accountId(0L)
+                .startDate(LocalDate.parse("2019-12-27"))
+                .build()
+
+        val queryParams = params._queryParams()
+
+        assertThat(queryParams)
+            .isEqualTo(QueryParams.builder().put("start_date", "2019-12-27").build())
     }
 }
