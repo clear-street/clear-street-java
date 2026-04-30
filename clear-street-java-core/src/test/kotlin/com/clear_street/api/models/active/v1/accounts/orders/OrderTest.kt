@@ -39,6 +39,8 @@ internal class OrderTest {
                 .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                 .limitOffset("0.10")
                 .limitPrice("150.00")
+                .queueState(QueueState.AWAITING_RELEASE)
+                .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                 .stopPrice(null)
                 .strategy(
                     OrderStrategy.Sor.builder()
@@ -79,6 +81,9 @@ internal class OrderTest {
             .contains(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
         assertThat(order.limitOffset()).contains("0.10")
         assertThat(order.limitPrice()).contains("150.00")
+        assertThat(order.queueState()).contains(QueueState.AWAITING_RELEASE)
+        assertThat(order.releasesAt())
+            .contains(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
         assertThat(order.stopPrice()).isEmpty
         assertThat(order.strategy())
             .contains(
@@ -125,6 +130,8 @@ internal class OrderTest {
                 .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                 .limitOffset("0.10")
                 .limitPrice("150.00")
+                .queueState(QueueState.AWAITING_RELEASE)
+                .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                 .stopPrice(null)
                 .strategy(
                     OrderStrategy.Sor.builder()
