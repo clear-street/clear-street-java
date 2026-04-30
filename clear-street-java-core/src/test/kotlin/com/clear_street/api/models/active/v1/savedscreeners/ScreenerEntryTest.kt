@@ -3,6 +3,18 @@
 package com.clear_street.api.models.active.v1.savedscreeners
 
 import com.clear_street.api.core.jsonMapper
+import com.clear_street.api.models.active.v1.screener.FieldLookback
+import com.clear_street.api.models.active.v1.screener.FieldPeriod
+import com.clear_street.api.models.active.v1.screener.FieldRef
+import com.clear_street.api.models.active.v1.screener.FieldType
+import com.clear_street.api.models.active.v1.screener.FilterOpSpec
+import com.clear_street.api.models.active.v1.screener.FilterOperator
+import com.clear_street.api.models.active.v1.screener.FilterValue
+import com.clear_street.api.models.active.v1.screener.Modifier
+import com.clear_street.api.models.active.v1.screener.ModifierOp
+import com.clear_street.api.models.active.v1.screener.OperatorArg
+import com.clear_street.api.models.active.v1.screener.SearchFilter
+import com.clear_street.api.models.active.v1.screener.Variable
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import kotlin.jvm.optionals.getOrNull
@@ -18,16 +30,60 @@ internal class ScreenerEntryTest {
                 .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addFilter(
-                    SavedScreenerFilter.builder()
-                        .fieldName("field_name")
-                        .operation("operation")
-                        .value("value")
+                    SearchFilter.builder()
+                        .left(
+                            FieldRef.builder()
+                                .name("market_cap")
+                                .lookback(FieldLookback.ONE_WEEK)
+                                .period(FieldPeriod.QUARTER)
+                                .valueType(FieldType.DECIMAL)
+                                .build()
+                        )
+                        .op(
+                            FilterOpSpec.builder()
+                                .name(FilterOperator.GTE)
+                                .addArg(OperatorArg.LEFT_INCLUSIVE)
+                                .build()
+                        )
+                        .addRight(
+                            FilterValue.builder()
+                                .value(1000000000.0)
+                                .variable(
+                                    Variable.builder()
+                                        .name("today")
+                                        .lookback(FieldLookback.ONE_WEEK)
+                                        .modifier(
+                                            Modifier.builder()
+                                                .addArg(30.0)
+                                                .addArg("DAY")
+                                                .name(ModifierOp.SUB)
+                                                .build()
+                                        )
+                                        .period(FieldPeriod.QUARTER)
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
                 .name("name")
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                .addFieldFilter("string")
-                .sortBy("sort_by")
+                .addFieldFilter(
+                    FieldRef.builder()
+                        .name("market_cap")
+                        .lookback(FieldLookback.ONE_WEEK)
+                        .period(FieldPeriod.QUARTER)
+                        .valueType(FieldType.DECIMAL)
+                        .build()
+                )
+                .sortBy(
+                    FieldRef.builder()
+                        .name("market_cap")
+                        .lookback(FieldLookback.ONE_WEEK)
+                        .period(FieldPeriod.QUARTER)
+                        .valueType(FieldType.DECIMAL)
+                        .build()
+                )
                 .sortDirection("sort_direction")
                 .build()
 
@@ -36,17 +92,63 @@ internal class ScreenerEntryTest {
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(screenerEntry.filters())
             .containsExactly(
-                SavedScreenerFilter.builder()
-                    .fieldName("field_name")
-                    .operation("operation")
-                    .value("value")
+                SearchFilter.builder()
+                    .left(
+                        FieldRef.builder()
+                            .name("market_cap")
+                            .lookback(FieldLookback.ONE_WEEK)
+                            .period(FieldPeriod.QUARTER)
+                            .valueType(FieldType.DECIMAL)
+                            .build()
+                    )
+                    .op(
+                        FilterOpSpec.builder()
+                            .name(FilterOperator.GTE)
+                            .addArg(OperatorArg.LEFT_INCLUSIVE)
+                            .build()
+                    )
+                    .addRight(
+                        FilterValue.builder()
+                            .value(1000000000.0)
+                            .variable(
+                                Variable.builder()
+                                    .name("today")
+                                    .lookback(FieldLookback.ONE_WEEK)
+                                    .modifier(
+                                        Modifier.builder()
+                                            .addArg(30.0)
+                                            .addArg("DAY")
+                                            .name(ModifierOp.SUB)
+                                            .build()
+                                    )
+                                    .period(FieldPeriod.QUARTER)
+                                    .build()
+                            )
+                            .build()
+                    )
                     .build()
             )
         assertThat(screenerEntry.name()).isEqualTo("name")
         assertThat(screenerEntry.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-        assertThat(screenerEntry.fieldFilter().getOrNull()).containsExactly("string")
-        assertThat(screenerEntry.sortBy()).contains("sort_by")
+        assertThat(screenerEntry.fieldFilter().getOrNull())
+            .containsExactly(
+                FieldRef.builder()
+                    .name("market_cap")
+                    .lookback(FieldLookback.ONE_WEEK)
+                    .period(FieldPeriod.QUARTER)
+                    .valueType(FieldType.DECIMAL)
+                    .build()
+            )
+        assertThat(screenerEntry.sortBy())
+            .contains(
+                FieldRef.builder()
+                    .name("market_cap")
+                    .lookback(FieldLookback.ONE_WEEK)
+                    .period(FieldPeriod.QUARTER)
+                    .valueType(FieldType.DECIMAL)
+                    .build()
+            )
         assertThat(screenerEntry.sortDirection()).contains("sort_direction")
     }
 
@@ -58,16 +160,60 @@ internal class ScreenerEntryTest {
                 .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addFilter(
-                    SavedScreenerFilter.builder()
-                        .fieldName("field_name")
-                        .operation("operation")
-                        .value("value")
+                    SearchFilter.builder()
+                        .left(
+                            FieldRef.builder()
+                                .name("market_cap")
+                                .lookback(FieldLookback.ONE_WEEK)
+                                .period(FieldPeriod.QUARTER)
+                                .valueType(FieldType.DECIMAL)
+                                .build()
+                        )
+                        .op(
+                            FilterOpSpec.builder()
+                                .name(FilterOperator.GTE)
+                                .addArg(OperatorArg.LEFT_INCLUSIVE)
+                                .build()
+                        )
+                        .addRight(
+                            FilterValue.builder()
+                                .value(1000000000.0)
+                                .variable(
+                                    Variable.builder()
+                                        .name("today")
+                                        .lookback(FieldLookback.ONE_WEEK)
+                                        .modifier(
+                                            Modifier.builder()
+                                                .addArg(30.0)
+                                                .addArg("DAY")
+                                                .name(ModifierOp.SUB)
+                                                .build()
+                                        )
+                                        .period(FieldPeriod.QUARTER)
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
                 .name("name")
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                .addFieldFilter("string")
-                .sortBy("sort_by")
+                .addFieldFilter(
+                    FieldRef.builder()
+                        .name("market_cap")
+                        .lookback(FieldLookback.ONE_WEEK)
+                        .period(FieldPeriod.QUARTER)
+                        .valueType(FieldType.DECIMAL)
+                        .build()
+                )
+                .sortBy(
+                    FieldRef.builder()
+                        .name("market_cap")
+                        .lookback(FieldLookback.ONE_WEEK)
+                        .period(FieldPeriod.QUARTER)
+                        .valueType(FieldType.DECIMAL)
+                        .build()
+                )
                 .sortDirection("sort_direction")
                 .build()
 

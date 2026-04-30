@@ -34,7 +34,7 @@ internal class ScreenerSearchScreenerParamsTest {
                 )
             )
             .addFilter(
-                ScreenerSearchScreenerParams.Filter.builder()
+                SearchFilter.builder()
                     .left(
                         FieldRef.builder()
                             .name("market_cap")
@@ -44,29 +44,23 @@ internal class ScreenerSearchScreenerParamsTest {
                             .build()
                     )
                     .op(
-                        ScreenerSearchScreenerParams.Filter.Op.builder()
-                            .name(ScreenerSearchScreenerParams.Filter.Op.Name.GTE)
-                            .addArg(ScreenerSearchScreenerParams.Filter.Op.Arg.LEFT_INCLUSIVE)
+                        FilterOpSpec.builder()
+                            .name(FilterOperator.GTE)
+                            .addArg(OperatorArg.LEFT_INCLUSIVE)
                             .build()
                     )
                     .addRight(
-                        ScreenerSearchScreenerParams.Filter.Right.builder()
+                        FilterValue.builder()
                             .value(1000000000.0)
                             .variable(
-                                ScreenerSearchScreenerParams.Filter.Right.Variable.builder()
+                                Variable.builder()
                                     .name("today")
                                     .lookback(FieldLookback.ONE_WEEK)
                                     .modifier(
-                                        ScreenerSearchScreenerParams.Filter.Right.Variable.Modifier
-                                            .builder()
+                                        Modifier.builder()
                                             .addArg(30.0)
                                             .addArg("DAY")
-                                            .name(
-                                                ScreenerSearchScreenerParams.Filter.Right.Variable
-                                                    .Modifier
-                                                    .Name
-                                                    .SUB
-                                            )
+                                            .name(ModifierOp.SUB)
                                             .build()
                                     )
                                     .period(FieldPeriod.QUARTER)
@@ -131,7 +125,7 @@ internal class ScreenerSearchScreenerParamsTest {
                     )
                 )
                 .addFilter(
-                    ScreenerSearchScreenerParams.Filter.builder()
+                    SearchFilter.builder()
                         .left(
                             FieldRef.builder()
                                 .name("market_cap")
@@ -141,31 +135,23 @@ internal class ScreenerSearchScreenerParamsTest {
                                 .build()
                         )
                         .op(
-                            ScreenerSearchScreenerParams.Filter.Op.builder()
-                                .name(ScreenerSearchScreenerParams.Filter.Op.Name.GTE)
-                                .addArg(ScreenerSearchScreenerParams.Filter.Op.Arg.LEFT_INCLUSIVE)
+                            FilterOpSpec.builder()
+                                .name(FilterOperator.GTE)
+                                .addArg(OperatorArg.LEFT_INCLUSIVE)
                                 .build()
                         )
                         .addRight(
-                            ScreenerSearchScreenerParams.Filter.Right.builder()
+                            FilterValue.builder()
                                 .value(1000000000.0)
                                 .variable(
-                                    ScreenerSearchScreenerParams.Filter.Right.Variable.builder()
+                                    Variable.builder()
                                         .name("today")
                                         .lookback(FieldLookback.ONE_WEEK)
                                         .modifier(
-                                            ScreenerSearchScreenerParams.Filter.Right.Variable
-                                                .Modifier
-                                                .builder()
+                                            Modifier.builder()
                                                 .addArg(30.0)
                                                 .addArg("DAY")
-                                                .name(
-                                                    ScreenerSearchScreenerParams.Filter.Right
-                                                        .Variable
-                                                        .Modifier
-                                                        .Name
-                                                        .SUB
-                                                )
+                                                .name(ModifierOp.SUB)
                                                 .build()
                                         )
                                         .period(FieldPeriod.QUARTER)
@@ -227,7 +213,7 @@ internal class ScreenerSearchScreenerParamsTest {
             )
         assertThat(body.filters().getOrNull())
             .containsExactly(
-                ScreenerSearchScreenerParams.Filter.builder()
+                SearchFilter.builder()
                     .left(
                         FieldRef.builder()
                             .name("market_cap")
@@ -237,29 +223,23 @@ internal class ScreenerSearchScreenerParamsTest {
                             .build()
                     )
                     .op(
-                        ScreenerSearchScreenerParams.Filter.Op.builder()
-                            .name(ScreenerSearchScreenerParams.Filter.Op.Name.GTE)
-                            .addArg(ScreenerSearchScreenerParams.Filter.Op.Arg.LEFT_INCLUSIVE)
+                        FilterOpSpec.builder()
+                            .name(FilterOperator.GTE)
+                            .addArg(OperatorArg.LEFT_INCLUSIVE)
                             .build()
                     )
                     .addRight(
-                        ScreenerSearchScreenerParams.Filter.Right.builder()
+                        FilterValue.builder()
                             .value(1000000000.0)
                             .variable(
-                                ScreenerSearchScreenerParams.Filter.Right.Variable.builder()
+                                Variable.builder()
                                     .name("today")
                                     .lookback(FieldLookback.ONE_WEEK)
                                     .modifier(
-                                        ScreenerSearchScreenerParams.Filter.Right.Variable.Modifier
-                                            .builder()
+                                        Modifier.builder()
                                             .addArg(30.0)
                                             .addArg("DAY")
-                                            .name(
-                                                ScreenerSearchScreenerParams.Filter.Right.Variable
-                                                    .Modifier
-                                                    .Name
-                                                    .SUB
-                                            )
+                                            .name(ModifierOp.SUB)
                                             .build()
                                     )
                                     .period(FieldPeriod.QUARTER)

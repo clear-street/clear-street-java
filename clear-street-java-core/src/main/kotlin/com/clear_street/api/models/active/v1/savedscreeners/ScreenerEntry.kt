@@ -10,6 +10,8 @@ import com.clear_street.api.core.checkKnown
 import com.clear_street.api.core.checkRequired
 import com.clear_street.api.core.toImmutable
 import com.clear_street.api.errors.ClearStreetInvalidDataException
+import com.clear_street.api.models.active.v1.screener.FieldRef
+import com.clear_street.api.models.active.v1.screener.SearchFilter
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -26,11 +28,11 @@ class ScreenerEntry
 private constructor(
     private val id: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
-    private val filters: JsonField<List<SavedScreenerFilter>>,
+    private val filters: JsonField<List<SearchFilter>>,
     private val name: JsonField<String>,
     private val updatedAt: JsonField<OffsetDateTime>,
-    private val fieldFilter: JsonField<List<String>>,
-    private val sortBy: JsonField<String>,
+    private val fieldFilter: JsonField<List<FieldRef>>,
+    private val sortBy: JsonField<FieldRef>,
     private val sortDirection: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -43,15 +45,15 @@ private constructor(
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("filters")
         @ExcludeMissing
-        filters: JsonField<List<SavedScreenerFilter>> = JsonMissing.of(),
+        filters: JsonField<List<SearchFilter>> = JsonMissing.of(),
         @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
         @JsonProperty("updated_at")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("field_filter")
         @ExcludeMissing
-        fieldFilter: JsonField<List<String>> = JsonMissing.of(),
-        @JsonProperty("sort_by") @ExcludeMissing sortBy: JsonField<String> = JsonMissing.of(),
+        fieldFilter: JsonField<List<FieldRef>> = JsonMissing.of(),
+        @JsonProperty("sort_by") @ExcludeMissing sortBy: JsonField<FieldRef> = JsonMissing.of(),
         @JsonProperty("sort_direction")
         @ExcludeMissing
         sortDirection: JsonField<String> = JsonMissing.of(),
@@ -68,64 +70,50 @@ private constructor(
     )
 
     /**
-     * Unique identifier for this screener
-     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun id(): String = id.getRequired("id")
 
     /**
-     * When this screener was created
-     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun createdAt(): OffsetDateTime = createdAt.getRequired("created_at")
 
     /**
-     * Filter criteria for this screener
-     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun filters(): List<SavedScreenerFilter> = filters.getRequired("filters")
+    fun filters(): List<SearchFilter> = filters.getRequired("filters")
 
     /**
-     * The name of this screener configuration
-     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun name(): String = name.getRequired("name")
 
     /**
-     * When this screener was last updated
-     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updated_at")
 
     /**
-     * List of field names to include when running this screener
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun fieldFilter(): Optional<List<FieldRef>> = fieldFilter.getOptional("field_filter")
+
+    /**
+     * A reference to a screener field.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun fieldFilter(): Optional<List<String>> = fieldFilter.getOptional("field_filter")
+    fun sortBy(): Optional<FieldRef> = sortBy.getOptional("sort_by")
 
     /**
-     * Field name to sort results by
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun sortBy(): Optional<String> = sortBy.getOptional("sort_by")
-
-    /**
-     * Sort direction for results
-     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -152,9 +140,7 @@ private constructor(
      *
      * Unlike [filters], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("filters")
-    @ExcludeMissing
-    fun _filters(): JsonField<List<SavedScreenerFilter>> = filters
+    @JsonProperty("filters") @ExcludeMissing fun _filters(): JsonField<List<SearchFilter>> = filters
 
     /**
      * Returns the raw JSON value of [name].
@@ -179,14 +165,14 @@ private constructor(
      */
     @JsonProperty("field_filter")
     @ExcludeMissing
-    fun _fieldFilter(): JsonField<List<String>> = fieldFilter
+    fun _fieldFilter(): JsonField<List<FieldRef>> = fieldFilter
 
     /**
      * Returns the raw JSON value of [sortBy].
      *
      * Unlike [sortBy], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("sort_by") @ExcludeMissing fun _sortBy(): JsonField<String> = sortBy
+    @JsonProperty("sort_by") @ExcludeMissing fun _sortBy(): JsonField<FieldRef> = sortBy
 
     /**
      * Returns the raw JSON value of [sortDirection].
@@ -231,11 +217,11 @@ private constructor(
 
         private var id: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
-        private var filters: JsonField<MutableList<SavedScreenerFilter>>? = null
+        private var filters: JsonField<MutableList<SearchFilter>>? = null
         private var name: JsonField<String>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
-        private var fieldFilter: JsonField<MutableList<String>>? = null
-        private var sortBy: JsonField<String> = JsonMissing.of()
+        private var fieldFilter: JsonField<MutableList<FieldRef>>? = null
+        private var sortBy: JsonField<FieldRef> = JsonMissing.of()
         private var sortDirection: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -252,7 +238,6 @@ private constructor(
             additionalProperties = screenerEntry.additionalProperties.toMutableMap()
         }
 
-        /** Unique identifier for this screener */
         fun id(id: String) = id(JsonField.of(id))
 
         /**
@@ -263,7 +248,6 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        /** When this screener was created */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
 
         /**
@@ -275,33 +259,31 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
-        /** Filter criteria for this screener */
-        fun filters(filters: List<SavedScreenerFilter>) = filters(JsonField.of(filters))
+        fun filters(filters: List<SearchFilter>) = filters(JsonField.of(filters))
 
         /**
          * Sets [Builder.filters] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.filters] with a well-typed `List<SavedScreenerFilter>`
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.filters] with a well-typed `List<SearchFilter>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun filters(filters: JsonField<List<SavedScreenerFilter>>) = apply {
+        fun filters(filters: JsonField<List<SearchFilter>>) = apply {
             this.filters = filters.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [SavedScreenerFilter] to [filters].
+         * Adds a single [SearchFilter] to [filters].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addFilter(filter: SavedScreenerFilter) = apply {
+        fun addFilter(filter: SearchFilter) = apply {
             filters =
                 (filters ?: JsonField.of(mutableListOf())).also {
                     checkKnown("filters", it).add(filter)
                 }
         }
 
-        /** The name of this screener configuration */
         fun name(name: String) = name(JsonField.of(name))
 
         /**
@@ -312,7 +294,6 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
 
-        /** When this screener was last updated */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
 
         /**
@@ -324,50 +305,50 @@ private constructor(
          */
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
 
-        /** List of field names to include when running this screener */
-        fun fieldFilter(fieldFilter: List<String>?) = fieldFilter(JsonField.ofNullable(fieldFilter))
+        fun fieldFilter(fieldFilter: List<FieldRef>?) =
+            fieldFilter(JsonField.ofNullable(fieldFilter))
 
         /** Alias for calling [Builder.fieldFilter] with `fieldFilter.orElse(null)`. */
-        fun fieldFilter(fieldFilter: Optional<List<String>>) = fieldFilter(fieldFilter.getOrNull())
+        fun fieldFilter(fieldFilter: Optional<List<FieldRef>>) =
+            fieldFilter(fieldFilter.getOrNull())
 
         /**
          * Sets [Builder.fieldFilter] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.fieldFilter] with a well-typed `List<String>` value
+         * You should usually call [Builder.fieldFilter] with a well-typed `List<FieldRef>` value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun fieldFilter(fieldFilter: JsonField<List<String>>) = apply {
+        fun fieldFilter(fieldFilter: JsonField<List<FieldRef>>) = apply {
             this.fieldFilter = fieldFilter.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [String] to [Builder.fieldFilter].
+         * Adds a single [FieldRef] to [Builder.fieldFilter].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addFieldFilter(fieldFilter: String) = apply {
+        fun addFieldFilter(fieldFilter: FieldRef) = apply {
             this.fieldFilter =
                 (this.fieldFilter ?: JsonField.of(mutableListOf())).also {
                     checkKnown("fieldFilter", it).add(fieldFilter)
                 }
         }
 
-        /** Field name to sort results by */
-        fun sortBy(sortBy: String?) = sortBy(JsonField.ofNullable(sortBy))
+        /** A reference to a screener field. */
+        fun sortBy(sortBy: FieldRef?) = sortBy(JsonField.ofNullable(sortBy))
 
         /** Alias for calling [Builder.sortBy] with `sortBy.orElse(null)`. */
-        fun sortBy(sortBy: Optional<String>) = sortBy(sortBy.getOrNull())
+        fun sortBy(sortBy: Optional<FieldRef>) = sortBy(sortBy.getOrNull())
 
         /**
          * Sets [Builder.sortBy] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.sortBy] with a well-typed [String] value instead. This
+         * You should usually call [Builder.sortBy] with a well-typed [FieldRef] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun sortBy(sortBy: JsonField<String>) = apply { this.sortBy = sortBy }
+        fun sortBy(sortBy: JsonField<FieldRef>) = apply { this.sortBy = sortBy }
 
-        /** Sort direction for results */
         fun sortDirection(sortDirection: String?) =
             sortDirection(JsonField.ofNullable(sortDirection))
 
@@ -447,8 +428,8 @@ private constructor(
         filters().forEach { it.validate() }
         name()
         updatedAt()
-        fieldFilter()
-        sortBy()
+        fieldFilter().ifPresent { it.forEach { it.validate() } }
+        sortBy().ifPresent { it.validate() }
         sortDirection()
         validated = true
     }
@@ -473,8 +454,8 @@ private constructor(
             (filters.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0) +
-            (fieldFilter.asKnown().getOrNull()?.size ?: 0) +
-            (if (sortBy.asKnown().isPresent) 1 else 0) +
+            (fieldFilter.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+            (sortBy.asKnown().getOrNull()?.validity() ?: 0) +
             (if (sortDirection.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
