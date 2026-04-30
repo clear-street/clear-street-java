@@ -64,6 +64,8 @@ internal class OrderSubmitOrdersResponseTest {
                         .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                         .limitOffset("0.10")
                         .limitPrice("150.00")
+                        .queueState(QueueState.AWAITING_RELEASE)
+                        .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                         .stopPrice(null)
                         .strategy(
                             OrderStrategy.Sor.builder()
@@ -129,6 +131,8 @@ internal class OrderSubmitOrdersResponseTest {
                     .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                     .limitOffset("0.10")
                     .limitPrice("150.00")
+                    .queueState(QueueState.AWAITING_RELEASE)
+                    .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                     .stopPrice(null)
                     .strategy(
                         OrderStrategy.Sor.builder()
@@ -196,6 +200,8 @@ internal class OrderSubmitOrdersResponseTest {
                         .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                         .limitOffset("0.10")
                         .limitPrice("150.00")
+                        .queueState(QueueState.AWAITING_RELEASE)
+                        .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                         .stopPrice(null)
                         .strategy(
                             OrderStrategy.Sor.builder()

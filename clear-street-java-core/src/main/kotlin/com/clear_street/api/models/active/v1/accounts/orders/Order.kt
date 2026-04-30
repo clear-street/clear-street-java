@@ -53,6 +53,8 @@ private constructor(
     private val expiresAt: JsonField<OffsetDateTime>,
     private val limitOffset: JsonField<String>,
     private val limitPrice: JsonField<String>,
+    private val queueState: JsonField<QueueState>,
+    private val releasesAt: JsonField<OffsetDateTime>,
     private val stopPrice: JsonField<String>,
     private val strategy: JsonField<OrderStrategy>,
     private val trailingOffsetAmt: JsonField<String>,
@@ -116,6 +118,12 @@ private constructor(
         @JsonProperty("limit_price")
         @ExcludeMissing
         limitPrice: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("queue_state")
+        @ExcludeMissing
+        queueState: JsonField<QueueState> = JsonMissing.of(),
+        @JsonProperty("releases_at")
+        @ExcludeMissing
+        releasesAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
         @JsonProperty("strategy")
         @ExcludeMissing
@@ -155,6 +163,8 @@ private constructor(
         expiresAt,
         limitOffset,
         limitPrice,
+        queueState,
+        releasesAt,
         stopPrice,
         strategy,
         trailingOffsetAmt,
@@ -340,6 +350,22 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun limitPrice(): Optional<String> = limitPrice.getOptional("limit_price")
+
+    /**
+     * Parent order queue state, present when the order is awaiting release or released.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun queueState(): Optional<QueueState> = queueState.getOptional("queue_state")
+
+    /**
+     * Scheduled release time for orders awaiting release.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun releasesAt(): Optional<OffsetDateTime> = releasesAt.getOptional("releases_at")
 
     /**
      * Stop price (for STOP and STOP_LIMIT orders)
@@ -571,6 +597,24 @@ private constructor(
     @JsonProperty("limit_price") @ExcludeMissing fun _limitPrice(): JsonField<String> = limitPrice
 
     /**
+     * Returns the raw JSON value of [queueState].
+     *
+     * Unlike [queueState], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("queue_state")
+    @ExcludeMissing
+    fun _queueState(): JsonField<QueueState> = queueState
+
+    /**
+     * Returns the raw JSON value of [releasesAt].
+     *
+     * Unlike [releasesAt], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("releases_at")
+    @ExcludeMissing
+    fun _releasesAt(): JsonField<OffsetDateTime> = releasesAt
+
+    /**
      * Returns the raw JSON value of [stopPrice].
      *
      * Unlike [stopPrice], this method doesn't throw if the JSON field has an unexpected type.
@@ -690,6 +734,8 @@ private constructor(
         private var expiresAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var limitOffset: JsonField<String> = JsonMissing.of()
         private var limitPrice: JsonField<String> = JsonMissing.of()
+        private var queueState: JsonField<QueueState> = JsonMissing.of()
+        private var releasesAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
         private var strategy: JsonField<OrderStrategy> = JsonMissing.of()
         private var trailingOffsetAmt: JsonField<String> = JsonMissing.of()
@@ -722,6 +768,8 @@ private constructor(
             expiresAt = order.expiresAt
             limitOffset = order.limitOffset
             limitPrice = order.limitPrice
+            queueState = order.queueState
+            releasesAt = order.releasesAt
             stopPrice = order.stopPrice
             strategy = order.strategy
             trailingOffsetAmt = order.trailingOffsetAmt
@@ -1038,6 +1086,38 @@ private constructor(
          */
         fun limitPrice(limitPrice: JsonField<String>) = apply { this.limitPrice = limitPrice }
 
+        /** Parent order queue state, present when the order is awaiting release or released. */
+        fun queueState(queueState: QueueState?) = queueState(JsonField.ofNullable(queueState))
+
+        /** Alias for calling [Builder.queueState] with `queueState.orElse(null)`. */
+        fun queueState(queueState: Optional<QueueState>) = queueState(queueState.getOrNull())
+
+        /**
+         * Sets [Builder.queueState] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.queueState] with a well-typed [QueueState] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun queueState(queueState: JsonField<QueueState>) = apply { this.queueState = queueState }
+
+        /** Scheduled release time for orders awaiting release. */
+        fun releasesAt(releasesAt: OffsetDateTime?) = releasesAt(JsonField.ofNullable(releasesAt))
+
+        /** Alias for calling [Builder.releasesAt] with `releasesAt.orElse(null)`. */
+        fun releasesAt(releasesAt: Optional<OffsetDateTime>) = releasesAt(releasesAt.getOrNull())
+
+        /**
+         * Sets [Builder.releasesAt] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.releasesAt] with a well-typed [OffsetDateTime] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun releasesAt(releasesAt: JsonField<OffsetDateTime>) = apply {
+            this.releasesAt = releasesAt
+        }
+
         /** Stop price (for STOP and STOP_LIMIT orders) */
         fun stopPrice(stopPrice: String?) = stopPrice(JsonField.ofNullable(stopPrice))
 
@@ -1243,6 +1323,8 @@ private constructor(
                 expiresAt,
                 limitOffset,
                 limitPrice,
+                queueState,
+                releasesAt,
                 stopPrice,
                 strategy,
                 trailingOffsetAmt,
@@ -1282,6 +1364,8 @@ private constructor(
         expiresAt()
         limitOffset()
         limitPrice()
+        queueState().ifPresent { it.validate() }
+        releasesAt()
         stopPrice()
         strategy().ifPresent { it.validate() }
         trailingOffsetAmt()
@@ -1328,6 +1412,8 @@ private constructor(
             (if (expiresAt.asKnown().isPresent) 1 else 0) +
             (if (limitOffset.asKnown().isPresent) 1 else 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
+            (queueState.asKnown().getOrNull()?.validity() ?: 0) +
+            (if (releasesAt.asKnown().isPresent) 1 else 0) +
             (if (stopPrice.asKnown().isPresent) 1 else 0) +
             (strategy.asKnown().getOrNull()?.validity() ?: 0) +
             (if (trailingOffsetAmt.asKnown().isPresent) 1 else 0) +
@@ -1363,6 +1449,8 @@ private constructor(
             expiresAt == other.expiresAt &&
             limitOffset == other.limitOffset &&
             limitPrice == other.limitPrice &&
+            queueState == other.queueState &&
+            releasesAt == other.releasesAt &&
             stopPrice == other.stopPrice &&
             strategy == other.strategy &&
             trailingOffsetAmt == other.trailingOffsetAmt &&
@@ -1396,6 +1484,8 @@ private constructor(
             expiresAt,
             limitOffset,
             limitPrice,
+            queueState,
+            releasesAt,
             stopPrice,
             strategy,
             trailingOffsetAmt,
@@ -1409,5 +1499,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, instrumentType=$instrumentType, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, securityId=$securityId, securityIdSource=$securityIdSource, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, limitOffset=$limitOffset, limitPrice=$limitPrice, stopPrice=$stopPrice, strategy=$strategy, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, instrumentType=$instrumentType, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, securityId=$securityId, securityIdSource=$securityIdSource, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, additionalProperties=$additionalProperties}"
 }
