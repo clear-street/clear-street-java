@@ -38,6 +38,7 @@ internal class WatchlistDetailTest {
                                 .isRestricted(false)
                                 .isShortProhibited(false)
                                 .isThresholdSecurity(false)
+                                .isTradable(true)
                                 .securityId("AAPL")
                                 .securityIdSource(SecurityIdSource.CMS)
                                 .addSecurityId(
@@ -119,6 +120,7 @@ internal class WatchlistDetailTest {
                             .isRestricted(false)
                             .isShortProhibited(false)
                             .isThresholdSecurity(false)
+                            .isTradable(true)
                             .securityId("AAPL")
                             .securityIdSource(SecurityIdSource.CMS)
                             .addSecurityId(
@@ -203,6 +205,7 @@ internal class WatchlistDetailTest {
                                 .isRestricted(false)
                                 .isShortProhibited(false)
                                 .isThresholdSecurity(false)
+                                .isTradable(true)
                                 .securityId("AAPL")
                                 .securityIdSource(SecurityIdSource.CMS)
                                 .addSecurityId(

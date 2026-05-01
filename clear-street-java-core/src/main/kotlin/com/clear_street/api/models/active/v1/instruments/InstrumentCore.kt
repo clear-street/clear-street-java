@@ -34,6 +34,7 @@ private constructor(
     private val isRestricted: JsonField<Boolean>,
     private val isShortProhibited: JsonField<Boolean>,
     private val isThresholdSecurity: JsonField<Boolean>,
+    private val isTradable: JsonField<Boolean>,
     private val securityId: JsonField<String>,
     private val securityIdSource: JsonField<SecurityIdSource>,
     private val securityIds: JsonField<List<InstrumentSecurityId>>,
@@ -76,6 +77,9 @@ private constructor(
         @JsonProperty("is_threshold_security")
         @ExcludeMissing
         isThresholdSecurity: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("is_tradable")
+        @ExcludeMissing
+        isTradable: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("security_id")
         @ExcludeMissing
         securityId: JsonField<String> = JsonMissing.of(),
@@ -118,6 +122,7 @@ private constructor(
         isRestricted,
         isShortProhibited,
         isThresholdSecurity,
+        isTradable,
         securityId,
         securityIdSource,
         securityIds,
@@ -206,6 +211,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun isThresholdSecurity(): Boolean = isThresholdSecurity.getRequired("is_threshold_security")
+
+    /**
+     * Indicates if the instrument is tradable
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun isTradable(): Boolean = isTradable.getRequired("is_tradable")
 
     /**
      * Deprecated. Use `security_ids`.
@@ -406,6 +419,13 @@ private constructor(
     fun _isThresholdSecurity(): JsonField<Boolean> = isThresholdSecurity
 
     /**
+     * Returns the raw JSON value of [isTradable].
+     *
+     * Unlike [isTradable], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("is_tradable") @ExcludeMissing fun _isTradable(): JsonField<Boolean> = isTradable
+
+    /**
      * Returns the raw JSON value of [securityId].
      *
      * Unlike [securityId], this method doesn't throw if the JSON field has an unexpected type.
@@ -551,6 +571,7 @@ private constructor(
          * .isRestricted()
          * .isShortProhibited()
          * .isThresholdSecurity()
+         * .isTradable()
          * .securityId()
          * .securityIdSource()
          * .securityIds()
@@ -573,6 +594,7 @@ private constructor(
         private var isRestricted: JsonField<Boolean>? = null
         private var isShortProhibited: JsonField<Boolean>? = null
         private var isThresholdSecurity: JsonField<Boolean>? = null
+        private var isTradable: JsonField<Boolean>? = null
         private var securityId: JsonField<String>? = null
         private var securityIdSource: JsonField<SecurityIdSource>? = null
         private var securityIds: JsonField<MutableList<InstrumentSecurityId>>? = null
@@ -600,6 +622,7 @@ private constructor(
             isRestricted = instrumentCore.isRestricted
             isShortProhibited = instrumentCore.isShortProhibited
             isThresholdSecurity = instrumentCore.isThresholdSecurity
+            isTradable = instrumentCore.isTradable
             securityId = instrumentCore.securityId
             securityIdSource = instrumentCore.securityIdSource
             securityIds = instrumentCore.securityIds.map { it.toMutableList() }
@@ -739,6 +762,18 @@ private constructor(
         fun isThresholdSecurity(isThresholdSecurity: JsonField<Boolean>) = apply {
             this.isThresholdSecurity = isThresholdSecurity
         }
+
+        /** Indicates if the instrument is tradable */
+        fun isTradable(isTradable: Boolean) = isTradable(JsonField.of(isTradable))
+
+        /**
+         * Sets [Builder.isTradable] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.isTradable] with a well-typed [Boolean] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun isTradable(isTradable: JsonField<Boolean>) = apply { this.isTradable = isTradable }
 
         /**
          * Deprecated. Use `security_ids`.
@@ -1014,6 +1049,7 @@ private constructor(
          * .isRestricted()
          * .isShortProhibited()
          * .isThresholdSecurity()
+         * .isTradable()
          * .securityId()
          * .securityIdSource()
          * .securityIds()
@@ -1034,6 +1070,7 @@ private constructor(
                 checkRequired("isRestricted", isRestricted),
                 checkRequired("isShortProhibited", isShortProhibited),
                 checkRequired("isThresholdSecurity", isThresholdSecurity),
+                checkRequired("isTradable", isTradable),
                 checkRequired("securityId", securityId),
                 checkRequired("securityIdSource", securityIdSource),
                 checkRequired("securityIds", securityIds).map { it.toImmutable() },
@@ -1068,6 +1105,7 @@ private constructor(
         isRestricted()
         isShortProhibited()
         isThresholdSecurity()
+        isTradable()
         securityId()
         securityIdSource().validate()
         securityIds().forEach { it.validate() }
@@ -1109,6 +1147,7 @@ private constructor(
             (if (isRestricted.asKnown().isPresent) 1 else 0) +
             (if (isShortProhibited.asKnown().isPresent) 1 else 0) +
             (if (isThresholdSecurity.asKnown().isPresent) 1 else 0) +
+            (if (isTradable.asKnown().isPresent) 1 else 0) +
             (if (securityId.asKnown().isPresent) 1 else 0) +
             (securityIdSource.asKnown().getOrNull()?.validity() ?: 0) +
             (securityIds.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
@@ -1139,6 +1178,7 @@ private constructor(
             isRestricted == other.isRestricted &&
             isShortProhibited == other.isShortProhibited &&
             isThresholdSecurity == other.isThresholdSecurity &&
+            isTradable == other.isTradable &&
             securityId == other.securityId &&
             securityIdSource == other.securityIdSource &&
             securityIds == other.securityIds &&
@@ -1167,6 +1207,7 @@ private constructor(
             isRestricted,
             isShortProhibited,
             isThresholdSecurity,
+            isTradable,
             securityId,
             securityIdSource,
             securityIds,
@@ -1188,5 +1229,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, securityId=$securityId, securityIdSource=$securityIdSource, securityIds=$securityIds, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, additionalProperties=$additionalProperties}"
+        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, securityId=$securityId, securityIdSource=$securityIdSource, securityIds=$securityIds, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, additionalProperties=$additionalProperties}"
 }

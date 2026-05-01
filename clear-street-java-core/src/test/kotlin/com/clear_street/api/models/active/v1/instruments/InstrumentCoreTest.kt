@@ -25,6 +25,7 @@ internal class InstrumentCoreTest {
                 .isRestricted(false)
                 .isShortProhibited(false)
                 .isThresholdSecurity(false)
+                .isTradable(true)
                 .securityId("AAPL")
                 .securityIdSource(SecurityIdSource.CMS)
                 .addSecurityId(
@@ -61,6 +62,7 @@ internal class InstrumentCoreTest {
         assertThat(instrumentCore.isRestricted()).isEqualTo(false)
         assertThat(instrumentCore.isShortProhibited()).isEqualTo(false)
         assertThat(instrumentCore.isThresholdSecurity()).isEqualTo(false)
+        assertThat(instrumentCore.isTradable()).isEqualTo(true)
         assertThat(instrumentCore.securityId()).isEqualTo("AAPL")
         assertThat(instrumentCore.securityIdSource()).isEqualTo(SecurityIdSource.CMS)
         assertThat(instrumentCore.securityIds())
@@ -101,6 +103,7 @@ internal class InstrumentCoreTest {
                 .isRestricted(false)
                 .isShortProhibited(false)
                 .isThresholdSecurity(false)
+                .isTradable(true)
                 .securityId("AAPL")
                 .securityIdSource(SecurityIdSource.CMS)
                 .addSecurityId(
