@@ -41,7 +41,6 @@ internal class SnapshotGetSnapshotsResponseTest {
                     MarketDataSnapshot.builder()
                         .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
                         .symbol("AAPL")
-                        .cumulativeVolume(12345678L)
                         .lastQuote(
                             SnapshotQuote.builder()
                                 .ask("210.14")
@@ -92,7 +91,6 @@ internal class SnapshotGetSnapshotsResponseTest {
                 MarketDataSnapshot.builder()
                     .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
                     .symbol("AAPL")
-                    .cumulativeVolume(12345678L)
                     .lastQuote(
                         SnapshotQuote.builder()
                             .ask("210.14")
@@ -145,7 +143,6 @@ internal class SnapshotGetSnapshotsResponseTest {
                     MarketDataSnapshot.builder()
                         .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
                         .symbol("AAPL")
-                        .cumulativeVolume(12345678L)
                         .lastQuote(
                             SnapshotQuote.builder()
                                 .ask("210.14")
