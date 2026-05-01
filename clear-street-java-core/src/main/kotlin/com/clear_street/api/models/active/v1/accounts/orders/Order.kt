@@ -51,6 +51,7 @@ private constructor(
     private val averageFillPrice: JsonField<String>,
     private val details: JsonField<List<String>>,
     private val expiresAt: JsonField<OffsetDateTime>,
+    private val extendedHours: JsonField<Boolean>,
     private val limitOffset: JsonField<String>,
     private val limitPrice: JsonField<String>,
     private val queueState: JsonField<QueueState>,
@@ -112,6 +113,9 @@ private constructor(
         @JsonProperty("expires_at")
         @ExcludeMissing
         expiresAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("extended_hours")
+        @ExcludeMissing
+        extendedHours: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("limit_offset")
         @ExcludeMissing
         limitOffset: JsonField<String> = JsonMissing.of(),
@@ -161,6 +165,7 @@ private constructor(
         averageFillPrice,
         details,
         expiresAt,
+        extendedHours,
         limitOffset,
         limitPrice,
         queueState,
@@ -334,6 +339,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun expiresAt(): Optional<OffsetDateTime> = expiresAt.getOptional("expires_at")
+
+    /**
+     * Whether the order is eligible for extended-hours trading.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun extendedHours(): Optional<Boolean> = extendedHours.getOptional("extended_hours")
 
     /**
      * Limit offset for trailing stop-limit orders (signed)
@@ -581,6 +594,15 @@ private constructor(
     fun _expiresAt(): JsonField<OffsetDateTime> = expiresAt
 
     /**
+     * Returns the raw JSON value of [extendedHours].
+     *
+     * Unlike [extendedHours], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("extended_hours")
+    @ExcludeMissing
+    fun _extendedHours(): JsonField<Boolean> = extendedHours
+
+    /**
      * Returns the raw JSON value of [limitOffset].
      *
      * Unlike [limitOffset], this method doesn't throw if the JSON field has an unexpected type.
@@ -732,6 +754,7 @@ private constructor(
         private var averageFillPrice: JsonField<String> = JsonMissing.of()
         private var details: JsonField<MutableList<String>>? = null
         private var expiresAt: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var extendedHours: JsonField<Boolean> = JsonMissing.of()
         private var limitOffset: JsonField<String> = JsonMissing.of()
         private var limitPrice: JsonField<String> = JsonMissing.of()
         private var queueState: JsonField<QueueState> = JsonMissing.of()
@@ -766,6 +789,7 @@ private constructor(
             averageFillPrice = order.averageFillPrice
             details = order.details.map { it.toMutableList() }
             expiresAt = order.expiresAt
+            extendedHours = order.extendedHours
             limitOffset = order.limitOffset
             limitPrice = order.limitPrice
             queueState = order.queueState
@@ -1056,6 +1080,32 @@ private constructor(
          */
         fun expiresAt(expiresAt: JsonField<OffsetDateTime>) = apply { this.expiresAt = expiresAt }
 
+        /** Whether the order is eligible for extended-hours trading. */
+        fun extendedHours(extendedHours: Boolean?) =
+            extendedHours(JsonField.ofNullable(extendedHours))
+
+        /**
+         * Alias for [Builder.extendedHours].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun extendedHours(extendedHours: Boolean) = extendedHours(extendedHours as Boolean?)
+
+        /** Alias for calling [Builder.extendedHours] with `extendedHours.orElse(null)`. */
+        fun extendedHours(extendedHours: Optional<Boolean>) =
+            extendedHours(extendedHours.getOrNull())
+
+        /**
+         * Sets [Builder.extendedHours] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.extendedHours] with a well-typed [Boolean] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun extendedHours(extendedHours: JsonField<Boolean>) = apply {
+            this.extendedHours = extendedHours
+        }
+
         /** Limit offset for trailing stop-limit orders (signed) */
         fun limitOffset(limitOffset: String?) = limitOffset(JsonField.ofNullable(limitOffset))
 
@@ -1321,6 +1371,7 @@ private constructor(
                 averageFillPrice,
                 (details ?: JsonMissing.of()).map { it.toImmutable() },
                 expiresAt,
+                extendedHours,
                 limitOffset,
                 limitPrice,
                 queueState,
@@ -1362,6 +1413,7 @@ private constructor(
         averageFillPrice()
         details()
         expiresAt()
+        extendedHours()
         limitOffset()
         limitPrice()
         queueState().ifPresent { it.validate() }
@@ -1410,6 +1462,7 @@ private constructor(
             (if (averageFillPrice.asKnown().isPresent) 1 else 0) +
             (details.asKnown().getOrNull()?.size ?: 0) +
             (if (expiresAt.asKnown().isPresent) 1 else 0) +
+            (if (extendedHours.asKnown().isPresent) 1 else 0) +
             (if (limitOffset.asKnown().isPresent) 1 else 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
             (queueState.asKnown().getOrNull()?.validity() ?: 0) +
@@ -1447,6 +1500,7 @@ private constructor(
             averageFillPrice == other.averageFillPrice &&
             details == other.details &&
             expiresAt == other.expiresAt &&
+            extendedHours == other.extendedHours &&
             limitOffset == other.limitOffset &&
             limitPrice == other.limitPrice &&
             queueState == other.queueState &&
@@ -1482,6 +1536,7 @@ private constructor(
             averageFillPrice,
             details,
             expiresAt,
+            extendedHours,
             limitOffset,
             limitPrice,
             queueState,
@@ -1499,5 +1554,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, instrumentType=$instrumentType, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, securityId=$securityId, securityIdSource=$securityIdSource, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, instrumentType=$instrumentType, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, securityId=$securityId, securityIdSource=$securityIdSource, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, additionalProperties=$additionalProperties}"
 }
