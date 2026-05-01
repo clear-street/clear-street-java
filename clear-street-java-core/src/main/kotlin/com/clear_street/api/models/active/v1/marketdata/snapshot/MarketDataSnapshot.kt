@@ -23,7 +23,6 @@ class MarketDataSnapshot
 private constructor(
     private val instrumentId: JsonField<String>,
     private val symbol: JsonField<String>,
-    private val cumulativeVolume: JsonField<Long>,
     private val lastQuote: JsonField<SnapshotQuote>,
     private val lastTrade: JsonField<SnapshotLastTrade>,
     private val name: JsonField<String>,
@@ -37,9 +36,6 @@ private constructor(
         @ExcludeMissing
         instrumentId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("cumulative_volume")
-        @ExcludeMissing
-        cumulativeVolume: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("last_quote")
         @ExcludeMissing
         lastQuote: JsonField<SnapshotQuote> = JsonMissing.of(),
@@ -50,16 +46,7 @@ private constructor(
         @JsonProperty("session")
         @ExcludeMissing
         session: JsonField<SnapshotSession> = JsonMissing.of(),
-    ) : this(
-        instrumentId,
-        symbol,
-        cumulativeVolume,
-        lastQuote,
-        lastTrade,
-        name,
-        session,
-        mutableMapOf(),
-    )
+    ) : this(instrumentId, symbol, lastQuote, lastTrade, name, session, mutableMapOf())
 
     /**
      * OEMS instrument identifier.
@@ -76,15 +63,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun symbol(): String = symbol.getRequired("symbol")
-
-    /**
-     * Cumulative traded volume reported on the most recent trade, in shares for equities or
-     * contracts for options. Absent when no trade is available.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun cumulativeVolume(): Optional<Long> = cumulativeVolume.getOptional("cumulative_volume")
 
     /**
      * Most recent quote if available.
@@ -133,16 +111,6 @@ private constructor(
      * Unlike [symbol], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("symbol") @ExcludeMissing fun _symbol(): JsonField<String> = symbol
-
-    /**
-     * Returns the raw JSON value of [cumulativeVolume].
-     *
-     * Unlike [cumulativeVolume], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("cumulative_volume")
-    @ExcludeMissing
-    fun _cumulativeVolume(): JsonField<Long> = cumulativeVolume
 
     /**
      * Returns the raw JSON value of [lastQuote].
@@ -207,7 +175,6 @@ private constructor(
 
         private var instrumentId: JsonField<String>? = null
         private var symbol: JsonField<String>? = null
-        private var cumulativeVolume: JsonField<Long> = JsonMissing.of()
         private var lastQuote: JsonField<SnapshotQuote> = JsonMissing.of()
         private var lastTrade: JsonField<SnapshotLastTrade> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
@@ -218,7 +185,6 @@ private constructor(
         internal fun from(marketDataSnapshot: MarketDataSnapshot) = apply {
             instrumentId = marketDataSnapshot.instrumentId
             symbol = marketDataSnapshot.symbol
-            cumulativeVolume = marketDataSnapshot.cumulativeVolume
             lastQuote = marketDataSnapshot.lastQuote
             lastTrade = marketDataSnapshot.lastTrade
             name = marketDataSnapshot.name
@@ -250,35 +216,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
-
-        /**
-         * Cumulative traded volume reported on the most recent trade, in shares for equities or
-         * contracts for options. Absent when no trade is available.
-         */
-        fun cumulativeVolume(cumulativeVolume: Long?) =
-            cumulativeVolume(JsonField.ofNullable(cumulativeVolume))
-
-        /**
-         * Alias for [Builder.cumulativeVolume].
-         *
-         * This unboxed primitive overload exists for backwards compatibility.
-         */
-        fun cumulativeVolume(cumulativeVolume: Long) = cumulativeVolume(cumulativeVolume as Long?)
-
-        /** Alias for calling [Builder.cumulativeVolume] with `cumulativeVolume.orElse(null)`. */
-        fun cumulativeVolume(cumulativeVolume: Optional<Long>) =
-            cumulativeVolume(cumulativeVolume.getOrNull())
-
-        /**
-         * Sets [Builder.cumulativeVolume] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.cumulativeVolume] with a well-typed [Long] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun cumulativeVolume(cumulativeVolume: JsonField<Long>) = apply {
-            this.cumulativeVolume = cumulativeVolume
-        }
 
         /** Most recent quote if available. */
         fun lastQuote(lastQuote: SnapshotQuote?) = lastQuote(JsonField.ofNullable(lastQuote))
@@ -377,7 +314,6 @@ private constructor(
             MarketDataSnapshot(
                 checkRequired("instrumentId", instrumentId),
                 checkRequired("symbol", symbol),
-                cumulativeVolume,
                 lastQuote,
                 lastTrade,
                 name,
@@ -395,7 +331,6 @@ private constructor(
 
         instrumentId()
         symbol()
-        cumulativeVolume()
         lastQuote().ifPresent { it.validate() }
         lastTrade().ifPresent { it.validate() }
         name()
@@ -420,7 +355,6 @@ private constructor(
     internal fun validity(): Int =
         (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
-            (if (cumulativeVolume.asKnown().isPresent) 1 else 0) +
             (lastQuote.asKnown().getOrNull()?.validity() ?: 0) +
             (lastTrade.asKnown().getOrNull()?.validity() ?: 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
@@ -434,7 +368,6 @@ private constructor(
         return other is MarketDataSnapshot &&
             instrumentId == other.instrumentId &&
             symbol == other.symbol &&
-            cumulativeVolume == other.cumulativeVolume &&
             lastQuote == other.lastQuote &&
             lastTrade == other.lastTrade &&
             name == other.name &&
@@ -446,7 +379,6 @@ private constructor(
         Objects.hash(
             instrumentId,
             symbol,
-            cumulativeVolume,
             lastQuote,
             lastTrade,
             name,
@@ -458,5 +390,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "MarketDataSnapshot{instrumentId=$instrumentId, symbol=$symbol, cumulativeVolume=$cumulativeVolume, lastQuote=$lastQuote, lastTrade=$lastTrade, name=$name, session=$session, additionalProperties=$additionalProperties}"
+        "MarketDataSnapshot{instrumentId=$instrumentId, symbol=$symbol, lastQuote=$lastQuote, lastTrade=$lastTrade, name=$name, session=$session, additionalProperties=$additionalProperties}"
 }
