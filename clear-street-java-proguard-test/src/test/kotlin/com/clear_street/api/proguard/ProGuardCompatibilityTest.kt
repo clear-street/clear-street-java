@@ -69,6 +69,7 @@ internal class ProGuardCompatibilityTest {
                 .fullName("Test Trading Account")
                 .kind(AccountKind.CUSTOMER)
                 .openDate(LocalDate.parse("2023-01-15"))
+                .optionsLevel(1L)
                 .shortName("TST-ACCOUNT-01")
                 .status(AccountStatus.ACTIVE)
                 .subkind(AccountSubkind.MARGIN)
