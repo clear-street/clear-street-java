@@ -27,6 +27,7 @@ private constructor(
     private val fullName: JsonField<String>,
     private val kind: JsonField<AccountKind>,
     private val openDate: JsonField<LocalDate>,
+    private val optionsLevel: JsonField<Long>,
     private val shortName: JsonField<String>,
     private val status: JsonField<AccountStatus>,
     private val subkind: JsonField<AccountSubkind>,
@@ -45,6 +46,9 @@ private constructor(
         @JsonProperty("open_date")
         @ExcludeMissing
         openDate: JsonField<LocalDate> = JsonMissing.of(),
+        @JsonProperty("options_level")
+        @ExcludeMissing
+        optionsLevel: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("short_name") @ExcludeMissing shortName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<AccountStatus> = JsonMissing.of(),
         @JsonProperty("subkind")
@@ -59,6 +63,7 @@ private constructor(
         fullName,
         kind,
         openDate,
+        optionsLevel,
         shortName,
         status,
         subkind,
@@ -106,6 +111,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun openDate(): LocalDate = openDate.getRequired("open_date")
+
+    /**
+     * The options level of the account
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun optionsLevel(): Long = optionsLevel.getRequired("options_level")
 
     /**
      * The short name of the account
@@ -178,6 +191,15 @@ private constructor(
     @JsonProperty("open_date") @ExcludeMissing fun _openDate(): JsonField<LocalDate> = openDate
 
     /**
+     * Returns the raw JSON value of [optionsLevel].
+     *
+     * Unlike [optionsLevel], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("options_level")
+    @ExcludeMissing
+    fun _optionsLevel(): JsonField<Long> = optionsLevel
+
+    /**
      * Returns the raw JSON value of [shortName].
      *
      * Unlike [shortName], this method doesn't throw if the JSON field has an unexpected type.
@@ -229,6 +251,7 @@ private constructor(
          * .fullName()
          * .kind()
          * .openDate()
+         * .optionsLevel()
          * .shortName()
          * .status()
          * .subkind()
@@ -245,6 +268,7 @@ private constructor(
         private var fullName: JsonField<String>? = null
         private var kind: JsonField<AccountKind>? = null
         private var openDate: JsonField<LocalDate>? = null
+        private var optionsLevel: JsonField<Long>? = null
         private var shortName: JsonField<String>? = null
         private var status: JsonField<AccountStatus>? = null
         private var subkind: JsonField<AccountSubkind>? = null
@@ -258,6 +282,7 @@ private constructor(
             fullName = account.fullName
             kind = account.kind
             openDate = account.openDate
+            optionsLevel = account.optionsLevel
             shortName = account.shortName
             status = account.status
             subkind = account.subkind
@@ -325,6 +350,18 @@ private constructor(
          * value.
          */
         fun openDate(openDate: JsonField<LocalDate>) = apply { this.openDate = openDate }
+
+        /** The options level of the account */
+        fun optionsLevel(optionsLevel: Long) = optionsLevel(JsonField.of(optionsLevel))
+
+        /**
+         * Sets [Builder.optionsLevel] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.optionsLevel] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun optionsLevel(optionsLevel: JsonField<Long>) = apply { this.optionsLevel = optionsLevel }
 
         /** The short name of the account */
         fun shortName(shortName: String) = shortName(JsonField.of(shortName))
@@ -408,6 +445,7 @@ private constructor(
          * .fullName()
          * .kind()
          * .openDate()
+         * .optionsLevel()
          * .shortName()
          * .status()
          * .subkind()
@@ -422,6 +460,7 @@ private constructor(
                 checkRequired("fullName", fullName),
                 checkRequired("kind", kind),
                 checkRequired("openDate", openDate),
+                checkRequired("optionsLevel", optionsLevel),
                 checkRequired("shortName", shortName),
                 checkRequired("status", status),
                 checkRequired("subkind", subkind),
@@ -442,6 +481,7 @@ private constructor(
         fullName()
         kind().validate()
         openDate()
+        optionsLevel()
         shortName()
         status().validate()
         subkind().validate()
@@ -469,6 +509,7 @@ private constructor(
             (if (fullName.asKnown().isPresent) 1 else 0) +
             (kind.asKnown().getOrNull()?.validity() ?: 0) +
             (if (openDate.asKnown().isPresent) 1 else 0) +
+            (if (optionsLevel.asKnown().isPresent) 1 else 0) +
             (if (shortName.asKnown().isPresent) 1 else 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
             (subkind.asKnown().getOrNull()?.validity() ?: 0) +
@@ -485,6 +526,7 @@ private constructor(
             fullName == other.fullName &&
             kind == other.kind &&
             openDate == other.openDate &&
+            optionsLevel == other.optionsLevel &&
             shortName == other.shortName &&
             status == other.status &&
             subkind == other.subkind &&
@@ -499,6 +541,7 @@ private constructor(
             fullName,
             kind,
             openDate,
+            optionsLevel,
             shortName,
             status,
             subkind,
@@ -510,5 +553,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Account{id=$id, accountHolderEntityId=$accountHolderEntityId, fullName=$fullName, kind=$kind, openDate=$openDate, shortName=$shortName, status=$status, subkind=$subkind, closeDate=$closeDate, additionalProperties=$additionalProperties}"
+        "Account{id=$id, accountHolderEntityId=$accountHolderEntityId, fullName=$fullName, kind=$kind, openDate=$openDate, optionsLevel=$optionsLevel, shortName=$shortName, status=$status, subkind=$subkind, closeDate=$closeDate, additionalProperties=$additionalProperties}"
 }
