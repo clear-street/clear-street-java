@@ -36,6 +36,7 @@ private constructor(
     private val tradeCash: JsonField<String>,
     private val unsettledCredits: JsonField<String>,
     private val unsettledDebits: JsonField<String>,
+    private val withdrawableCash: JsonField<String>,
     private val marginDetails: JsonField<MarginDetails>,
     private val multiplier: JsonField<String>,
     private val shortMarketValue: JsonField<String>,
@@ -79,6 +80,9 @@ private constructor(
         @JsonProperty("unsettled_debits")
         @ExcludeMissing
         unsettledDebits: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("withdrawable_cash")
+        @ExcludeMissing
+        withdrawableCash: JsonField<String> = JsonMissing.of(),
         @JsonProperty("margin_details")
         @ExcludeMissing
         marginDetails: JsonField<MarginDetails> = JsonMissing.of(),
@@ -104,6 +108,7 @@ private constructor(
         tradeCash,
         unsettledCredits,
         unsettledDebits,
+        withdrawableCash,
         marginDetails,
         multiplier,
         shortMarketValue,
@@ -229,6 +234,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun unsettledDebits(): String = unsettledDebits.getRequired("unsettled_debits")
+
+    /**
+     * The amount of cash currently available to withdraw.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun withdrawableCash(): String = withdrawableCash.getRequired("withdrawable_cash")
 
     /**
      * Margin-account-only details.
@@ -384,6 +397,16 @@ private constructor(
     fun _unsettledDebits(): JsonField<String> = unsettledDebits
 
     /**
+     * Returns the raw JSON value of [withdrawableCash].
+     *
+     * Unlike [withdrawableCash], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("withdrawable_cash")
+    @ExcludeMissing
+    fun _withdrawableCash(): JsonField<String> = withdrawableCash
+
+    /**
      * Returns the raw JSON value of [marginDetails].
      *
      * Unlike [marginDetails], this method doesn't throw if the JSON field has an unexpected type.
@@ -443,6 +466,7 @@ private constructor(
          * .tradeCash()
          * .unsettledCredits()
          * .unsettledDebits()
+         * .withdrawableCash()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -466,6 +490,7 @@ private constructor(
         private var tradeCash: JsonField<String>? = null
         private var unsettledCredits: JsonField<String>? = null
         private var unsettledDebits: JsonField<String>? = null
+        private var withdrawableCash: JsonField<String>? = null
         private var marginDetails: JsonField<MarginDetails> = JsonMissing.of()
         private var multiplier: JsonField<String> = JsonMissing.of()
         private var shortMarketValue: JsonField<String> = JsonMissing.of()
@@ -488,6 +513,7 @@ private constructor(
             tradeCash = accountBalances.tradeCash
             unsettledCredits = accountBalances.unsettledCredits
             unsettledDebits = accountBalances.unsettledDebits
+            withdrawableCash = accountBalances.withdrawableCash
             marginDetails = accountBalances.marginDetails
             multiplier = accountBalances.multiplier
             shortMarketValue = accountBalances.shortMarketValue
@@ -691,6 +717,21 @@ private constructor(
             this.unsettledDebits = unsettledDebits
         }
 
+        /** The amount of cash currently available to withdraw. */
+        fun withdrawableCash(withdrawableCash: String) =
+            withdrawableCash(JsonField.of(withdrawableCash))
+
+        /**
+         * Sets [Builder.withdrawableCash] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.withdrawableCash] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun withdrawableCash(withdrawableCash: JsonField<String>) = apply {
+            this.withdrawableCash = withdrawableCash
+        }
+
         /** Margin-account-only details. */
         fun marginDetails(marginDetails: MarginDetails?) =
             marginDetails(JsonField.ofNullable(marginDetails))
@@ -785,6 +826,7 @@ private constructor(
          * .tradeCash()
          * .unsettledCredits()
          * .unsettledDebits()
+         * .withdrawableCash()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -806,6 +848,7 @@ private constructor(
                 checkRequired("tradeCash", tradeCash),
                 checkRequired("unsettledCredits", unsettledCredits),
                 checkRequired("unsettledDebits", unsettledDebits),
+                checkRequired("withdrawableCash", withdrawableCash),
                 marginDetails,
                 multiplier,
                 shortMarketValue,
@@ -835,6 +878,7 @@ private constructor(
         tradeCash()
         unsettledCredits()
         unsettledDebits()
+        withdrawableCash()
         marginDetails().ifPresent { it.validate() }
         multiplier()
         shortMarketValue()
@@ -871,6 +915,7 @@ private constructor(
             (if (tradeCash.asKnown().isPresent) 1 else 0) +
             (if (unsettledCredits.asKnown().isPresent) 1 else 0) +
             (if (unsettledDebits.asKnown().isPresent) 1 else 0) +
+            (if (withdrawableCash.asKnown().isPresent) 1 else 0) +
             (marginDetails.asKnown().getOrNull()?.validity() ?: 0) +
             (if (multiplier.asKnown().isPresent) 1 else 0) +
             (if (shortMarketValue.asKnown().isPresent) 1 else 0)
@@ -896,6 +941,7 @@ private constructor(
             tradeCash == other.tradeCash &&
             unsettledCredits == other.unsettledCredits &&
             unsettledDebits == other.unsettledDebits &&
+            withdrawableCash == other.withdrawableCash &&
             marginDetails == other.marginDetails &&
             multiplier == other.multiplier &&
             shortMarketValue == other.shortMarketValue &&
@@ -919,6 +965,7 @@ private constructor(
             tradeCash,
             unsettledCredits,
             unsettledDebits,
+            withdrawableCash,
             marginDetails,
             multiplier,
             shortMarketValue,
@@ -929,5 +976,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyRealizedPnl=$dailyRealizedPnl, dailyTotalPnl=$dailyTotalPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, marginDetails=$marginDetails, multiplier=$multiplier, shortMarketValue=$shortMarketValue, additionalProperties=$additionalProperties}"
+        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyRealizedPnl=$dailyRealizedPnl, dailyTotalPnl=$dailyTotalPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, shortMarketValue=$shortMarketValue, additionalProperties=$additionalProperties}"
 }
