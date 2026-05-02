@@ -41,6 +41,7 @@ internal class AccountBalancesTest {
                 .tradeCash("70000.00")
                 .unsettledCredits("20000.00")
                 .unsettledDebits("10000.00")
+                .withdrawableCash("75000.00")
                 .marginDetails(
                     MarginDetails.builder()
                         .dayTradeCount(2)
@@ -95,6 +96,7 @@ internal class AccountBalancesTest {
         assertThat(accountBalances.tradeCash()).isEqualTo("70000.00")
         assertThat(accountBalances.unsettledCredits()).isEqualTo("20000.00")
         assertThat(accountBalances.unsettledDebits()).isEqualTo("10000.00")
+        assertThat(accountBalances.withdrawableCash()).isEqualTo("75000.00")
         assertThat(accountBalances.marginDetails())
             .contains(
                 MarginDetails.builder()
@@ -152,6 +154,7 @@ internal class AccountBalancesTest {
                 .tradeCash("70000.00")
                 .unsettledCredits("20000.00")
                 .unsettledDebits("10000.00")
+                .withdrawableCash("75000.00")
                 .marginDetails(
                     MarginDetails.builder()
                         .dayTradeCount(2)

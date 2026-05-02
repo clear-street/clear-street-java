@@ -67,6 +67,7 @@ internal class BalanceGetAccountBalancesResponseTest {
                         .tradeCash("70000.00")
                         .unsettledCredits("20000.00")
                         .unsettledDebits("10000.00")
+                        .withdrawableCash("75000.00")
                         .marginDetails(
                             MarginDetails.builder()
                                 .dayTradeCount(2)
@@ -153,6 +154,7 @@ internal class BalanceGetAccountBalancesResponseTest {
                     .tradeCash("70000.00")
                     .unsettledCredits("20000.00")
                     .unsettledDebits("10000.00")
+                    .withdrawableCash("75000.00")
                     .marginDetails(
                         MarginDetails.builder()
                             .dayTradeCount(2)
@@ -239,6 +241,7 @@ internal class BalanceGetAccountBalancesResponseTest {
                         .tradeCash("70000.00")
                         .unsettledCredits("20000.00")
                         .unsettledDebits("10000.00")
+                        .withdrawableCash("75000.00")
                         .marginDetails(
                             MarginDetails.builder()
                                 .dayTradeCount(2)
