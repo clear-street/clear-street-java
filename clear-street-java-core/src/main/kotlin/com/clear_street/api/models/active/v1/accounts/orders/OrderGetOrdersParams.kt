@@ -29,6 +29,7 @@ private constructor(
     private val status: List<Status>?,
     private val symbol: String?,
     private val to: OffsetDateTime?,
+    private val underlyingInstrumentIds: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -76,6 +77,12 @@ private constructor(
     /** The end date and time for the query range, inclusive (ISO 8601 format) */
     fun to(): Optional<OffsetDateTime> = Optional.ofNullable(to)
 
+    /**
+     * Comma-separated OEMS instrument UUIDs. Matches options orders whose resolved underlier is any
+     * of the given IDs.
+     */
+    fun underlyingInstrumentIds(): Optional<String> = Optional.ofNullable(underlyingInstrumentIds)
+
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
 
@@ -105,6 +112,7 @@ private constructor(
         private var status: MutableList<Status>? = null
         private var symbol: String? = null
         private var to: OffsetDateTime? = null
+        private var underlyingInstrumentIds: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -120,6 +128,7 @@ private constructor(
             status = orderGetOrdersParams.status?.toMutableList()
             symbol = orderGetOrdersParams.symbol
             to = orderGetOrdersParams.to
+            underlyingInstrumentIds = orderGetOrdersParams.underlyingInstrumentIds
             additionalHeaders = orderGetOrdersParams.additionalHeaders.toBuilder()
             additionalQueryParams = orderGetOrdersParams.additionalQueryParams.toBuilder()
         }
@@ -247,6 +256,21 @@ private constructor(
         /** Alias for calling [Builder.to] with `to.orElse(null)`. */
         fun to(to: Optional<OffsetDateTime>) = to(to.getOrNull())
 
+        /**
+         * Comma-separated OEMS instrument UUIDs. Matches options orders whose resolved underlier is
+         * any of the given IDs.
+         */
+        fun underlyingInstrumentIds(underlyingInstrumentIds: String?) = apply {
+            this.underlyingInstrumentIds = underlyingInstrumentIds
+        }
+
+        /**
+         * Alias for calling [Builder.underlyingInstrumentIds] with
+         * `underlyingInstrumentIds.orElse(null)`.
+         */
+        fun underlyingInstrumentIds(underlyingInstrumentIds: Optional<String>) =
+            underlyingInstrumentIds(underlyingInstrumentIds.getOrNull())
+
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
             putAllAdditionalHeaders(additionalHeaders)
@@ -362,6 +386,7 @@ private constructor(
                 status?.toImmutable(),
                 symbol,
                 to,
+                underlyingInstrumentIds,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -389,6 +414,7 @@ private constructor(
                 status?.forEachIndexed { index, it -> put("status[$index]", it.toString()) }
                 symbol?.let { put("symbol", it) }
                 to?.let { put("to", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
+                underlyingInstrumentIds?.let { put("underlying_instrument_ids", it) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -783,6 +809,7 @@ private constructor(
             status == other.status &&
             symbol == other.symbol &&
             to == other.to &&
+            underlyingInstrumentIds == other.underlyingInstrumentIds &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -799,10 +826,11 @@ private constructor(
             status,
             symbol,
             to,
+            underlyingInstrumentIds,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "OrderGetOrdersParams{accountId=$accountId, from=$from, instrumentType=$instrumentType, pageSize=$pageSize, pageToken=$pageToken, securityId=$securityId, securityIdSource=$securityIdSource, status=$status, symbol=$symbol, to=$to, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "OrderGetOrdersParams{accountId=$accountId, from=$from, instrumentType=$instrumentType, pageSize=$pageSize, pageToken=$pageToken, securityId=$securityId, securityIdSource=$securityIdSource, status=$status, symbol=$symbol, to=$to, underlyingInstrumentIds=$underlyingInstrumentIds, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

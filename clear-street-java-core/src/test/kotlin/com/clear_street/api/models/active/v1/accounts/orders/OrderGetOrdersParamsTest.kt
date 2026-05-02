@@ -22,6 +22,7 @@ internal class OrderGetOrdersParamsTest {
             .addStatus(OrderGetOrdersParams.Status.PENDING_NEW)
             .symbol("symbol")
             .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+            .underlyingInstrumentIds("underlying_instrument_ids")
             .build()
     }
 
@@ -48,6 +49,7 @@ internal class OrderGetOrdersParamsTest {
                 .addStatus(OrderGetOrdersParams.Status.PENDING_NEW)
                 .symbol("symbol")
                 .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .underlyingInstrumentIds("underlying_instrument_ids")
                 .build()
 
         val queryParams = params._queryParams()
@@ -64,6 +66,7 @@ internal class OrderGetOrdersParamsTest {
                     .put("status[0]", "PENDING_NEW")
                     .put("symbol", "symbol")
                     .put("to", "2019-12-27T18:11:19.117Z")
+                    .put("underlying_instrument_ids", "underlying_instrument_ids")
                     .build()
             )
     }
