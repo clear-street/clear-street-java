@@ -18,6 +18,7 @@ import java.util.Objects
 class MarginTopContributor
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val dayTradeBuyingPowerUsage: JsonField<String>,
     private val initialMarginRequirement: JsonField<String>,
     private val maintenanceMarginRequirement: JsonField<String>,
     private val marketValue: JsonField<String>,
@@ -27,6 +28,9 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("day_trade_buying_power_usage")
+        @ExcludeMissing
+        dayTradeBuyingPowerUsage: JsonField<String> = JsonMissing.of(),
         @JsonProperty("initial_margin_requirement")
         @ExcludeMissing
         initialMarginRequirement: JsonField<String> = JsonMissing.of(),
@@ -40,12 +44,23 @@ private constructor(
         @ExcludeMissing
         underlyingInstrumentId: JsonField<String> = JsonMissing.of(),
     ) : this(
+        dayTradeBuyingPowerUsage,
         initialMarginRequirement,
         maintenanceMarginRequirement,
         marketValue,
         underlyingInstrumentId,
         mutableMapOf(),
     )
+
+    /**
+     * Day-trade buying power consumed by fills against this underlying on the current trade date.
+     * Populated only for pattern day trader accounts.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun dayTradeBuyingPowerUsage(): String =
+        dayTradeBuyingPowerUsage.getRequired("day_trade_buying_power_usage")
 
     /**
      * Initial margin requirement attributable to this underlying.
@@ -81,6 +96,16 @@ private constructor(
      */
     fun underlyingInstrumentId(): String =
         underlyingInstrumentId.getRequired("underlying_instrument_id")
+
+    /**
+     * Returns the raw JSON value of [dayTradeBuyingPowerUsage].
+     *
+     * Unlike [dayTradeBuyingPowerUsage], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("day_trade_buying_power_usage")
+    @ExcludeMissing
+    fun _dayTradeBuyingPowerUsage(): JsonField<String> = dayTradeBuyingPowerUsage
 
     /**
      * Returns the raw JSON value of [initialMarginRequirement].
@@ -140,6 +165,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .dayTradeBuyingPowerUsage()
          * .initialMarginRequirement()
          * .maintenanceMarginRequirement()
          * .marketValue()
@@ -152,6 +178,7 @@ private constructor(
     /** A builder for [MarginTopContributor]. */
     class Builder internal constructor() {
 
+        private var dayTradeBuyingPowerUsage: JsonField<String>? = null
         private var initialMarginRequirement: JsonField<String>? = null
         private var maintenanceMarginRequirement: JsonField<String>? = null
         private var marketValue: JsonField<String>? = null
@@ -160,11 +187,30 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(marginTopContributor: MarginTopContributor) = apply {
+            dayTradeBuyingPowerUsage = marginTopContributor.dayTradeBuyingPowerUsage
             initialMarginRequirement = marginTopContributor.initialMarginRequirement
             maintenanceMarginRequirement = marginTopContributor.maintenanceMarginRequirement
             marketValue = marginTopContributor.marketValue
             underlyingInstrumentId = marginTopContributor.underlyingInstrumentId
             additionalProperties = marginTopContributor.additionalProperties.toMutableMap()
+        }
+
+        /**
+         * Day-trade buying power consumed by fills against this underlying on the current trade
+         * date. Populated only for pattern day trader accounts.
+         */
+        fun dayTradeBuyingPowerUsage(dayTradeBuyingPowerUsage: String) =
+            dayTradeBuyingPowerUsage(JsonField.of(dayTradeBuyingPowerUsage))
+
+        /**
+         * Sets [Builder.dayTradeBuyingPowerUsage] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.dayTradeBuyingPowerUsage] with a well-typed [String]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun dayTradeBuyingPowerUsage(dayTradeBuyingPowerUsage: JsonField<String>) = apply {
+            this.dayTradeBuyingPowerUsage = dayTradeBuyingPowerUsage
         }
 
         /** Initial margin requirement attributable to this underlying. */
@@ -250,6 +296,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .dayTradeBuyingPowerUsage()
          * .initialMarginRequirement()
          * .maintenanceMarginRequirement()
          * .marketValue()
@@ -260,6 +307,7 @@ private constructor(
          */
         fun build(): MarginTopContributor =
             MarginTopContributor(
+                checkRequired("dayTradeBuyingPowerUsage", dayTradeBuyingPowerUsage),
                 checkRequired("initialMarginRequirement", initialMarginRequirement),
                 checkRequired("maintenanceMarginRequirement", maintenanceMarginRequirement),
                 checkRequired("marketValue", marketValue),
@@ -275,6 +323,7 @@ private constructor(
             return@apply
         }
 
+        dayTradeBuyingPowerUsage()
         initialMarginRequirement()
         maintenanceMarginRequirement()
         marketValue()
@@ -297,7 +346,8 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (if (initialMarginRequirement.asKnown().isPresent) 1 else 0) +
+        (if (dayTradeBuyingPowerUsage.asKnown().isPresent) 1 else 0) +
+            (if (initialMarginRequirement.asKnown().isPresent) 1 else 0) +
             (if (maintenanceMarginRequirement.asKnown().isPresent) 1 else 0) +
             (if (marketValue.asKnown().isPresent) 1 else 0) +
             (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0)
@@ -308,6 +358,7 @@ private constructor(
         }
 
         return other is MarginTopContributor &&
+            dayTradeBuyingPowerUsage == other.dayTradeBuyingPowerUsage &&
             initialMarginRequirement == other.initialMarginRequirement &&
             maintenanceMarginRequirement == other.maintenanceMarginRequirement &&
             marketValue == other.marketValue &&
@@ -317,6 +368,7 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            dayTradeBuyingPowerUsage,
             initialMarginRequirement,
             maintenanceMarginRequirement,
             marketValue,
@@ -328,5 +380,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "MarginTopContributor{initialMarginRequirement=$initialMarginRequirement, maintenanceMarginRequirement=$maintenanceMarginRequirement, marketValue=$marketValue, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
+        "MarginTopContributor{dayTradeBuyingPowerUsage=$dayTradeBuyingPowerUsage, initialMarginRequirement=$initialMarginRequirement, maintenanceMarginRequirement=$maintenanceMarginRequirement, marketValue=$marketValue, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
 }

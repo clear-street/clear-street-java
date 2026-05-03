@@ -13,12 +13,14 @@ internal class MarginTopContributorTest {
     fun create() {
         val marginTopContributor =
             MarginTopContributor.builder()
+                .dayTradeBuyingPowerUsage("5000.00")
                 .initialMarginRequirement("25000.00")
                 .maintenanceMarginRequirement("15000.00")
                 .marketValue("50000.00")
                 .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
                 .build()
 
+        assertThat(marginTopContributor.dayTradeBuyingPowerUsage()).isEqualTo("5000.00")
         assertThat(marginTopContributor.initialMarginRequirement()).isEqualTo("25000.00")
         assertThat(marginTopContributor.maintenanceMarginRequirement()).isEqualTo("15000.00")
         assertThat(marginTopContributor.marketValue()).isEqualTo("50000.00")
@@ -31,6 +33,7 @@ internal class MarginTopContributorTest {
         val jsonMapper = jsonMapper()
         val marginTopContributor =
             MarginTopContributor.builder()
+                .dayTradeBuyingPowerUsage("5000.00")
                 .initialMarginRequirement("25000.00")
                 .maintenanceMarginRequirement("15000.00")
                 .marketValue("50000.00")
