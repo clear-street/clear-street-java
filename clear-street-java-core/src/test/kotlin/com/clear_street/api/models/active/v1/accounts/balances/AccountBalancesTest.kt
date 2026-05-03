@@ -53,6 +53,7 @@ internal class AccountBalancesTest {
                         .dayTradeBuyingPowerUsage("0.00")
                         .addTopContributor(
                             MarginTopContributor.builder()
+                                .dayTradeBuyingPowerUsage("5000.00")
                                 .initialMarginRequirement("25000.00")
                                 .maintenanceMarginRequirement("15000.00")
                                 .marketValue("50000.00")
@@ -109,6 +110,7 @@ internal class AccountBalancesTest {
                     .dayTradeBuyingPowerUsage("0.00")
                     .addTopContributor(
                         MarginTopContributor.builder()
+                            .dayTradeBuyingPowerUsage("5000.00")
                             .initialMarginRequirement("25000.00")
                             .maintenanceMarginRequirement("15000.00")
                             .marketValue("50000.00")
@@ -166,6 +168,7 @@ internal class AccountBalancesTest {
                         .dayTradeBuyingPowerUsage("0.00")
                         .addTopContributor(
                             MarginTopContributor.builder()
+                                .dayTradeBuyingPowerUsage("5000.00")
                                 .initialMarginRequirement("25000.00")
                                 .maintenanceMarginRequirement("15000.00")
                                 .marketValue("50000.00")
