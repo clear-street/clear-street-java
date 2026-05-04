@@ -48,8 +48,8 @@ This library requires Java 8 or later.
 ```java
 import com.clear_street.api.client.ClearStreetClient;
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsParams;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsResponse;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     // Configures using the `clearstreet.baseUrl` system property
@@ -58,7 +58,7 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .apiKey("My API Key")
     .build();
 
-AccountGetAccountsResponse response = client.active().v1().accounts().getAccounts();
+AccountGetAccountsResponse response = client.v1().accounts().getAccounts();
 ```
 
 ## Client configuration
@@ -104,9 +104,9 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
 
 See this table for the available options:
 
-| Setter    | System property       | Environment variable    | Required | Default value                         |
-| --------- | --------------------- | ----------------------- | -------- | ------------------------------------- |
-| `baseUrl` | `clearstreet.baseUrl` | `CLEAR_STREET_BASE_URL` | true     | `"https://api-active.clearstreet.io"` |
+| Setter    | System property       | Environment variable    | Required | Default value                   |
+| --------- | --------------------- | ----------------------- | -------- | ------------------------------- |
+| `baseUrl` | `clearstreet.baseUrl` | `CLEAR_STREET_BASE_URL` | true     | `"https://api.clearstreet.com"` |
 
 System properties take precedence over environment variables.
 
@@ -133,7 +133,7 @@ The `withOptions()` method does not affect the original client or service.
 
 To send a request to the Clear Street API, build an instance of some `Params` class and pass it to the corresponding client method. When the response is received, it will be deserialized into an instance of a Java class.
 
-For example, `client.active().v1().accounts().getAccounts(...)` should be called with an instance of `AccountGetAccountsParams`, and it will return an instance of `AccountGetAccountsResponse`.
+For example, `client.v1().accounts().getAccounts(...)` should be called with an instance of `AccountGetAccountsParams`, and it will return an instance of `AccountGetAccountsResponse`.
 
 ## Immutability
 
@@ -150,8 +150,8 @@ The default client is synchronous. To switch to asynchronous execution, call the
 ```java
 import com.clear_street.api.client.ClearStreetClient;
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsParams;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsResponse;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
 import java.util.concurrent.CompletableFuture;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
@@ -161,7 +161,7 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .apiKey("My API Key")
     .build();
 
-CompletableFuture<AccountGetAccountsResponse> response = client.async().active().v1().accounts().getAccounts();
+CompletableFuture<AccountGetAccountsResponse> response = client.async().v1().accounts().getAccounts();
 ```
 
 Or create an asynchronous client from the beginning:
@@ -169,8 +169,8 @@ Or create an asynchronous client from the beginning:
 ```java
 import com.clear_street.api.client.ClearStreetClientAsync;
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClientAsync;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsParams;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsResponse;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
 import java.util.concurrent.CompletableFuture;
 
 ClearStreetClientAsync client = ClearStreetOkHttpClientAsync.builder()
@@ -180,7 +180,7 @@ ClearStreetClientAsync client = ClearStreetOkHttpClientAsync.builder()
     .apiKey("My API Key")
     .build();
 
-CompletableFuture<AccountGetAccountsResponse> response = client.active().v1().accounts().getAccounts();
+CompletableFuture<AccountGetAccountsResponse> response = client.v1().accounts().getAccounts();
 ```
 
 The asynchronous client supports the same options as the synchronous one, except most methods return `CompletableFuture`s.
@@ -194,10 +194,10 @@ To access this data, prefix any HTTP method call on a client or service with `wi
 ```java
 import com.clear_street.api.core.http.Headers;
 import com.clear_street.api.core.http.HttpResponseFor;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsParams;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsResponse;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
 
-HttpResponseFor<AccountGetAccountsResponse> response = client.active().v1().accounts().withRawResponse().getAccounts();
+HttpResponseFor<AccountGetAccountsResponse> response = client.v1().accounts().withRawResponse().getAccounts();
 
 int statusCode = response.statusCode();
 Headers headers = response.headers();
@@ -206,7 +206,7 @@ Headers headers = response.headers();
 You can still deserialize the response into an instance of a Java class if needed:
 
 ```java
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsResponse;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
 
 AccountGetAccountsResponse parsedResponse = response.parse();
 ```
@@ -307,9 +307,9 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```java
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsResponse;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
 
-AccountGetAccountsResponse response = client.active().v1().accounts().getAccounts(RequestOptions.builder().timeout(Duration.ofSeconds(30)).build());
+AccountGetAccountsResponse response = client.v1().accounts().getAccounts(RequestOptions.builder().timeout(Duration.ofSeconds(30)).build());
 ```
 
 Or configure the default for all method calls at the client level:
@@ -450,7 +450,7 @@ To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQu
 
 ```java
 import com.clear_street.api.core.JsonValue;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsParams;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
 
 AccountGetAccountsParams params = AccountGetAccountsParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
@@ -465,8 +465,8 @@ To set undocumented parameters on _nested_ headers, query params, or body classe
 
 ```java
 import com.clear_street.api.core.JsonValue;
-import com.clear_street.api.models.active.v1.accounts.AccountPatchAccountByIdParams;
-import com.clear_street.api.models.active.v1.accounts.RiskSettings;
+import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdParams;
+import com.clear_street.api.models.v1.accounts.RiskSettings;
 
 AccountPatchAccountByIdParams params = AccountPatchAccountByIdParams.builder()
     .risk(RiskSettings.builder()
@@ -480,7 +480,7 @@ These properties can be accessed on the nested built object later using the `_ad
 To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](clear-street-java-core/src/main/kotlin/com/clear_street/api/core/Values.kt) object to its setter:
 
 ```java
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsParams;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
 
 AccountGetAccountsParams params = AccountGetAccountsParams.builder().build();
 ```
@@ -530,8 +530,8 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](clear-st
 
 ```java
 import com.clear_street.api.core.JsonMissing;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountByIdParams;
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsParams;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountByIdParams;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
 
 AccountGetAccountsParams params = AccountGetAccountByIdParams.builder()
     .accountId(JsonMissing.of())
@@ -546,7 +546,7 @@ To access undocumented response properties, call the `_additionalProperties()` m
 import com.clear_street.api.core.JsonValue;
 import java.util.Map;
 
-Map<String, JsonValue> additionalProperties = client.active().v1().accounts().getAccounts(params)._additionalProperties();
+Map<String, JsonValue> additionalProperties = client.v1().accounts().getAccounts(params)._additionalProperties();
 JsonValue secretPropertyValue = additionalProperties.get("secretProperty");
 
 String result = secretPropertyValue.accept(new JsonValue.Visitor<>() {
@@ -576,7 +576,7 @@ To access a property's raw JSON value, which may be undocumented, call its `_` p
 import com.clear_street.api.core.JsonField;
 import java.util.Optional;
 
-JsonField<Object> field = client.active().v1().accounts().getAccounts(params)._field();
+JsonField<Object> field = client.v1().accounts().getAccounts(params)._field();
 
 if (field.isMissing()) {
   // The property is absent from the JSON response
@@ -601,17 +601,17 @@ By default, the SDK will not throw an exception in this case. It will throw [`Cl
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```java
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsResponse;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
 
-AccountGetAccountsResponse response = client.active().v1().accounts().getAccounts(params).validate();
+AccountGetAccountsResponse response = client.v1().accounts().getAccounts(params).validate();
 ```
 
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```java
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsResponse;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
 
-AccountGetAccountsResponse response = client.active().v1().accounts().getAccounts(RequestOptions.builder().responseValidation(true).build());
+AccountGetAccountsResponse response = client.v1().accounts().getAccounts(RequestOptions.builder().responseValidation(true).build());
 ```
 
 Or configure the default for all method calls at the client level:

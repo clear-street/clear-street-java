@@ -4,7 +4,7 @@ package com.clear_street.api.services
 
 import com.clear_street.api.client.ClearStreetClient
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsParams
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams
 import com.github.tomakehurst.wiremock.client.WireMock.anyUrl
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.get
@@ -37,7 +37,7 @@ internal class ServiceParamsTest {
     @Disabled("Mock server tests are disabled")
     @Test
     fun getAccounts() {
-        val accountService = client.active().v1().accounts()
+        val accountService = client.v1().accounts()
         stubFor(get(anyUrl()).willReturn(ok("{}")))
 
         accountService.getAccounts(

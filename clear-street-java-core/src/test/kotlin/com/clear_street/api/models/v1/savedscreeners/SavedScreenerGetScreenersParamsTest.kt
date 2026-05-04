@@ -1,0 +1,13 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.clear_street.api.models.v1.savedscreeners
+
+import org.junit.jupiter.api.Test
+
+internal class SavedScreenerGetScreenersParamsTest {
+
+    @Test
+    fun create() {
+        SavedScreenerGetScreenersParams.builder().build()
+    }
+}

@@ -105,7 +105,7 @@ private constructor(
     /**
      * The base URL to use for every request.
      *
-     * Defaults to the production environment: `https://api-active.clearstreet.io`.
+     * Defaults to the production environment: `https://api.clearstreet.com`.
      *
      * The following other environments, with dedicated builder methods, are available:
      * - staging: `https://oems-api-gw.dev-public.clst.co`
@@ -119,7 +119,7 @@ private constructor(
 
     companion object {
 
-        const val PRODUCTION_URL = "https://api-active.clearstreet.io"
+        const val PRODUCTION_URL = "https://api.clearstreet.com"
 
         const val STAGING_URL = "https://oems-api-gw.dev-public.clst.co"
 
@@ -226,7 +226,7 @@ private constructor(
         /**
          * The base URL to use for every request.
          *
-         * Defaults to the production environment: `https://api-active.clearstreet.io`.
+         * Defaults to the production environment: `https://api.clearstreet.com`.
          *
          * The following other environments, with dedicated builder methods, are available:
          * - staging: `https://oems-api-gw.dev-public.clst.co`
@@ -376,9 +376,9 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * |Setter   |System property      |Environment variable   |Required|Default value                        |
-         * |---------|---------------------|-----------------------|--------|-------------------------------------|
-         * |`baseUrl`|`clearstreet.baseUrl`|`CLEAR_STREET_BASE_URL`|true    |`"https://api-active.clearstreet.io"`|
+         * |Setter   |System property      |Environment variable   |Required|Default value                  |
+         * |---------|---------------------|-----------------------|--------|-------------------------------|
+         * |`baseUrl`|`clearstreet.baseUrl`|`CLEAR_STREET_BASE_URL`|true    |`"https://api.clearstreet.com"`|
          *
          * System properties take precedence over environment variables.
          */

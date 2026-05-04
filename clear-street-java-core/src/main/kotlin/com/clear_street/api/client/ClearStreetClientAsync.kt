@@ -3,7 +3,7 @@
 package com.clear_street.api.client
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.services.async.ActiveServiceAsync
+import com.clear_street.api.services.async.V1ServiceAsync
 import java.util.function.Consumer
 
 /**
@@ -42,7 +42,8 @@ interface ClearStreetClientAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ClearStreetClientAsync
 
-    fun active(): ActiveServiceAsync
+    /** Active Websocket. */
+    fun v1(): V1ServiceAsync
 
     /**
      * Closes this client, relinquishing any underlying resources.
@@ -72,6 +73,7 @@ interface ClearStreetClientAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): ClearStreetClientAsync.WithRawResponse
 
-        fun active(): ActiveServiceAsync.WithRawResponse
+        /** Active Websocket. */
+        fun v1(): V1ServiceAsync.WithRawResponse
     }
 }

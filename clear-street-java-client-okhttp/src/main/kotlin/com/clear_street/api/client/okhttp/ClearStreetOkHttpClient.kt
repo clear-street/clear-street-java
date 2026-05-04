@@ -207,7 +207,7 @@ class ClearStreetOkHttpClient private constructor() {
         /**
          * The base URL to use for every request.
          *
-         * Defaults to the production environment: `https://api-active.clearstreet.io`.
+         * Defaults to the production environment: `https://api.clearstreet.com`.
          *
          * The following other environments, with dedicated builder methods, are available:
          * - staging: `https://oems-api-gw.dev-public.clst.co`
