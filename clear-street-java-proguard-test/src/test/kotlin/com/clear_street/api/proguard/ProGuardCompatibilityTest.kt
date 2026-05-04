@@ -4,12 +4,12 @@ package com.clear_street.api.proguard
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
 import com.clear_street.api.core.jsonMapper
-import com.clear_street.api.models.active.v1.accounts.Account
-import com.clear_street.api.models.active.v1.accounts.AccountKind
-import com.clear_street.api.models.active.v1.accounts.AccountStatus
-import com.clear_street.api.models.active.v1.accounts.AccountSubkind
-import com.clear_street.api.models.active.v1.accounts.orders.OrderStrategy
-import com.clear_street.api.models.active.v1.accounts.orders.Urgency
+import com.clear_street.api.models.v1.accounts.Account
+import com.clear_street.api.models.v1.accounts.AccountKind
+import com.clear_street.api.models.v1.accounts.AccountStatus
+import com.clear_street.api.models.v1.accounts.AccountSubkind
+import com.clear_street.api.models.v1.accounts.orders.OrderStrategy
+import com.clear_street.api.models.v1.accounts.orders.Urgency
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -56,7 +56,7 @@ internal class ProGuardCompatibilityTest {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
 
         assertThat(client).isNotNull()
-        assertThat(client.active()).isNotNull()
+        assertThat(client.v1()).isNotNull()
     }
 
     @Test
