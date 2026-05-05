@@ -1628,7 +1628,7 @@ private constructor(
             fun extendedHours(): Optional<Boolean> = extendedHours.getOptional("extended_hours")
 
             /**
-             * OEMS instrument UUID. Either `symbol` or `instrument_id` must be provided.
+             * OEMS instrument UUID
              *
              * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -2076,7 +2076,7 @@ private constructor(
                     this.extendedHours = extendedHours
                 }
 
-                /** OEMS instrument UUID. Either `symbol` or `instrument_id` must be provided. */
+                /** OEMS instrument UUID */
                 fun instrumentId(instrumentId: String?) =
                     instrumentId(JsonField.ofNullable(instrumentId))
 
