@@ -66,6 +66,9 @@ private constructor(
     /**
      * Whether to call `validate` on every response before returning it.
      *
+     * Setting this to `true` is _not_ forwards compatible with new types from the API for existing
+     * fields.
+     *
      * Defaults to false, which means the shape of the response will not be validated upfront.
      * Instead, validation will only occur for the parts of the response that are accessed.
      */
@@ -105,7 +108,7 @@ private constructor(
     /**
      * The base URL to use for every request.
      *
-     * Defaults to the production environment: `https://api-active.clearstreet.io`.
+     * Defaults to the production environment: `https://api.clearstreet.com`.
      *
      * The following other environments, with dedicated builder methods, are available:
      * - staging: `https://oems-api-gw.dev-public.clst.co`
@@ -119,7 +122,7 @@ private constructor(
 
     companion object {
 
-        const val PRODUCTION_URL = "https://api-active.clearstreet.io"
+        const val PRODUCTION_URL = "https://api.clearstreet.com"
 
         const val STAGING_URL = "https://oems-api-gw.dev-public.clst.co"
 
@@ -226,7 +229,7 @@ private constructor(
         /**
          * The base URL to use for every request.
          *
-         * Defaults to the production environment: `https://api-active.clearstreet.io`.
+         * Defaults to the production environment: `https://api.clearstreet.com`.
          *
          * The following other environments, with dedicated builder methods, are available:
          * - staging: `https://oems-api-gw.dev-public.clst.co`
@@ -241,6 +244,9 @@ private constructor(
 
         /**
          * Whether to call `validate` on every response before returning it.
+         *
+         * Setting this to `true` is _not_ forwards compatible with new types from the API for
+         * existing fields.
          *
          * Defaults to false, which means the shape of the response will not be validated upfront.
          * Instead, validation will only occur for the parts of the response that are accessed.
@@ -376,15 +382,23 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * |Setter   |System property      |Environment variable   |Required|Default value                        |
-         * |---------|---------------------|-----------------------|--------|-------------------------------------|
-         * |`baseUrl`|`clearstreet.baseUrl`|`CLEAR_STREET_BASE_URL`|true    |`"https://api-active.clearstreet.io"`|
+         * |Setter   |System property      |Environment variable   |Required|Default value                  |
+         * |---------|---------------------|-----------------------|--------|-------------------------------|
+         * |`baseUrl`|`clearstreet.baseUrl`|`CLEAR_STREET_BASE_URL`|true    |`"https://api.clearstreet.com"`|
          *
          * System properties take precedence over environment variables.
          */
         fun fromEnv() = apply {
             (System.getProperty("clearstreet.baseUrl") ?: System.getenv("CLEAR_STREET_BASE_URL"))
                 ?.let { baseUrl(it) }
+            System.getenv("CLEAR_STREET_CUSTOM_HEADERS")?.let { customHeadersEnv ->
+                for (line in customHeadersEnv.split("\n")) {
+                    val colon = line.indexOf(':')
+                    if (colon >= 0) {
+                        putHeader(line.substring(0, colon).trim(), line.substring(colon + 1).trim())
+                    }
+                }
+            }
         }
 
         /**

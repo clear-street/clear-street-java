@@ -5,12 +5,16 @@ package com.clear_street.api.errors
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.checkRequired
 import com.clear_street.api.core.http.Headers
+import com.clear_street.api.core.jsonMapper
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class UnprocessableEntityException
 private constructor(private val headers: Headers, private val body: JsonValue, cause: Throwable?) :
-    ClearStreetServiceException("422: $body", cause) {
+    ClearStreetServiceException(
+        "422: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        cause,
+    ) {
 
     override fun statusCode(): Int = 422
 

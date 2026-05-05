@@ -16,7 +16,7 @@ import com.clear_street.api.errors.RateLimitException
 import com.clear_street.api.errors.UnauthorizedException
 import com.clear_street.api.errors.UnexpectedStatusCodeException
 import com.clear_street.api.errors.UnprocessableEntityException
-import com.clear_street.api.models.active.v1.accounts.AccountGetAccountsParams
+import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams
 import com.github.tomakehurst.wiremock.client.WireMock.anyUrl
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.status
@@ -60,7 +60,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts400() {
-        val accountService = client.active().v1().accounts()
+        val accountService = client.v1().accounts()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -85,7 +85,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts400WithRawResponse() {
-        val accountService = client.active().v1().accounts().withRawResponse()
+        val accountService = client.v1().accounts().withRawResponse()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -110,7 +110,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts401() {
-        val accountService = client.active().v1().accounts()
+        val accountService = client.v1().accounts()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -135,7 +135,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts401WithRawResponse() {
-        val accountService = client.active().v1().accounts().withRawResponse()
+        val accountService = client.v1().accounts().withRawResponse()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -160,7 +160,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts403() {
-        val accountService = client.active().v1().accounts()
+        val accountService = client.v1().accounts()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -185,7 +185,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts403WithRawResponse() {
-        val accountService = client.active().v1().accounts().withRawResponse()
+        val accountService = client.v1().accounts().withRawResponse()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -210,7 +210,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts404() {
-        val accountService = client.active().v1().accounts()
+        val accountService = client.v1().accounts()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -235,7 +235,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts404WithRawResponse() {
-        val accountService = client.active().v1().accounts().withRawResponse()
+        val accountService = client.v1().accounts().withRawResponse()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -260,7 +260,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts422() {
-        val accountService = client.active().v1().accounts()
+        val accountService = client.v1().accounts()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -285,7 +285,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts422WithRawResponse() {
-        val accountService = client.active().v1().accounts().withRawResponse()
+        val accountService = client.v1().accounts().withRawResponse()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -310,7 +310,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts429() {
-        val accountService = client.active().v1().accounts()
+        val accountService = client.v1().accounts()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -335,7 +335,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts429WithRawResponse() {
-        val accountService = client.active().v1().accounts().withRawResponse()
+        val accountService = client.v1().accounts().withRawResponse()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -360,7 +360,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts500() {
-        val accountService = client.active().v1().accounts()
+        val accountService = client.v1().accounts()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -385,7 +385,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts500WithRawResponse() {
-        val accountService = client.active().v1().accounts().withRawResponse()
+        val accountService = client.v1().accounts().withRawResponse()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -410,7 +410,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts999() {
-        val accountService = client.active().v1().accounts()
+        val accountService = client.v1().accounts()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -435,7 +435,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccounts999WithRawResponse() {
-        val accountService = client.active().v1().accounts().withRawResponse()
+        val accountService = client.v1().accounts().withRawResponse()
         stubFor(
             get(anyUrl())
                 .willReturn(
@@ -460,7 +460,7 @@ internal class ErrorHandlingTest {
 
     @Test
     fun accountsGetAccountsInvalidJsonBody() {
-        val accountService = client.active().v1().accounts()
+        val accountService = client.v1().accounts()
         stubFor(
             get(anyUrl())
                 .willReturn(status(200).withHeader(HEADER_NAME, HEADER_VALUE).withBody(NOT_JSON))
