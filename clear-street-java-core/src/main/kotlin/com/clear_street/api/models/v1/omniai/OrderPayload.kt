@@ -39,7 +39,6 @@ private constructor(
     private val limitPrice: JsonField<String>,
     private val orderId: JsonField<String>,
     private val stopPrice: JsonField<String>,
-    private val strategy: JsonField<OrderStrategyType>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -62,9 +61,6 @@ private constructor(
         limitPrice: JsonField<String> = JsonMissing.of(),
         @JsonProperty("order_id") @ExcludeMissing orderId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("strategy")
-        @ExcludeMissing
-        strategy: JsonField<OrderStrategyType> = JsonMissing.of(),
     ) : this(
         instrumentType,
         orderType,
@@ -75,7 +71,6 @@ private constructor(
         limitPrice,
         orderId,
         stopPrice,
-        strategy,
         mutableMapOf(),
     )
 
@@ -152,14 +147,6 @@ private constructor(
     fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
 
     /**
-     * Execution strategy (simplified enum, not the full strategy params for now)
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun strategy(): Optional<OrderStrategyType> = strategy.getOptional("strategy")
-
-    /**
      * Returns the raw JSON value of [instrumentType].
      *
      * Unlike [instrumentType], this method doesn't throw if the JSON field has an unexpected type.
@@ -226,15 +213,6 @@ private constructor(
      */
     @JsonProperty("stop_price") @ExcludeMissing fun _stopPrice(): JsonField<String> = stopPrice
 
-    /**
-     * Returns the raw JSON value of [strategy].
-     *
-     * Unlike [strategy], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("strategy")
-    @ExcludeMissing
-    fun _strategy(): JsonField<OrderStrategyType> = strategy
-
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -277,7 +255,6 @@ private constructor(
         private var limitPrice: JsonField<String> = JsonMissing.of()
         private var orderId: JsonField<String> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
-        private var strategy: JsonField<OrderStrategyType> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -291,7 +268,6 @@ private constructor(
             limitPrice = orderPayload.limitPrice
             orderId = orderPayload.orderId
             stopPrice = orderPayload.stopPrice
-            strategy = orderPayload.strategy
             additionalProperties = orderPayload.additionalProperties.toMutableMap()
         }
 
@@ -413,21 +389,6 @@ private constructor(
          */
         fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
 
-        /** Execution strategy (simplified enum, not the full strategy params for now) */
-        fun strategy(strategy: OrderStrategyType?) = strategy(JsonField.ofNullable(strategy))
-
-        /** Alias for calling [Builder.strategy] with `strategy.orElse(null)`. */
-        fun strategy(strategy: Optional<OrderStrategyType>) = strategy(strategy.getOrNull())
-
-        /**
-         * Sets [Builder.strategy] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.strategy] with a well-typed [OrderStrategyType] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun strategy(strategy: JsonField<OrderStrategyType>) = apply { this.strategy = strategy }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -475,7 +436,6 @@ private constructor(
                 limitPrice,
                 orderId,
                 stopPrice,
-                strategy,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -504,7 +464,6 @@ private constructor(
         limitPrice()
         orderId()
         stopPrice()
-        strategy().ifPresent { it.validate() }
         validated = true
     }
 
@@ -531,8 +490,7 @@ private constructor(
             (timeInForce.asKnown().getOrNull()?.validity() ?: 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
             (if (orderId.asKnown().isPresent) 1 else 0) +
-            (if (stopPrice.asKnown().isPresent) 1 else 0) +
-            (strategy.asKnown().getOrNull()?.validity() ?: 0)
+            (if (stopPrice.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -549,7 +507,6 @@ private constructor(
             limitPrice == other.limitPrice &&
             orderId == other.orderId &&
             stopPrice == other.stopPrice &&
-            strategy == other.strategy &&
             additionalProperties == other.additionalProperties
     }
 
@@ -564,7 +521,6 @@ private constructor(
             limitPrice,
             orderId,
             stopPrice,
-            strategy,
             additionalProperties,
         )
     }
@@ -572,5 +528,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OrderPayload{instrumentType=$instrumentType, orderType=$orderType, quantity=$quantity, side=$side, symbol=$symbol, timeInForce=$timeInForce, limitPrice=$limitPrice, orderId=$orderId, stopPrice=$stopPrice, strategy=$strategy, additionalProperties=$additionalProperties}"
+        "OrderPayload{instrumentType=$instrumentType, orderType=$orderType, quantity=$quantity, side=$side, symbol=$symbol, timeInForce=$timeInForce, limitPrice=$limitPrice, orderId=$orderId, stopPrice=$stopPrice, additionalProperties=$additionalProperties}"
 }

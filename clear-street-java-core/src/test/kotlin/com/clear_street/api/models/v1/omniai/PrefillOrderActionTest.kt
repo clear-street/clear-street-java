@@ -29,7 +29,6 @@ internal class PrefillOrderActionTest {
                         .limitPrice("150.00")
                         .orderId("order_id")
                         .stopPrice("148.00")
-                        .strategy(OrderStrategyType.SOR)
                         .build()
                 )
                 .build()
@@ -47,7 +46,6 @@ internal class PrefillOrderActionTest {
                     .limitPrice("150.00")
                     .orderId("order_id")
                     .stopPrice("148.00")
-                    .strategy(OrderStrategyType.SOR)
                     .build()
             )
     }
@@ -69,7 +67,6 @@ internal class PrefillOrderActionTest {
                         .limitPrice("150.00")
                         .orderId("order_id")
                         .stopPrice("148.00")
-                        .strategy(OrderStrategyType.SOR)
                         .build()
                 )
                 .build()

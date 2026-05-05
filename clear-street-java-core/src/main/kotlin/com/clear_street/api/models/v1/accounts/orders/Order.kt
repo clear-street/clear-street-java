@@ -55,7 +55,6 @@ private constructor(
     private val queueState: JsonField<QueueState>,
     private val releasesAt: JsonField<OffsetDateTime>,
     private val stopPrice: JsonField<String>,
-    private val strategy: JsonField<OrderStrategy>,
     private val trailingOffsetAmt: JsonField<String>,
     private val trailingOffsetAmtType: JsonField<TrailingOffsetType>,
     private val trailingWatermarkPx: JsonField<String>,
@@ -125,9 +124,6 @@ private constructor(
         @ExcludeMissing
         releasesAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("strategy")
-        @ExcludeMissing
-        strategy: JsonField<OrderStrategy> = JsonMissing.of(),
         @JsonProperty("trailing_offset_amt")
         @ExcludeMissing
         trailingOffsetAmt: JsonField<String> = JsonMissing.of(),
@@ -169,7 +165,6 @@ private constructor(
         queueState,
         releasesAt,
         stopPrice,
-        strategy,
         trailingOffsetAmt,
         trailingOffsetAmtType,
         trailingWatermarkPx,
@@ -377,14 +372,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
-
-    /**
-     * Execution strategy for this order
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun strategy(): Optional<OrderStrategy> = strategy.getOptional("strategy")
 
     /**
      * Trailing offset amount for trailing orders
@@ -637,13 +624,6 @@ private constructor(
     @JsonProperty("stop_price") @ExcludeMissing fun _stopPrice(): JsonField<String> = stopPrice
 
     /**
-     * Returns the raw JSON value of [strategy].
-     *
-     * Unlike [strategy], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("strategy") @ExcludeMissing fun _strategy(): JsonField<OrderStrategy> = strategy
-
-    /**
      * Returns the raw JSON value of [trailingOffsetAmt].
      *
      * Unlike [trailingOffsetAmt], this method doesn't throw if the JSON field has an unexpected
@@ -761,7 +741,6 @@ private constructor(
         private var queueState: JsonField<QueueState> = JsonMissing.of()
         private var releasesAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
-        private var strategy: JsonField<OrderStrategy> = JsonMissing.of()
         private var trailingOffsetAmt: JsonField<String> = JsonMissing.of()
         private var trailingOffsetAmtType: JsonField<TrailingOffsetType> = JsonMissing.of()
         private var trailingWatermarkPx: JsonField<String> = JsonMissing.of()
@@ -796,7 +775,6 @@ private constructor(
             queueState = order.queueState
             releasesAt = order.releasesAt
             stopPrice = order.stopPrice
-            strategy = order.strategy
             trailingOffsetAmt = order.trailingOffsetAmt
             trailingOffsetAmtType = order.trailingOffsetAmtType
             trailingWatermarkPx = order.trailingWatermarkPx
@@ -1169,42 +1147,6 @@ private constructor(
          */
         fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
 
-        /** Execution strategy for this order */
-        fun strategy(strategy: OrderStrategy?) = strategy(JsonField.ofNullable(strategy))
-
-        /** Alias for calling [Builder.strategy] with `strategy.orElse(null)`. */
-        fun strategy(strategy: Optional<OrderStrategy>) = strategy(strategy.getOrNull())
-
-        /**
-         * Sets [Builder.strategy] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.strategy] with a well-typed [OrderStrategy] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun strategy(strategy: JsonField<OrderStrategy>) = apply { this.strategy = strategy }
-
-        /** Alias for calling [strategy] with `OrderStrategy.ofSor(sor)`. */
-        fun strategy(sor: OrderStrategy.Sor) = strategy(OrderStrategy.ofSor(sor))
-
-        /** Alias for calling [strategy] with `OrderStrategy.ofVwap(vwap)`. */
-        fun strategy(vwap: OrderStrategy.Vwap) = strategy(OrderStrategy.ofVwap(vwap))
-
-        /** Alias for calling [strategy] with `OrderStrategy.ofTwap(twap)`. */
-        fun strategy(twap: OrderStrategy.Twap) = strategy(OrderStrategy.ofTwap(twap))
-
-        /** Alias for calling [strategy] with `OrderStrategy.ofAp(ap)`. */
-        fun strategy(ap: OrderStrategy.Ap) = strategy(OrderStrategy.ofAp(ap))
-
-        /** Alias for calling [strategy] with `OrderStrategy.ofPov(pov)`. */
-        fun strategy(pov: OrderStrategy.Pov) = strategy(OrderStrategy.ofPov(pov))
-
-        /** Alias for calling [strategy] with `OrderStrategy.ofDark(dark)`. */
-        fun strategy(dark: OrderStrategy.Dark) = strategy(OrderStrategy.ofDark(dark))
-
-        /** Alias for calling [strategy] with `OrderStrategy.ofDma(dma)`. */
-        fun strategy(dma: OrderStrategy.Dma) = strategy(OrderStrategy.ofDma(dma))
-
         /** Trailing offset amount for trailing orders */
         fun trailingOffsetAmt(trailingOffsetAmt: String?) =
             trailingOffsetAmt(JsonField.ofNullable(trailingOffsetAmt))
@@ -1387,7 +1329,6 @@ private constructor(
                 queueState,
                 releasesAt,
                 stopPrice,
-                strategy,
                 trailingOffsetAmt,
                 trailingOffsetAmtType,
                 trailingWatermarkPx,
@@ -1437,7 +1378,6 @@ private constructor(
         queueState().ifPresent { it.validate() }
         releasesAt()
         stopPrice()
-        strategy().ifPresent { it.validate() }
         trailingOffsetAmt()
         trailingOffsetAmtType().ifPresent { it.validate() }
         trailingWatermarkPx()
@@ -1486,7 +1426,6 @@ private constructor(
             (queueState.asKnown().getOrNull()?.validity() ?: 0) +
             (if (releasesAt.asKnown().isPresent) 1 else 0) +
             (if (stopPrice.asKnown().isPresent) 1 else 0) +
-            (strategy.asKnown().getOrNull()?.validity() ?: 0) +
             (if (trailingOffsetAmt.asKnown().isPresent) 1 else 0) +
             (trailingOffsetAmtType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (trailingWatermarkPx.asKnown().isPresent) 1 else 0) +
@@ -1524,7 +1463,6 @@ private constructor(
             queueState == other.queueState &&
             releasesAt == other.releasesAt &&
             stopPrice == other.stopPrice &&
-            strategy == other.strategy &&
             trailingOffsetAmt == other.trailingOffsetAmt &&
             trailingOffsetAmtType == other.trailingOffsetAmtType &&
             trailingWatermarkPx == other.trailingWatermarkPx &&
@@ -1560,7 +1498,6 @@ private constructor(
             queueState,
             releasesAt,
             stopPrice,
-            strategy,
             trailingOffsetAmt,
             trailingOffsetAmtType,
             trailingWatermarkPx,
@@ -1573,5 +1510,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
 }
