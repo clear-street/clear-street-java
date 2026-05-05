@@ -10,9 +10,7 @@ import com.clear_street.api.models.v1.accounts.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.v1.accounts.orders.OrderGetOrdersParams
 import com.clear_street.api.models.v1.accounts.orders.OrderReplaceOrderParams
 import com.clear_street.api.models.v1.accounts.orders.OrderSubmitOrdersParams
-import com.clear_street.api.models.v1.accounts.orders.OrderType
 import com.clear_street.api.models.v1.accounts.orders.Side
-import com.clear_street.api.models.v1.accounts.orders.TimeInForce
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -110,7 +108,7 @@ internal class OrderServiceAsyncTest {
                     .limitPrice("150.50")
                     .quantity("125")
                     .stopPrice("148.00")
-                    .timeInForce(TimeInForce.DAY)
+                    .timeInForce(OrderReplaceOrderParams.TimeInForce.DAY)
                     .build()
             )
 
@@ -176,8 +174,14 @@ internal class OrderServiceAsyncTest {
                                         .build(),
                                 )
                             )
-                            .orderType(OrderType.LIMIT)
-                            .timeInForce(TimeInForce.DAY)
+                            .orderType(
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType
+                                    .LIMIT
+                            )
+                            .timeInForce(
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce
+                                    .DAY
+                            )
                             .id("my-mleg-ref-20251001-001")
                             .limitPrice("0.50")
                             .quantity("1")
