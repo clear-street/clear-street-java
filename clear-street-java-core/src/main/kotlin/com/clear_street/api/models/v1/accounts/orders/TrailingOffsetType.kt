@@ -24,7 +24,7 @@ class TrailingOffsetType @JsonCreator private constructor(private val value: Jso
 
         @JvmField val PRICE = of("PRICE")
 
-        @JvmField val PERCENT_BPS = of("PERCENT_BPS")
+        @JvmField val BPS = of("BPS")
 
         @JvmStatic fun of(value: String) = TrailingOffsetType(JsonField.of(value))
     }
@@ -32,7 +32,7 @@ class TrailingOffsetType @JsonCreator private constructor(private val value: Jso
     /** An enum containing [TrailingOffsetType]'s known values. */
     enum class Known {
         PRICE,
-        PERCENT_BPS,
+        BPS,
     }
 
     /**
@@ -46,7 +46,7 @@ class TrailingOffsetType @JsonCreator private constructor(private val value: Jso
      */
     enum class Value {
         PRICE,
-        PERCENT_BPS,
+        BPS,
         /**
          * An enum member indicating that [TrailingOffsetType] was instantiated with an unknown
          * value.
@@ -64,7 +64,7 @@ class TrailingOffsetType @JsonCreator private constructor(private val value: Jso
     fun value(): Value =
         when (this) {
             PRICE -> Value.PRICE
-            PERCENT_BPS -> Value.PERCENT_BPS
+            BPS -> Value.BPS
             else -> Value._UNKNOWN
         }
 
@@ -80,7 +80,7 @@ class TrailingOffsetType @JsonCreator private constructor(private val value: Jso
     fun known(): Known =
         when (this) {
             PRICE -> Known.PRICE
-            PERCENT_BPS -> Known.PERCENT_BPS
+            BPS -> Known.BPS
             else -> throw ClearStreetInvalidDataException("Unknown TrailingOffsetType: $value")
         }
 
