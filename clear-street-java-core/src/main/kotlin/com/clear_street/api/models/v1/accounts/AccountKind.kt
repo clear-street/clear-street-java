@@ -21,13 +21,7 @@ class AccountKind @JsonCreator private constructor(private val value: JsonField<
 
     companion object {
 
-        @JvmField val HOUSE = of("HOUSE")
-
-        @JvmField val PAB = of("PAB")
-
         @JvmField val CUSTOMER = of("CUSTOMER")
-
-        @JvmField val COUNTERPARTY = of("COUNTERPARTY")
 
         @JvmField val OTHER = of("OTHER")
 
@@ -36,10 +30,7 @@ class AccountKind @JsonCreator private constructor(private val value: JsonField<
 
     /** An enum containing [AccountKind]'s known values. */
     enum class Known {
-        HOUSE,
-        PAB,
         CUSTOMER,
-        COUNTERPARTY,
         OTHER,
     }
 
@@ -53,10 +44,7 @@ class AccountKind @JsonCreator private constructor(private val value: JsonField<
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
-        HOUSE,
-        PAB,
         CUSTOMER,
-        COUNTERPARTY,
         OTHER,
         /** An enum member indicating that [AccountKind] was instantiated with an unknown value. */
         _UNKNOWN,
@@ -71,10 +59,7 @@ class AccountKind @JsonCreator private constructor(private val value: JsonField<
      */
     fun value(): Value =
         when (this) {
-            HOUSE -> Value.HOUSE
-            PAB -> Value.PAB
             CUSTOMER -> Value.CUSTOMER
-            COUNTERPARTY -> Value.COUNTERPARTY
             OTHER -> Value.OTHER
             else -> Value._UNKNOWN
         }
@@ -90,10 +75,7 @@ class AccountKind @JsonCreator private constructor(private val value: JsonField<
      */
     fun known(): Known =
         when (this) {
-            HOUSE -> Known.HOUSE
-            PAB -> Known.PAB
             CUSTOMER -> Known.CUSTOMER
-            COUNTERPARTY -> Known.COUNTERPARTY
             OTHER -> Known.OTHER
             else -> throw ClearStreetInvalidDataException("Unknown AccountKind: $value")
         }
