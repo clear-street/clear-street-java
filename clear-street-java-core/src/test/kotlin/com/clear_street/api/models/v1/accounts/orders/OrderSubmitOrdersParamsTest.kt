@@ -54,8 +54,12 @@ internal class OrderSubmitOrdersParamsTest {
                                 .build(),
                         )
                     )
-                    .orderType(OrderType.LIMIT)
-                    .timeInForce(TimeInForce.DAY)
+                    .orderType(
+                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
+                    )
+                    .timeInForce(
+                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
+                    )
                     .id("my-mleg-ref-20251001-001")
                     .limitPrice("0.50")
                     .quantity("1")
@@ -93,8 +97,12 @@ internal class OrderSubmitOrdersParamsTest {
                                     .build(),
                             )
                         )
-                        .orderType(OrderType.LIMIT)
-                        .timeInForce(TimeInForce.DAY)
+                        .orderType(
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
+                        )
+                        .timeInForce(
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
+                        )
                         .build()
                 )
                 .build()
@@ -151,8 +159,12 @@ internal class OrderSubmitOrdersParamsTest {
                                     .build(),
                             )
                         )
-                        .orderType(OrderType.LIMIT)
-                        .timeInForce(TimeInForce.DAY)
+                        .orderType(
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
+                        )
+                        .timeInForce(
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
+                        )
                         .id("my-mleg-ref-20251001-001")
                         .limitPrice("0.50")
                         .quantity("1")
@@ -206,8 +218,12 @@ internal class OrderSubmitOrdersParamsTest {
                                     .build(),
                             )
                         )
-                        .orderType(OrderType.LIMIT)
-                        .timeInForce(TimeInForce.DAY)
+                        .orderType(
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
+                        )
+                        .timeInForce(
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
+                        )
                         .id("my-mleg-ref-20251001-001")
                         .limitPrice("0.50")
                         .quantity("1")
@@ -245,8 +261,12 @@ internal class OrderSubmitOrdersParamsTest {
                                     .build(),
                             )
                         )
-                        .orderType(OrderType.LIMIT)
-                        .timeInForce(TimeInForce.DAY)
+                        .orderType(
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
+                        )
+                        .timeInForce(
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
+                        )
                         .build()
                 )
                 .build()
@@ -279,8 +299,12 @@ internal class OrderSubmitOrdersParamsTest {
                                     .build(),
                             )
                         )
-                        .orderType(OrderType.LIMIT)
-                        .timeInForce(TimeInForce.DAY)
+                        .orderType(
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
+                        )
+                        .timeInForce(
+                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
+                        )
                         .build()
                 )
             )

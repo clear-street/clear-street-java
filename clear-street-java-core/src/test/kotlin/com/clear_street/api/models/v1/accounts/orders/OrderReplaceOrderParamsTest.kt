@@ -15,7 +15,7 @@ internal class OrderReplaceOrderParamsTest {
             .limitPrice("150.50")
             .quantity("125")
             .stopPrice("148.00")
-            .timeInForce(TimeInForce.DAY)
+            .timeInForce(OrderReplaceOrderParams.TimeInForce.DAY)
             .build()
     }
 
@@ -38,7 +38,7 @@ internal class OrderReplaceOrderParamsTest {
                 .limitPrice("150.50")
                 .quantity("125")
                 .stopPrice("148.00")
-                .timeInForce(TimeInForce.DAY)
+                .timeInForce(OrderReplaceOrderParams.TimeInForce.DAY)
                 .build()
 
         val body = params._body()
@@ -46,7 +46,7 @@ internal class OrderReplaceOrderParamsTest {
         assertThat(body.limitPrice()).contains("150.50")
         assertThat(body.quantity()).contains("125")
         assertThat(body.stopPrice()).contains("148.00")
-        assertThat(body.timeInForce()).contains(TimeInForce.DAY)
+        assertThat(body.timeInForce()).contains(OrderReplaceOrderParams.TimeInForce.DAY)
     }
 
     @Test
