@@ -13,7 +13,7 @@ import com.clear_street.api.core.http.HttpResponse
 import com.clear_street.api.core.http.HttpResponse.Handler
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
-import com.clear_street.api.models.v1.V1WsParams
+import com.clear_street.api.models.v1.V1WebsocketHandlerParams
 import com.clear_street.api.services.blocking.v1.AccountService
 import com.clear_street.api.services.blocking.v1.AccountServiceImpl
 import com.clear_street.api.services.blocking.v1.CalendarService
@@ -104,9 +104,12 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     /** Create and manage watchlists. */
     override fun watchlists(): WatchlistService = watchlists
 
-    override fun ws(params: V1WsParams, requestOptions: RequestOptions) {
+    override fun websocketHandler(
+        params: V1WebsocketHandlerParams,
+        requestOptions: RequestOptions,
+    ) {
         // get /v1/ws
-        withRawResponse().ws(params, requestOptions)
+        withRawResponse().websocketHandler(params, requestOptions)
     }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -196,9 +199,12 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
         /** Create and manage watchlists. */
         override fun watchlists(): WatchlistService.WithRawResponse = watchlists
 
-        private val wsHandler: Handler<Void?> = emptyHandler()
+        private val websocketHandlerHandler: Handler<Void?> = emptyHandler()
 
-        override fun ws(params: V1WsParams, requestOptions: RequestOptions): HttpResponse {
+        override fun websocketHandler(
+            params: V1WebsocketHandlerParams,
+            requestOptions: RequestOptions,
+        ): HttpResponse {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -208,7 +214,9 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
                     .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable { response.use { wsHandler.handle(it) } }
+            return errorHandler.handle(response).parseable {
+                response.use { websocketHandlerHandler.handle(it) }
+            }
         }
     }
 }

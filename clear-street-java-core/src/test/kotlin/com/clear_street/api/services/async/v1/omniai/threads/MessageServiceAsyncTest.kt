@@ -4,7 +4,7 @@ package com.clear_street.api.services.async.v1.omniai.threads
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clear_street.api.models.v1.omniai.threads.messages.MessageCreateMessageParams
-import com.clear_street.api.models.v1.omniai.threads.messages.MessageListMessagesParams
+import com.clear_street.api.models.v1.omniai.threads.messages.MessageGetMessagesParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -32,13 +32,13 @@ internal class MessageServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun listMessages() {
+    fun getMessages() {
         val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
         val messageServiceAsync = client.v1().omniAi().threads().messages()
 
         val responseFuture =
-            messageServiceAsync.listMessages(
-                MessageListMessagesParams.builder()
+            messageServiceAsync.getMessages(
+                MessageGetMessagesParams.builder()
                     .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .accountId(0L)
                     .pageSize(1L)

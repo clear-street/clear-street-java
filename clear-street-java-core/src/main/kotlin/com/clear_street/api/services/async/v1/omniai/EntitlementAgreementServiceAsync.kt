@@ -5,8 +5,8 @@ package com.clear_street.api.services.async.v1.omniai
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
-import com.clear_street.api.models.v1.omniai.entitlementagreements.EntitlementAgreementListEntitlementAgreementsParams
-import com.clear_street.api.models.v1.omniai.entitlementagreements.EntitlementAgreementListEntitlementAgreementsResponse
+import com.clear_street.api.models.v1.omniai.entitlementagreements.EntitlementAgreementGetEntitlementAgreementsParams
+import com.clear_street.api.models.v1.omniai.entitlementagreements.EntitlementAgreementGetEntitlementAgreementsResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -31,30 +31,30 @@ interface EntitlementAgreementServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EntitlementAgreementServiceAsync
 
     /** List current signable entitlement agreements for consent UX. */
-    fun listEntitlementAgreements():
-        CompletableFuture<EntitlementAgreementListEntitlementAgreementsResponse> =
-        listEntitlementAgreements(EntitlementAgreementListEntitlementAgreementsParams.none())
+    fun getEntitlementAgreements():
+        CompletableFuture<EntitlementAgreementGetEntitlementAgreementsResponse> =
+        getEntitlementAgreements(EntitlementAgreementGetEntitlementAgreementsParams.none())
 
-    /** @see listEntitlementAgreements */
-    fun listEntitlementAgreements(
-        params: EntitlementAgreementListEntitlementAgreementsParams =
-            EntitlementAgreementListEntitlementAgreementsParams.none(),
+    /** @see getEntitlementAgreements */
+    fun getEntitlementAgreements(
+        params: EntitlementAgreementGetEntitlementAgreementsParams =
+            EntitlementAgreementGetEntitlementAgreementsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<EntitlementAgreementListEntitlementAgreementsResponse>
+    ): CompletableFuture<EntitlementAgreementGetEntitlementAgreementsResponse>
 
-    /** @see listEntitlementAgreements */
-    fun listEntitlementAgreements(
-        params: EntitlementAgreementListEntitlementAgreementsParams =
-            EntitlementAgreementListEntitlementAgreementsParams.none()
-    ): CompletableFuture<EntitlementAgreementListEntitlementAgreementsResponse> =
-        listEntitlementAgreements(params, RequestOptions.none())
+    /** @see getEntitlementAgreements */
+    fun getEntitlementAgreements(
+        params: EntitlementAgreementGetEntitlementAgreementsParams =
+            EntitlementAgreementGetEntitlementAgreementsParams.none()
+    ): CompletableFuture<EntitlementAgreementGetEntitlementAgreementsResponse> =
+        getEntitlementAgreements(params, RequestOptions.none())
 
-    /** @see listEntitlementAgreements */
-    fun listEntitlementAgreements(
+    /** @see getEntitlementAgreements */
+    fun getEntitlementAgreements(
         requestOptions: RequestOptions
-    ): CompletableFuture<EntitlementAgreementListEntitlementAgreementsResponse> =
-        listEntitlementAgreements(
-            EntitlementAgreementListEntitlementAgreementsParams.none(),
+    ): CompletableFuture<EntitlementAgreementGetEntitlementAgreementsResponse> =
+        getEntitlementAgreements(
+            EntitlementAgreementGetEntitlementAgreementsParams.none(),
             requestOptions,
         )
 
@@ -75,37 +75,36 @@ interface EntitlementAgreementServiceAsync {
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/entitlement-agreements`, but is
-         * otherwise the same as [EntitlementAgreementServiceAsync.listEntitlementAgreements].
+         * otherwise the same as [EntitlementAgreementServiceAsync.getEntitlementAgreements].
          */
-        fun listEntitlementAgreements():
+        fun getEntitlementAgreements():
             CompletableFuture<
-                HttpResponseFor<EntitlementAgreementListEntitlementAgreementsResponse>
-            > =
-            listEntitlementAgreements(EntitlementAgreementListEntitlementAgreementsParams.none())
+                HttpResponseFor<EntitlementAgreementGetEntitlementAgreementsResponse>
+            > = getEntitlementAgreements(EntitlementAgreementGetEntitlementAgreementsParams.none())
 
-        /** @see listEntitlementAgreements */
-        fun listEntitlementAgreements(
-            params: EntitlementAgreementListEntitlementAgreementsParams =
-                EntitlementAgreementListEntitlementAgreementsParams.none(),
+        /** @see getEntitlementAgreements */
+        fun getEntitlementAgreements(
+            params: EntitlementAgreementGetEntitlementAgreementsParams =
+                EntitlementAgreementGetEntitlementAgreementsParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<EntitlementAgreementListEntitlementAgreementsResponse>>
+        ): CompletableFuture<HttpResponseFor<EntitlementAgreementGetEntitlementAgreementsResponse>>
 
-        /** @see listEntitlementAgreements */
-        fun listEntitlementAgreements(
-            params: EntitlementAgreementListEntitlementAgreementsParams =
-                EntitlementAgreementListEntitlementAgreementsParams.none()
+        /** @see getEntitlementAgreements */
+        fun getEntitlementAgreements(
+            params: EntitlementAgreementGetEntitlementAgreementsParams =
+                EntitlementAgreementGetEntitlementAgreementsParams.none()
         ): CompletableFuture<
-            HttpResponseFor<EntitlementAgreementListEntitlementAgreementsResponse>
-        > = listEntitlementAgreements(params, RequestOptions.none())
+            HttpResponseFor<EntitlementAgreementGetEntitlementAgreementsResponse>
+        > = getEntitlementAgreements(params, RequestOptions.none())
 
-        /** @see listEntitlementAgreements */
-        fun listEntitlementAgreements(
+        /** @see getEntitlementAgreements */
+        fun getEntitlementAgreements(
             requestOptions: RequestOptions
         ): CompletableFuture<
-            HttpResponseFor<EntitlementAgreementListEntitlementAgreementsResponse>
+            HttpResponseFor<EntitlementAgreementGetEntitlementAgreementsResponse>
         > =
-            listEntitlementAgreements(
-                EntitlementAgreementListEntitlementAgreementsParams.none(),
+            getEntitlementAgreements(
+                EntitlementAgreementGetEntitlementAgreementsParams.none(),
                 requestOptions,
             )
     }

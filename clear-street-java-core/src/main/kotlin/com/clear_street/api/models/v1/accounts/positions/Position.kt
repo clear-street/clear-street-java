@@ -38,7 +38,7 @@ private constructor(
     private val dailyUnrealizedPnl: JsonField<String>,
     private val dailyUnrealizedPnlPct: JsonField<String>,
     private val instrumentPrice: JsonField<String>,
-    private val underlierInstrumentId: JsonField<String>,
+    private val underlyingInstrumentId: JsonField<String>,
     private val unrealizedPnl: JsonField<String>,
     private val unrealizedPnlPct: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -81,9 +81,9 @@ private constructor(
         @JsonProperty("instrument_price")
         @ExcludeMissing
         instrumentPrice: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("underlier_instrument_id")
+        @JsonProperty("underlying_instrument_id")
         @ExcludeMissing
-        underlierInstrumentId: JsonField<String> = JsonMissing.of(),
+        underlyingInstrumentId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("unrealized_pnl")
         @ExcludeMissing
         unrealizedPnl: JsonField<String> = JsonMissing.of(),
@@ -106,7 +106,7 @@ private constructor(
         dailyUnrealizedPnl,
         dailyUnrealizedPnlPct,
         instrumentPrice,
-        underlierInstrumentId,
+        underlyingInstrumentId,
         unrealizedPnl,
         unrealizedPnlPct,
         mutableMapOf(),
@@ -241,8 +241,8 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun underlierInstrumentId(): Optional<String> =
-        underlierInstrumentId.getOptional("underlier_instrument_id")
+    fun underlyingInstrumentId(): Optional<String> =
+        underlyingInstrumentId.getOptional("underlying_instrument_id")
 
     /**
      * The total unrealized profit or loss for this position based on current market value
@@ -391,14 +391,14 @@ private constructor(
     fun _instrumentPrice(): JsonField<String> = instrumentPrice
 
     /**
-     * Returns the raw JSON value of [underlierInstrumentId].
+     * Returns the raw JSON value of [underlyingInstrumentId].
      *
-     * Unlike [underlierInstrumentId], this method doesn't throw if the JSON field has an unexpected
-     * type.
+     * Unlike [underlyingInstrumentId], this method doesn't throw if the JSON field has an
+     * unexpected type.
      */
-    @JsonProperty("underlier_instrument_id")
+    @JsonProperty("underlying_instrument_id")
     @ExcludeMissing
-    fun _underlierInstrumentId(): JsonField<String> = underlierInstrumentId
+    fun _underlyingInstrumentId(): JsonField<String> = underlyingInstrumentId
 
     /**
      * Returns the raw JSON value of [unrealizedPnl].
@@ -469,7 +469,7 @@ private constructor(
         private var dailyUnrealizedPnl: JsonField<String> = JsonMissing.of()
         private var dailyUnrealizedPnlPct: JsonField<String> = JsonMissing.of()
         private var instrumentPrice: JsonField<String> = JsonMissing.of()
-        private var underlierInstrumentId: JsonField<String> = JsonMissing.of()
+        private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
         private var unrealizedPnl: JsonField<String> = JsonMissing.of()
         private var unrealizedPnlPct: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -491,7 +491,7 @@ private constructor(
             dailyUnrealizedPnl = position.dailyUnrealizedPnl
             dailyUnrealizedPnlPct = position.dailyUnrealizedPnlPct
             instrumentPrice = position.instrumentPrice
-            underlierInstrumentId = position.underlierInstrumentId
+            underlyingInstrumentId = position.underlyingInstrumentId
             unrealizedPnl = position.unrealizedPnl
             unrealizedPnlPct = position.unrealizedPnlPct
             additionalProperties = position.additionalProperties.toMutableMap()
@@ -731,25 +731,25 @@ private constructor(
         }
 
         /** OEMS instrument identifier of the underlying instrument, if resolvable */
-        fun underlierInstrumentId(underlierInstrumentId: String?) =
-            underlierInstrumentId(JsonField.ofNullable(underlierInstrumentId))
+        fun underlyingInstrumentId(underlyingInstrumentId: String?) =
+            underlyingInstrumentId(JsonField.ofNullable(underlyingInstrumentId))
 
         /**
-         * Alias for calling [Builder.underlierInstrumentId] with
-         * `underlierInstrumentId.orElse(null)`.
+         * Alias for calling [Builder.underlyingInstrumentId] with
+         * `underlyingInstrumentId.orElse(null)`.
          */
-        fun underlierInstrumentId(underlierInstrumentId: Optional<String>) =
-            underlierInstrumentId(underlierInstrumentId.getOrNull())
+        fun underlyingInstrumentId(underlyingInstrumentId: Optional<String>) =
+            underlyingInstrumentId(underlyingInstrumentId.getOrNull())
 
         /**
-         * Sets [Builder.underlierInstrumentId] to an arbitrary JSON value.
+         * Sets [Builder.underlyingInstrumentId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.underlierInstrumentId] with a well-typed [String] value
+         * You should usually call [Builder.underlyingInstrumentId] with a well-typed [String] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun underlierInstrumentId(underlierInstrumentId: JsonField<String>) = apply {
-            this.underlierInstrumentId = underlierInstrumentId
+        fun underlyingInstrumentId(underlyingInstrumentId: JsonField<String>) = apply {
+            this.underlyingInstrumentId = underlyingInstrumentId
         }
 
         /** The total unrealized profit or loss for this position based on current market value */
@@ -848,7 +848,7 @@ private constructor(
                 dailyUnrealizedPnl,
                 dailyUnrealizedPnlPct,
                 instrumentPrice,
-                underlierInstrumentId,
+                underlyingInstrumentId,
                 unrealizedPnl,
                 unrealizedPnlPct,
                 additionalProperties.toMutableMap(),
@@ -885,7 +885,7 @@ private constructor(
         dailyUnrealizedPnl()
         dailyUnrealizedPnlPct()
         instrumentPrice()
-        underlierInstrumentId()
+        underlyingInstrumentId()
         unrealizedPnl()
         unrealizedPnlPct()
         validated = true
@@ -921,7 +921,7 @@ private constructor(
             (if (dailyUnrealizedPnl.asKnown().isPresent) 1 else 0) +
             (if (dailyUnrealizedPnlPct.asKnown().isPresent) 1 else 0) +
             (if (instrumentPrice.asKnown().isPresent) 1 else 0) +
-            (if (underlierInstrumentId.asKnown().isPresent) 1 else 0) +
+            (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0) +
             (if (unrealizedPnl.asKnown().isPresent) 1 else 0) +
             (if (unrealizedPnlPct.asKnown().isPresent) 1 else 0)
 
@@ -946,7 +946,7 @@ private constructor(
             dailyUnrealizedPnl == other.dailyUnrealizedPnl &&
             dailyUnrealizedPnlPct == other.dailyUnrealizedPnlPct &&
             instrumentPrice == other.instrumentPrice &&
-            underlierInstrumentId == other.underlierInstrumentId &&
+            underlyingInstrumentId == other.underlyingInstrumentId &&
             unrealizedPnl == other.unrealizedPnl &&
             unrealizedPnlPct == other.unrealizedPnlPct &&
             additionalProperties == other.additionalProperties
@@ -969,7 +969,7 @@ private constructor(
             dailyUnrealizedPnl,
             dailyUnrealizedPnlPct,
             instrumentPrice,
-            underlierInstrumentId,
+            underlyingInstrumentId,
             unrealizedPnl,
             unrealizedPnlPct,
             additionalProperties,
@@ -979,5 +979,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Position{accountId=$accountId, availableQuantity=$availableQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, marketValue=$marketValue, positionType=$positionType, quantity=$quantity, symbol=$symbol, avgPrice=$avgPrice, closingPrice=$closingPrice, closingPriceDate=$closingPriceDate, costBasis=$costBasis, dailyUnrealizedPnl=$dailyUnrealizedPnl, dailyUnrealizedPnlPct=$dailyUnrealizedPnlPct, instrumentPrice=$instrumentPrice, underlierInstrumentId=$underlierInstrumentId, unrealizedPnl=$unrealizedPnl, unrealizedPnlPct=$unrealizedPnlPct, additionalProperties=$additionalProperties}"
+        "Position{accountId=$accountId, availableQuantity=$availableQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, marketValue=$marketValue, positionType=$positionType, quantity=$quantity, symbol=$symbol, avgPrice=$avgPrice, closingPrice=$closingPrice, closingPriceDate=$closingPriceDate, costBasis=$costBasis, dailyUnrealizedPnl=$dailyUnrealizedPnl, dailyUnrealizedPnlPct=$dailyUnrealizedPnlPct, instrumentPrice=$instrumentPrice, underlyingInstrumentId=$underlyingInstrumentId, unrealizedPnl=$unrealizedPnl, unrealizedPnlPct=$unrealizedPnlPct, additionalProperties=$additionalProperties}"
 }

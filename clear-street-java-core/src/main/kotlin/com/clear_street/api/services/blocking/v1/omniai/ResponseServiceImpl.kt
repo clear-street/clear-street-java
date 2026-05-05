@@ -18,8 +18,8 @@ import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
 import com.clear_street.api.models.v1.omniai.responses.ResponseCancelResponseParams
 import com.clear_street.api.models.v1.omniai.responses.ResponseCancelResponseResponse
-import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseParams
-import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseResponse
+import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseByIdParams
+import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseByIdResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -48,12 +48,12 @@ class ResponseServiceImpl internal constructor(private val clientOptions: Client
         // delete /v1/omni-ai/responses/{response_id}
         withRawResponse().cancelResponse(params, requestOptions).parse()
 
-    override fun getResponse(
-        params: ResponseGetResponseParams,
+    override fun getResponseById(
+        params: ResponseGetResponseByIdParams,
         requestOptions: RequestOptions,
-    ): ResponseGetResponseResponse =
+    ): ResponseGetResponseByIdResponse =
         // get /v1/omni-ai/responses/{response_id}
-        withRawResponse().getResponse(params, requestOptions).parse()
+        withRawResponse().getResponseById(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         ResponseService.WithRawResponse {
@@ -99,13 +99,13 @@ class ResponseServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val getResponseHandler: Handler<ResponseGetResponseResponse> =
-            jsonHandler<ResponseGetResponseResponse>(clientOptions.jsonMapper)
+        private val getResponseByIdHandler: Handler<ResponseGetResponseByIdResponse> =
+            jsonHandler<ResponseGetResponseByIdResponse>(clientOptions.jsonMapper)
 
-        override fun getResponse(
-            params: ResponseGetResponseParams,
+        override fun getResponseById(
+            params: ResponseGetResponseByIdParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ResponseGetResponseResponse> {
+        ): HttpResponseFor<ResponseGetResponseByIdResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("responseId", params.responseId().getOrNull())
@@ -120,7 +120,7 @@ class ResponseServiceImpl internal constructor(private val clientOptions: Client
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { getResponseHandler.handle(it) }
+                    .use { getResponseByIdHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

@@ -5,7 +5,7 @@ package com.clear_street.api.services.async.v1
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdParams
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsParams
-import com.clear_street.api.models.v1.instruments.InstrumentSearchParams
+import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -58,21 +58,21 @@ internal class InstrumentServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun search() {
+    fun searchInstruments() {
         val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
         val instrumentServiceAsync = client.v1().instruments()
 
         val responseFuture =
-            instrumentServiceAsync.search(
-                InstrumentSearchParams.builder()
+            instrumentServiceAsync.searchInstruments(
+                InstrumentSearchInstrumentsParams.builder()
                     .q("q")
                     .assetClass("asset_class")
                     .country("country")
                     .currency("currency")
-                    .cursor("cursor")
                     .includeInactive(true)
                     .includeRestricted(true)
-                    .limit(0L)
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .build()
             )
 

@@ -5,8 +5,8 @@ package com.clear_street.api.services.async.v1.instruments
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
-import com.clear_street.api.models.v1.instruments.options.OptionContractsParams
-import com.clear_street.api.models.v1.instruments.options.OptionContractsResponse
+import com.clear_street.api.models.v1.instruments.options.OptionGetOptionContractsParams
+import com.clear_street.api.models.v1.instruments.options.OptionGetOptionContractsResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -31,23 +31,26 @@ interface OptionServiceAsync {
      * Returns options contracts for a given underlier with options-specific metadata. Exactly one
      * underlier identifier must be provided.
      */
-    fun contracts(): CompletableFuture<OptionContractsResponse> =
-        contracts(OptionContractsParams.none())
+    fun getOptionContracts(): CompletableFuture<OptionGetOptionContractsResponse> =
+        getOptionContracts(OptionGetOptionContractsParams.none())
 
-    /** @see contracts */
-    fun contracts(
-        params: OptionContractsParams = OptionContractsParams.none(),
+    /** @see getOptionContracts */
+    fun getOptionContracts(
+        params: OptionGetOptionContractsParams = OptionGetOptionContractsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<OptionContractsResponse>
+    ): CompletableFuture<OptionGetOptionContractsResponse>
 
-    /** @see contracts */
-    fun contracts(
-        params: OptionContractsParams = OptionContractsParams.none()
-    ): CompletableFuture<OptionContractsResponse> = contracts(params, RequestOptions.none())
+    /** @see getOptionContracts */
+    fun getOptionContracts(
+        params: OptionGetOptionContractsParams = OptionGetOptionContractsParams.none()
+    ): CompletableFuture<OptionGetOptionContractsResponse> =
+        getOptionContracts(params, RequestOptions.none())
 
-    /** @see contracts */
-    fun contracts(requestOptions: RequestOptions): CompletableFuture<OptionContractsResponse> =
-        contracts(OptionContractsParams.none(), requestOptions)
+    /** @see getOptionContracts */
+    fun getOptionContracts(
+        requestOptions: RequestOptions
+    ): CompletableFuture<OptionGetOptionContractsResponse> =
+        getOptionContracts(OptionGetOptionContractsParams.none(), requestOptions)
 
     /**
      * A view of [OptionServiceAsync] that provides access to raw HTTP responses for each method.
@@ -65,27 +68,28 @@ interface OptionServiceAsync {
 
         /**
          * Returns a raw HTTP response for `get /v1/instruments/options/contracts`, but is otherwise
-         * the same as [OptionServiceAsync.contracts].
+         * the same as [OptionServiceAsync.getOptionContracts].
          */
-        fun contracts(): CompletableFuture<HttpResponseFor<OptionContractsResponse>> =
-            contracts(OptionContractsParams.none())
+        fun getOptionContracts():
+            CompletableFuture<HttpResponseFor<OptionGetOptionContractsResponse>> =
+            getOptionContracts(OptionGetOptionContractsParams.none())
 
-        /** @see contracts */
-        fun contracts(
-            params: OptionContractsParams = OptionContractsParams.none(),
+        /** @see getOptionContracts */
+        fun getOptionContracts(
+            params: OptionGetOptionContractsParams = OptionGetOptionContractsParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<OptionContractsResponse>>
+        ): CompletableFuture<HttpResponseFor<OptionGetOptionContractsResponse>>
 
-        /** @see contracts */
-        fun contracts(
-            params: OptionContractsParams = OptionContractsParams.none()
-        ): CompletableFuture<HttpResponseFor<OptionContractsResponse>> =
-            contracts(params, RequestOptions.none())
+        /** @see getOptionContracts */
+        fun getOptionContracts(
+            params: OptionGetOptionContractsParams = OptionGetOptionContractsParams.none()
+        ): CompletableFuture<HttpResponseFor<OptionGetOptionContractsResponse>> =
+            getOptionContracts(params, RequestOptions.none())
 
-        /** @see contracts */
-        fun contracts(
+        /** @see getOptionContracts */
+        fun getOptionContracts(
             requestOptions: RequestOptions
-        ): CompletableFuture<HttpResponseFor<OptionContractsResponse>> =
-            contracts(OptionContractsParams.none(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<OptionGetOptionContractsResponse>> =
+            getOptionContracts(OptionGetOptionContractsParams.none(), requestOptions)
     }
 }

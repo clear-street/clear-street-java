@@ -19,8 +19,8 @@ import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdPar
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdResponse
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsParams
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsResponse
-import com.clear_street.api.models.v1.instruments.InstrumentSearchParams
-import com.clear_street.api.models.v1.instruments.InstrumentSearchResponse
+import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsParams
+import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsResponse
 import com.clear_street.api.services.blocking.v1.instruments.AnalystReportingService
 import com.clear_street.api.services.blocking.v1.instruments.AnalystReportingServiceImpl
 import com.clear_street.api.services.blocking.v1.instruments.BalanceSheetService
@@ -108,12 +108,12 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
         // get /v1/instruments
         withRawResponse().getInstruments(params, requestOptions).parse()
 
-    override fun search(
-        params: InstrumentSearchParams,
+    override fun searchInstruments(
+        params: InstrumentSearchInstrumentsParams,
         requestOptions: RequestOptions,
-    ): InstrumentSearchResponse =
+    ): InstrumentSearchInstrumentsResponse =
         // get /v1/instruments/search
-        withRawResponse().search(params, requestOptions).parse()
+        withRawResponse().searchInstruments(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         InstrumentService.WithRawResponse {
@@ -235,13 +235,13 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val searchHandler: Handler<InstrumentSearchResponse> =
-            jsonHandler<InstrumentSearchResponse>(clientOptions.jsonMapper)
+        private val searchInstrumentsHandler: Handler<InstrumentSearchInstrumentsResponse> =
+            jsonHandler<InstrumentSearchInstrumentsResponse>(clientOptions.jsonMapper)
 
-        override fun search(
-            params: InstrumentSearchParams,
+        override fun searchInstruments(
+            params: InstrumentSearchInstrumentsParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<InstrumentSearchResponse> {
+        ): HttpResponseFor<InstrumentSearchInstrumentsResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -253,7 +253,7 @@ class InstrumentServiceImpl internal constructor(private val clientOptions: Clie
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { searchHandler.handle(it) }
+                    .use { searchInstrumentsHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

@@ -13,7 +13,7 @@ import com.clear_street.api.core.http.HttpResponse
 import com.clear_street.api.core.http.HttpResponse.Handler
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepareAsync
-import com.clear_street.api.models.v1.V1WsParams
+import com.clear_street.api.models.v1.V1WebsocketHandlerParams
 import com.clear_street.api.services.async.v1.AccountServiceAsync
 import com.clear_street.api.services.async.v1.AccountServiceAsyncImpl
 import com.clear_street.api.services.async.v1.CalendarServiceAsync
@@ -112,9 +112,12 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     /** Create and manage watchlists. */
     override fun watchlists(): WatchlistServiceAsync = watchlists
 
-    override fun ws(params: V1WsParams, requestOptions: RequestOptions): CompletableFuture<Void?> =
+    override fun websocketHandler(
+        params: V1WebsocketHandlerParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<Void?> =
         // get /v1/ws
-        withRawResponse().ws(params, requestOptions).thenAccept {}
+        withRawResponse().websocketHandler(params, requestOptions).thenAccept {}
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1ServiceAsync.WithRawResponse {
@@ -203,10 +206,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         /** Create and manage watchlists. */
         override fun watchlists(): WatchlistServiceAsync.WithRawResponse = watchlists
 
-        private val wsHandler: Handler<Void?> = emptyHandler()
+        private val websocketHandlerHandler: Handler<Void?> = emptyHandler()
 
-        override fun ws(
-            params: V1WsParams,
+        override fun websocketHandler(
+            params: V1WebsocketHandlerParams,
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponse> {
             val request =
@@ -221,7 +224,7 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
                 .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
-                        response.use { wsHandler.handle(it) }
+                        response.use { websocketHandlerHandler.handle(it) }
                     }
                 }
         }

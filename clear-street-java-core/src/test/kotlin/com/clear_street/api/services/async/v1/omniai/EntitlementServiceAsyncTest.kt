@@ -4,7 +4,7 @@ package com.clear_street.api.services.async.v1.omniai
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsParams
-import com.clear_street.api.models.v1.omniai.entitlements.EntitlementListEntitlementsParams
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -44,13 +44,13 @@ internal class EntitlementServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun listEntitlements() {
+    fun getEntitlements() {
         val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
         val entitlementServiceAsync = client.v1().omniAi().entitlements()
 
         val responseFuture =
-            entitlementServiceAsync.listEntitlements(
-                EntitlementListEntitlementsParams.builder().tradingAccountId(0L).build()
+            entitlementServiceAsync.getEntitlements(
+                EntitlementGetEntitlementsParams.builder().tradingAccountId(0L).build()
             )
 
         val response = responseFuture.get()

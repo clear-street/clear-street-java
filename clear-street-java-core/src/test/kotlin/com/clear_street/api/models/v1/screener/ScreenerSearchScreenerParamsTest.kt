@@ -71,7 +71,7 @@ internal class ScreenerSearchScreenerParamsTest {
                     .build()
             )
             .pageSize(25L)
-            .pageToken("page_token")
+            .pageToken("U3RhaW5sZXNzIHJvY2tz")
             .sortBy(
                 FieldRef.builder()
                     .name("market_cap")
@@ -162,7 +162,7 @@ internal class ScreenerSearchScreenerParamsTest {
                         .build()
                 )
                 .pageSize(25L)
-                .pageToken("page_token")
+                .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .sortBy(
                     FieldRef.builder()
                         .name("market_cap")
@@ -250,7 +250,7 @@ internal class ScreenerSearchScreenerParamsTest {
                     .build()
             )
         assertThat(body.pageSize()).contains(25L)
-        assertThat(body.pageToken()).contains("page_token")
+        assertThat(body.pageToken()).contains("U3RhaW5sZXNzIHJvY2tz")
         assertThat(body.sortBy())
             .contains(
                 FieldRef.builder()

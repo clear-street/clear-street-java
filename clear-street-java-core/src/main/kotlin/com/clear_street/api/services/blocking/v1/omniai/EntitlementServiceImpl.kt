@@ -20,8 +20,8 @@ import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntit
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsResponse
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementParams
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementResponse
-import com.clear_street.api.models.v1.omniai.entitlements.EntitlementListEntitlementsParams
-import com.clear_street.api.models.v1.omniai.entitlements.EntitlementListEntitlementsResponse
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -57,12 +57,12 @@ class EntitlementServiceImpl internal constructor(private val clientOptions: Cli
         // delete /v1/omni-ai/entitlements/{entitlement_id}
         withRawResponse().deleteEntitlement(params, requestOptions).parse()
 
-    override fun listEntitlements(
-        params: EntitlementListEntitlementsParams,
+    override fun getEntitlements(
+        params: EntitlementGetEntitlementsParams,
         requestOptions: RequestOptions,
-    ): EntitlementListEntitlementsResponse =
+    ): EntitlementGetEntitlementsResponse =
         // get /v1/omni-ai/entitlements
-        withRawResponse().listEntitlements(params, requestOptions).parse()
+        withRawResponse().getEntitlements(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         EntitlementService.WithRawResponse {
@@ -136,13 +136,13 @@ class EntitlementServiceImpl internal constructor(private val clientOptions: Cli
             }
         }
 
-        private val listEntitlementsHandler: Handler<EntitlementListEntitlementsResponse> =
-            jsonHandler<EntitlementListEntitlementsResponse>(clientOptions.jsonMapper)
+        private val getEntitlementsHandler: Handler<EntitlementGetEntitlementsResponse> =
+            jsonHandler<EntitlementGetEntitlementsResponse>(clientOptions.jsonMapper)
 
-        override fun listEntitlements(
-            params: EntitlementListEntitlementsParams,
+        override fun getEntitlements(
+            params: EntitlementGetEntitlementsParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<EntitlementListEntitlementsResponse> {
+        ): HttpResponseFor<EntitlementGetEntitlementsResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -154,7 +154,7 @@ class EntitlementServiceImpl internal constructor(private val clientOptions: Cli
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { listEntitlementsHandler.handle(it) }
+                    .use { getEntitlementsHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

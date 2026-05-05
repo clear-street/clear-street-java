@@ -25,12 +25,12 @@ private constructor(
     private val id: JsonField<Long>,
     private val accountHolderEntityId: JsonField<Long>,
     private val fullName: JsonField<String>,
-    private val kind: JsonField<AccountKind>,
     private val openDate: JsonField<LocalDate>,
     private val optionsLevel: JsonField<Long>,
     private val shortName: JsonField<String>,
     private val status: JsonField<AccountStatus>,
-    private val subkind: JsonField<AccountSubkind>,
+    private val subtype: JsonField<AccountSubtype>,
+    private val type: JsonField<AccountType>,
     private val closeDate: JsonField<LocalDate>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -42,7 +42,6 @@ private constructor(
         @ExcludeMissing
         accountHolderEntityId: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("full_name") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("kind") @ExcludeMissing kind: JsonField<AccountKind> = JsonMissing.of(),
         @JsonProperty("open_date")
         @ExcludeMissing
         openDate: JsonField<LocalDate> = JsonMissing.of(),
@@ -51,9 +50,10 @@ private constructor(
         optionsLevel: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("short_name") @ExcludeMissing shortName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<AccountStatus> = JsonMissing.of(),
-        @JsonProperty("subkind")
+        @JsonProperty("subtype")
         @ExcludeMissing
-        subkind: JsonField<AccountSubkind> = JsonMissing.of(),
+        subtype: JsonField<AccountSubtype> = JsonMissing.of(),
+        @JsonProperty("type") @ExcludeMissing type: JsonField<AccountType> = JsonMissing.of(),
         @JsonProperty("close_date")
         @ExcludeMissing
         closeDate: JsonField<LocalDate> = JsonMissing.of(),
@@ -61,12 +61,12 @@ private constructor(
         id,
         accountHolderEntityId,
         fullName,
-        kind,
         openDate,
         optionsLevel,
         shortName,
         status,
-        subkind,
+        subtype,
+        type,
         closeDate,
         mutableMapOf(),
     )
@@ -95,14 +95,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun fullName(): String = fullName.getRequired("full_name")
-
-    /**
-     * The type of account
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun kind(): AccountKind = kind.getRequired("kind")
 
     /**
      * The date the account was opened
@@ -142,7 +134,15 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun subkind(): AccountSubkind = subkind.getRequired("subkind")
+    fun subtype(): AccountSubtype = subtype.getRequired("subtype")
+
+    /**
+     * The type of account
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun type(): AccountType = type.getRequired("type")
 
     /**
      * The date the account was closed, if applicable
@@ -177,13 +177,6 @@ private constructor(
     @JsonProperty("full_name") @ExcludeMissing fun _fullName(): JsonField<String> = fullName
 
     /**
-     * Returns the raw JSON value of [kind].
-     *
-     * Unlike [kind], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("kind") @ExcludeMissing fun _kind(): JsonField<AccountKind> = kind
-
-    /**
      * Returns the raw JSON value of [openDate].
      *
      * Unlike [openDate], this method doesn't throw if the JSON field has an unexpected type.
@@ -214,11 +207,18 @@ private constructor(
     @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<AccountStatus> = status
 
     /**
-     * Returns the raw JSON value of [subkind].
+     * Returns the raw JSON value of [subtype].
      *
-     * Unlike [subkind], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [subtype], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("subkind") @ExcludeMissing fun _subkind(): JsonField<AccountSubkind> = subkind
+    @JsonProperty("subtype") @ExcludeMissing fun _subtype(): JsonField<AccountSubtype> = subtype
+
+    /**
+     * Returns the raw JSON value of [type].
+     *
+     * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<AccountType> = type
 
     /**
      * Returns the raw JSON value of [closeDate].
@@ -249,12 +249,12 @@ private constructor(
          * .id()
          * .accountHolderEntityId()
          * .fullName()
-         * .kind()
          * .openDate()
          * .optionsLevel()
          * .shortName()
          * .status()
-         * .subkind()
+         * .subtype()
+         * .type()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -266,12 +266,12 @@ private constructor(
         private var id: JsonField<Long>? = null
         private var accountHolderEntityId: JsonField<Long>? = null
         private var fullName: JsonField<String>? = null
-        private var kind: JsonField<AccountKind>? = null
         private var openDate: JsonField<LocalDate>? = null
         private var optionsLevel: JsonField<Long>? = null
         private var shortName: JsonField<String>? = null
         private var status: JsonField<AccountStatus>? = null
-        private var subkind: JsonField<AccountSubkind>? = null
+        private var subtype: JsonField<AccountSubtype>? = null
+        private var type: JsonField<AccountType>? = null
         private var closeDate: JsonField<LocalDate> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -280,12 +280,12 @@ private constructor(
             id = account.id
             accountHolderEntityId = account.accountHolderEntityId
             fullName = account.fullName
-            kind = account.kind
             openDate = account.openDate
             optionsLevel = account.optionsLevel
             shortName = account.shortName
             status = account.status
-            subkind = account.subkind
+            subtype = account.subtype
+            type = account.type
             closeDate = account.closeDate
             additionalProperties = account.additionalProperties.toMutableMap()
         }
@@ -326,18 +326,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun fullName(fullName: JsonField<String>) = apply { this.fullName = fullName }
-
-        /** The type of account */
-        fun kind(kind: AccountKind) = kind(JsonField.of(kind))
-
-        /**
-         * Sets [Builder.kind] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.kind] with a well-typed [AccountKind] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun kind(kind: JsonField<AccountKind>) = apply { this.kind = kind }
 
         /** The date the account was opened */
         fun openDate(openDate: LocalDate) = openDate(JsonField.of(openDate))
@@ -388,16 +376,28 @@ private constructor(
         fun status(status: JsonField<AccountStatus>) = apply { this.status = status }
 
         /** The sub-type of account */
-        fun subkind(subkind: AccountSubkind) = subkind(JsonField.of(subkind))
+        fun subtype(subtype: AccountSubtype) = subtype(JsonField.of(subtype))
 
         /**
-         * Sets [Builder.subkind] to an arbitrary JSON value.
+         * Sets [Builder.subtype] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.subkind] with a well-typed [AccountSubkind] value
+         * You should usually call [Builder.subtype] with a well-typed [AccountSubtype] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun subkind(subkind: JsonField<AccountSubkind>) = apply { this.subkind = subkind }
+        fun subtype(subtype: JsonField<AccountSubtype>) = apply { this.subtype = subtype }
+
+        /** The type of account */
+        fun type(type: AccountType) = type(JsonField.of(type))
+
+        /**
+         * Sets [Builder.type] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.type] with a well-typed [AccountType] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun type(type: JsonField<AccountType>) = apply { this.type = type }
 
         /** The date the account was closed, if applicable */
         fun closeDate(closeDate: LocalDate?) = closeDate(JsonField.ofNullable(closeDate))
@@ -443,12 +443,12 @@ private constructor(
          * .id()
          * .accountHolderEntityId()
          * .fullName()
-         * .kind()
          * .openDate()
          * .optionsLevel()
          * .shortName()
          * .status()
-         * .subkind()
+         * .subtype()
+         * .type()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -458,12 +458,12 @@ private constructor(
                 checkRequired("id", id),
                 checkRequired("accountHolderEntityId", accountHolderEntityId),
                 checkRequired("fullName", fullName),
-                checkRequired("kind", kind),
                 checkRequired("openDate", openDate),
                 checkRequired("optionsLevel", optionsLevel),
                 checkRequired("shortName", shortName),
                 checkRequired("status", status),
-                checkRequired("subkind", subkind),
+                checkRequired("subtype", subtype),
+                checkRequired("type", type),
                 closeDate,
                 additionalProperties.toMutableMap(),
             )
@@ -487,12 +487,12 @@ private constructor(
         id()
         accountHolderEntityId()
         fullName()
-        kind().validate()
         openDate()
         optionsLevel()
         shortName()
         status().validate()
-        subkind().validate()
+        subtype().validate()
+        type().validate()
         closeDate()
         validated = true
     }
@@ -515,12 +515,12 @@ private constructor(
         (if (id.asKnown().isPresent) 1 else 0) +
             (if (accountHolderEntityId.asKnown().isPresent) 1 else 0) +
             (if (fullName.asKnown().isPresent) 1 else 0) +
-            (kind.asKnown().getOrNull()?.validity() ?: 0) +
             (if (openDate.asKnown().isPresent) 1 else 0) +
             (if (optionsLevel.asKnown().isPresent) 1 else 0) +
             (if (shortName.asKnown().isPresent) 1 else 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
-            (subkind.asKnown().getOrNull()?.validity() ?: 0) +
+            (subtype.asKnown().getOrNull()?.validity() ?: 0) +
+            (type.asKnown().getOrNull()?.validity() ?: 0) +
             (if (closeDate.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
@@ -532,12 +532,12 @@ private constructor(
             id == other.id &&
             accountHolderEntityId == other.accountHolderEntityId &&
             fullName == other.fullName &&
-            kind == other.kind &&
             openDate == other.openDate &&
             optionsLevel == other.optionsLevel &&
             shortName == other.shortName &&
             status == other.status &&
-            subkind == other.subkind &&
+            subtype == other.subtype &&
+            type == other.type &&
             closeDate == other.closeDate &&
             additionalProperties == other.additionalProperties
     }
@@ -547,12 +547,12 @@ private constructor(
             id,
             accountHolderEntityId,
             fullName,
-            kind,
             openDate,
             optionsLevel,
             shortName,
             status,
-            subkind,
+            subtype,
+            type,
             closeDate,
             additionalProperties,
         )
@@ -561,5 +561,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Account{id=$id, accountHolderEntityId=$accountHolderEntityId, fullName=$fullName, kind=$kind, openDate=$openDate, optionsLevel=$optionsLevel, shortName=$shortName, status=$status, subkind=$subkind, closeDate=$closeDate, additionalProperties=$additionalProperties}"
+        "Account{id=$id, accountHolderEntityId=$accountHolderEntityId, fullName=$fullName, openDate=$openDate, optionsLevel=$optionsLevel, shortName=$shortName, status=$status, subtype=$subtype, type=$type, closeDate=$closeDate, additionalProperties=$additionalProperties}"
 }

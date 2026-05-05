@@ -9,8 +9,8 @@ import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdPar
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdResponse
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsParams
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsResponse
-import com.clear_street.api.models.v1.instruments.InstrumentSearchParams
-import com.clear_street.api.models.v1.instruments.InstrumentSearchResponse
+import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsParams
+import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsResponse
 import com.clear_street.api.services.async.v1.instruments.AnalystReportingServiceAsync
 import com.clear_street.api.services.async.v1.instruments.BalanceSheetServiceAsync
 import com.clear_street.api.services.async.v1.instruments.CashFlowStatementServiceAsync
@@ -129,14 +129,16 @@ interface InstrumentServiceAsync {
      * Defaults to the `EQUITY` asset class (common stock + ETFs + exchange-traded mutual funds);
      * pass `asset_class=OPTION` for option chains.
      */
-    fun search(params: InstrumentSearchParams): CompletableFuture<InstrumentSearchResponse> =
-        search(params, RequestOptions.none())
+    fun searchInstruments(
+        params: InstrumentSearchInstrumentsParams
+    ): CompletableFuture<InstrumentSearchInstrumentsResponse> =
+        searchInstruments(params, RequestOptions.none())
 
-    /** @see search */
-    fun search(
-        params: InstrumentSearchParams,
+    /** @see searchInstruments */
+    fun searchInstruments(
+        params: InstrumentSearchInstrumentsParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<InstrumentSearchResponse>
+    ): CompletableFuture<InstrumentSearchInstrumentsResponse>
 
     /**
      * A view of [InstrumentServiceAsync] that provides access to raw HTTP responses for each
@@ -248,17 +250,17 @@ interface InstrumentServiceAsync {
 
         /**
          * Returns a raw HTTP response for `get /v1/instruments/search`, but is otherwise the same
-         * as [InstrumentServiceAsync.search].
+         * as [InstrumentServiceAsync.searchInstruments].
          */
-        fun search(
-            params: InstrumentSearchParams
-        ): CompletableFuture<HttpResponseFor<InstrumentSearchResponse>> =
-            search(params, RequestOptions.none())
+        fun searchInstruments(
+            params: InstrumentSearchInstrumentsParams
+        ): CompletableFuture<HttpResponseFor<InstrumentSearchInstrumentsResponse>> =
+            searchInstruments(params, RequestOptions.none())
 
-        /** @see search */
-        fun search(
-            params: InstrumentSearchParams,
+        /** @see searchInstruments */
+        fun searchInstruments(
+            params: InstrumentSearchInstrumentsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<InstrumentSearchResponse>>
+        ): CompletableFuture<HttpResponseFor<InstrumentSearchInstrumentsResponse>>
     }
 }

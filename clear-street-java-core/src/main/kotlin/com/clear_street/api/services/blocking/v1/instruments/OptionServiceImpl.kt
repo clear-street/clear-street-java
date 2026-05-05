@@ -14,8 +14,8 @@ import com.clear_street.api.core.http.HttpResponse.Handler
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
-import com.clear_street.api.models.v1.instruments.options.OptionContractsParams
-import com.clear_street.api.models.v1.instruments.options.OptionContractsResponse
+import com.clear_street.api.models.v1.instruments.options.OptionGetOptionContractsParams
+import com.clear_street.api.models.v1.instruments.options.OptionGetOptionContractsResponse
 import java.util.function.Consumer
 
 /** Retrieve details and lists of tradable instruments. */
@@ -31,12 +31,12 @@ class OptionServiceImpl internal constructor(private val clientOptions: ClientOp
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): OptionService =
         OptionServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun contracts(
-        params: OptionContractsParams,
+    override fun getOptionContracts(
+        params: OptionGetOptionContractsParams,
         requestOptions: RequestOptions,
-    ): OptionContractsResponse =
+    ): OptionGetOptionContractsResponse =
         // get /v1/instruments/options/contracts
-        withRawResponse().contracts(params, requestOptions).parse()
+        withRawResponse().getOptionContracts(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         OptionService.WithRawResponse {
@@ -51,13 +51,13 @@ class OptionServiceImpl internal constructor(private val clientOptions: ClientOp
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val contractsHandler: Handler<OptionContractsResponse> =
-            jsonHandler<OptionContractsResponse>(clientOptions.jsonMapper)
+        private val getOptionContractsHandler: Handler<OptionGetOptionContractsResponse> =
+            jsonHandler<OptionGetOptionContractsResponse>(clientOptions.jsonMapper)
 
-        override fun contracts(
-            params: OptionContractsParams,
+        override fun getOptionContracts(
+            params: OptionGetOptionContractsParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<OptionContractsResponse> {
+        ): HttpResponseFor<OptionGetOptionContractsResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -69,7 +69,7 @@ class OptionServiceImpl internal constructor(private val clientOptions: ClientOp
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { contractsHandler.handle(it) }
+                    .use { getOptionContractsHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

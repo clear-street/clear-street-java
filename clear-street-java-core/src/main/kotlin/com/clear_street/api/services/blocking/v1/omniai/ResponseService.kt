@@ -7,8 +7,8 @@ import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.models.v1.omniai.responses.ResponseCancelResponseParams
 import com.clear_street.api.models.v1.omniai.responses.ResponseCancelResponseResponse
-import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseParams
-import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseResponse
+import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseByIdParams
+import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseByIdResponse
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -73,28 +73,28 @@ interface ResponseService {
      * Once terminal, the finalized assistant message is available in thread history via `GET
      * /omni-ai/threads/{thread_id}/messages`.
      */
-    fun getResponse(
+    fun getResponseById(
         responseId: String,
-        params: ResponseGetResponseParams,
-    ): ResponseGetResponseResponse = getResponse(responseId, params, RequestOptions.none())
+        params: ResponseGetResponseByIdParams,
+    ): ResponseGetResponseByIdResponse = getResponseById(responseId, params, RequestOptions.none())
 
-    /** @see getResponse */
-    fun getResponse(
+    /** @see getResponseById */
+    fun getResponseById(
         responseId: String,
-        params: ResponseGetResponseParams,
+        params: ResponseGetResponseByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ResponseGetResponseResponse =
-        getResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
+    ): ResponseGetResponseByIdResponse =
+        getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
 
-    /** @see getResponse */
-    fun getResponse(params: ResponseGetResponseParams): ResponseGetResponseResponse =
-        getResponse(params, RequestOptions.none())
+    /** @see getResponseById */
+    fun getResponseById(params: ResponseGetResponseByIdParams): ResponseGetResponseByIdResponse =
+        getResponseById(params, RequestOptions.none())
 
-    /** @see getResponse */
-    fun getResponse(
-        params: ResponseGetResponseParams,
+    /** @see getResponseById */
+    fun getResponseById(
+        params: ResponseGetResponseByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ResponseGetResponseResponse
+    ): ResponseGetResponseByIdResponse
 
     /** A view of [ResponseService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -142,35 +142,36 @@ interface ResponseService {
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/responses/{response_id}`, but is
-         * otherwise the same as [ResponseService.getResponse].
+         * otherwise the same as [ResponseService.getResponseById].
          */
         @MustBeClosed
-        fun getResponse(
+        fun getResponseById(
             responseId: String,
-            params: ResponseGetResponseParams,
-        ): HttpResponseFor<ResponseGetResponseResponse> =
-            getResponse(responseId, params, RequestOptions.none())
+            params: ResponseGetResponseByIdParams,
+        ): HttpResponseFor<ResponseGetResponseByIdResponse> =
+            getResponseById(responseId, params, RequestOptions.none())
 
-        /** @see getResponse */
+        /** @see getResponseById */
         @MustBeClosed
-        fun getResponse(
+        fun getResponseById(
             responseId: String,
-            params: ResponseGetResponseParams,
+            params: ResponseGetResponseByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ResponseGetResponseResponse> =
-            getResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
+        ): HttpResponseFor<ResponseGetResponseByIdResponse> =
+            getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
 
-        /** @see getResponse */
+        /** @see getResponseById */
         @MustBeClosed
-        fun getResponse(
-            params: ResponseGetResponseParams
-        ): HttpResponseFor<ResponseGetResponseResponse> = getResponse(params, RequestOptions.none())
+        fun getResponseById(
+            params: ResponseGetResponseByIdParams
+        ): HttpResponseFor<ResponseGetResponseByIdResponse> =
+            getResponseById(params, RequestOptions.none())
 
-        /** @see getResponse */
+        /** @see getResponseById */
         @MustBeClosed
-        fun getResponse(
-            params: ResponseGetResponseParams,
+        fun getResponseById(
+            params: ResponseGetResponseByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ResponseGetResponseResponse>
+        ): HttpResponseFor<ResponseGetResponseByIdResponse>
     }
 }

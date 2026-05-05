@@ -5,10 +5,10 @@ package com.clear_street.api.services.async.v1.omniai
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
-import com.clear_street.api.models.v1.omniai.messages.MessageFeedbackParams
-import com.clear_street.api.models.v1.omniai.messages.MessageFeedbackResponse
-import com.clear_street.api.models.v1.omniai.messages.MessageGetMessageParams
-import com.clear_street.api.models.v1.omniai.messages.MessageGetMessageResponse
+import com.clear_street.api.models.v1.omniai.messages.MessageGetMessageByIdParams
+import com.clear_street.api.models.v1.omniai.messages.MessageGetMessageByIdResponse
+import com.clear_street.api.models.v1.omniai.messages.MessageSubmitFeedbackParams
+import com.clear_street.api.models.v1.omniai.messages.MessageSubmitFeedbackResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -33,65 +33,69 @@ interface MessageServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): MessageServiceAsync
 
     /**
-     * Create feedback on a finalized assistant message.
-     *
-     * Attaches a score and optional comment to a finalized assistant message. Feedback is only
-     * valid for messages with role `ASSISTANT` that have reached a terminal outcome.
-     */
-    fun feedback(
-        messageId: String,
-        params: MessageFeedbackParams,
-    ): CompletableFuture<MessageFeedbackResponse> =
-        feedback(messageId, params, RequestOptions.none())
-
-    /** @see feedback */
-    fun feedback(
-        messageId: String,
-        params: MessageFeedbackParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<MessageFeedbackResponse> =
-        feedback(params.toBuilder().messageId(messageId).build(), requestOptions)
-
-    /** @see feedback */
-    fun feedback(params: MessageFeedbackParams): CompletableFuture<MessageFeedbackResponse> =
-        feedback(params, RequestOptions.none())
-
-    /** @see feedback */
-    fun feedback(
-        params: MessageFeedbackParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<MessageFeedbackResponse>
-
-    /**
      * Get a finalized message by ID.
      *
      * Returns a single finalized message. Returns **404** if the message belongs to an in-progress
      * assistant turn (use the response endpoint for live output). Once the turn completes, the
      * message becomes available here.
      */
-    fun getMessage(
+    fun getMessageById(
         messageId: String,
-        params: MessageGetMessageParams,
-    ): CompletableFuture<MessageGetMessageResponse> =
-        getMessage(messageId, params, RequestOptions.none())
+        params: MessageGetMessageByIdParams,
+    ): CompletableFuture<MessageGetMessageByIdResponse> =
+        getMessageById(messageId, params, RequestOptions.none())
 
-    /** @see getMessage */
-    fun getMessage(
+    /** @see getMessageById */
+    fun getMessageById(
         messageId: String,
-        params: MessageGetMessageParams,
+        params: MessageGetMessageByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<MessageGetMessageResponse> =
-        getMessage(params.toBuilder().messageId(messageId).build(), requestOptions)
+    ): CompletableFuture<MessageGetMessageByIdResponse> =
+        getMessageById(params.toBuilder().messageId(messageId).build(), requestOptions)
 
-    /** @see getMessage */
-    fun getMessage(params: MessageGetMessageParams): CompletableFuture<MessageGetMessageResponse> =
-        getMessage(params, RequestOptions.none())
+    /** @see getMessageById */
+    fun getMessageById(
+        params: MessageGetMessageByIdParams
+    ): CompletableFuture<MessageGetMessageByIdResponse> =
+        getMessageById(params, RequestOptions.none())
 
-    /** @see getMessage */
-    fun getMessage(
-        params: MessageGetMessageParams,
+    /** @see getMessageById */
+    fun getMessageById(
+        params: MessageGetMessageByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<MessageGetMessageResponse>
+    ): CompletableFuture<MessageGetMessageByIdResponse>
+
+    /**
+     * Submit feedback on a finalized assistant message.
+     *
+     * Attaches a score and optional comment to a finalized assistant message. Feedback is only
+     * valid for messages with role `ASSISTANT` that have reached a terminal outcome.
+     */
+    fun submitFeedback(
+        messageId: String,
+        params: MessageSubmitFeedbackParams,
+    ): CompletableFuture<MessageSubmitFeedbackResponse> =
+        submitFeedback(messageId, params, RequestOptions.none())
+
+    /** @see submitFeedback */
+    fun submitFeedback(
+        messageId: String,
+        params: MessageSubmitFeedbackParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<MessageSubmitFeedbackResponse> =
+        submitFeedback(params.toBuilder().messageId(messageId).build(), requestOptions)
+
+    /** @see submitFeedback */
+    fun submitFeedback(
+        params: MessageSubmitFeedbackParams
+    ): CompletableFuture<MessageSubmitFeedbackResponse> =
+        submitFeedback(params, RequestOptions.none())
+
+    /** @see submitFeedback */
+    fun submitFeedback(
+        params: MessageSubmitFeedbackParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<MessageSubmitFeedbackResponse>
 
     /**
      * A view of [MessageServiceAsync] that provides access to raw HTTP responses for each method.
@@ -108,63 +112,63 @@ interface MessageServiceAsync {
         ): MessageServiceAsync.WithRawResponse
 
         /**
-         * Returns a raw HTTP response for `post /v1/omni-ai/messages/{message_id}/feedback`, but is
-         * otherwise the same as [MessageServiceAsync.feedback].
+         * Returns a raw HTTP response for `get /v1/omni-ai/messages/{message_id}`, but is otherwise
+         * the same as [MessageServiceAsync.getMessageById].
          */
-        fun feedback(
+        fun getMessageById(
             messageId: String,
-            params: MessageFeedbackParams,
-        ): CompletableFuture<HttpResponseFor<MessageFeedbackResponse>> =
-            feedback(messageId, params, RequestOptions.none())
+            params: MessageGetMessageByIdParams,
+        ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>> =
+            getMessageById(messageId, params, RequestOptions.none())
 
-        /** @see feedback */
-        fun feedback(
+        /** @see getMessageById */
+        fun getMessageById(
             messageId: String,
-            params: MessageFeedbackParams,
+            params: MessageGetMessageByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<MessageFeedbackResponse>> =
-            feedback(params.toBuilder().messageId(messageId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>> =
+            getMessageById(params.toBuilder().messageId(messageId).build(), requestOptions)
 
-        /** @see feedback */
-        fun feedback(
-            params: MessageFeedbackParams
-        ): CompletableFuture<HttpResponseFor<MessageFeedbackResponse>> =
-            feedback(params, RequestOptions.none())
+        /** @see getMessageById */
+        fun getMessageById(
+            params: MessageGetMessageByIdParams
+        ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>> =
+            getMessageById(params, RequestOptions.none())
 
-        /** @see feedback */
-        fun feedback(
-            params: MessageFeedbackParams,
+        /** @see getMessageById */
+        fun getMessageById(
+            params: MessageGetMessageByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<MessageFeedbackResponse>>
+        ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>>
 
         /**
-         * Returns a raw HTTP response for `get /v1/omni-ai/messages/{message_id}`, but is otherwise
-         * the same as [MessageServiceAsync.getMessage].
+         * Returns a raw HTTP response for `post /v1/omni-ai/messages/{message_id}/feedback`, but is
+         * otherwise the same as [MessageServiceAsync.submitFeedback].
          */
-        fun getMessage(
+        fun submitFeedback(
             messageId: String,
-            params: MessageGetMessageParams,
-        ): CompletableFuture<HttpResponseFor<MessageGetMessageResponse>> =
-            getMessage(messageId, params, RequestOptions.none())
+            params: MessageSubmitFeedbackParams,
+        ): CompletableFuture<HttpResponseFor<MessageSubmitFeedbackResponse>> =
+            submitFeedback(messageId, params, RequestOptions.none())
 
-        /** @see getMessage */
-        fun getMessage(
+        /** @see submitFeedback */
+        fun submitFeedback(
             messageId: String,
-            params: MessageGetMessageParams,
+            params: MessageSubmitFeedbackParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<MessageGetMessageResponse>> =
-            getMessage(params.toBuilder().messageId(messageId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<MessageSubmitFeedbackResponse>> =
+            submitFeedback(params.toBuilder().messageId(messageId).build(), requestOptions)
 
-        /** @see getMessage */
-        fun getMessage(
-            params: MessageGetMessageParams
-        ): CompletableFuture<HttpResponseFor<MessageGetMessageResponse>> =
-            getMessage(params, RequestOptions.none())
+        /** @see submitFeedback */
+        fun submitFeedback(
+            params: MessageSubmitFeedbackParams
+        ): CompletableFuture<HttpResponseFor<MessageSubmitFeedbackResponse>> =
+            submitFeedback(params, RequestOptions.none())
 
-        /** @see getMessage */
-        fun getMessage(
-            params: MessageGetMessageParams,
+        /** @see submitFeedback */
+        fun submitFeedback(
+            params: MessageSubmitFeedbackParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<MessageGetMessageResponse>>
+        ): CompletableFuture<HttpResponseFor<MessageSubmitFeedbackResponse>>
     }
 }

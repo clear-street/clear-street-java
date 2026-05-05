@@ -7,8 +7,8 @@ import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.models.v1.omniai.responses.ResponseCancelResponseParams
 import com.clear_street.api.models.v1.omniai.responses.ResponseCancelResponseResponse
-import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseParams
-import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseResponse
+import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseByIdParams
+import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseByIdResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -76,30 +76,31 @@ interface ResponseServiceAsync {
      * Once terminal, the finalized assistant message is available in thread history via `GET
      * /omni-ai/threads/{thread_id}/messages`.
      */
-    fun getResponse(
+    fun getResponseById(
         responseId: String,
-        params: ResponseGetResponseParams,
-    ): CompletableFuture<ResponseGetResponseResponse> =
-        getResponse(responseId, params, RequestOptions.none())
+        params: ResponseGetResponseByIdParams,
+    ): CompletableFuture<ResponseGetResponseByIdResponse> =
+        getResponseById(responseId, params, RequestOptions.none())
 
-    /** @see getResponse */
-    fun getResponse(
+    /** @see getResponseById */
+    fun getResponseById(
         responseId: String,
-        params: ResponseGetResponseParams,
+        params: ResponseGetResponseByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ResponseGetResponseResponse> =
-        getResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
+    ): CompletableFuture<ResponseGetResponseByIdResponse> =
+        getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
 
-    /** @see getResponse */
-    fun getResponse(
-        params: ResponseGetResponseParams
-    ): CompletableFuture<ResponseGetResponseResponse> = getResponse(params, RequestOptions.none())
+    /** @see getResponseById */
+    fun getResponseById(
+        params: ResponseGetResponseByIdParams
+    ): CompletableFuture<ResponseGetResponseByIdResponse> =
+        getResponseById(params, RequestOptions.none())
 
-    /** @see getResponse */
-    fun getResponse(
-        params: ResponseGetResponseParams,
+    /** @see getResponseById */
+    fun getResponseById(
+        params: ResponseGetResponseByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ResponseGetResponseResponse>
+    ): CompletableFuture<ResponseGetResponseByIdResponse>
 
     /**
      * A view of [ResponseServiceAsync] that provides access to raw HTTP responses for each method.
@@ -147,32 +148,32 @@ interface ResponseServiceAsync {
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/responses/{response_id}`, but is
-         * otherwise the same as [ResponseServiceAsync.getResponse].
+         * otherwise the same as [ResponseServiceAsync.getResponseById].
          */
-        fun getResponse(
+        fun getResponseById(
             responseId: String,
-            params: ResponseGetResponseParams,
-        ): CompletableFuture<HttpResponseFor<ResponseGetResponseResponse>> =
-            getResponse(responseId, params, RequestOptions.none())
+            params: ResponseGetResponseByIdParams,
+        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>> =
+            getResponseById(responseId, params, RequestOptions.none())
 
-        /** @see getResponse */
-        fun getResponse(
+        /** @see getResponseById */
+        fun getResponseById(
             responseId: String,
-            params: ResponseGetResponseParams,
+            params: ResponseGetResponseByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ResponseGetResponseResponse>> =
-            getResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>> =
+            getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
 
-        /** @see getResponse */
-        fun getResponse(
-            params: ResponseGetResponseParams
-        ): CompletableFuture<HttpResponseFor<ResponseGetResponseResponse>> =
-            getResponse(params, RequestOptions.none())
+        /** @see getResponseById */
+        fun getResponseById(
+            params: ResponseGetResponseByIdParams
+        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>> =
+            getResponseById(params, RequestOptions.none())
 
-        /** @see getResponse */
-        fun getResponse(
-            params: ResponseGetResponseParams,
+        /** @see getResponseById */
+        fun getResponseById(
+            params: ResponseGetResponseByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ResponseGetResponseResponse>>
+        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>>
     }
 }

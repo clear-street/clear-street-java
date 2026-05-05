@@ -7,8 +7,8 @@ import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.models.v1.omniai.threads.messages.MessageCreateMessageParams
 import com.clear_street.api.models.v1.omniai.threads.messages.MessageCreateMessageResponse
-import com.clear_street.api.models.v1.omniai.threads.messages.MessageListMessagesParams
-import com.clear_street.api.models.v1.omniai.threads.messages.MessageListMessagesResponse
+import com.clear_street.api.models.v1.omniai.threads.messages.MessageGetMessagesParams
+import com.clear_street.api.models.v1.omniai.threads.messages.MessageGetMessagesResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -79,30 +79,30 @@ interface MessageServiceAsync {
      * If the last finalized message has role `USER`, an active response likely exists and should be
      * polled separately.
      */
-    fun listMessages(
+    fun getMessages(
         threadId: String,
-        params: MessageListMessagesParams,
-    ): CompletableFuture<MessageListMessagesResponse> =
-        listMessages(threadId, params, RequestOptions.none())
+        params: MessageGetMessagesParams,
+    ): CompletableFuture<MessageGetMessagesResponse> =
+        getMessages(threadId, params, RequestOptions.none())
 
-    /** @see listMessages */
-    fun listMessages(
+    /** @see getMessages */
+    fun getMessages(
         threadId: String,
-        params: MessageListMessagesParams,
+        params: MessageGetMessagesParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<MessageListMessagesResponse> =
-        listMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
+    ): CompletableFuture<MessageGetMessagesResponse> =
+        getMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
 
-    /** @see listMessages */
-    fun listMessages(
-        params: MessageListMessagesParams
-    ): CompletableFuture<MessageListMessagesResponse> = listMessages(params, RequestOptions.none())
+    /** @see getMessages */
+    fun getMessages(
+        params: MessageGetMessagesParams
+    ): CompletableFuture<MessageGetMessagesResponse> = getMessages(params, RequestOptions.none())
 
-    /** @see listMessages */
-    fun listMessages(
-        params: MessageListMessagesParams,
+    /** @see getMessages */
+    fun getMessages(
+        params: MessageGetMessagesParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<MessageListMessagesResponse>
+    ): CompletableFuture<MessageGetMessagesResponse>
 
     /**
      * A view of [MessageServiceAsync] that provides access to raw HTTP responses for each method.
@@ -150,32 +150,32 @@ interface MessageServiceAsync {
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/threads/{thread_id}/messages`, but is
-         * otherwise the same as [MessageServiceAsync.listMessages].
+         * otherwise the same as [MessageServiceAsync.getMessages].
          */
-        fun listMessages(
+        fun getMessages(
             threadId: String,
-            params: MessageListMessagesParams,
-        ): CompletableFuture<HttpResponseFor<MessageListMessagesResponse>> =
-            listMessages(threadId, params, RequestOptions.none())
+            params: MessageGetMessagesParams,
+        ): CompletableFuture<HttpResponseFor<MessageGetMessagesResponse>> =
+            getMessages(threadId, params, RequestOptions.none())
 
-        /** @see listMessages */
-        fun listMessages(
+        /** @see getMessages */
+        fun getMessages(
             threadId: String,
-            params: MessageListMessagesParams,
+            params: MessageGetMessagesParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<MessageListMessagesResponse>> =
-            listMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<MessageGetMessagesResponse>> =
+            getMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
 
-        /** @see listMessages */
-        fun listMessages(
-            params: MessageListMessagesParams
-        ): CompletableFuture<HttpResponseFor<MessageListMessagesResponse>> =
-            listMessages(params, RequestOptions.none())
+        /** @see getMessages */
+        fun getMessages(
+            params: MessageGetMessagesParams
+        ): CompletableFuture<HttpResponseFor<MessageGetMessagesResponse>> =
+            getMessages(params, RequestOptions.none())
 
-        /** @see listMessages */
-        fun listMessages(
-            params: MessageListMessagesParams,
+        /** @see getMessages */
+        fun getMessages(
+            params: MessageGetMessagesParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<MessageListMessagesResponse>>
+        ): CompletableFuture<HttpResponseFor<MessageGetMessagesResponse>>
     }
 }

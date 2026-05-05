@@ -10,11 +10,11 @@ internal class EntitlementAgreementServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun listEntitlementAgreements() {
+    fun getEntitlementAgreements() {
         val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
         val entitlementAgreementServiceAsync = client.v1().omniAi().entitlementAgreements()
 
-        val responseFuture = entitlementAgreementServiceAsync.listEntitlementAgreements()
+        val responseFuture = entitlementAgreementServiceAsync.getEntitlementAgreements()
 
         val response = responseFuture.get()
         response.validate()

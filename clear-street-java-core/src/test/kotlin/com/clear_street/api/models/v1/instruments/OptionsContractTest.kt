@@ -28,7 +28,7 @@ internal class OptionsContractTest {
                 .strikePrice("150.00")
                 .symbol("AAPL  251219C00150000")
                 .openInterest(0L)
-                .underlierInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         assertThat(optionsContract.id()).isEqualTo("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
@@ -45,7 +45,7 @@ internal class OptionsContractTest {
         assertThat(optionsContract.strikePrice()).isEqualTo("150.00")
         assertThat(optionsContract.symbol()).isEqualTo("AAPL  251219C00150000")
         assertThat(optionsContract.openInterest()).contains(0L)
-        assertThat(optionsContract.underlierInstrumentId())
+        assertThat(optionsContract.underlyingInstrumentId())
             .contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
     }
 
@@ -68,7 +68,7 @@ internal class OptionsContractTest {
                 .strikePrice("150.00")
                 .symbol("AAPL  251219C00150000")
                 .openInterest(0L)
-                .underlierInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         val roundtrippedOptionsContract =

@@ -36,7 +36,7 @@ private constructor(
     private val strikePrice: JsonField<String>,
     private val symbol: JsonField<String>,
     private val openInterest: JsonField<Long>,
-    private val underlierInstrumentId: JsonField<String>,
+    private val underlyingInstrumentId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -74,9 +74,9 @@ private constructor(
         @JsonProperty("open_interest")
         @ExcludeMissing
         openInterest: JsonField<Long> = JsonMissing.of(),
-        @JsonProperty("underlier_instrument_id")
+        @JsonProperty("underlying_instrument_id")
         @ExcludeMissing
-        underlierInstrumentId: JsonField<String> = JsonMissing.of(),
+        underlyingInstrumentId: JsonField<String> = JsonMissing.of(),
     ) : this(
         id,
         contractType,
@@ -92,7 +92,7 @@ private constructor(
         strikePrice,
         symbol,
         openInterest,
-        underlierInstrumentId,
+        underlyingInstrumentId,
         mutableMapOf(),
     )
 
@@ -214,8 +214,8 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun underlierInstrumentId(): Optional<String> =
-        underlierInstrumentId.getOptional("underlier_instrument_id")
+    fun underlyingInstrumentId(): Optional<String> =
+        underlyingInstrumentId.getOptional("underlying_instrument_id")
 
     /**
      * Returns the raw JSON value of [id].
@@ -333,14 +333,14 @@ private constructor(
     fun _openInterest(): JsonField<Long> = openInterest
 
     /**
-     * Returns the raw JSON value of [underlierInstrumentId].
+     * Returns the raw JSON value of [underlyingInstrumentId].
      *
-     * Unlike [underlierInstrumentId], this method doesn't throw if the JSON field has an unexpected
-     * type.
+     * Unlike [underlyingInstrumentId], this method doesn't throw if the JSON field has an
+     * unexpected type.
      */
-    @JsonProperty("underlier_instrument_id")
+    @JsonProperty("underlying_instrument_id")
     @ExcludeMissing
-    fun _underlierInstrumentId(): JsonField<String> = underlierInstrumentId
+    fun _underlyingInstrumentId(): JsonField<String> = underlyingInstrumentId
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -396,7 +396,7 @@ private constructor(
         private var strikePrice: JsonField<String>? = null
         private var symbol: JsonField<String>? = null
         private var openInterest: JsonField<Long> = JsonMissing.of()
-        private var underlierInstrumentId: JsonField<String> = JsonMissing.of()
+        private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -415,7 +415,7 @@ private constructor(
             strikePrice = optionsContract.strikePrice
             symbol = optionsContract.symbol
             openInterest = optionsContract.openInterest
-            underlierInstrumentId = optionsContract.underlierInstrumentId
+            underlyingInstrumentId = optionsContract.underlyingInstrumentId
             additionalProperties = optionsContract.additionalProperties.toMutableMap()
         }
 
@@ -607,25 +607,25 @@ private constructor(
         fun openInterest(openInterest: JsonField<Long>) = apply { this.openInterest = openInterest }
 
         /** OEMS instrument ID of the underlying instrument, if resolvable */
-        fun underlierInstrumentId(underlierInstrumentId: String?) =
-            underlierInstrumentId(JsonField.ofNullable(underlierInstrumentId))
+        fun underlyingInstrumentId(underlyingInstrumentId: String?) =
+            underlyingInstrumentId(JsonField.ofNullable(underlyingInstrumentId))
 
         /**
-         * Alias for calling [Builder.underlierInstrumentId] with
-         * `underlierInstrumentId.orElse(null)`.
+         * Alias for calling [Builder.underlyingInstrumentId] with
+         * `underlyingInstrumentId.orElse(null)`.
          */
-        fun underlierInstrumentId(underlierInstrumentId: Optional<String>) =
-            underlierInstrumentId(underlierInstrumentId.getOrNull())
+        fun underlyingInstrumentId(underlyingInstrumentId: Optional<String>) =
+            underlyingInstrumentId(underlyingInstrumentId.getOrNull())
 
         /**
-         * Sets [Builder.underlierInstrumentId] to an arbitrary JSON value.
+         * Sets [Builder.underlyingInstrumentId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.underlierInstrumentId] with a well-typed [String] value
+         * You should usually call [Builder.underlyingInstrumentId] with a well-typed [String] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun underlierInstrumentId(underlierInstrumentId: JsonField<String>) = apply {
-            this.underlierInstrumentId = underlierInstrumentId
+        fun underlyingInstrumentId(underlyingInstrumentId: JsonField<String>) = apply {
+            this.underlyingInstrumentId = underlyingInstrumentId
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -687,7 +687,7 @@ private constructor(
                 checkRequired("strikePrice", strikePrice),
                 checkRequired("symbol", symbol),
                 openInterest,
-                underlierInstrumentId,
+                underlyingInstrumentId,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -721,7 +721,7 @@ private constructor(
         strikePrice()
         symbol()
         openInterest()
-        underlierInstrumentId()
+        underlyingInstrumentId()
         validated = true
     }
 
@@ -754,7 +754,7 @@ private constructor(
             (if (strikePrice.asKnown().isPresent) 1 else 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (openInterest.asKnown().isPresent) 1 else 0) +
-            (if (underlierInstrumentId.asKnown().isPresent) 1 else 0)
+            (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -776,7 +776,7 @@ private constructor(
             strikePrice == other.strikePrice &&
             symbol == other.symbol &&
             openInterest == other.openInterest &&
-            underlierInstrumentId == other.underlierInstrumentId &&
+            underlyingInstrumentId == other.underlyingInstrumentId &&
             additionalProperties == other.additionalProperties
     }
 
@@ -796,7 +796,7 @@ private constructor(
             strikePrice,
             symbol,
             openInterest,
-            underlierInstrumentId,
+            underlyingInstrumentId,
             additionalProperties,
         )
     }
@@ -804,5 +804,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OptionsContract{id=$id, contractType=$contractType, currency=$currency, exchange=$exchange, exerciseStyle=$exerciseStyle, expiry=$expiry, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, listingType=$listingType, multiplier=$multiplier, strikePrice=$strikePrice, symbol=$symbol, openInterest=$openInterest, underlierInstrumentId=$underlierInstrumentId, additionalProperties=$additionalProperties}"
+        "OptionsContract{id=$id, contractType=$contractType, currency=$currency, exchange=$exchange, exerciseStyle=$exerciseStyle, expiry=$expiry, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, listingType=$listingType, multiplier=$multiplier, strikePrice=$strikePrice, symbol=$symbol, openInterest=$openInterest, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
 }

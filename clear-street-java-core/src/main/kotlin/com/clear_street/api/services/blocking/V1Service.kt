@@ -5,7 +5,7 @@ package com.clear_street.api.services.blocking
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponse
-import com.clear_street.api.models.v1.V1WsParams
+import com.clear_street.api.models.v1.V1WebsocketHandlerParams
 import com.clear_street.api.services.blocking.v1.AccountService
 import com.clear_street.api.services.blocking.v1.CalendarService
 import com.clear_street.api.services.blocking.v1.ClockService
@@ -66,19 +66,21 @@ interface V1Service {
     fun watchlists(): WatchlistService
 
     /** Upgrade the HTTP connection to a WebSocket and echo incoming messages. */
-    fun ws() = ws(V1WsParams.none())
+    fun websocketHandler() = websocketHandler(V1WebsocketHandlerParams.none())
 
-    /** @see ws */
-    fun ws(
-        params: V1WsParams = V1WsParams.none(),
+    /** @see websocketHandler */
+    fun websocketHandler(
+        params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     )
 
-    /** @see ws */
-    fun ws(params: V1WsParams = V1WsParams.none()) = ws(params, RequestOptions.none())
+    /** @see websocketHandler */
+    fun websocketHandler(params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none()) =
+        websocketHandler(params, RequestOptions.none())
 
-    /** @see ws */
-    fun ws(requestOptions: RequestOptions) = ws(V1WsParams.none(), requestOptions)
+    /** @see websocketHandler */
+    fun websocketHandler(requestOptions: RequestOptions) =
+        websocketHandler(V1WebsocketHandlerParams.none(), requestOptions)
 
     /** A view of [V1Service] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -122,24 +124,27 @@ interface V1Service {
 
         /**
          * Returns a raw HTTP response for `get /v1/ws`, but is otherwise the same as
-         * [V1Service.ws].
+         * [V1Service.websocketHandler].
          */
-        @MustBeClosed fun ws(): HttpResponse = ws(V1WsParams.none())
-
-        /** @see ws */
         @MustBeClosed
-        fun ws(
-            params: V1WsParams = V1WsParams.none(),
+        fun websocketHandler(): HttpResponse = websocketHandler(V1WebsocketHandlerParams.none())
+
+        /** @see websocketHandler */
+        @MustBeClosed
+        fun websocketHandler(
+            params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponse
 
-        /** @see ws */
+        /** @see websocketHandler */
         @MustBeClosed
-        fun ws(params: V1WsParams = V1WsParams.none()): HttpResponse =
-            ws(params, RequestOptions.none())
+        fun websocketHandler(
+            params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none()
+        ): HttpResponse = websocketHandler(params, RequestOptions.none())
 
-        /** @see ws */
+        /** @see websocketHandler */
         @MustBeClosed
-        fun ws(requestOptions: RequestOptions): HttpResponse = ws(V1WsParams.none(), requestOptions)
+        fun websocketHandler(requestOptions: RequestOptions): HttpResponse =
+            websocketHandler(V1WebsocketHandlerParams.none(), requestOptions)
     }
 }

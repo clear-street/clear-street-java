@@ -10,10 +10,10 @@ internal class V1ServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun ws() {
+    fun websocketHandler() {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
         val v1Service = client.v1()
 
-        v1Service.ws()
+        v1Service.websocketHandler()
     }
 }
