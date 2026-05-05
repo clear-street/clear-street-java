@@ -21,98 +21,20 @@ class AccountSubkind @JsonCreator private constructor(private val value: JsonFie
 
     companion object {
 
-        @JvmField val AFFILIATE = of("AFFILIATE")
-
-        @JvmField val ALLOCATION = of("ALLOCATION")
-
-        @JvmField val ARRANGING = of("ARRANGING")
-
-        @JvmField val BANK = of("BANK")
-
-        @JvmField val BLOCK_TRADING = of("BLOCK_TRADING")
-
-        @JvmField val CARRY_BROKER = of("CARRY_BROKER")
-
         @JvmField val CASH = of("CASH")
-
-        @JvmField val CLIENT = of("CLIENT")
-
-        @JvmField val COLLATERAL = of("COLLATERAL")
-
-        @JvmField val COURTESY_MASTER = of("COURTESY_MASTER")
-
-        @JvmField val CROSS = of("CROSS")
-
-        @JvmField val DEPOSIT = of("DEPOSIT")
-
-        @JvmField val DVP = of("DVP")
-
-        @JvmField val ERROR = of("ERROR")
-
-        @JvmField val EXECUTION = of("EXECUTION")
-
-        @JvmField val FACILITATION = of("FACILITATION")
-
-        @JvmField val FUNDING_SOURCE = of("FUNDING_SOURCE")
-
-        @JvmField val HEDGE = of("HEDGE")
 
         @JvmField val MARGIN = of("MARGIN")
 
-        @JvmField val MUTUAL_FUND = of("MUTUAL_FUND")
-
-        @JvmField val OPERATING = of("OPERATING")
-
         @JvmField val OTHER = of("OTHER")
-
-        @JvmField val RELATED_MASTER = of("RELATED_MASTER")
-
-        @JvmField val REPO = of("REPO")
-
-        @JvmField val SECURITIES_LENDING = of("SECURITIES_LENDING")
-
-        @JvmField val SHADOW_AWAY = of("SHADOW_AWAY")
-
-        @JvmField val TRADING = of("TRADING")
-
-        @JvmField val TRIPARTY_COLLATERAL_AWAY = of("TRIPARTY_COLLATERAL_AWAY")
-
-        @JvmField val UNKNOWN = of("UNKNOWN")
 
         @JvmStatic fun of(value: String) = AccountSubkind(JsonField.of(value))
     }
 
     /** An enum containing [AccountSubkind]'s known values. */
     enum class Known {
-        AFFILIATE,
-        ALLOCATION,
-        ARRANGING,
-        BANK,
-        BLOCK_TRADING,
-        CARRY_BROKER,
         CASH,
-        CLIENT,
-        COLLATERAL,
-        COURTESY_MASTER,
-        CROSS,
-        DEPOSIT,
-        DVP,
-        ERROR,
-        EXECUTION,
-        FACILITATION,
-        FUNDING_SOURCE,
-        HEDGE,
         MARGIN,
-        MUTUAL_FUND,
-        OPERATING,
         OTHER,
-        RELATED_MASTER,
-        REPO,
-        SECURITIES_LENDING,
-        SHADOW_AWAY,
-        TRADING,
-        TRIPARTY_COLLATERAL_AWAY,
-        UNKNOWN,
     }
 
     /**
@@ -125,35 +47,9 @@ class AccountSubkind @JsonCreator private constructor(private val value: JsonFie
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
-        AFFILIATE,
-        ALLOCATION,
-        ARRANGING,
-        BANK,
-        BLOCK_TRADING,
-        CARRY_BROKER,
         CASH,
-        CLIENT,
-        COLLATERAL,
-        COURTESY_MASTER,
-        CROSS,
-        DEPOSIT,
-        DVP,
-        ERROR,
-        EXECUTION,
-        FACILITATION,
-        FUNDING_SOURCE,
-        HEDGE,
         MARGIN,
-        MUTUAL_FUND,
-        OPERATING,
         OTHER,
-        RELATED_MASTER,
-        REPO,
-        SECURITIES_LENDING,
-        SHADOW_AWAY,
-        TRADING,
-        TRIPARTY_COLLATERAL_AWAY,
-        UNKNOWN,
         /**
          * An enum member indicating that [AccountSubkind] was instantiated with an unknown value.
          */
@@ -169,35 +65,9 @@ class AccountSubkind @JsonCreator private constructor(private val value: JsonFie
      */
     fun value(): Value =
         when (this) {
-            AFFILIATE -> Value.AFFILIATE
-            ALLOCATION -> Value.ALLOCATION
-            ARRANGING -> Value.ARRANGING
-            BANK -> Value.BANK
-            BLOCK_TRADING -> Value.BLOCK_TRADING
-            CARRY_BROKER -> Value.CARRY_BROKER
             CASH -> Value.CASH
-            CLIENT -> Value.CLIENT
-            COLLATERAL -> Value.COLLATERAL
-            COURTESY_MASTER -> Value.COURTESY_MASTER
-            CROSS -> Value.CROSS
-            DEPOSIT -> Value.DEPOSIT
-            DVP -> Value.DVP
-            ERROR -> Value.ERROR
-            EXECUTION -> Value.EXECUTION
-            FACILITATION -> Value.FACILITATION
-            FUNDING_SOURCE -> Value.FUNDING_SOURCE
-            HEDGE -> Value.HEDGE
             MARGIN -> Value.MARGIN
-            MUTUAL_FUND -> Value.MUTUAL_FUND
-            OPERATING -> Value.OPERATING
             OTHER -> Value.OTHER
-            RELATED_MASTER -> Value.RELATED_MASTER
-            REPO -> Value.REPO
-            SECURITIES_LENDING -> Value.SECURITIES_LENDING
-            SHADOW_AWAY -> Value.SHADOW_AWAY
-            TRADING -> Value.TRADING
-            TRIPARTY_COLLATERAL_AWAY -> Value.TRIPARTY_COLLATERAL_AWAY
-            UNKNOWN -> Value.UNKNOWN
             else -> Value._UNKNOWN
         }
 
@@ -212,35 +82,9 @@ class AccountSubkind @JsonCreator private constructor(private val value: JsonFie
      */
     fun known(): Known =
         when (this) {
-            AFFILIATE -> Known.AFFILIATE
-            ALLOCATION -> Known.ALLOCATION
-            ARRANGING -> Known.ARRANGING
-            BANK -> Known.BANK
-            BLOCK_TRADING -> Known.BLOCK_TRADING
-            CARRY_BROKER -> Known.CARRY_BROKER
             CASH -> Known.CASH
-            CLIENT -> Known.CLIENT
-            COLLATERAL -> Known.COLLATERAL
-            COURTESY_MASTER -> Known.COURTESY_MASTER
-            CROSS -> Known.CROSS
-            DEPOSIT -> Known.DEPOSIT
-            DVP -> Known.DVP
-            ERROR -> Known.ERROR
-            EXECUTION -> Known.EXECUTION
-            FACILITATION -> Known.FACILITATION
-            FUNDING_SOURCE -> Known.FUNDING_SOURCE
-            HEDGE -> Known.HEDGE
             MARGIN -> Known.MARGIN
-            MUTUAL_FUND -> Known.MUTUAL_FUND
-            OPERATING -> Known.OPERATING
             OTHER -> Known.OTHER
-            RELATED_MASTER -> Known.RELATED_MASTER
-            REPO -> Known.REPO
-            SECURITIES_LENDING -> Known.SECURITIES_LENDING
-            SHADOW_AWAY -> Known.SHADOW_AWAY
-            TRADING -> Known.TRADING
-            TRIPARTY_COLLATERAL_AWAY -> Known.TRIPARTY_COLLATERAL_AWAY
-            UNKNOWN -> Known.UNKNOWN
             else -> throw ClearStreetInvalidDataException("Unknown AccountSubkind: $value")
         }
 

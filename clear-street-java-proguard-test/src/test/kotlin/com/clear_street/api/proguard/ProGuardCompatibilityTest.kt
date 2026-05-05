@@ -103,7 +103,7 @@ internal class ProGuardCompatibilityTest {
     @Test
     fun accountKindRoundtrip() {
         val jsonMapper = jsonMapper()
-        val accountKind = AccountKind.HOUSE
+        val accountKind = AccountKind.CUSTOMER
 
         val roundtrippedAccountKind =
             jsonMapper.readValue(
