@@ -26,7 +26,6 @@ internal class OrderPayloadTest {
                 .limitPrice("150.00")
                 .orderId("order_id")
                 .stopPrice("148.00")
-                .strategy(OrderStrategyType.SOR)
                 .build()
 
         assertThat(orderPayload.instrumentType()).isEqualTo(SecurityType.COMMON_STOCK)
@@ -38,7 +37,6 @@ internal class OrderPayloadTest {
         assertThat(orderPayload.limitPrice()).contains("150.00")
         assertThat(orderPayload.orderId()).contains("order_id")
         assertThat(orderPayload.stopPrice()).contains("148.00")
-        assertThat(orderPayload.strategy()).contains(OrderStrategyType.SOR)
     }
 
     @Test
@@ -55,7 +53,6 @@ internal class OrderPayloadTest {
                 .limitPrice("150.00")
                 .orderId("order_id")
                 .stopPrice("148.00")
-                .strategy(OrderStrategyType.SOR)
                 .build()
 
         val roundtrippedOrderPayload =

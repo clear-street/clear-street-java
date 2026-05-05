@@ -9,13 +9,11 @@ import com.clear_street.api.models.ResponseMetadata
 import com.clear_street.api.models.v1.SecurityType
 import com.clear_street.api.models.v1.accounts.orders.Order
 import com.clear_street.api.models.v1.accounts.orders.OrderStatus
-import com.clear_street.api.models.v1.accounts.orders.OrderStrategy
 import com.clear_street.api.models.v1.accounts.orders.OrderType
 import com.clear_street.api.models.v1.accounts.orders.QueueState
 import com.clear_street.api.models.v1.accounts.orders.Side
 import com.clear_street.api.models.v1.accounts.orders.TimeInForce
 import com.clear_street.api.models.v1.accounts.orders.TrailingOffsetType
-import com.clear_street.api.models.v1.accounts.orders.Urgency
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -75,14 +73,6 @@ internal class PositionClosePositionsResponseTest {
                         .queueState(QueueState.AWAITING_RELEASE)
                         .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                         .stopPrice(null)
-                        .strategy(
-                            OrderStrategy.Sor.builder()
-                                .endAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                                .startAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                                .urgency(Urgency.SUPER_PASSIVE)
-                                .type(OrderStrategy.Sor.Type.SOR)
-                                .build()
-                        )
                         .trailingOffsetAmt("1.25")
                         .trailingOffsetAmtType(TrailingOffsetType.PRICE)
                         .trailingWatermarkPx("150.00")
@@ -143,14 +133,6 @@ internal class PositionClosePositionsResponseTest {
                     .queueState(QueueState.AWAITING_RELEASE)
                     .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                     .stopPrice(null)
-                    .strategy(
-                        OrderStrategy.Sor.builder()
-                            .endAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                            .startAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                            .urgency(Urgency.SUPER_PASSIVE)
-                            .type(OrderStrategy.Sor.Type.SOR)
-                            .build()
-                    )
                     .trailingOffsetAmt("1.25")
                     .trailingOffsetAmtType(TrailingOffsetType.PRICE)
                     .trailingWatermarkPx("150.00")
@@ -213,14 +195,6 @@ internal class PositionClosePositionsResponseTest {
                         .queueState(QueueState.AWAITING_RELEASE)
                         .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                         .stopPrice(null)
-                        .strategy(
-                            OrderStrategy.Sor.builder()
-                                .endAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                                .startAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                                .urgency(Urgency.SUPER_PASSIVE)
-                                .type(OrderStrategy.Sor.Type.SOR)
-                                .build()
-                        )
                         .trailingOffsetAmt("1.25")
                         .trailingOffsetAmtType(TrailingOffsetType.PRICE)
                         .trailingWatermarkPx("150.00")

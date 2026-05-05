@@ -1478,7 +1478,6 @@ private constructor(
             private val limitPrice: JsonField<String>,
             private val positionEffect: JsonField<PositionEffect>,
             private val stopPrice: JsonField<String>,
-            private val strategy: JsonField<OrderStrategy>,
             private val symbol: JsonField<String>,
             private val trailingOffsetAmt: JsonField<String>,
             private val trailingOffsetAmtType: JsonField<TrailingOffsetType>,
@@ -1522,9 +1521,6 @@ private constructor(
                 @JsonProperty("stop_price")
                 @ExcludeMissing
                 stopPrice: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("strategy")
-                @ExcludeMissing
-                strategy: JsonField<OrderStrategy> = JsonMissing.of(),
                 @JsonProperty("symbol")
                 @ExcludeMissing
                 symbol: JsonField<String> = JsonMissing.of(),
@@ -1548,7 +1544,6 @@ private constructor(
                 limitPrice,
                 positionEffect,
                 stopPrice,
-                strategy,
                 symbol,
                 trailingOffsetAmt,
                 trailingOffsetAmtType,
@@ -1668,14 +1663,6 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
-
-            /**
-             * Execution strategy/router. Defaults to SOR where applicable.
-             *
-             * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun strategy(): Optional<OrderStrategy> = strategy.getOptional("strategy")
 
             /**
              * Trading symbol. For equities, use the ticker symbol (e.g., "AAPL"). For options, use
@@ -1828,16 +1815,6 @@ private constructor(
             fun _stopPrice(): JsonField<String> = stopPrice
 
             /**
-             * Returns the raw JSON value of [strategy].
-             *
-             * Unlike [strategy], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("strategy")
-            @ExcludeMissing
-            fun _strategy(): JsonField<OrderStrategy> = strategy
-
-            /**
              * Returns the raw JSON value of [symbol].
              *
              * Unlike [symbol], this method doesn't throw if the JSON field has an unexpected type.
@@ -1909,7 +1886,6 @@ private constructor(
                 private var limitPrice: JsonField<String> = JsonMissing.of()
                 private var positionEffect: JsonField<PositionEffect> = JsonMissing.of()
                 private var stopPrice: JsonField<String> = JsonMissing.of()
-                private var strategy: JsonField<OrderStrategy> = JsonMissing.of()
                 private var symbol: JsonField<String> = JsonMissing.of()
                 private var trailingOffsetAmt: JsonField<String> = JsonMissing.of()
                 private var trailingOffsetAmtType: JsonField<TrailingOffsetType> = JsonMissing.of()
@@ -1930,7 +1906,6 @@ private constructor(
                     limitPrice = newOrderRequest.limitPrice
                     positionEffect = newOrderRequest.positionEffect
                     stopPrice = newOrderRequest.stopPrice
-                    strategy = newOrderRequest.strategy
                     symbol = newOrderRequest.symbol
                     trailingOffsetAmt = newOrderRequest.trailingOffsetAmt
                     trailingOffsetAmtType = newOrderRequest.trailingOffsetAmtType
@@ -2164,44 +2139,6 @@ private constructor(
                  */
                 fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
 
-                /** Execution strategy/router. Defaults to SOR where applicable. */
-                fun strategy(strategy: OrderStrategy?) = strategy(JsonField.ofNullable(strategy))
-
-                /** Alias for calling [Builder.strategy] with `strategy.orElse(null)`. */
-                fun strategy(strategy: Optional<OrderStrategy>) = strategy(strategy.getOrNull())
-
-                /**
-                 * Sets [Builder.strategy] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.strategy] with a well-typed [OrderStrategy]
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun strategy(strategy: JsonField<OrderStrategy>) = apply {
-                    this.strategy = strategy
-                }
-
-                /** Alias for calling [strategy] with `OrderStrategy.ofSor(sor)`. */
-                fun strategy(sor: OrderStrategy.Sor) = strategy(OrderStrategy.ofSor(sor))
-
-                /** Alias for calling [strategy] with `OrderStrategy.ofVwap(vwap)`. */
-                fun strategy(vwap: OrderStrategy.Vwap) = strategy(OrderStrategy.ofVwap(vwap))
-
-                /** Alias for calling [strategy] with `OrderStrategy.ofTwap(twap)`. */
-                fun strategy(twap: OrderStrategy.Twap) = strategy(OrderStrategy.ofTwap(twap))
-
-                /** Alias for calling [strategy] with `OrderStrategy.ofAp(ap)`. */
-                fun strategy(ap: OrderStrategy.Ap) = strategy(OrderStrategy.ofAp(ap))
-
-                /** Alias for calling [strategy] with `OrderStrategy.ofPov(pov)`. */
-                fun strategy(pov: OrderStrategy.Pov) = strategy(OrderStrategy.ofPov(pov))
-
-                /** Alias for calling [strategy] with `OrderStrategy.ofDark(dark)`. */
-                fun strategy(dark: OrderStrategy.Dark) = strategy(OrderStrategy.ofDark(dark))
-
-                /** Alias for calling [strategy] with `OrderStrategy.ofDma(dma)`. */
-                fun strategy(dma: OrderStrategy.Dma) = strategy(OrderStrategy.ofDma(dma))
-
                 /**
                  * Trading symbol. For equities, use the ticker symbol (e.g., "AAPL"). For options,
                  * use the OSI symbol (e.g., "AAPL 250117C00190000"). Either `symbol` or
@@ -2319,7 +2256,6 @@ private constructor(
                         limitPrice,
                         positionEffect,
                         stopPrice,
-                        strategy,
                         symbol,
                         trailingOffsetAmt,
                         trailingOffsetAmtType,
@@ -2357,7 +2293,6 @@ private constructor(
                 limitPrice()
                 positionEffect().ifPresent { it.validate() }
                 stopPrice()
-                strategy().ifPresent { it.validate() }
                 symbol()
                 trailingOffsetAmt()
                 trailingOffsetAmtType().ifPresent { it.validate() }
@@ -2393,7 +2328,6 @@ private constructor(
                     (if (limitPrice.asKnown().isPresent) 1 else 0) +
                     (positionEffect.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (stopPrice.asKnown().isPresent) 1 else 0) +
-                    (strategy.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (symbol.asKnown().isPresent) 1 else 0) +
                     (if (trailingOffsetAmt.asKnown().isPresent) 1 else 0) +
                     (trailingOffsetAmtType.asKnown().getOrNull()?.validity() ?: 0)
@@ -2566,7 +2500,6 @@ private constructor(
                     limitPrice == other.limitPrice &&
                     positionEffect == other.positionEffect &&
                     stopPrice == other.stopPrice &&
-                    strategy == other.strategy &&
                     symbol == other.symbol &&
                     trailingOffsetAmt == other.trailingOffsetAmt &&
                     trailingOffsetAmtType == other.trailingOffsetAmtType &&
@@ -2588,7 +2521,6 @@ private constructor(
                     limitPrice,
                     positionEffect,
                     stopPrice,
-                    strategy,
                     symbol,
                     trailingOffsetAmt,
                     trailingOffsetAmtType,
@@ -2599,7 +2531,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "NewOrderRequest{instrumentType=$instrumentType, orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, limitOffset=$limitOffset, limitPrice=$limitPrice, positionEffect=$positionEffect, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, additionalProperties=$additionalProperties}"
+                "NewOrderRequest{instrumentType=$instrumentType, orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, limitOffset=$limitOffset, limitPrice=$limitPrice, positionEffect=$positionEffect, stopPrice=$stopPrice, symbol=$symbol, trailingOffsetAmt=$trailingOffsetAmt, trailingOffsetAmtType=$trailingOffsetAmtType, additionalProperties=$additionalProperties}"
         }
     }
 

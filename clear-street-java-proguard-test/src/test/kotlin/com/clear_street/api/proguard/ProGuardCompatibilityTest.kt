@@ -8,11 +8,9 @@ import com.clear_street.api.models.v1.accounts.Account
 import com.clear_street.api.models.v1.accounts.AccountKind
 import com.clear_street.api.models.v1.accounts.AccountStatus
 import com.clear_street.api.models.v1.accounts.AccountSubkind
-import com.clear_street.api.models.v1.accounts.orders.OrderStrategy
-import com.clear_street.api.models.v1.accounts.orders.Urgency
+import com.clear_street.api.models.v1.omniai.MessageContentPart
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
-import java.time.OffsetDateTime
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import org.assertj.core.api.Assertions.assertThat
@@ -83,25 +81,23 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun orderStrategyRoundtrip() {
+    fun messageContentPartRoundtrip() {
         val jsonMapper = jsonMapper()
-        val orderStrategy =
-            OrderStrategy.ofSor(
-                OrderStrategy.Sor.builder()
-                    .endAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .startAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                    .urgency(Urgency.SUPER_PASSIVE)
-                    .type(OrderStrategy.Sor.Type.SOR)
+        val messageContentPart =
+            MessageContentPart.ofUnionMember0(
+                MessageContentPart.UnionMember0.builder()
+                    .text("text")
+                    .type(MessageContentPart.UnionMember0.Type.TEXT)
                     .build()
             )
 
-        val roundtrippedOrderStrategy =
+        val roundtrippedMessageContentPart =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(orderStrategy),
-                jacksonTypeRef<OrderStrategy>(),
+                jsonMapper.writeValueAsString(messageContentPart),
+                jacksonTypeRef<MessageContentPart>(),
             )
 
-        assertThat(roundtrippedOrderStrategy).isEqualTo(orderStrategy)
+        assertThat(roundtrippedMessageContentPart).isEqualTo(messageContentPart)
     }
 
     @Test
