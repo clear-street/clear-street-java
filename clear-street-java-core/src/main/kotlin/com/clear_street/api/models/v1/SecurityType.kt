@@ -25,13 +25,7 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
 
         @JvmField val PREFERRED_STOCK = of("PREFERRED_STOCK")
 
-        @JvmField val CORPORATE_BOND = of("CORPORATE_BOND")
-
         @JvmField val OPTION = of("OPTION")
-
-        @JvmField val FUTURE = of("FUTURE")
-
-        @JvmField val WARRANT = of("WARRANT")
 
         @JvmField val CASH = of("CASH")
 
@@ -44,10 +38,7 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
     enum class Known {
         COMMON_STOCK,
         PREFERRED_STOCK,
-        CORPORATE_BOND,
         OPTION,
-        FUTURE,
-        WARRANT,
         CASH,
         OTHER,
     }
@@ -64,10 +55,7 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
     enum class Value {
         COMMON_STOCK,
         PREFERRED_STOCK,
-        CORPORATE_BOND,
         OPTION,
-        FUTURE,
-        WARRANT,
         CASH,
         OTHER,
         /** An enum member indicating that [SecurityType] was instantiated with an unknown value. */
@@ -85,10 +73,7 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
         when (this) {
             COMMON_STOCK -> Value.COMMON_STOCK
             PREFERRED_STOCK -> Value.PREFERRED_STOCK
-            CORPORATE_BOND -> Value.CORPORATE_BOND
             OPTION -> Value.OPTION
-            FUTURE -> Value.FUTURE
-            WARRANT -> Value.WARRANT
             CASH -> Value.CASH
             OTHER -> Value.OTHER
             else -> Value._UNKNOWN
@@ -107,10 +92,7 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
         when (this) {
             COMMON_STOCK -> Known.COMMON_STOCK
             PREFERRED_STOCK -> Known.PREFERRED_STOCK
-            CORPORATE_BOND -> Known.CORPORATE_BOND
             OPTION -> Known.OPTION
-            FUTURE -> Known.FUTURE
-            WARRANT -> Known.WARRANT
             CASH -> Known.CASH
             OTHER -> Known.OTHER
             else -> throw ClearStreetInvalidDataException("Unknown SecurityType: $value")
