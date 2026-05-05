@@ -7,8 +7,8 @@ import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.models.v1.omniai.threads.messages.MessageCreateMessageParams
 import com.clear_street.api.models.v1.omniai.threads.messages.MessageCreateMessageResponse
-import com.clear_street.api.models.v1.omniai.threads.messages.MessageListMessagesParams
-import com.clear_street.api.models.v1.omniai.threads.messages.MessageListMessagesResponse
+import com.clear_street.api.models.v1.omniai.threads.messages.MessageGetMessagesParams
+import com.clear_street.api.models.v1.omniai.threads.messages.MessageGetMessagesResponse
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -76,28 +76,28 @@ interface MessageService {
      * If the last finalized message has role `USER`, an active response likely exists and should be
      * polled separately.
      */
-    fun listMessages(
+    fun getMessages(
         threadId: String,
-        params: MessageListMessagesParams,
-    ): MessageListMessagesResponse = listMessages(threadId, params, RequestOptions.none())
+        params: MessageGetMessagesParams,
+    ): MessageGetMessagesResponse = getMessages(threadId, params, RequestOptions.none())
 
-    /** @see listMessages */
-    fun listMessages(
+    /** @see getMessages */
+    fun getMessages(
         threadId: String,
-        params: MessageListMessagesParams,
+        params: MessageGetMessagesParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): MessageListMessagesResponse =
-        listMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
+    ): MessageGetMessagesResponse =
+        getMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
 
-    /** @see listMessages */
-    fun listMessages(params: MessageListMessagesParams): MessageListMessagesResponse =
-        listMessages(params, RequestOptions.none())
+    /** @see getMessages */
+    fun getMessages(params: MessageGetMessagesParams): MessageGetMessagesResponse =
+        getMessages(params, RequestOptions.none())
 
-    /** @see listMessages */
-    fun listMessages(
-        params: MessageListMessagesParams,
+    /** @see getMessages */
+    fun getMessages(
+        params: MessageGetMessagesParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): MessageListMessagesResponse
+    ): MessageGetMessagesResponse
 
     /** A view of [MessageService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -145,36 +145,35 @@ interface MessageService {
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/threads/{thread_id}/messages`, but is
-         * otherwise the same as [MessageService.listMessages].
+         * otherwise the same as [MessageService.getMessages].
          */
         @MustBeClosed
-        fun listMessages(
+        fun getMessages(
             threadId: String,
-            params: MessageListMessagesParams,
-        ): HttpResponseFor<MessageListMessagesResponse> =
-            listMessages(threadId, params, RequestOptions.none())
+            params: MessageGetMessagesParams,
+        ): HttpResponseFor<MessageGetMessagesResponse> =
+            getMessages(threadId, params, RequestOptions.none())
 
-        /** @see listMessages */
+        /** @see getMessages */
         @MustBeClosed
-        fun listMessages(
+        fun getMessages(
             threadId: String,
-            params: MessageListMessagesParams,
+            params: MessageGetMessagesParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<MessageListMessagesResponse> =
-            listMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
+        ): HttpResponseFor<MessageGetMessagesResponse> =
+            getMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
 
-        /** @see listMessages */
+        /** @see getMessages */
         @MustBeClosed
-        fun listMessages(
-            params: MessageListMessagesParams
-        ): HttpResponseFor<MessageListMessagesResponse> =
-            listMessages(params, RequestOptions.none())
+        fun getMessages(
+            params: MessageGetMessagesParams
+        ): HttpResponseFor<MessageGetMessagesResponse> = getMessages(params, RequestOptions.none())
 
-        /** @see listMessages */
+        /** @see getMessages */
         @MustBeClosed
-        fun listMessages(
-            params: MessageListMessagesParams,
+        fun getMessages(
+            params: MessageGetMessagesParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<MessageListMessagesResponse>
+        ): HttpResponseFor<MessageGetMessagesResponse>
     }
 }

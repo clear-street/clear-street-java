@@ -9,8 +9,8 @@ import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntit
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsResponse
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementParams
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementResponse
-import com.clear_street.api.models.v1.omniai.entitlements.EntitlementListEntitlementsParams
-import com.clear_street.api.models.v1.omniai.entitlements.EntitlementListEntitlementsResponse
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsResponse
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -83,23 +83,23 @@ interface EntitlementService {
         deleteEntitlement(entitlementId, EntitlementDeleteEntitlementParams.none(), requestOptions)
 
     /** List caller's active entitlement grants. */
-    fun listEntitlements(): EntitlementListEntitlementsResponse =
-        listEntitlements(EntitlementListEntitlementsParams.none())
+    fun getEntitlements(): EntitlementGetEntitlementsResponse =
+        getEntitlements(EntitlementGetEntitlementsParams.none())
 
-    /** @see listEntitlements */
-    fun listEntitlements(
-        params: EntitlementListEntitlementsParams = EntitlementListEntitlementsParams.none(),
+    /** @see getEntitlements */
+    fun getEntitlements(
+        params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EntitlementListEntitlementsResponse
+    ): EntitlementGetEntitlementsResponse
 
-    /** @see listEntitlements */
-    fun listEntitlements(
-        params: EntitlementListEntitlementsParams = EntitlementListEntitlementsParams.none()
-    ): EntitlementListEntitlementsResponse = listEntitlements(params, RequestOptions.none())
+    /** @see getEntitlements */
+    fun getEntitlements(
+        params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none()
+    ): EntitlementGetEntitlementsResponse = getEntitlements(params, RequestOptions.none())
 
-    /** @see listEntitlements */
-    fun listEntitlements(requestOptions: RequestOptions): EntitlementListEntitlementsResponse =
-        listEntitlements(EntitlementListEntitlementsParams.none(), requestOptions)
+    /** @see getEntitlements */
+    fun getEntitlements(requestOptions: RequestOptions): EntitlementGetEntitlementsResponse =
+        getEntitlements(EntitlementGetEntitlementsParams.none(), requestOptions)
 
     /**
      * A view of [EntitlementService] that provides access to raw HTTP responses for each method.
@@ -190,31 +190,31 @@ interface EntitlementService {
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/entitlements`, but is otherwise the same
-         * as [EntitlementService.listEntitlements].
+         * as [EntitlementService.getEntitlements].
          */
         @MustBeClosed
-        fun listEntitlements(): HttpResponseFor<EntitlementListEntitlementsResponse> =
-            listEntitlements(EntitlementListEntitlementsParams.none())
+        fun getEntitlements(): HttpResponseFor<EntitlementGetEntitlementsResponse> =
+            getEntitlements(EntitlementGetEntitlementsParams.none())
 
-        /** @see listEntitlements */
+        /** @see getEntitlements */
         @MustBeClosed
-        fun listEntitlements(
-            params: EntitlementListEntitlementsParams = EntitlementListEntitlementsParams.none(),
+        fun getEntitlements(
+            params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EntitlementListEntitlementsResponse>
+        ): HttpResponseFor<EntitlementGetEntitlementsResponse>
 
-        /** @see listEntitlements */
+        /** @see getEntitlements */
         @MustBeClosed
-        fun listEntitlements(
-            params: EntitlementListEntitlementsParams = EntitlementListEntitlementsParams.none()
-        ): HttpResponseFor<EntitlementListEntitlementsResponse> =
-            listEntitlements(params, RequestOptions.none())
+        fun getEntitlements(
+            params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none()
+        ): HttpResponseFor<EntitlementGetEntitlementsResponse> =
+            getEntitlements(params, RequestOptions.none())
 
-        /** @see listEntitlements */
+        /** @see getEntitlements */
         @MustBeClosed
-        fun listEntitlements(
+        fun getEntitlements(
             requestOptions: RequestOptions
-        ): HttpResponseFor<EntitlementListEntitlementsResponse> =
-            listEntitlements(EntitlementListEntitlementsParams.none(), requestOptions)
+        ): HttpResponseFor<EntitlementGetEntitlementsResponse> =
+            getEntitlements(EntitlementGetEntitlementsParams.none(), requestOptions)
     }
 }

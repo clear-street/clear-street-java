@@ -4,9 +4,9 @@ package com.clear_street.api.services.blocking.v1.omniai
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
 import com.clear_street.api.models.v1.omniai.threads.ThreadCreateThreadParams
-import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadParams
-import com.clear_street.api.models.v1.omniai.threads.ThreadListThreadsParams
-import com.clear_street.api.models.v1.omniai.threads.ThreadResponseParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadByIdParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponseParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadsParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -40,13 +40,13 @@ internal class ThreadServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun getThread() {
+    fun getThreadById() {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
         val threadService = client.v1().omniAi().threads()
 
         val response =
-            threadService.getThread(
-                ThreadGetThreadParams.builder()
+            threadService.getThreadById(
+                ThreadGetThreadByIdParams.builder()
                     .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .accountId(0L)
                     .build()
@@ -57,33 +57,33 @@ internal class ThreadServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun listThreads() {
+    fun getThreadResponse() {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
         val threadService = client.v1().omniAi().threads()
 
         val response =
-            threadService.listThreads(
-                ThreadListThreadsParams.builder()
+            threadService.getThreadResponse(
+                ThreadGetThreadResponseParams.builder()
+                    .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .accountId(0L)
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun getThreads() {
+        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val threadService = client.v1().omniAi().threads()
+
+        val response =
+            threadService.getThreads(
+                ThreadGetThreadsParams.builder()
                     .accountId(0L)
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
-                    .build()
-            )
-
-        response.validate()
-    }
-
-    @Disabled("Mock server tests are disabled")
-    @Test
-    fun response() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
-        val threadService = client.v1().omniAi().threads()
-
-        val response =
-            threadService.response(
-                ThreadResponseParams.builder()
-                    .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .accountId(0L)
                     .build()
             )
 

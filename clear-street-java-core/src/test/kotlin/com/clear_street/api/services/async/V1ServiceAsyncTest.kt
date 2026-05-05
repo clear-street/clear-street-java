@@ -10,11 +10,11 @@ internal class V1ServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun ws() {
+    fun websocketHandler() {
         val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
         val v1ServiceAsync = client.v1()
 
-        val future = v1ServiceAsync.ws()
+        val future = v1ServiceAsync.websocketHandler()
 
         val response = future.get()
     }

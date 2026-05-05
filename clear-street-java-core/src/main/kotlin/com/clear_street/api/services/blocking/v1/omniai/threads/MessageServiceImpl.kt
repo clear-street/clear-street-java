@@ -18,8 +18,8 @@ import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
 import com.clear_street.api.models.v1.omniai.threads.messages.MessageCreateMessageParams
 import com.clear_street.api.models.v1.omniai.threads.messages.MessageCreateMessageResponse
-import com.clear_street.api.models.v1.omniai.threads.messages.MessageListMessagesParams
-import com.clear_street.api.models.v1.omniai.threads.messages.MessageListMessagesResponse
+import com.clear_street.api.models.v1.omniai.threads.messages.MessageGetMessagesParams
+import com.clear_street.api.models.v1.omniai.threads.messages.MessageGetMessagesResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -48,12 +48,12 @@ class MessageServiceImpl internal constructor(private val clientOptions: ClientO
         // post /v1/omni-ai/threads/{thread_id}/messages
         withRawResponse().createMessage(params, requestOptions).parse()
 
-    override fun listMessages(
-        params: MessageListMessagesParams,
+    override fun getMessages(
+        params: MessageGetMessagesParams,
         requestOptions: RequestOptions,
-    ): MessageListMessagesResponse =
+    ): MessageGetMessagesResponse =
         // get /v1/omni-ai/threads/{thread_id}/messages
-        withRawResponse().listMessages(params, requestOptions).parse()
+        withRawResponse().getMessages(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         MessageService.WithRawResponse {
@@ -99,13 +99,13 @@ class MessageServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val listMessagesHandler: Handler<MessageListMessagesResponse> =
-            jsonHandler<MessageListMessagesResponse>(clientOptions.jsonMapper)
+        private val getMessagesHandler: Handler<MessageGetMessagesResponse> =
+            jsonHandler<MessageGetMessagesResponse>(clientOptions.jsonMapper)
 
-        override fun listMessages(
-            params: MessageListMessagesParams,
+        override fun getMessages(
+            params: MessageGetMessagesParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<MessageListMessagesResponse> {
+        ): HttpResponseFor<MessageGetMessagesResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("threadId", params.threadId().getOrNull())
@@ -120,7 +120,7 @@ class MessageServiceImpl internal constructor(private val clientOptions: ClientO
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { listMessagesHandler.handle(it) }
+                    .use { getMessagesHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

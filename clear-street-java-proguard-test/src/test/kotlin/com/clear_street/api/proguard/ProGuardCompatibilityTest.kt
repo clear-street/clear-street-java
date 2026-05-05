@@ -5,9 +5,9 @@ package com.clear_street.api.proguard
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.models.v1.accounts.Account
-import com.clear_street.api.models.v1.accounts.AccountKind
 import com.clear_street.api.models.v1.accounts.AccountStatus
-import com.clear_street.api.models.v1.accounts.AccountSubkind
+import com.clear_street.api.models.v1.accounts.AccountSubtype
+import com.clear_street.api.models.v1.accounts.AccountType
 import com.clear_street.api.models.v1.omniai.MessageContentPart
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
@@ -65,12 +65,12 @@ internal class ProGuardCompatibilityTest {
                 .id(19816L)
                 .accountHolderEntityId(987654321L)
                 .fullName("Test Trading Account")
-                .kind(AccountKind.CUSTOMER)
                 .openDate(LocalDate.parse("2023-01-15"))
                 .optionsLevel(1L)
                 .shortName("TST-ACCOUNT-01")
                 .status(AccountStatus.ACTIVE)
-                .subkind(AccountSubkind.MARGIN)
+                .subtype(AccountSubtype.MARGIN)
+                .type(AccountType.CUSTOMER)
                 .closeDate(null)
                 .build()
 
@@ -101,16 +101,16 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun accountKindRoundtrip() {
+    fun accountStatusRoundtrip() {
         val jsonMapper = jsonMapper()
-        val accountKind = AccountKind.CUSTOMER
+        val accountStatus = AccountStatus.ACTIVE
 
-        val roundtrippedAccountKind =
+        val roundtrippedAccountStatus =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(accountKind),
-                jacksonTypeRef<AccountKind>(),
+                jsonMapper.writeValueAsString(accountStatus),
+                jacksonTypeRef<AccountStatus>(),
             )
 
-        assertThat(roundtrippedAccountKind).isEqualTo(accountKind)
+        assertThat(roundtrippedAccountStatus).isEqualTo(accountStatus)
     }
 }

@@ -19,8 +19,8 @@ import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdPar
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdResponse
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsParams
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsResponse
-import com.clear_street.api.models.v1.instruments.InstrumentSearchParams
-import com.clear_street.api.models.v1.instruments.InstrumentSearchResponse
+import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsParams
+import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsResponse
 import com.clear_street.api.services.async.v1.instruments.AnalystReportingServiceAsync
 import com.clear_street.api.services.async.v1.instruments.AnalystReportingServiceAsyncImpl
 import com.clear_street.api.services.async.v1.instruments.BalanceSheetServiceAsync
@@ -111,12 +111,12 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
         // get /v1/instruments
         withRawResponse().getInstruments(params, requestOptions).thenApply { it.parse() }
 
-    override fun search(
-        params: InstrumentSearchParams,
+    override fun searchInstruments(
+        params: InstrumentSearchInstrumentsParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<InstrumentSearchResponse> =
+    ): CompletableFuture<InstrumentSearchInstrumentsResponse> =
         // get /v1/instruments/search
-        withRawResponse().search(params, requestOptions).thenApply { it.parse() }
+        withRawResponse().searchInstruments(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         InstrumentServiceAsync.WithRawResponse {
@@ -246,13 +246,13 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
                 }
         }
 
-        private val searchHandler: Handler<InstrumentSearchResponse> =
-            jsonHandler<InstrumentSearchResponse>(clientOptions.jsonMapper)
+        private val searchInstrumentsHandler: Handler<InstrumentSearchInstrumentsResponse> =
+            jsonHandler<InstrumentSearchInstrumentsResponse>(clientOptions.jsonMapper)
 
-        override fun search(
-            params: InstrumentSearchParams,
+        override fun searchInstruments(
+            params: InstrumentSearchInstrumentsParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<InstrumentSearchResponse>> {
+        ): CompletableFuture<HttpResponseFor<InstrumentSearchInstrumentsResponse>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -266,7 +266,7 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
                         response
-                            .use { searchHandler.handle(it) }
+                            .use { searchInstrumentsHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

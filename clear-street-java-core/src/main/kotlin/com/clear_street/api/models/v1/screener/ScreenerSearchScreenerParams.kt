@@ -57,7 +57,7 @@ private constructor(
     fun filters(): Optional<List<SearchFilter>> = body.filters()
 
     /**
-     * Maximum number of results per page.
+     * The number of items to return per page (only used when page_token is not provided)
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -65,7 +65,8 @@ private constructor(
     fun pageSize(): Optional<Long> = body.pageSize()
 
     /**
-     * Opaque token for cursor-based pagination.
+     * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+     * offset). When provided, page_size is ignored.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -256,7 +257,7 @@ private constructor(
          */
         fun addFilter(filter: SearchFilter) = apply { body.addFilter(filter) }
 
-        /** Maximum number of results per page. */
+        /** The number of items to return per page (only used when page_token is not provided) */
         fun pageSize(pageSize: Long?) = apply { body.pageSize(pageSize) }
 
         /**
@@ -277,7 +278,10 @@ private constructor(
          */
         fun pageSize(pageSize: JsonField<Long>) = apply { body.pageSize(pageSize) }
 
-        /** Opaque token for cursor-based pagination. */
+        /**
+         * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+         * offset). When provided, page_size is ignored.
+         */
         fun pageToken(pageToken: String?) = apply { body.pageToken(pageToken) }
 
         /** Alias for calling [Builder.pageToken] with `pageToken.orElse(null)`. */
@@ -575,7 +579,7 @@ private constructor(
         fun filters(): Optional<List<SearchFilter>> = filters.getOptional("filters")
 
         /**
-         * Maximum number of results per page.
+         * The number of items to return per page (only used when page_token is not provided)
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -583,7 +587,8 @@ private constructor(
         fun pageSize(): Optional<Long> = pageSize.getOptional("page_size")
 
         /**
-         * Opaque token for cursor-based pagination.
+         * Token for retrieving the next page of results. Contains encoded pagination state (limit +
+         * offset). When provided, page_size is ignored.
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -794,7 +799,9 @@ private constructor(
                     }
             }
 
-            /** Maximum number of results per page. */
+            /**
+             * The number of items to return per page (only used when page_token is not provided)
+             */
             fun pageSize(pageSize: Long?) = pageSize(JsonField.ofNullable(pageSize))
 
             /**
@@ -816,7 +823,10 @@ private constructor(
              */
             fun pageSize(pageSize: JsonField<Long>) = apply { this.pageSize = pageSize }
 
-            /** Opaque token for cursor-based pagination. */
+            /**
+             * Token for retrieving the next page of results. Contains encoded pagination state
+             * (limit + offset). When provided, page_size is ignored.
+             */
             fun pageToken(pageToken: String?) = pageToken(JsonField.ofNullable(pageToken))
 
             /** Alias for calling [Builder.pageToken] with `pageToken.orElse(null)`. */

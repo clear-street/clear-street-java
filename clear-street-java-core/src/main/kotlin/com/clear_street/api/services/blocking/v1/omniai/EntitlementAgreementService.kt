@@ -5,8 +5,8 @@ package com.clear_street.api.services.blocking.v1.omniai
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
-import com.clear_street.api.models.v1.omniai.entitlementagreements.EntitlementAgreementListEntitlementAgreementsParams
-import com.clear_street.api.models.v1.omniai.entitlementagreements.EntitlementAgreementListEntitlementAgreementsResponse
+import com.clear_street.api.models.v1.omniai.entitlementagreements.EntitlementAgreementGetEntitlementAgreementsParams
+import com.clear_street.api.models.v1.omniai.entitlementagreements.EntitlementAgreementGetEntitlementAgreementsResponse
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -31,29 +31,29 @@ interface EntitlementAgreementService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): EntitlementAgreementService
 
     /** List current signable entitlement agreements for consent UX. */
-    fun listEntitlementAgreements(): EntitlementAgreementListEntitlementAgreementsResponse =
-        listEntitlementAgreements(EntitlementAgreementListEntitlementAgreementsParams.none())
+    fun getEntitlementAgreements(): EntitlementAgreementGetEntitlementAgreementsResponse =
+        getEntitlementAgreements(EntitlementAgreementGetEntitlementAgreementsParams.none())
 
-    /** @see listEntitlementAgreements */
-    fun listEntitlementAgreements(
-        params: EntitlementAgreementListEntitlementAgreementsParams =
-            EntitlementAgreementListEntitlementAgreementsParams.none(),
+    /** @see getEntitlementAgreements */
+    fun getEntitlementAgreements(
+        params: EntitlementAgreementGetEntitlementAgreementsParams =
+            EntitlementAgreementGetEntitlementAgreementsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): EntitlementAgreementListEntitlementAgreementsResponse
+    ): EntitlementAgreementGetEntitlementAgreementsResponse
 
-    /** @see listEntitlementAgreements */
-    fun listEntitlementAgreements(
-        params: EntitlementAgreementListEntitlementAgreementsParams =
-            EntitlementAgreementListEntitlementAgreementsParams.none()
-    ): EntitlementAgreementListEntitlementAgreementsResponse =
-        listEntitlementAgreements(params, RequestOptions.none())
+    /** @see getEntitlementAgreements */
+    fun getEntitlementAgreements(
+        params: EntitlementAgreementGetEntitlementAgreementsParams =
+            EntitlementAgreementGetEntitlementAgreementsParams.none()
+    ): EntitlementAgreementGetEntitlementAgreementsResponse =
+        getEntitlementAgreements(params, RequestOptions.none())
 
-    /** @see listEntitlementAgreements */
-    fun listEntitlementAgreements(
+    /** @see getEntitlementAgreements */
+    fun getEntitlementAgreements(
         requestOptions: RequestOptions
-    ): EntitlementAgreementListEntitlementAgreementsResponse =
-        listEntitlementAgreements(
-            EntitlementAgreementListEntitlementAgreementsParams.none(),
+    ): EntitlementAgreementGetEntitlementAgreementsResponse =
+        getEntitlementAgreements(
+            EntitlementAgreementGetEntitlementAgreementsParams.none(),
             requestOptions,
         )
 
@@ -74,36 +74,36 @@ interface EntitlementAgreementService {
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/entitlement-agreements`, but is
-         * otherwise the same as [EntitlementAgreementService.listEntitlementAgreements].
+         * otherwise the same as [EntitlementAgreementService.getEntitlementAgreements].
          */
         @MustBeClosed
-        fun listEntitlementAgreements():
-            HttpResponseFor<EntitlementAgreementListEntitlementAgreementsResponse> =
-            listEntitlementAgreements(EntitlementAgreementListEntitlementAgreementsParams.none())
+        fun getEntitlementAgreements():
+            HttpResponseFor<EntitlementAgreementGetEntitlementAgreementsResponse> =
+            getEntitlementAgreements(EntitlementAgreementGetEntitlementAgreementsParams.none())
 
-        /** @see listEntitlementAgreements */
+        /** @see getEntitlementAgreements */
         @MustBeClosed
-        fun listEntitlementAgreements(
-            params: EntitlementAgreementListEntitlementAgreementsParams =
-                EntitlementAgreementListEntitlementAgreementsParams.none(),
+        fun getEntitlementAgreements(
+            params: EntitlementAgreementGetEntitlementAgreementsParams =
+                EntitlementAgreementGetEntitlementAgreementsParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<EntitlementAgreementListEntitlementAgreementsResponse>
+        ): HttpResponseFor<EntitlementAgreementGetEntitlementAgreementsResponse>
 
-        /** @see listEntitlementAgreements */
+        /** @see getEntitlementAgreements */
         @MustBeClosed
-        fun listEntitlementAgreements(
-            params: EntitlementAgreementListEntitlementAgreementsParams =
-                EntitlementAgreementListEntitlementAgreementsParams.none()
-        ): HttpResponseFor<EntitlementAgreementListEntitlementAgreementsResponse> =
-            listEntitlementAgreements(params, RequestOptions.none())
+        fun getEntitlementAgreements(
+            params: EntitlementAgreementGetEntitlementAgreementsParams =
+                EntitlementAgreementGetEntitlementAgreementsParams.none()
+        ): HttpResponseFor<EntitlementAgreementGetEntitlementAgreementsResponse> =
+            getEntitlementAgreements(params, RequestOptions.none())
 
-        /** @see listEntitlementAgreements */
+        /** @see getEntitlementAgreements */
         @MustBeClosed
-        fun listEntitlementAgreements(
+        fun getEntitlementAgreements(
             requestOptions: RequestOptions
-        ): HttpResponseFor<EntitlementAgreementListEntitlementAgreementsResponse> =
-            listEntitlementAgreements(
-                EntitlementAgreementListEntitlementAgreementsParams.none(),
+        ): HttpResponseFor<EntitlementAgreementGetEntitlementAgreementsResponse> =
+            getEntitlementAgreements(
+                EntitlementAgreementGetEntitlementAgreementsParams.none(),
                 requestOptions,
             )
     }

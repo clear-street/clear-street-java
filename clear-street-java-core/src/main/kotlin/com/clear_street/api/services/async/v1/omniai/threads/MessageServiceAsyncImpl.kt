@@ -18,8 +18,8 @@ import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepareAsync
 import com.clear_street.api.models.v1.omniai.threads.messages.MessageCreateMessageParams
 import com.clear_street.api.models.v1.omniai.threads.messages.MessageCreateMessageResponse
-import com.clear_street.api.models.v1.omniai.threads.messages.MessageListMessagesParams
-import com.clear_street.api.models.v1.omniai.threads.messages.MessageListMessagesResponse
+import com.clear_street.api.models.v1.omniai.threads.messages.MessageGetMessagesParams
+import com.clear_street.api.models.v1.omniai.threads.messages.MessageGetMessagesResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -49,12 +49,12 @@ class MessageServiceAsyncImpl internal constructor(private val clientOptions: Cl
         // post /v1/omni-ai/threads/{thread_id}/messages
         withRawResponse().createMessage(params, requestOptions).thenApply { it.parse() }
 
-    override fun listMessages(
-        params: MessageListMessagesParams,
+    override fun getMessages(
+        params: MessageGetMessagesParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<MessageListMessagesResponse> =
+    ): CompletableFuture<MessageGetMessagesResponse> =
         // get /v1/omni-ai/threads/{thread_id}/messages
-        withRawResponse().listMessages(params, requestOptions).thenApply { it.parse() }
+        withRawResponse().getMessages(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         MessageServiceAsync.WithRawResponse {
@@ -103,13 +103,13 @@ class MessageServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 }
         }
 
-        private val listMessagesHandler: Handler<MessageListMessagesResponse> =
-            jsonHandler<MessageListMessagesResponse>(clientOptions.jsonMapper)
+        private val getMessagesHandler: Handler<MessageGetMessagesResponse> =
+            jsonHandler<MessageGetMessagesResponse>(clientOptions.jsonMapper)
 
-        override fun listMessages(
-            params: MessageListMessagesParams,
+        override fun getMessages(
+            params: MessageGetMessagesParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<MessageListMessagesResponse>> {
+        ): CompletableFuture<HttpResponseFor<MessageGetMessagesResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("threadId", params.threadId().getOrNull())
@@ -126,7 +126,7 @@ class MessageServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
                         response
-                            .use { listMessagesHandler.handle(it) }
+                            .use { getMessagesHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

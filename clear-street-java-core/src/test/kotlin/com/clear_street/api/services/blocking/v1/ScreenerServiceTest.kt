@@ -116,7 +116,7 @@ internal class ScreenerServiceTest {
                             .build()
                     )
                     .pageSize(25L)
-                    .pageToken("page_token")
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .sortBy(
                         FieldRef.builder()
                             .name("market_cap")

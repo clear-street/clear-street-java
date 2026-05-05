@@ -7,12 +7,12 @@ import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.models.v1.omniai.threads.ThreadCreateThreadParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadCreateThreadResponse
-import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadParams
-import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponse
-import com.clear_street.api.models.v1.omniai.threads.ThreadListThreadsParams
-import com.clear_street.api.models.v1.omniai.threads.ThreadListThreadsResponse
-import com.clear_street.api.models.v1.omniai.threads.ThreadResponseParams
-import com.clear_street.api.models.v1.omniai.threads.ThreadResponseResponse
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadByIdParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadByIdResponse
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponseParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponseResponse
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadsParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadsResponse
 import com.clear_street.api.services.blocking.v1.omniai.threads.MessageService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
@@ -71,42 +71,28 @@ interface ThreadService {
      * Returns metadata (title, timestamps) for a single thread. Does not include messages — use
      * `GET /omni-ai/threads/{thread_id}/messages` for conversation history.
      */
-    fun getThread(threadId: String, params: ThreadGetThreadParams): ThreadGetThreadResponse =
-        getThread(threadId, params, RequestOptions.none())
-
-    /** @see getThread */
-    fun getThread(
+    fun getThreadById(
         threadId: String,
-        params: ThreadGetThreadParams,
+        params: ThreadGetThreadByIdParams,
+    ): ThreadGetThreadByIdResponse = getThreadById(threadId, params, RequestOptions.none())
+
+    /** @see getThreadById */
+    fun getThreadById(
+        threadId: String,
+        params: ThreadGetThreadByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ThreadGetThreadResponse =
-        getThread(params.toBuilder().threadId(threadId).build(), requestOptions)
+    ): ThreadGetThreadByIdResponse =
+        getThreadById(params.toBuilder().threadId(threadId).build(), requestOptions)
 
-    /** @see getThread */
-    fun getThread(params: ThreadGetThreadParams): ThreadGetThreadResponse =
-        getThread(params, RequestOptions.none())
+    /** @see getThreadById */
+    fun getThreadById(params: ThreadGetThreadByIdParams): ThreadGetThreadByIdResponse =
+        getThreadById(params, RequestOptions.none())
 
-    /** @see getThread */
-    fun getThread(
-        params: ThreadGetThreadParams,
+    /** @see getThreadById */
+    fun getThreadById(
+        params: ThreadGetThreadByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ThreadGetThreadResponse
-
-    /**
-     * List conversation threads.
-     *
-     * Returns thread metadata ordered by most recently created first. Use `page_size` and
-     * `page_token` for pagination. Thread objects contain only metadata (title, timestamps) — use
-     * the messages endpoint for conversation history.
-     */
-    fun listThreads(params: ThreadListThreadsParams): ThreadListThreadsResponse =
-        listThreads(params, RequestOptions.none())
-
-    /** @see listThreads */
-    fun listThreads(
-        params: ThreadListThreadsParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): ThreadListThreadsResponse
+    ): ThreadGetThreadByIdResponse
 
     /**
      * Get the active response for a thread.
@@ -117,26 +103,44 @@ interface ThreadService {
      *
      * Returns **404** if no active response exists (the thread is idle).
      */
-    fun response(threadId: String, params: ThreadResponseParams): ThreadResponseResponse =
-        response(threadId, params, RequestOptions.none())
-
-    /** @see response */
-    fun response(
+    fun getThreadResponse(
         threadId: String,
-        params: ThreadResponseParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): ThreadResponseResponse =
-        response(params.toBuilder().threadId(threadId).build(), requestOptions)
+        params: ThreadGetThreadResponseParams,
+    ): ThreadGetThreadResponseResponse = getThreadResponse(threadId, params, RequestOptions.none())
 
-    /** @see response */
-    fun response(params: ThreadResponseParams): ThreadResponseResponse =
-        response(params, RequestOptions.none())
-
-    /** @see response */
-    fun response(
-        params: ThreadResponseParams,
+    /** @see getThreadResponse */
+    fun getThreadResponse(
+        threadId: String,
+        params: ThreadGetThreadResponseParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ThreadResponseResponse
+    ): ThreadGetThreadResponseResponse =
+        getThreadResponse(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+    /** @see getThreadResponse */
+    fun getThreadResponse(params: ThreadGetThreadResponseParams): ThreadGetThreadResponseResponse =
+        getThreadResponse(params, RequestOptions.none())
+
+    /** @see getThreadResponse */
+    fun getThreadResponse(
+        params: ThreadGetThreadResponseParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ThreadGetThreadResponseResponse
+
+    /**
+     * List conversation threads.
+     *
+     * Returns thread metadata ordered by most recently created first. Use `page_size` and
+     * `page_token` for pagination. Thread objects contain only metadata (title, timestamps) — use
+     * the messages endpoint for conversation history.
+     */
+    fun getThreads(params: ThreadGetThreadsParams): ThreadGetThreadsResponse =
+        getThreads(params, RequestOptions.none())
+
+    /** @see getThreads */
+    fun getThreads(
+        params: ThreadGetThreadsParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ThreadGetThreadsResponse
 
     /** A view of [ThreadService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -174,82 +178,85 @@ interface ThreadService {
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/threads/{thread_id}`, but is otherwise
-         * the same as [ThreadService.getThread].
+         * the same as [ThreadService.getThreadById].
          */
         @MustBeClosed
-        fun getThread(
+        fun getThreadById(
             threadId: String,
-            params: ThreadGetThreadParams,
-        ): HttpResponseFor<ThreadGetThreadResponse> =
-            getThread(threadId, params, RequestOptions.none())
+            params: ThreadGetThreadByIdParams,
+        ): HttpResponseFor<ThreadGetThreadByIdResponse> =
+            getThreadById(threadId, params, RequestOptions.none())
 
-        /** @see getThread */
+        /** @see getThreadById */
         @MustBeClosed
-        fun getThread(
+        fun getThreadById(
             threadId: String,
-            params: ThreadGetThreadParams,
+            params: ThreadGetThreadByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ThreadGetThreadResponse> =
-            getThread(params.toBuilder().threadId(threadId).build(), requestOptions)
+        ): HttpResponseFor<ThreadGetThreadByIdResponse> =
+            getThreadById(params.toBuilder().threadId(threadId).build(), requestOptions)
 
-        /** @see getThread */
+        /** @see getThreadById */
         @MustBeClosed
-        fun getThread(params: ThreadGetThreadParams): HttpResponseFor<ThreadGetThreadResponse> =
-            getThread(params, RequestOptions.none())
+        fun getThreadById(
+            params: ThreadGetThreadByIdParams
+        ): HttpResponseFor<ThreadGetThreadByIdResponse> =
+            getThreadById(params, RequestOptions.none())
 
-        /** @see getThread */
+        /** @see getThreadById */
         @MustBeClosed
-        fun getThread(
-            params: ThreadGetThreadParams,
+        fun getThreadById(
+            params: ThreadGetThreadByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ThreadGetThreadResponse>
-
-        /**
-         * Returns a raw HTTP response for `get /v1/omni-ai/threads`, but is otherwise the same as
-         * [ThreadService.listThreads].
-         */
-        @MustBeClosed
-        fun listThreads(
-            params: ThreadListThreadsParams
-        ): HttpResponseFor<ThreadListThreadsResponse> = listThreads(params, RequestOptions.none())
-
-        /** @see listThreads */
-        @MustBeClosed
-        fun listThreads(
-            params: ThreadListThreadsParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ThreadListThreadsResponse>
+        ): HttpResponseFor<ThreadGetThreadByIdResponse>
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/threads/{thread_id}/response`, but is
-         * otherwise the same as [ThreadService.response].
+         * otherwise the same as [ThreadService.getThreadResponse].
          */
         @MustBeClosed
-        fun response(
+        fun getThreadResponse(
             threadId: String,
-            params: ThreadResponseParams,
-        ): HttpResponseFor<ThreadResponseResponse> =
-            response(threadId, params, RequestOptions.none())
+            params: ThreadGetThreadResponseParams,
+        ): HttpResponseFor<ThreadGetThreadResponseResponse> =
+            getThreadResponse(threadId, params, RequestOptions.none())
 
-        /** @see response */
+        /** @see getThreadResponse */
         @MustBeClosed
-        fun response(
+        fun getThreadResponse(
             threadId: String,
-            params: ThreadResponseParams,
+            params: ThreadGetThreadResponseParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ThreadResponseResponse> =
-            response(params.toBuilder().threadId(threadId).build(), requestOptions)
+        ): HttpResponseFor<ThreadGetThreadResponseResponse> =
+            getThreadResponse(params.toBuilder().threadId(threadId).build(), requestOptions)
 
-        /** @see response */
+        /** @see getThreadResponse */
         @MustBeClosed
-        fun response(params: ThreadResponseParams): HttpResponseFor<ThreadResponseResponse> =
-            response(params, RequestOptions.none())
+        fun getThreadResponse(
+            params: ThreadGetThreadResponseParams
+        ): HttpResponseFor<ThreadGetThreadResponseResponse> =
+            getThreadResponse(params, RequestOptions.none())
 
-        /** @see response */
+        /** @see getThreadResponse */
         @MustBeClosed
-        fun response(
-            params: ThreadResponseParams,
+        fun getThreadResponse(
+            params: ThreadGetThreadResponseParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ThreadResponseResponse>
+        ): HttpResponseFor<ThreadGetThreadResponseResponse>
+
+        /**
+         * Returns a raw HTTP response for `get /v1/omni-ai/threads`, but is otherwise the same as
+         * [ThreadService.getThreads].
+         */
+        @MustBeClosed
+        fun getThreads(params: ThreadGetThreadsParams): HttpResponseFor<ThreadGetThreadsResponse> =
+            getThreads(params, RequestOptions.none())
+
+        /** @see getThreads */
+        @MustBeClosed
+        fun getThreads(
+            params: ThreadGetThreadsParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ThreadGetThreadsResponse>
     }
 }

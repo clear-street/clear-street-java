@@ -9,8 +9,8 @@ import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntit
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsResponse
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementParams
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementResponse
-import com.clear_street.api.models.v1.omniai.entitlements.EntitlementListEntitlementsParams
-import com.clear_street.api.models.v1.omniai.entitlements.EntitlementListEntitlementsResponse
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -87,26 +87,26 @@ interface EntitlementServiceAsync {
         deleteEntitlement(entitlementId, EntitlementDeleteEntitlementParams.none(), requestOptions)
 
     /** List caller's active entitlement grants. */
-    fun listEntitlements(): CompletableFuture<EntitlementListEntitlementsResponse> =
-        listEntitlements(EntitlementListEntitlementsParams.none())
+    fun getEntitlements(): CompletableFuture<EntitlementGetEntitlementsResponse> =
+        getEntitlements(EntitlementGetEntitlementsParams.none())
 
-    /** @see listEntitlements */
-    fun listEntitlements(
-        params: EntitlementListEntitlementsParams = EntitlementListEntitlementsParams.none(),
+    /** @see getEntitlements */
+    fun getEntitlements(
+        params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<EntitlementListEntitlementsResponse>
+    ): CompletableFuture<EntitlementGetEntitlementsResponse>
 
-    /** @see listEntitlements */
-    fun listEntitlements(
-        params: EntitlementListEntitlementsParams = EntitlementListEntitlementsParams.none()
-    ): CompletableFuture<EntitlementListEntitlementsResponse> =
-        listEntitlements(params, RequestOptions.none())
+    /** @see getEntitlements */
+    fun getEntitlements(
+        params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none()
+    ): CompletableFuture<EntitlementGetEntitlementsResponse> =
+        getEntitlements(params, RequestOptions.none())
 
-    /** @see listEntitlements */
-    fun listEntitlements(
+    /** @see getEntitlements */
+    fun getEntitlements(
         requestOptions: RequestOptions
-    ): CompletableFuture<EntitlementListEntitlementsResponse> =
-        listEntitlements(EntitlementListEntitlementsParams.none(), requestOptions)
+    ): CompletableFuture<EntitlementGetEntitlementsResponse> =
+        getEntitlements(EntitlementGetEntitlementsParams.none(), requestOptions)
 
     /**
      * A view of [EntitlementServiceAsync] that provides access to raw HTTP responses for each
@@ -190,28 +190,28 @@ interface EntitlementServiceAsync {
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/entitlements`, but is otherwise the same
-         * as [EntitlementServiceAsync.listEntitlements].
+         * as [EntitlementServiceAsync.getEntitlements].
          */
-        fun listEntitlements():
-            CompletableFuture<HttpResponseFor<EntitlementListEntitlementsResponse>> =
-            listEntitlements(EntitlementListEntitlementsParams.none())
+        fun getEntitlements():
+            CompletableFuture<HttpResponseFor<EntitlementGetEntitlementsResponse>> =
+            getEntitlements(EntitlementGetEntitlementsParams.none())
 
-        /** @see listEntitlements */
-        fun listEntitlements(
-            params: EntitlementListEntitlementsParams = EntitlementListEntitlementsParams.none(),
+        /** @see getEntitlements */
+        fun getEntitlements(
+            params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<EntitlementListEntitlementsResponse>>
+        ): CompletableFuture<HttpResponseFor<EntitlementGetEntitlementsResponse>>
 
-        /** @see listEntitlements */
-        fun listEntitlements(
-            params: EntitlementListEntitlementsParams = EntitlementListEntitlementsParams.none()
-        ): CompletableFuture<HttpResponseFor<EntitlementListEntitlementsResponse>> =
-            listEntitlements(params, RequestOptions.none())
+        /** @see getEntitlements */
+        fun getEntitlements(
+            params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none()
+        ): CompletableFuture<HttpResponseFor<EntitlementGetEntitlementsResponse>> =
+            getEntitlements(params, RequestOptions.none())
 
-        /** @see listEntitlements */
-        fun listEntitlements(
+        /** @see getEntitlements */
+        fun getEntitlements(
             requestOptions: RequestOptions
-        ): CompletableFuture<HttpResponseFor<EntitlementListEntitlementsResponse>> =
-            listEntitlements(EntitlementListEntitlementsParams.none(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<EntitlementGetEntitlementsResponse>> =
+            getEntitlements(EntitlementGetEntitlementsParams.none(), requestOptions)
     }
 }

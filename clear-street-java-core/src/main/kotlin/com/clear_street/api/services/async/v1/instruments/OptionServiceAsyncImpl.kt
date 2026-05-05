@@ -14,8 +14,8 @@ import com.clear_street.api.core.http.HttpResponse.Handler
 import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepareAsync
-import com.clear_street.api.models.v1.instruments.options.OptionContractsParams
-import com.clear_street.api.models.v1.instruments.options.OptionContractsResponse
+import com.clear_street.api.models.v1.instruments.options.OptionGetOptionContractsParams
+import com.clear_street.api.models.v1.instruments.options.OptionGetOptionContractsResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -32,12 +32,12 @@ class OptionServiceAsyncImpl internal constructor(private val clientOptions: Cli
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): OptionServiceAsync =
         OptionServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun contracts(
-        params: OptionContractsParams,
+    override fun getOptionContracts(
+        params: OptionGetOptionContractsParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<OptionContractsResponse> =
+    ): CompletableFuture<OptionGetOptionContractsResponse> =
         // get /v1/instruments/options/contracts
-        withRawResponse().contracts(params, requestOptions).thenApply { it.parse() }
+        withRawResponse().getOptionContracts(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         OptionServiceAsync.WithRawResponse {
@@ -52,13 +52,13 @@ class OptionServiceAsyncImpl internal constructor(private val clientOptions: Cli
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        private val contractsHandler: Handler<OptionContractsResponse> =
-            jsonHandler<OptionContractsResponse>(clientOptions.jsonMapper)
+        private val getOptionContractsHandler: Handler<OptionGetOptionContractsResponse> =
+            jsonHandler<OptionGetOptionContractsResponse>(clientOptions.jsonMapper)
 
-        override fun contracts(
-            params: OptionContractsParams,
+        override fun getOptionContracts(
+            params: OptionGetOptionContractsParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<OptionContractsResponse>> {
+        ): CompletableFuture<HttpResponseFor<OptionGetOptionContractsResponse>> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -72,7 +72,7 @@ class OptionServiceAsyncImpl internal constructor(private val clientOptions: Cli
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
                         response
-                            .use { contractsHandler.handle(it) }
+                            .use { getOptionContractsHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

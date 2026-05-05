@@ -18,8 +18,8 @@ import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepareAsync
 import com.clear_street.api.models.v1.omniai.responses.ResponseCancelResponseParams
 import com.clear_street.api.models.v1.omniai.responses.ResponseCancelResponseResponse
-import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseParams
-import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseResponse
+import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseByIdParams
+import com.clear_street.api.models.v1.omniai.responses.ResponseGetResponseByIdResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -49,12 +49,12 @@ class ResponseServiceAsyncImpl internal constructor(private val clientOptions: C
         // delete /v1/omni-ai/responses/{response_id}
         withRawResponse().cancelResponse(params, requestOptions).thenApply { it.parse() }
 
-    override fun getResponse(
-        params: ResponseGetResponseParams,
+    override fun getResponseById(
+        params: ResponseGetResponseByIdParams,
         requestOptions: RequestOptions,
-    ): CompletableFuture<ResponseGetResponseResponse> =
+    ): CompletableFuture<ResponseGetResponseByIdResponse> =
         // get /v1/omni-ai/responses/{response_id}
-        withRawResponse().getResponse(params, requestOptions).thenApply { it.parse() }
+        withRawResponse().getResponseById(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         ResponseServiceAsync.WithRawResponse {
@@ -103,13 +103,13 @@ class ResponseServiceAsyncImpl internal constructor(private val clientOptions: C
                 }
         }
 
-        private val getResponseHandler: Handler<ResponseGetResponseResponse> =
-            jsonHandler<ResponseGetResponseResponse>(clientOptions.jsonMapper)
+        private val getResponseByIdHandler: Handler<ResponseGetResponseByIdResponse> =
+            jsonHandler<ResponseGetResponseByIdResponse>(clientOptions.jsonMapper)
 
-        override fun getResponse(
-            params: ResponseGetResponseParams,
+        override fun getResponseById(
+            params: ResponseGetResponseByIdParams,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<ResponseGetResponseResponse>> {
+        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("responseId", params.responseId().getOrNull())
@@ -126,7 +126,7 @@ class ResponseServiceAsyncImpl internal constructor(private val clientOptions: C
                 .thenApply { response ->
                     errorHandler.handle(response).parseable {
                         response
-                            .use { getResponseHandler.handle(it) }
+                            .use { getResponseByIdHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

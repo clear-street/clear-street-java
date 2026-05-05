@@ -5,7 +5,7 @@ package com.clear_street.api.services.async
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponse
-import com.clear_street.api.models.v1.V1WsParams
+import com.clear_street.api.models.v1.V1WebsocketHandlerParams
 import com.clear_street.api.services.async.v1.AccountServiceAsync
 import com.clear_street.api.services.async.v1.CalendarServiceAsync
 import com.clear_street.api.services.async.v1.ClockServiceAsync
@@ -66,21 +66,23 @@ interface V1ServiceAsync {
     fun watchlists(): WatchlistServiceAsync
 
     /** Upgrade the HTTP connection to a WebSocket and echo incoming messages. */
-    fun ws(): CompletableFuture<Void?> = ws(V1WsParams.none())
+    fun websocketHandler(): CompletableFuture<Void?> =
+        websocketHandler(V1WebsocketHandlerParams.none())
 
-    /** @see ws */
-    fun ws(
-        params: V1WsParams = V1WsParams.none(),
+    /** @see websocketHandler */
+    fun websocketHandler(
+        params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<Void?>
 
-    /** @see ws */
-    fun ws(params: V1WsParams = V1WsParams.none()): CompletableFuture<Void?> =
-        ws(params, RequestOptions.none())
+    /** @see websocketHandler */
+    fun websocketHandler(
+        params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none()
+    ): CompletableFuture<Void?> = websocketHandler(params, RequestOptions.none())
 
-    /** @see ws */
-    fun ws(requestOptions: RequestOptions): CompletableFuture<Void?> =
-        ws(V1WsParams.none(), requestOptions)
+    /** @see websocketHandler */
+    fun websocketHandler(requestOptions: RequestOptions): CompletableFuture<Void?> =
+        websocketHandler(V1WebsocketHandlerParams.none(), requestOptions)
 
     /** A view of [V1ServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -124,22 +126,24 @@ interface V1ServiceAsync {
 
         /**
          * Returns a raw HTTP response for `get /v1/ws`, but is otherwise the same as
-         * [V1ServiceAsync.ws].
+         * [V1ServiceAsync.websocketHandler].
          */
-        fun ws(): CompletableFuture<HttpResponse> = ws(V1WsParams.none())
+        fun websocketHandler(): CompletableFuture<HttpResponse> =
+            websocketHandler(V1WebsocketHandlerParams.none())
 
-        /** @see ws */
-        fun ws(
-            params: V1WsParams = V1WsParams.none(),
+        /** @see websocketHandler */
+        fun websocketHandler(
+            params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponse>
 
-        /** @see ws */
-        fun ws(params: V1WsParams = V1WsParams.none()): CompletableFuture<HttpResponse> =
-            ws(params, RequestOptions.none())
+        /** @see websocketHandler */
+        fun websocketHandler(
+            params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none()
+        ): CompletableFuture<HttpResponse> = websocketHandler(params, RequestOptions.none())
 
-        /** @see ws */
-        fun ws(requestOptions: RequestOptions): CompletableFuture<HttpResponse> =
-            ws(V1WsParams.none(), requestOptions)
+        /** @see websocketHandler */
+        fun websocketHandler(requestOptions: RequestOptions): CompletableFuture<HttpResponse> =
+            websocketHandler(V1WebsocketHandlerParams.none(), requestOptions)
     }
 }

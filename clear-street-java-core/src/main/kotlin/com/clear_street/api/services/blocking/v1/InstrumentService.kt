@@ -9,8 +9,8 @@ import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdPar
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdResponse
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsParams
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsResponse
-import com.clear_street.api.models.v1.instruments.InstrumentSearchParams
-import com.clear_street.api.models.v1.instruments.InstrumentSearchResponse
+import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsParams
+import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsResponse
 import com.clear_street.api.services.blocking.v1.instruments.AnalystReportingService
 import com.clear_street.api.services.blocking.v1.instruments.BalanceSheetService
 import com.clear_street.api.services.blocking.v1.instruments.CashFlowStatementService
@@ -123,14 +123,15 @@ interface InstrumentService {
      * Defaults to the `EQUITY` asset class (common stock + ETFs + exchange-traded mutual funds);
      * pass `asset_class=OPTION` for option chains.
      */
-    fun search(params: InstrumentSearchParams): InstrumentSearchResponse =
-        search(params, RequestOptions.none())
+    fun searchInstruments(
+        params: InstrumentSearchInstrumentsParams
+    ): InstrumentSearchInstrumentsResponse = searchInstruments(params, RequestOptions.none())
 
-    /** @see search */
-    fun search(
-        params: InstrumentSearchParams,
+    /** @see searchInstruments */
+    fun searchInstruments(
+        params: InstrumentSearchInstrumentsParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): InstrumentSearchResponse
+    ): InstrumentSearchInstrumentsResponse
 
     /** A view of [InstrumentService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -249,17 +250,19 @@ interface InstrumentService {
 
         /**
          * Returns a raw HTTP response for `get /v1/instruments/search`, but is otherwise the same
-         * as [InstrumentService.search].
+         * as [InstrumentService.searchInstruments].
          */
         @MustBeClosed
-        fun search(params: InstrumentSearchParams): HttpResponseFor<InstrumentSearchResponse> =
-            search(params, RequestOptions.none())
+        fun searchInstruments(
+            params: InstrumentSearchInstrumentsParams
+        ): HttpResponseFor<InstrumentSearchInstrumentsResponse> =
+            searchInstruments(params, RequestOptions.none())
 
-        /** @see search */
+        /** @see searchInstruments */
         @MustBeClosed
-        fun search(
-            params: InstrumentSearchParams,
+        fun searchInstruments(
+            params: InstrumentSearchInstrumentsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<InstrumentSearchResponse>
+        ): HttpResponseFor<InstrumentSearchInstrumentsResponse>
     }
 }

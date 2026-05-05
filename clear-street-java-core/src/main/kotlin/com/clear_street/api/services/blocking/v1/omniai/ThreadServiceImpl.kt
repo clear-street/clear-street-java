@@ -18,12 +18,12 @@ import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
 import com.clear_street.api.models.v1.omniai.threads.ThreadCreateThreadParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadCreateThreadResponse
-import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadParams
-import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponse
-import com.clear_street.api.models.v1.omniai.threads.ThreadListThreadsParams
-import com.clear_street.api.models.v1.omniai.threads.ThreadListThreadsResponse
-import com.clear_street.api.models.v1.omniai.threads.ThreadResponseParams
-import com.clear_street.api.models.v1.omniai.threads.ThreadResponseResponse
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadByIdParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadByIdResponse
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponseParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponseResponse
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadsParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadsResponse
 import com.clear_street.api.services.blocking.v1.omniai.threads.MessageService
 import com.clear_street.api.services.blocking.v1.omniai.threads.MessageServiceImpl
 import java.util.function.Consumer
@@ -64,26 +64,26 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
         // post /v1/omni-ai/threads
         withRawResponse().createThread(params, requestOptions).parse()
 
-    override fun getThread(
-        params: ThreadGetThreadParams,
+    override fun getThreadById(
+        params: ThreadGetThreadByIdParams,
         requestOptions: RequestOptions,
-    ): ThreadGetThreadResponse =
+    ): ThreadGetThreadByIdResponse =
         // get /v1/omni-ai/threads/{thread_id}
-        withRawResponse().getThread(params, requestOptions).parse()
+        withRawResponse().getThreadById(params, requestOptions).parse()
 
-    override fun listThreads(
-        params: ThreadListThreadsParams,
+    override fun getThreadResponse(
+        params: ThreadGetThreadResponseParams,
         requestOptions: RequestOptions,
-    ): ThreadListThreadsResponse =
-        // get /v1/omni-ai/threads
-        withRawResponse().listThreads(params, requestOptions).parse()
-
-    override fun response(
-        params: ThreadResponseParams,
-        requestOptions: RequestOptions,
-    ): ThreadResponseResponse =
+    ): ThreadGetThreadResponseResponse =
         // get /v1/omni-ai/threads/{thread_id}/response
-        withRawResponse().response(params, requestOptions).parse()
+        withRawResponse().getThreadResponse(params, requestOptions).parse()
+
+    override fun getThreads(
+        params: ThreadGetThreadsParams,
+        requestOptions: RequestOptions,
+    ): ThreadGetThreadsResponse =
+        // get /v1/omni-ai/threads
+        withRawResponse().getThreads(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         ThreadService.WithRawResponse {
@@ -138,13 +138,13 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
             }
         }
 
-        private val getThreadHandler: Handler<ThreadGetThreadResponse> =
-            jsonHandler<ThreadGetThreadResponse>(clientOptions.jsonMapper)
+        private val getThreadByIdHandler: Handler<ThreadGetThreadByIdResponse> =
+            jsonHandler<ThreadGetThreadByIdResponse>(clientOptions.jsonMapper)
 
-        override fun getThread(
-            params: ThreadGetThreadParams,
+        override fun getThreadById(
+            params: ThreadGetThreadByIdParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ThreadGetThreadResponse> {
+        ): HttpResponseFor<ThreadGetThreadByIdResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("threadId", params.threadId().getOrNull())
@@ -159,7 +159,7 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { getThreadHandler.handle(it) }
+                    .use { getThreadByIdHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
@@ -168,40 +168,13 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
             }
         }
 
-        private val listThreadsHandler: Handler<ThreadListThreadsResponse> =
-            jsonHandler<ThreadListThreadsResponse>(clientOptions.jsonMapper)
+        private val getThreadResponseHandler: Handler<ThreadGetThreadResponseResponse> =
+            jsonHandler<ThreadGetThreadResponseResponse>(clientOptions.jsonMapper)
 
-        override fun listThreads(
-            params: ThreadListThreadsParams,
+        override fun getThreadResponse(
+            params: ThreadGetThreadResponseParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ThreadListThreadsResponse> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.GET)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("v1", "omni-ai", "threads")
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { listThreadsHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val responseHandler: Handler<ThreadResponseResponse> =
-            jsonHandler<ThreadResponseResponse>(clientOptions.jsonMapper)
-
-        override fun response(
-            params: ThreadResponseParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<ThreadResponseResponse> {
+        ): HttpResponseFor<ThreadGetThreadResponseResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("threadId", params.threadId().getOrNull())
@@ -216,7 +189,34 @@ class ThreadServiceImpl internal constructor(private val clientOptions: ClientOp
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { responseHandler.handle(it) }
+                    .use { getThreadResponseHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val getThreadsHandler: Handler<ThreadGetThreadsResponse> =
+            jsonHandler<ThreadGetThreadsResponse>(clientOptions.jsonMapper)
+
+        override fun getThreads(
+            params: ThreadGetThreadsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<ThreadGetThreadsResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "omni-ai", "threads")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getThreadsHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
