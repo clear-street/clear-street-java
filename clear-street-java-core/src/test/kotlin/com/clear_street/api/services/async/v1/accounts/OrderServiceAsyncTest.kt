@@ -10,9 +10,6 @@ import com.clear_street.api.models.v1.accounts.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.v1.accounts.orders.OrderGetOrdersParams
 import com.clear_street.api.models.v1.accounts.orders.OrderReplaceOrderParams
 import com.clear_street.api.models.v1.accounts.orders.OrderSubmitOrdersParams
-import com.clear_street.api.models.v1.accounts.orders.PositionEffect
-import com.clear_street.api.models.v1.accounts.orders.RequestOrderType
-import com.clear_street.api.models.v1.accounts.orders.RequestTimeInForce
 import com.clear_street.api.models.v1.accounts.orders.Side
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
@@ -111,7 +108,7 @@ internal class OrderServiceAsyncTest {
                     .limitPrice("150.50")
                     .quantity("125")
                     .stopPrice("148.00")
-                    .timeInForce(RequestTimeInForce.DAY)
+                    .timeInForce(OrderReplaceOrderParams.TimeInForce.DAY)
                     .build()
             )
 
@@ -140,7 +137,12 @@ internal class OrderServiceAsyncTest {
                                         .security("0193bb84-447a-706f-996f-097254663f02")
                                         .side(Side.BUY)
                                         .id("1")
-                                        .positionEffect(PositionEffect.OPEN)
+                                        .positionEffect(
+                                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest
+                                                .Leg
+                                                .PositionEffect
+                                                .OPEN
+                                        )
                                         .build(),
                                     OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .builder()
@@ -149,7 +151,12 @@ internal class OrderServiceAsyncTest {
                                         .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                         .side(Side.SELL)
                                         .id("2")
-                                        .positionEffect(PositionEffect.OPEN)
+                                        .positionEffect(
+                                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest
+                                                .Leg
+                                                .PositionEffect
+                                                .OPEN
+                                        )
                                         .build(),
                                     OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .builder()
@@ -158,12 +165,23 @@ internal class OrderServiceAsyncTest {
                                         .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
                                         .side(Side.BUY)
                                         .id("3")
-                                        .positionEffect(PositionEffect.OPEN)
+                                        .positionEffect(
+                                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest
+                                                .Leg
+                                                .PositionEffect
+                                                .OPEN
+                                        )
                                         .build(),
                                 )
                             )
-                            .orderType(RequestOrderType.LIMIT)
-                            .timeInForce(RequestTimeInForce.DAY)
+                            .orderType(
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType
+                                    .LIMIT
+                            )
+                            .timeInForce(
+                                OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce
+                                    .DAY
+                            )
                             .id("my-mleg-ref-20251001-001")
                             .limitPrice("0.50")
                             .quantity("1")

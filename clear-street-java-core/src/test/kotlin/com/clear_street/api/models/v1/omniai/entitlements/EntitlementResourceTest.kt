@@ -3,7 +3,6 @@
 package com.clear_street.api.models.v1.omniai.entitlements
 
 import com.clear_street.api.core.jsonMapper
-import com.clear_street.api.models.v1.omniai.EntitlementCode
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -15,15 +14,14 @@ internal class EntitlementResourceTest {
         val entitlementResource =
             EntitlementResource.builder()
                 .agreementId("agreement_id")
-                .entitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                .entitlementCode("entitlement_code")
                 .entitlementId("entitlement_id")
                 .grantedAt("granted_at")
                 .tradingAccountId(0L)
                 .build()
 
         assertThat(entitlementResource.agreementId()).isEqualTo("agreement_id")
-        assertThat(entitlementResource.entitlementCode())
-            .isEqualTo(EntitlementCode.OMNI_ACCOUNT_DATA)
+        assertThat(entitlementResource.entitlementCode()).isEqualTo("entitlement_code")
         assertThat(entitlementResource.entitlementId()).isEqualTo("entitlement_id")
         assertThat(entitlementResource.grantedAt()).isEqualTo("granted_at")
         assertThat(entitlementResource.tradingAccountId()).isEqualTo(0L)
@@ -35,7 +33,7 @@ internal class EntitlementResourceTest {
         val entitlementResource =
             EntitlementResource.builder()
                 .agreementId("agreement_id")
-                .entitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                .entitlementCode("entitlement_code")
                 .entitlementId("entitlement_id")
                 .grantedAt("granted_at")
                 .tradingAccountId(0L)

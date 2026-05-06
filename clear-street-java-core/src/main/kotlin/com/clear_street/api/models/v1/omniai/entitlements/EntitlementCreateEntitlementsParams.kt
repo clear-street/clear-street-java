@@ -13,7 +13,6 @@ import com.clear_street.api.core.http.Headers
 import com.clear_street.api.core.http.QueryParams
 import com.clear_street.api.core.toImmutable
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.omniai.EntitlementCode
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -40,7 +39,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun requestedEntitlementCodes(): List<EntitlementCode> = body.requestedEntitlementCodes()
+    fun requestedEntitlementCodes(): List<String> = body.requestedEntitlementCodes()
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -61,8 +60,7 @@ private constructor(
      * Unlike [requestedEntitlementCodes], this method doesn't throw if the JSON field has an
      * unexpected type.
      */
-    fun _requestedEntitlementCodes(): JsonField<List<EntitlementCode>> =
-        body._requestedEntitlementCodes()
+    fun _requestedEntitlementCodes(): JsonField<List<String>> = body._requestedEntitlementCodes()
 
     /**
      * Returns the raw JSON value of [tradingAccountIds].
@@ -137,7 +135,7 @@ private constructor(
          */
         fun agreementId(agreementId: JsonField<String>) = apply { body.agreementId(agreementId) }
 
-        fun requestedEntitlementCodes(requestedEntitlementCodes: List<EntitlementCode>) = apply {
+        fun requestedEntitlementCodes(requestedEntitlementCodes: List<String>) = apply {
             body.requestedEntitlementCodes(requestedEntitlementCodes)
         }
 
@@ -145,20 +143,19 @@ private constructor(
          * Sets [Builder.requestedEntitlementCodes] to an arbitrary JSON value.
          *
          * You should usually call [Builder.requestedEntitlementCodes] with a well-typed
-         * `List<EntitlementCode>` value instead. This method is primarily for setting the field to
-         * an undocumented or not yet supported value.
+         * `List<String>` value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
          */
-        fun requestedEntitlementCodes(requestedEntitlementCodes: JsonField<List<EntitlementCode>>) =
-            apply {
-                body.requestedEntitlementCodes(requestedEntitlementCodes)
-            }
+        fun requestedEntitlementCodes(requestedEntitlementCodes: JsonField<List<String>>) = apply {
+            body.requestedEntitlementCodes(requestedEntitlementCodes)
+        }
 
         /**
-         * Adds a single [EntitlementCode] to [requestedEntitlementCodes].
+         * Adds a single [String] to [requestedEntitlementCodes].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addRequestedEntitlementCode(requestedEntitlementCode: EntitlementCode) = apply {
+        fun addRequestedEntitlementCode(requestedEntitlementCode: String) = apply {
             body.addRequestedEntitlementCode(requestedEntitlementCode)
         }
 
@@ -335,7 +332,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val agreementId: JsonField<String>,
-        private val requestedEntitlementCodes: JsonField<List<EntitlementCode>>,
+        private val requestedEntitlementCodes: JsonField<List<String>>,
         private val tradingAccountIds: JsonField<List<Long>>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -347,7 +344,7 @@ private constructor(
             agreementId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("requested_entitlement_codes")
             @ExcludeMissing
-            requestedEntitlementCodes: JsonField<List<EntitlementCode>> = JsonMissing.of(),
+            requestedEntitlementCodes: JsonField<List<String>> = JsonMissing.of(),
             @JsonProperty("trading_account_ids")
             @ExcludeMissing
             tradingAccountIds: JsonField<List<Long>> = JsonMissing.of(),
@@ -363,7 +360,7 @@ private constructor(
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun requestedEntitlementCodes(): List<EntitlementCode> =
+        fun requestedEntitlementCodes(): List<String> =
             requestedEntitlementCodes.getRequired("requested_entitlement_codes")
 
         /**
@@ -389,8 +386,7 @@ private constructor(
          */
         @JsonProperty("requested_entitlement_codes")
         @ExcludeMissing
-        fun _requestedEntitlementCodes(): JsonField<List<EntitlementCode>> =
-            requestedEntitlementCodes
+        fun _requestedEntitlementCodes(): JsonField<List<String>> = requestedEntitlementCodes
 
         /**
          * Returns the raw JSON value of [tradingAccountIds].
@@ -433,7 +429,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var agreementId: JsonField<String>? = null
-            private var requestedEntitlementCodes: JsonField<MutableList<EntitlementCode>>? = null
+            private var requestedEntitlementCodes: JsonField<MutableList<String>>? = null
             private var tradingAccountIds: JsonField<MutableList<Long>>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -459,29 +455,28 @@ private constructor(
                 this.agreementId = agreementId
             }
 
-            fun requestedEntitlementCodes(requestedEntitlementCodes: List<EntitlementCode>) =
+            fun requestedEntitlementCodes(requestedEntitlementCodes: List<String>) =
                 requestedEntitlementCodes(JsonField.of(requestedEntitlementCodes))
 
             /**
              * Sets [Builder.requestedEntitlementCodes] to an arbitrary JSON value.
              *
              * You should usually call [Builder.requestedEntitlementCodes] with a well-typed
-             * `List<EntitlementCode>` value instead. This method is primarily for setting the field
-             * to an undocumented or not yet supported value.
+             * `List<String>` value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
              */
-            fun requestedEntitlementCodes(
-                requestedEntitlementCodes: JsonField<List<EntitlementCode>>
-            ) = apply {
-                this.requestedEntitlementCodes =
-                    requestedEntitlementCodes.map { it.toMutableList() }
-            }
+            fun requestedEntitlementCodes(requestedEntitlementCodes: JsonField<List<String>>) =
+                apply {
+                    this.requestedEntitlementCodes =
+                        requestedEntitlementCodes.map { it.toMutableList() }
+                }
 
             /**
-             * Adds a single [EntitlementCode] to [requestedEntitlementCodes].
+             * Adds a single [String] to [requestedEntitlementCodes].
              *
              * @throws IllegalStateException if the field was previously set to a non-list.
              */
-            fun addRequestedEntitlementCode(requestedEntitlementCode: EntitlementCode) = apply {
+            fun addRequestedEntitlementCode(requestedEntitlementCode: String) = apply {
                 requestedEntitlementCodes =
                     (requestedEntitlementCodes ?: JsonField.of(mutableListOf())).also {
                         checkKnown("requestedEntitlementCodes", it).add(requestedEntitlementCode)
@@ -575,7 +570,7 @@ private constructor(
             }
 
             agreementId()
-            requestedEntitlementCodes().forEach { it.validate() }
+            requestedEntitlementCodes()
             tradingAccountIds()
             validated = true
         }
@@ -597,8 +592,7 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (agreementId.asKnown().isPresent) 1 else 0) +
-                (requestedEntitlementCodes.asKnown().getOrNull()?.sumOf { it.validity().toInt() }
-                    ?: 0) +
+                (requestedEntitlementCodes.asKnown().getOrNull()?.size ?: 0) +
                 (tradingAccountIds.asKnown().getOrNull()?.size ?: 0)
 
         override fun equals(other: Any?): Boolean {

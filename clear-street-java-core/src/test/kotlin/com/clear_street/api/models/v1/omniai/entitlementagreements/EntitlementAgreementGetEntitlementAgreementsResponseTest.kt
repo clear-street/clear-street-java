@@ -6,8 +6,6 @@ import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.ResponseMetadata
-import com.clear_street.api.models.v1.omniai.EntitlementAgreementKey
-import com.clear_street.api.models.v1.omniai.EntitlementCode
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -42,10 +40,10 @@ internal class EntitlementAgreementGetEntitlementAgreementsResponseTest {
                 .addData(
                     EntitlementAgreementResource.builder()
                         .agreementId("agreement_id")
-                        .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                        .agreementKey("agreement_key")
                         .documentContent("document_content")
                         .documentSha256("document_sha256")
-                        .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                        .addEntitlementCode("string")
                         .title("title")
                         .version(0)
                         .build()
@@ -79,10 +77,10 @@ internal class EntitlementAgreementGetEntitlementAgreementsResponseTest {
             .containsExactly(
                 EntitlementAgreementResource.builder()
                     .agreementId("agreement_id")
-                    .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                    .agreementKey("agreement_key")
                     .documentContent("document_content")
                     .documentSha256("document_sha256")
-                    .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                    .addEntitlementCode("string")
                     .title("title")
                     .version(0)
                     .build()
@@ -118,10 +116,10 @@ internal class EntitlementAgreementGetEntitlementAgreementsResponseTest {
                 .addData(
                     EntitlementAgreementResource.builder()
                         .agreementId("agreement_id")
-                        .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                        .agreementKey("agreement_key")
                         .documentContent("document_content")
                         .documentSha256("document_sha256")
-                        .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                        .addEntitlementCode("string")
                         .title("title")
                         .version(0)
                         .build()

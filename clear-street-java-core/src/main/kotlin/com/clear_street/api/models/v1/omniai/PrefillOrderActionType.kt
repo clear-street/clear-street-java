@@ -1,14 +1,16 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.models.v1.accounts.orders
+package com.clear_street.api.models.v1.omniai
 
 import com.clear_street.api.core.Enum
 import com.clear_street.api.core.JsonField
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/** Position effect for options orders */
-class PositionEffect @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+/** Operation represented by a prefill order action. */
+class PrefillOrderActionType
+@JsonCreator
+private constructor(private val value: JsonField<String>) : Enum {
 
     /**
      * Returns this class instance's raw value.
@@ -21,33 +23,34 @@ class PositionEffect @JsonCreator private constructor(private val value: JsonFie
 
     companion object {
 
-        @JvmField val OPEN = of("OPEN")
+        @JvmField val NEW = of("NEW")
 
-        @JvmField val CLOSE = of("CLOSE")
+        @JvmField val CANCEL = of("CANCEL")
 
-        @JvmStatic fun of(value: String) = PositionEffect(JsonField.of(value))
+        @JvmStatic fun of(value: String) = PrefillOrderActionType(JsonField.of(value))
     }
 
-    /** An enum containing [PositionEffect]'s known values. */
+    /** An enum containing [PrefillOrderActionType]'s known values. */
     enum class Known {
-        OPEN,
-        CLOSE,
+        NEW,
+        CANCEL,
     }
 
     /**
-     * An enum containing [PositionEffect]'s known values, as well as an [_UNKNOWN] member.
+     * An enum containing [PrefillOrderActionType]'s known values, as well as an [_UNKNOWN] member.
      *
-     * An instance of [PositionEffect] can contain an unknown value in a couple of cases:
+     * An instance of [PrefillOrderActionType] can contain an unknown value in a couple of cases:
      * - It was deserialized from data that doesn't match any known member. For example, if the SDK
      *   is on an older version than the API, then the API may respond with new members that the SDK
      *   is unaware of.
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
-        OPEN,
-        CLOSE,
+        NEW,
+        CANCEL,
         /**
-         * An enum member indicating that [PositionEffect] was instantiated with an unknown value.
+         * An enum member indicating that [PrefillOrderActionType] was instantiated with an unknown
+         * value.
          */
         _UNKNOWN,
     }
@@ -61,8 +64,8 @@ class PositionEffect @JsonCreator private constructor(private val value: JsonFie
      */
     fun value(): Value =
         when (this) {
-            OPEN -> Value.OPEN
-            CLOSE -> Value.CLOSE
+            NEW -> Value.NEW
+            CANCEL -> Value.CANCEL
             else -> Value._UNKNOWN
         }
 
@@ -77,9 +80,9 @@ class PositionEffect @JsonCreator private constructor(private val value: JsonFie
      */
     fun known(): Known =
         when (this) {
-            OPEN -> Known.OPEN
-            CLOSE -> Known.CLOSE
-            else -> throw ClearStreetInvalidDataException("Unknown PositionEffect: $value")
+            NEW -> Known.NEW
+            CANCEL -> Known.CANCEL
+            else -> throw ClearStreetInvalidDataException("Unknown PrefillOrderActionType: $value")
         }
 
     /**
@@ -104,7 +107,7 @@ class PositionEffect @JsonCreator private constructor(private val value: JsonFie
      * @throws ClearStreetInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): PositionEffect = apply {
+    fun validate(): PrefillOrderActionType = apply {
         if (validated) {
             return@apply
         }
@@ -133,7 +136,7 @@ class PositionEffect @JsonCreator private constructor(private val value: JsonFie
             return true
         }
 
-        return other is PositionEffect && value == other.value
+        return other is PrefillOrderActionType && value == other.value
     }
 
     override fun hashCode() = value.hashCode()

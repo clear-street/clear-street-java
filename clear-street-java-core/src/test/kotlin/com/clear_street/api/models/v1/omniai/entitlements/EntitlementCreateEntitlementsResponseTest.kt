@@ -6,7 +6,6 @@ import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.ResponseMetadata
-import com.clear_street.api.models.v1.omniai.EntitlementCode
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -41,7 +40,7 @@ internal class EntitlementCreateEntitlementsResponseTest {
                 .addData(
                     EntitlementResource.builder()
                         .agreementId("agreement_id")
-                        .entitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                        .entitlementCode("entitlement_code")
                         .entitlementId("entitlement_id")
                         .grantedAt("granted_at")
                         .tradingAccountId(0L)
@@ -76,7 +75,7 @@ internal class EntitlementCreateEntitlementsResponseTest {
             .containsExactly(
                 EntitlementResource.builder()
                     .agreementId("agreement_id")
-                    .entitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                    .entitlementCode("entitlement_code")
                     .entitlementId("entitlement_id")
                     .grantedAt("granted_at")
                     .tradingAccountId(0L)
@@ -113,7 +112,7 @@ internal class EntitlementCreateEntitlementsResponseTest {
                 .addData(
                     EntitlementResource.builder()
                         .agreementId("agreement_id")
-                        .entitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                        .entitlementCode("entitlement_code")
                         .entitlementId("entitlement_id")
                         .grantedAt("granted_at")
                         .tradingAccountId(0L)
