@@ -347,6 +347,22 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .build();
 ```
 
+If the proxy responds with `407 Proxy Authentication Required`, supply credentials by also configuring `proxyAuthenticator`:
+
+```java
+import com.clear_street.api.client.ClearStreetClient;
+import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clear_street.api.core.http.ProxyAuthenticator;
+
+ClearStreetClient client = ClearStreetOkHttpClient.builder()
+    .fromEnv()
+    .proxy(...)
+    // Or a custom implementation of `ProxyAuthenticator`.
+    .proxyAuthenticator(ProxyAuthenticator.basic("username", "password"))
+    .apiKey("My API Key")
+    .build();
+```
+
 ### Connection pooling
 
 To customize the underlying OkHttp connection pool, configure the client using the `maxIdleConnections` and `keepAliveDuration` methods:
