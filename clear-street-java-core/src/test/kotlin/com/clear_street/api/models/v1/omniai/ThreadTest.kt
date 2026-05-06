@@ -15,14 +15,12 @@ internal class ThreadTest {
             Thread.builder()
                 .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .createdAt("created_at")
-                .description("description")
                 .title("title")
                 .updatedAt("updated_at")
                 .build()
 
         assertThat(thread.id()).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(thread.createdAt()).isEqualTo("created_at")
-        assertThat(thread.description()).isEqualTo("description")
         assertThat(thread.title()).isEqualTo("title")
         assertThat(thread.updatedAt()).isEqualTo("updated_at")
     }
@@ -34,7 +32,6 @@ internal class ThreadTest {
             Thread.builder()
                 .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .createdAt("created_at")
-                .description("description")
                 .title("title")
                 .updatedAt("updated_at")
                 .build()

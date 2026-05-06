@@ -1,21 +1,14 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.models.active.v1.accounts.positions.instructions
+package com.clear_street.api.models.v1.accounts.orders
 
 import com.clear_street.api.core.Enum
 import com.clear_street.api.core.JsonField
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/**
- * The instruction type a caller wants `oems-csc` to take against an options position.
- *
- * Maps onto FIX `PosTransType` (tag 709) + `PosMaintAction` (tag 712) +
- * `ContraryInstructionIndicator` (tag 719) per `oems-csc`'s `classify_action`.
- */
-class PositionInstructionType
-@JsonCreator
-private constructor(private val value: JsonField<String>) : Enum {
+/** Position effect for options orders */
+class PositionEffect @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
     /**
      * Returns this class instance's raw value.
@@ -28,38 +21,33 @@ private constructor(private val value: JsonField<String>) : Enum {
 
     companion object {
 
-        @JvmField val EXERCISE = of("EXERCISE")
+        @JvmField val OPEN = of("OPEN")
 
-        @JvmField val DO_NOT_EXERCISE = of("DO_NOT_EXERCISE")
+        @JvmField val CLOSE = of("CLOSE")
 
-        @JvmField val CONTRARY_EXERCISE = of("CONTRARY_EXERCISE")
-
-        @JvmStatic fun of(value: String) = PositionInstructionType(JsonField.of(value))
+        @JvmStatic fun of(value: String) = PositionEffect(JsonField.of(value))
     }
 
-    /** An enum containing [PositionInstructionType]'s known values. */
+    /** An enum containing [PositionEffect]'s known values. */
     enum class Known {
-        EXERCISE,
-        DO_NOT_EXERCISE,
-        CONTRARY_EXERCISE,
+        OPEN,
+        CLOSE,
     }
 
     /**
-     * An enum containing [PositionInstructionType]'s known values, as well as an [_UNKNOWN] member.
+     * An enum containing [PositionEffect]'s known values, as well as an [_UNKNOWN] member.
      *
-     * An instance of [PositionInstructionType] can contain an unknown value in a couple of cases:
+     * An instance of [PositionEffect] can contain an unknown value in a couple of cases:
      * - It was deserialized from data that doesn't match any known member. For example, if the SDK
      *   is on an older version than the API, then the API may respond with new members that the SDK
      *   is unaware of.
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
-        EXERCISE,
-        DO_NOT_EXERCISE,
-        CONTRARY_EXERCISE,
+        OPEN,
+        CLOSE,
         /**
-         * An enum member indicating that [PositionInstructionType] was instantiated with an unknown
-         * value.
+         * An enum member indicating that [PositionEffect] was instantiated with an unknown value.
          */
         _UNKNOWN,
     }
@@ -73,9 +61,8 @@ private constructor(private val value: JsonField<String>) : Enum {
      */
     fun value(): Value =
         when (this) {
-            EXERCISE -> Value.EXERCISE
-            DO_NOT_EXERCISE -> Value.DO_NOT_EXERCISE
-            CONTRARY_EXERCISE -> Value.CONTRARY_EXERCISE
+            OPEN -> Value.OPEN
+            CLOSE -> Value.CLOSE
             else -> Value._UNKNOWN
         }
 
@@ -90,10 +77,9 @@ private constructor(private val value: JsonField<String>) : Enum {
      */
     fun known(): Known =
         when (this) {
-            EXERCISE -> Known.EXERCISE
-            DO_NOT_EXERCISE -> Known.DO_NOT_EXERCISE
-            CONTRARY_EXERCISE -> Known.CONTRARY_EXERCISE
-            else -> throw ClearStreetInvalidDataException("Unknown PositionInstructionType: $value")
+            OPEN -> Known.OPEN
+            CLOSE -> Known.CLOSE
+            else -> throw ClearStreetInvalidDataException("Unknown PositionEffect: $value")
         }
 
     /**
@@ -118,7 +104,7 @@ private constructor(private val value: JsonField<String>) : Enum {
      * @throws ClearStreetInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): PositionInstructionType = apply {
+    fun validate(): PositionEffect = apply {
         if (validated) {
             return@apply
         }
@@ -147,7 +133,7 @@ private constructor(private val value: JsonField<String>) : Enum {
             return true
         }
 
-        return other is PositionInstructionType && value == other.value
+        return other is PositionEffect && value == other.value
     }
 
     override fun hashCode() = value.hashCode()
