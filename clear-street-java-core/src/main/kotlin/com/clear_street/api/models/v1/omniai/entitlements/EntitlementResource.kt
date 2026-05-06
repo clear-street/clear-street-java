@@ -8,20 +8,18 @@ import com.clear_street.api.core.JsonMissing
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.checkRequired
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.omniai.EntitlementCode
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
-import kotlin.jvm.optionals.getOrNull
 
 class EntitlementResource
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val agreementId: JsonField<String>,
-    private val entitlementCode: JsonField<EntitlementCode>,
+    private val entitlementCode: JsonField<String>,
     private val entitlementId: JsonField<String>,
     private val grantedAt: JsonField<String>,
     private val tradingAccountId: JsonField<Long>,
@@ -35,7 +33,7 @@ private constructor(
         agreementId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("entitlement_code")
         @ExcludeMissing
-        entitlementCode: JsonField<EntitlementCode> = JsonMissing.of(),
+        entitlementCode: JsonField<String> = JsonMissing.of(),
         @JsonProperty("entitlement_id")
         @ExcludeMissing
         entitlementId: JsonField<String> = JsonMissing.of(),
@@ -59,12 +57,10 @@ private constructor(
     fun agreementId(): String = agreementId.getRequired("agreement_id")
 
     /**
-     * Stable entitlement code granted by an agreement.
-     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun entitlementCode(): EntitlementCode = entitlementCode.getRequired("entitlement_code")
+    fun entitlementCode(): String = entitlementCode.getRequired("entitlement_code")
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -100,7 +96,7 @@ private constructor(
      */
     @JsonProperty("entitlement_code")
     @ExcludeMissing
-    fun _entitlementCode(): JsonField<EntitlementCode> = entitlementCode
+    fun _entitlementCode(): JsonField<String> = entitlementCode
 
     /**
      * Returns the raw JSON value of [entitlementId].
@@ -161,7 +157,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var agreementId: JsonField<String>? = null
-        private var entitlementCode: JsonField<EntitlementCode>? = null
+        private var entitlementCode: JsonField<String>? = null
         private var entitlementId: JsonField<String>? = null
         private var grantedAt: JsonField<String>? = null
         private var tradingAccountId: JsonField<Long>? = null
@@ -188,18 +184,17 @@ private constructor(
          */
         fun agreementId(agreementId: JsonField<String>) = apply { this.agreementId = agreementId }
 
-        /** Stable entitlement code granted by an agreement. */
-        fun entitlementCode(entitlementCode: EntitlementCode) =
+        fun entitlementCode(entitlementCode: String) =
             entitlementCode(JsonField.of(entitlementCode))
 
         /**
          * Sets [Builder.entitlementCode] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.entitlementCode] with a well-typed [EntitlementCode]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.entitlementCode] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun entitlementCode(entitlementCode: JsonField<EntitlementCode>) = apply {
+        fun entitlementCode(entitlementCode: JsonField<String>) = apply {
             this.entitlementCode = entitlementCode
         }
 
@@ -303,7 +298,7 @@ private constructor(
         }
 
         agreementId()
-        entitlementCode().validate()
+        entitlementCode()
         entitlementId()
         grantedAt()
         tradingAccountId()
@@ -326,7 +321,7 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (if (agreementId.asKnown().isPresent) 1 else 0) +
-            (entitlementCode.asKnown().getOrNull()?.validity() ?: 0) +
+            (if (entitlementCode.asKnown().isPresent) 1 else 0) +
             (if (entitlementId.asKnown().isPresent) 1 else 0) +
             (if (grantedAt.asKnown().isPresent) 1 else 0) +
             (if (tradingAccountId.asKnown().isPresent) 1 else 0)

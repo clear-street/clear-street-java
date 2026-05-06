@@ -13,18 +13,18 @@ internal class OpenEntitlementConsentActionTest {
     fun create() {
         val openEntitlementConsentAction =
             OpenEntitlementConsentAction.builder()
-                .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                .agreementKey("omni_account_data_access")
                 .reason("Portfolio analysis requires Omni consent to access account data.")
-                .addRequestedEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                .addRequestedEntitlementCode("omni.account_data")
                 .addTradingAccountId(100019L)
                 .build()
 
         assertThat(openEntitlementConsentAction.agreementKey())
-            .isEqualTo(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+            .isEqualTo("omni_account_data_access")
         assertThat(openEntitlementConsentAction.reason())
             .isEqualTo("Portfolio analysis requires Omni consent to access account data.")
         assertThat(openEntitlementConsentAction.requestedEntitlementCodes())
-            .containsExactly(EntitlementCode.OMNI_ACCOUNT_DATA)
+            .containsExactly("omni.account_data")
         assertThat(openEntitlementConsentAction.tradingAccountIds()).containsExactly(100019L)
     }
 
@@ -33,9 +33,9 @@ internal class OpenEntitlementConsentActionTest {
         val jsonMapper = jsonMapper()
         val openEntitlementConsentAction =
             OpenEntitlementConsentAction.builder()
-                .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                .agreementKey("omni_account_data_access")
                 .reason("Portfolio analysis requires Omni consent to access account data.")
-                .addRequestedEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                .addRequestedEntitlementCode("omni.account_data")
                 .addTradingAccountId(100019L)
                 .build()
 
