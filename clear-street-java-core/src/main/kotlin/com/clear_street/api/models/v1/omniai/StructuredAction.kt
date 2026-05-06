@@ -409,6 +409,20 @@ private constructor(
                 this.prefillOrder = prefillOrder
             }
 
+            /**
+             * Alias for calling [prefillOrder] with
+             * `PrefillOrderAction.ofUnionMember0(unionMember0)`.
+             */
+            fun prefillOrder(unionMember0: PrefillOrderAction.UnionMember0) =
+                prefillOrder(PrefillOrderAction.ofUnionMember0(unionMember0))
+
+            /**
+             * Alias for calling [prefillOrder] with
+             * `PrefillOrderAction.ofUnionMember1(unionMember1)`.
+             */
+            fun prefillOrder(unionMember1: PrefillOrderAction.UnionMember1) =
+                prefillOrder(PrefillOrderAction.ofUnionMember1(unionMember1))
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
