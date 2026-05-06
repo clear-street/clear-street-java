@@ -3,8 +3,8 @@
 package com.clear_street.api.services.blocking.active.v1
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.services.blocking.active.v1.accounts.ExerciseService
-import com.clear_street.api.services.blocking.active.v1.accounts.ExerciseServiceImpl
+import com.clear_street.api.services.blocking.active.v1.accounts.PositionService
+import com.clear_street.api.services.blocking.active.v1.accounts.PositionServiceImpl
 import java.util.function.Consumer
 
 class AccountServiceImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -14,20 +14,20 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
         WithRawResponseImpl(clientOptions)
     }
 
-    private val exercises: ExerciseService by lazy { ExerciseServiceImpl(clientOptions) }
+    private val positions: PositionService by lazy { PositionServiceImpl(clientOptions) }
 
     override fun withRawResponse(): AccountService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountService =
         AccountServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun exercises(): ExerciseService = exercises
+    override fun positions(): PositionService = positions
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         AccountService.WithRawResponse {
 
-        private val exercises: ExerciseService.WithRawResponse by lazy {
-            ExerciseServiceImpl.WithRawResponseImpl(clientOptions)
+        private val positions: PositionService.WithRawResponse by lazy {
+            PositionServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -37,6 +37,6 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        override fun exercises(): ExerciseService.WithRawResponse = exercises
+        override fun positions(): PositionService.WithRawResponse = positions
     }
 }

@@ -3,8 +3,8 @@
 package com.clear_street.api.services.async.active.v1
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.services.async.active.v1.accounts.ExerciseServiceAsync
-import com.clear_street.api.services.async.active.v1.accounts.ExerciseServiceAsyncImpl
+import com.clear_street.api.services.async.active.v1.accounts.PositionServiceAsync
+import com.clear_street.api.services.async.active.v1.accounts.PositionServiceAsyncImpl
 import java.util.function.Consumer
 
 class AccountServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -14,20 +14,20 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
         WithRawResponseImpl(clientOptions)
     }
 
-    private val exercises: ExerciseServiceAsync by lazy { ExerciseServiceAsyncImpl(clientOptions) }
+    private val positions: PositionServiceAsync by lazy { PositionServiceAsyncImpl(clientOptions) }
 
     override fun withRawResponse(): AccountServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountServiceAsync =
         AccountServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun exercises(): ExerciseServiceAsync = exercises
+    override fun positions(): PositionServiceAsync = positions
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         AccountServiceAsync.WithRawResponse {
 
-        private val exercises: ExerciseServiceAsync.WithRawResponse by lazy {
-            ExerciseServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        private val positions: PositionServiceAsync.WithRawResponse by lazy {
+            PositionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -37,6 +37,6 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        override fun exercises(): ExerciseServiceAsync.WithRawResponse = exercises
+        override fun positions(): PositionServiceAsync.WithRawResponse = positions
     }
 }
