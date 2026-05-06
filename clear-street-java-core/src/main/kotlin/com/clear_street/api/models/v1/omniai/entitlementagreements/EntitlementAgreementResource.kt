@@ -10,6 +10,8 @@ import com.clear_street.api.core.checkKnown
 import com.clear_street.api.core.checkRequired
 import com.clear_street.api.core.toImmutable
 import com.clear_street.api.errors.ClearStreetInvalidDataException
+import com.clear_street.api.models.v1.omniai.EntitlementAgreementKey
+import com.clear_street.api.models.v1.omniai.EntitlementCode
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -22,10 +24,10 @@ class EntitlementAgreementResource
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val agreementId: JsonField<String>,
-    private val agreementKey: JsonField<String>,
+    private val agreementKey: JsonField<EntitlementAgreementKey>,
     private val documentContent: JsonField<String>,
     private val documentSha256: JsonField<String>,
-    private val entitlementCodes: JsonField<List<String>>,
+    private val entitlementCodes: JsonField<List<EntitlementCode>>,
     private val title: JsonField<String>,
     private val version: JsonField<Int>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -38,7 +40,7 @@ private constructor(
         agreementId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("agreement_key")
         @ExcludeMissing
-        agreementKey: JsonField<String> = JsonMissing.of(),
+        agreementKey: JsonField<EntitlementAgreementKey> = JsonMissing.of(),
         @JsonProperty("document_content")
         @ExcludeMissing
         documentContent: JsonField<String> = JsonMissing.of(),
@@ -47,7 +49,7 @@ private constructor(
         documentSha256: JsonField<String> = JsonMissing.of(),
         @JsonProperty("entitlement_codes")
         @ExcludeMissing
-        entitlementCodes: JsonField<List<String>> = JsonMissing.of(),
+        entitlementCodes: JsonField<List<EntitlementCode>> = JsonMissing.of(),
         @JsonProperty("title") @ExcludeMissing title: JsonField<String> = JsonMissing.of(),
         @JsonProperty("version") @ExcludeMissing version: JsonField<Int> = JsonMissing.of(),
     ) : this(
@@ -68,10 +70,12 @@ private constructor(
     fun agreementId(): String = agreementId.getRequired("agreement_id")
 
     /**
+     * Stable entitlement agreement family key.
+     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun agreementKey(): String = agreementKey.getRequired("agreement_key")
+    fun agreementKey(): EntitlementAgreementKey = agreementKey.getRequired("agreement_key")
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -89,7 +93,8 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun entitlementCodes(): List<String> = entitlementCodes.getRequired("entitlement_codes")
+    fun entitlementCodes(): List<EntitlementCode> =
+        entitlementCodes.getRequired("entitlement_codes")
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -119,7 +124,7 @@ private constructor(
      */
     @JsonProperty("agreement_key")
     @ExcludeMissing
-    fun _agreementKey(): JsonField<String> = agreementKey
+    fun _agreementKey(): JsonField<EntitlementAgreementKey> = agreementKey
 
     /**
      * Returns the raw JSON value of [documentContent].
@@ -147,7 +152,7 @@ private constructor(
      */
     @JsonProperty("entitlement_codes")
     @ExcludeMissing
-    fun _entitlementCodes(): JsonField<List<String>> = entitlementCodes
+    fun _entitlementCodes(): JsonField<List<EntitlementCode>> = entitlementCodes
 
     /**
      * Returns the raw JSON value of [title].
@@ -198,10 +203,10 @@ private constructor(
     class Builder internal constructor() {
 
         private var agreementId: JsonField<String>? = null
-        private var agreementKey: JsonField<String>? = null
+        private var agreementKey: JsonField<EntitlementAgreementKey>? = null
         private var documentContent: JsonField<String>? = null
         private var documentSha256: JsonField<String>? = null
-        private var entitlementCodes: JsonField<MutableList<String>>? = null
+        private var entitlementCodes: JsonField<MutableList<EntitlementCode>>? = null
         private var title: JsonField<String>? = null
         private var version: JsonField<Int>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -230,16 +235,18 @@ private constructor(
          */
         fun agreementId(agreementId: JsonField<String>) = apply { this.agreementId = agreementId }
 
-        fun agreementKey(agreementKey: String) = agreementKey(JsonField.of(agreementKey))
+        /** Stable entitlement agreement family key. */
+        fun agreementKey(agreementKey: EntitlementAgreementKey) =
+            agreementKey(JsonField.of(agreementKey))
 
         /**
          * Sets [Builder.agreementKey] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.agreementKey] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.agreementKey] with a well-typed
+         * [EntitlementAgreementKey] value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
          */
-        fun agreementKey(agreementKey: JsonField<String>) = apply {
+        fun agreementKey(agreementKey: JsonField<EntitlementAgreementKey>) = apply {
             this.agreementKey = agreementKey
         }
 
@@ -270,26 +277,26 @@ private constructor(
             this.documentSha256 = documentSha256
         }
 
-        fun entitlementCodes(entitlementCodes: List<String>) =
+        fun entitlementCodes(entitlementCodes: List<EntitlementCode>) =
             entitlementCodes(JsonField.of(entitlementCodes))
 
         /**
          * Sets [Builder.entitlementCodes] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.entitlementCodes] with a well-typed `List<String>` value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.entitlementCodes] with a well-typed
+         * `List<EntitlementCode>` value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
          */
-        fun entitlementCodes(entitlementCodes: JsonField<List<String>>) = apply {
+        fun entitlementCodes(entitlementCodes: JsonField<List<EntitlementCode>>) = apply {
             this.entitlementCodes = entitlementCodes.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [String] to [entitlementCodes].
+         * Adds a single [EntitlementCode] to [entitlementCodes].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addEntitlementCode(entitlementCode: String) = apply {
+        fun addEntitlementCode(entitlementCode: EntitlementCode) = apply {
             entitlementCodes =
                 (entitlementCodes ?: JsonField.of(mutableListOf())).also {
                     checkKnown("entitlementCodes", it).add(entitlementCode)
@@ -382,10 +389,10 @@ private constructor(
         }
 
         agreementId()
-        agreementKey()
+        agreementKey().validate()
         documentContent()
         documentSha256()
-        entitlementCodes()
+        entitlementCodes().forEach { it.validate() }
         title()
         version()
         validated = true
@@ -407,10 +414,10 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (if (agreementId.asKnown().isPresent) 1 else 0) +
-            (if (agreementKey.asKnown().isPresent) 1 else 0) +
+            (agreementKey.asKnown().getOrNull()?.validity() ?: 0) +
             (if (documentContent.asKnown().isPresent) 1 else 0) +
             (if (documentSha256.asKnown().isPresent) 1 else 0) +
-            (entitlementCodes.asKnown().getOrNull()?.size ?: 0) +
+            (entitlementCodes.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (title.asKnown().isPresent) 1 else 0) +
             (if (version.asKnown().isPresent) 1 else 0)
 

@@ -3,6 +3,7 @@
 package com.clear_street.api.services.blocking.v1.omniai
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
+import com.clear_street.api.models.v1.omniai.EntitlementCode
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsParams
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
 import org.junit.jupiter.api.Disabled
@@ -20,7 +21,7 @@ internal class EntitlementServiceTest {
             entitlementService.createEntitlements(
                 EntitlementCreateEntitlementsParams.builder()
                     .agreementId("01JZ0000000000000000000000")
-                    .addRequestedEntitlementCode("omni.account_data")
+                    .addRequestedEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                     .addTradingAccountId(100019L)
                     .addTradingAccountId(100021L)
                     .build()
