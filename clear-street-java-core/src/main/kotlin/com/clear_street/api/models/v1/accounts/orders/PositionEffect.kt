@@ -1,16 +1,14 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.models.v1.omniai
+package com.clear_street.api.models.v1.accounts.orders
 
 import com.clear_street.api.core.Enum
 import com.clear_street.api.core.JsonField
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/** Operation represented by a prefill order action. */
-class PrefillOrderActionType
-@JsonCreator
-private constructor(private val value: JsonField<String>) : Enum {
+/** Position effect for options orders */
+class PositionEffect @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
     /**
      * Returns this class instance's raw value.
@@ -23,34 +21,33 @@ private constructor(private val value: JsonField<String>) : Enum {
 
     companion object {
 
-        @JvmField val NEW = of("NEW")
+        @JvmField val OPEN = of("OPEN")
 
-        @JvmField val CANCEL = of("CANCEL")
+        @JvmField val CLOSE = of("CLOSE")
 
-        @JvmStatic fun of(value: String) = PrefillOrderActionType(JsonField.of(value))
+        @JvmStatic fun of(value: String) = PositionEffect(JsonField.of(value))
     }
 
-    /** An enum containing [PrefillOrderActionType]'s known values. */
+    /** An enum containing [PositionEffect]'s known values. */
     enum class Known {
-        NEW,
-        CANCEL,
+        OPEN,
+        CLOSE,
     }
 
     /**
-     * An enum containing [PrefillOrderActionType]'s known values, as well as an [_UNKNOWN] member.
+     * An enum containing [PositionEffect]'s known values, as well as an [_UNKNOWN] member.
      *
-     * An instance of [PrefillOrderActionType] can contain an unknown value in a couple of cases:
+     * An instance of [PositionEffect] can contain an unknown value in a couple of cases:
      * - It was deserialized from data that doesn't match any known member. For example, if the SDK
      *   is on an older version than the API, then the API may respond with new members that the SDK
      *   is unaware of.
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
-        NEW,
-        CANCEL,
+        OPEN,
+        CLOSE,
         /**
-         * An enum member indicating that [PrefillOrderActionType] was instantiated with an unknown
-         * value.
+         * An enum member indicating that [PositionEffect] was instantiated with an unknown value.
          */
         _UNKNOWN,
     }
@@ -64,8 +61,8 @@ private constructor(private val value: JsonField<String>) : Enum {
      */
     fun value(): Value =
         when (this) {
-            NEW -> Value.NEW
-            CANCEL -> Value.CANCEL
+            OPEN -> Value.OPEN
+            CLOSE -> Value.CLOSE
             else -> Value._UNKNOWN
         }
 
@@ -80,9 +77,9 @@ private constructor(private val value: JsonField<String>) : Enum {
      */
     fun known(): Known =
         when (this) {
-            NEW -> Known.NEW
-            CANCEL -> Known.CANCEL
-            else -> throw ClearStreetInvalidDataException("Unknown PrefillOrderActionType: $value")
+            OPEN -> Known.OPEN
+            CLOSE -> Known.CLOSE
+            else -> throw ClearStreetInvalidDataException("Unknown PositionEffect: $value")
         }
 
     /**
@@ -107,7 +104,7 @@ private constructor(private val value: JsonField<String>) : Enum {
      * @throws ClearStreetInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): PrefillOrderActionType = apply {
+    fun validate(): PositionEffect = apply {
         if (validated) {
             return@apply
         }
@@ -136,7 +133,7 @@ private constructor(private val value: JsonField<String>) : Enum {
             return true
         }
 
-        return other is PrefillOrderActionType && value == other.value
+        return other is PositionEffect && value == other.value
     }
 
     override fun hashCode() = value.hashCode()
