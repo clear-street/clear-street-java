@@ -3,6 +3,7 @@
 package com.clear_street.api.client
 
 import com.clear_street.api.core.ClientOptions
+import com.clear_street.api.services.blocking.ActiveService
 import com.clear_street.api.services.blocking.V1Service
 import java.util.function.Consumer
 
@@ -42,6 +43,8 @@ interface ClearStreetClient {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ClearStreetClient
 
+    fun active(): ActiveService
+
     /** Active Websocket. */
     fun v1(): V1Service
 
@@ -69,6 +72,8 @@ interface ClearStreetClient {
         fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): ClearStreetClient.WithRawResponse
+
+        fun active(): ActiveService.WithRawResponse
 
         /** Active Websocket. */
         fun v1(): V1Service.WithRawResponse

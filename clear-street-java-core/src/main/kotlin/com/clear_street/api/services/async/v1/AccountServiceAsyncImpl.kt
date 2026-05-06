@@ -24,6 +24,8 @@ import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdParams
 import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdResponse
 import com.clear_street.api.services.async.v1.accounts.BalanceServiceAsync
 import com.clear_street.api.services.async.v1.accounts.BalanceServiceAsyncImpl
+import com.clear_street.api.services.async.v1.accounts.ExerciseServiceAsync
+import com.clear_street.api.services.async.v1.accounts.ExerciseServiceAsyncImpl
 import com.clear_street.api.services.async.v1.accounts.OrderServiceAsync
 import com.clear_street.api.services.async.v1.accounts.OrderServiceAsyncImpl
 import com.clear_street.api.services.async.v1.accounts.PortfolioHistoryServiceAsync
@@ -44,6 +46,8 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
 
     private val balances: BalanceServiceAsync by lazy { BalanceServiceAsyncImpl(clientOptions) }
 
+    private val exercises: ExerciseServiceAsync by lazy { ExerciseServiceAsyncImpl(clientOptions) }
+
     private val orders: OrderServiceAsync by lazy { OrderServiceAsyncImpl(clientOptions) }
 
     private val portfolioHistory: PortfolioHistoryServiceAsync by lazy {
@@ -59,6 +63,9 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
 
     /** Manage trading accounts, balances, and portfolio history. */
     override fun balances(): BalanceServiceAsync = balances
+
+    /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
+    override fun exercises(): ExerciseServiceAsync = exercises
 
     /** Place, monitor, and manage trading orders. */
     override fun orders(): OrderServiceAsync = orders
@@ -100,6 +107,10 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
             BalanceServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val exercises: ExerciseServiceAsync.WithRawResponse by lazy {
+            ExerciseServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val orders: OrderServiceAsync.WithRawResponse by lazy {
             OrderServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -121,6 +132,9 @@ class AccountServiceAsyncImpl internal constructor(private val clientOptions: Cl
 
         /** Manage trading accounts, balances, and portfolio history. */
         override fun balances(): BalanceServiceAsync.WithRawResponse = balances
+
+        /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
+        override fun exercises(): ExerciseServiceAsync.WithRawResponse = exercises
 
         /** Place, monitor, and manage trading orders. */
         override fun orders(): OrderServiceAsync.WithRawResponse = orders
