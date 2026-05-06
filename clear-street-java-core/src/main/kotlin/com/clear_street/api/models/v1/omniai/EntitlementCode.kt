@@ -1,22 +1,15 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.models.active.v1.accounts.positions.instructions
+package com.clear_street.api.models.v1.omniai
 
 import com.clear_street.api.core.Enum
 import com.clear_street.api.core.JsonField
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/**
- * Public Active API lifecycle status for a position instruction.
- *
- * Maps 1:1 to the `oems-csc` wire enum while keeping the REST schema stable: api-gw owns
- * serialization, OpenAPI generation, and the `Unknown` fallback for missing or unrecognized gRPC
- * values.
- */
-class PositionInstructionStatus
-@JsonCreator
-private constructor(private val value: JsonField<String>) : Enum {
+/** Stable entitlement code granted by an agreement. */
+class EntitlementCode @JsonCreator private constructor(private val value: JsonField<String>) :
+    Enum {
 
     /**
      * Returns this class instance's raw value.
@@ -29,59 +22,29 @@ private constructor(private val value: JsonField<String>) : Enum {
 
     companion object {
 
-        @JvmField val SENT = of("SENT")
+        @JvmField val OMNI_ACCOUNT_DATA = of("omni.account_data")
 
-        @JvmField val ACCEPTED = of("ACCEPTED")
-
-        @JvmField val REJECTED = of("REJECTED")
-
-        @JvmField val ENGINE_REJECTED = of("ENGINE_REJECTED")
-
-        @JvmField val CANCEL_REQUESTED = of("CANCEL_REQUESTED")
-
-        @JvmField val CANCELLED = of("CANCELLED")
-
-        @JvmField val CANCEL_FAILED = of("CANCEL_FAILED")
-
-        @JvmField val UNKNOWN = of("UNKNOWN")
-
-        @JvmStatic fun of(value: String) = PositionInstructionStatus(JsonField.of(value))
+        @JvmStatic fun of(value: String) = EntitlementCode(JsonField.of(value))
     }
 
-    /** An enum containing [PositionInstructionStatus]'s known values. */
+    /** An enum containing [EntitlementCode]'s known values. */
     enum class Known {
-        SENT,
-        ACCEPTED,
-        REJECTED,
-        ENGINE_REJECTED,
-        CANCEL_REQUESTED,
-        CANCELLED,
-        CANCEL_FAILED,
-        UNKNOWN,
+        OMNI_ACCOUNT_DATA
     }
 
     /**
-     * An enum containing [PositionInstructionStatus]'s known values, as well as an [_UNKNOWN]
-     * member.
+     * An enum containing [EntitlementCode]'s known values, as well as an [_UNKNOWN] member.
      *
-     * An instance of [PositionInstructionStatus] can contain an unknown value in a couple of cases:
+     * An instance of [EntitlementCode] can contain an unknown value in a couple of cases:
      * - It was deserialized from data that doesn't match any known member. For example, if the SDK
      *   is on an older version than the API, then the API may respond with new members that the SDK
      *   is unaware of.
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
-        SENT,
-        ACCEPTED,
-        REJECTED,
-        ENGINE_REJECTED,
-        CANCEL_REQUESTED,
-        CANCELLED,
-        CANCEL_FAILED,
-        UNKNOWN,
+        OMNI_ACCOUNT_DATA,
         /**
-         * An enum member indicating that [PositionInstructionStatus] was instantiated with an
-         * unknown value.
+         * An enum member indicating that [EntitlementCode] was instantiated with an unknown value.
          */
         _UNKNOWN,
     }
@@ -95,14 +58,7 @@ private constructor(private val value: JsonField<String>) : Enum {
      */
     fun value(): Value =
         when (this) {
-            SENT -> Value.SENT
-            ACCEPTED -> Value.ACCEPTED
-            REJECTED -> Value.REJECTED
-            ENGINE_REJECTED -> Value.ENGINE_REJECTED
-            CANCEL_REQUESTED -> Value.CANCEL_REQUESTED
-            CANCELLED -> Value.CANCELLED
-            CANCEL_FAILED -> Value.CANCEL_FAILED
-            UNKNOWN -> Value.UNKNOWN
+            OMNI_ACCOUNT_DATA -> Value.OMNI_ACCOUNT_DATA
             else -> Value._UNKNOWN
         }
 
@@ -117,16 +73,8 @@ private constructor(private val value: JsonField<String>) : Enum {
      */
     fun known(): Known =
         when (this) {
-            SENT -> Known.SENT
-            ACCEPTED -> Known.ACCEPTED
-            REJECTED -> Known.REJECTED
-            ENGINE_REJECTED -> Known.ENGINE_REJECTED
-            CANCEL_REQUESTED -> Known.CANCEL_REQUESTED
-            CANCELLED -> Known.CANCELLED
-            CANCEL_FAILED -> Known.CANCEL_FAILED
-            UNKNOWN -> Known.UNKNOWN
-            else ->
-                throw ClearStreetInvalidDataException("Unknown PositionInstructionStatus: $value")
+            OMNI_ACCOUNT_DATA -> Known.OMNI_ACCOUNT_DATA
+            else -> throw ClearStreetInvalidDataException("Unknown EntitlementCode: $value")
         }
 
     /**
@@ -151,7 +99,7 @@ private constructor(private val value: JsonField<String>) : Enum {
      * @throws ClearStreetInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): PositionInstructionStatus = apply {
+    fun validate(): EntitlementCode = apply {
         if (validated) {
             return@apply
         }
@@ -180,7 +128,7 @@ private constructor(private val value: JsonField<String>) : Enum {
             return true
         }
 
-        return other is PositionInstructionStatus && value == other.value
+        return other is EntitlementCode && value == other.value
     }
 
     override fun hashCode() = value.hashCode()

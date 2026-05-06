@@ -34,10 +34,10 @@ internal class InstrumentTest {
                 .longMarginRate("0.25")
                 .name("Apple Inc.")
                 .notionalAdv("15815250000")
-                .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
                 .strikePrice("150.00")
+                .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                 .build()
 
         assertThat(instrument.id()).isEqualTo("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
@@ -58,11 +58,11 @@ internal class InstrumentTest {
         assertThat(instrument.longMarginRate()).contains("0.25")
         assertThat(instrument.name()).contains("Apple Inc.")
         assertThat(instrument.notionalAdv()).contains("15815250000")
-        assertThat(instrument.optionsExpiryDates().getOrNull())
-            .containsExactly(LocalDate.parse("2019-12-27"))
         assertThat(instrument.previousClose()).contains("210.87")
         assertThat(instrument.shortMarginRate()).contains("0.25")
         assertThat(instrument.strikePrice()).contains("150.00")
+        assertThat(instrument.optionsExpiryDates().getOrNull())
+            .containsExactly(LocalDate.parse("2019-12-27"))
     }
 
     @Test
@@ -88,10 +88,10 @@ internal class InstrumentTest {
                 .longMarginRate("0.25")
                 .name("Apple Inc.")
                 .notionalAdv("15815250000")
-                .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
                 .strikePrice("150.00")
+                .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                 .build()
 
         val roundtrippedInstrument =

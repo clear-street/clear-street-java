@@ -54,7 +54,6 @@ internal class ProGuardCompatibilityTest {
         val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
 
         assertThat(client).isNotNull()
-        assertThat(client.active()).isNotNull()
         assertThat(client.v1()).isNotNull()
     }
 
