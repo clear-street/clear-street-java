@@ -43,10 +43,10 @@ private constructor(
     private val longMarginRate: JsonField<String>,
     private val name: JsonField<String>,
     private val notionalAdv: JsonField<String>,
+    private val optionsExpiryDates: JsonField<List<LocalDate>>,
     private val previousClose: JsonField<String>,
     private val shortMarginRate: JsonField<String>,
     private val strikePrice: JsonField<String>,
-    private val optionsExpiryDates: JsonField<List<LocalDate>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -92,6 +92,9 @@ private constructor(
         @JsonProperty("notional_adv")
         @ExcludeMissing
         notionalAdv: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("options_expiry_dates")
+        @ExcludeMissing
+        optionsExpiryDates: JsonField<List<LocalDate>> = JsonMissing.of(),
         @JsonProperty("previous_close")
         @ExcludeMissing
         previousClose: JsonField<String> = JsonMissing.of(),
@@ -101,9 +104,6 @@ private constructor(
         @JsonProperty("strike_price")
         @ExcludeMissing
         strikePrice: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("options_expiry_dates")
-        @ExcludeMissing
-        optionsExpiryDates: JsonField<List<LocalDate>> = JsonMissing.of(),
     ) : this(
         id,
         countryOfIssue,
@@ -123,37 +123,12 @@ private constructor(
         longMarginRate,
         name,
         notionalAdv,
+        optionsExpiryDates,
         previousClose,
         shortMarginRate,
         strikePrice,
-        optionsExpiryDates,
         mutableMapOf(),
     )
-
-    fun toInstrumentCore(): InstrumentCore =
-        InstrumentCore.builder()
-            .id(id)
-            .countryOfIssue(countryOfIssue)
-            .currency(currency)
-            .easyToBorrow(easyToBorrow)
-            .isLiquidationOnly(isLiquidationOnly)
-            .isMarginable(isMarginable)
-            .isRestricted(isRestricted)
-            .isShortProhibited(isShortProhibited)
-            .isThresholdSecurity(isThresholdSecurity)
-            .isTradable(isTradable)
-            .symbol(symbol)
-            .venue(venue)
-            .adv(adv)
-            .expiry(expiry)
-            .instrumentType(instrumentType)
-            .longMarginRate(longMarginRate)
-            .name(name)
-            .notionalAdv(notionalAdv)
-            .previousClose(previousClose)
-            .shortMarginRate(shortMarginRate)
-            .strikePrice(strikePrice)
-            .build()
 
     /**
      * Unique OEMS instrument identifier (UUID)
@@ -302,6 +277,16 @@ private constructor(
     fun notionalAdv(): Optional<String> = notionalAdv.getOptional("notional_adv")
 
     /**
+     * Available options expiration dates for this instrument. Present only when
+     * `include_options_expiry_dates=true` in the request.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun optionsExpiryDates(): Optional<List<LocalDate>> =
+        optionsExpiryDates.getOptional("options_expiry_dates")
+
+    /**
      * Last close price from the security definition.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -324,16 +309,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun strikePrice(): Optional<String> = strikePrice.getOptional("strike_price")
-
-    /**
-     * Available options expiration dates for this instrument. Present only when
-     * `include_options_expiry_dates=true` in the request.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun optionsExpiryDates(): Optional<List<LocalDate>> =
-        optionsExpiryDates.getOptional("options_expiry_dates")
 
     /**
      * Returns the raw JSON value of [id].
@@ -485,6 +460,16 @@ private constructor(
     fun _notionalAdv(): JsonField<String> = notionalAdv
 
     /**
+     * Returns the raw JSON value of [optionsExpiryDates].
+     *
+     * Unlike [optionsExpiryDates], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("options_expiry_dates")
+    @ExcludeMissing
+    fun _optionsExpiryDates(): JsonField<List<LocalDate>> = optionsExpiryDates
+
+    /**
      * Returns the raw JSON value of [previousClose].
      *
      * Unlike [previousClose], this method doesn't throw if the JSON field has an unexpected type.
@@ -510,16 +495,6 @@ private constructor(
     @JsonProperty("strike_price")
     @ExcludeMissing
     fun _strikePrice(): JsonField<String> = strikePrice
-
-    /**
-     * Returns the raw JSON value of [optionsExpiryDates].
-     *
-     * Unlike [optionsExpiryDates], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("options_expiry_dates")
-    @ExcludeMissing
-    fun _optionsExpiryDates(): JsonField<List<LocalDate>> = optionsExpiryDates
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -578,10 +553,10 @@ private constructor(
         private var longMarginRate: JsonField<String> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
         private var notionalAdv: JsonField<String> = JsonMissing.of()
+        private var optionsExpiryDates: JsonField<MutableList<LocalDate>>? = null
         private var previousClose: JsonField<String> = JsonMissing.of()
         private var shortMarginRate: JsonField<String> = JsonMissing.of()
         private var strikePrice: JsonField<String> = JsonMissing.of()
-        private var optionsExpiryDates: JsonField<MutableList<LocalDate>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -604,10 +579,10 @@ private constructor(
             longMarginRate = instrument.longMarginRate
             name = instrument.name
             notionalAdv = instrument.notionalAdv
+            optionsExpiryDates = instrument.optionsExpiryDates.map { it.toMutableList() }
             previousClose = instrument.previousClose
             shortMarginRate = instrument.shortMarginRate
             strikePrice = instrument.strikePrice
-            optionsExpiryDates = instrument.optionsExpiryDates.map { it.toMutableList() }
             additionalProperties = instrument.additionalProperties.toMutableMap()
         }
 
@@ -868,6 +843,42 @@ private constructor(
          */
         fun notionalAdv(notionalAdv: JsonField<String>) = apply { this.notionalAdv = notionalAdv }
 
+        /**
+         * Available options expiration dates for this instrument. Present only when
+         * `include_options_expiry_dates=true` in the request.
+         */
+        fun optionsExpiryDates(optionsExpiryDates: List<LocalDate>?) =
+            optionsExpiryDates(JsonField.ofNullable(optionsExpiryDates))
+
+        /**
+         * Alias for calling [Builder.optionsExpiryDates] with `optionsExpiryDates.orElse(null)`.
+         */
+        fun optionsExpiryDates(optionsExpiryDates: Optional<List<LocalDate>>) =
+            optionsExpiryDates(optionsExpiryDates.getOrNull())
+
+        /**
+         * Sets [Builder.optionsExpiryDates] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.optionsExpiryDates] with a well-typed `List<LocalDate>`
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun optionsExpiryDates(optionsExpiryDates: JsonField<List<LocalDate>>) = apply {
+            this.optionsExpiryDates = optionsExpiryDates.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [LocalDate] to [optionsExpiryDates].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addOptionsExpiryDate(optionsExpiryDate: LocalDate) = apply {
+            optionsExpiryDates =
+                (optionsExpiryDates ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("optionsExpiryDates", it).add(optionsExpiryDate)
+                }
+        }
+
         /** Last close price from the security definition. */
         fun previousClose(previousClose: String?) =
             previousClose(JsonField.ofNullable(previousClose))
@@ -920,42 +931,6 @@ private constructor(
          * value.
          */
         fun strikePrice(strikePrice: JsonField<String>) = apply { this.strikePrice = strikePrice }
-
-        /**
-         * Available options expiration dates for this instrument. Present only when
-         * `include_options_expiry_dates=true` in the request.
-         */
-        fun optionsExpiryDates(optionsExpiryDates: List<LocalDate>?) =
-            optionsExpiryDates(JsonField.ofNullable(optionsExpiryDates))
-
-        /**
-         * Alias for calling [Builder.optionsExpiryDates] with `optionsExpiryDates.orElse(null)`.
-         */
-        fun optionsExpiryDates(optionsExpiryDates: Optional<List<LocalDate>>) =
-            optionsExpiryDates(optionsExpiryDates.getOrNull())
-
-        /**
-         * Sets [Builder.optionsExpiryDates] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.optionsExpiryDates] with a well-typed `List<LocalDate>`
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
-         */
-        fun optionsExpiryDates(optionsExpiryDates: JsonField<List<LocalDate>>) = apply {
-            this.optionsExpiryDates = optionsExpiryDates.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [LocalDate] to [optionsExpiryDates].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addOptionsExpiryDate(optionsExpiryDate: LocalDate) = apply {
-            optionsExpiryDates =
-                (optionsExpiryDates ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("optionsExpiryDates", it).add(optionsExpiryDate)
-                }
-        }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -1019,10 +994,10 @@ private constructor(
                 longMarginRate,
                 name,
                 notionalAdv,
+                (optionsExpiryDates ?: JsonMissing.of()).map { it.toImmutable() },
                 previousClose,
                 shortMarginRate,
                 strikePrice,
-                (optionsExpiryDates ?: JsonMissing.of()).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
     }
@@ -1060,10 +1035,10 @@ private constructor(
         longMarginRate()
         name()
         notionalAdv()
+        optionsExpiryDates()
         previousClose()
         shortMarginRate()
         strikePrice()
-        optionsExpiryDates()
         validated = true
     }
 
@@ -1100,10 +1075,10 @@ private constructor(
             (if (longMarginRate.asKnown().isPresent) 1 else 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
             (if (notionalAdv.asKnown().isPresent) 1 else 0) +
+            (optionsExpiryDates.asKnown().getOrNull()?.size ?: 0) +
             (if (previousClose.asKnown().isPresent) 1 else 0) +
             (if (shortMarginRate.asKnown().isPresent) 1 else 0) +
-            (if (strikePrice.asKnown().isPresent) 1 else 0) +
-            (optionsExpiryDates.asKnown().getOrNull()?.size ?: 0)
+            (if (strikePrice.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -1129,10 +1104,10 @@ private constructor(
             longMarginRate == other.longMarginRate &&
             name == other.name &&
             notionalAdv == other.notionalAdv &&
+            optionsExpiryDates == other.optionsExpiryDates &&
             previousClose == other.previousClose &&
             shortMarginRate == other.shortMarginRate &&
             strikePrice == other.strikePrice &&
-            optionsExpiryDates == other.optionsExpiryDates &&
             additionalProperties == other.additionalProperties
     }
 
@@ -1156,10 +1131,10 @@ private constructor(
             longMarginRate,
             name,
             notionalAdv,
+            optionsExpiryDates,
             previousClose,
             shortMarginRate,
             strikePrice,
-            optionsExpiryDates,
             additionalProperties,
         )
     }
@@ -1167,5 +1142,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Instrument{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, optionsExpiryDates=$optionsExpiryDates, additionalProperties=$additionalProperties}"
+        "Instrument{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, optionsExpiryDates=$optionsExpiryDates, previousClose=$previousClose, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, additionalProperties=$additionalProperties}"
 }
