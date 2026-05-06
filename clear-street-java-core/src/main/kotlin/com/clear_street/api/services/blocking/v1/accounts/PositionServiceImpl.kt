@@ -22,6 +22,8 @@ import com.clear_street.api.models.v1.accounts.positions.PositionClosePositionsP
 import com.clear_street.api.models.v1.accounts.positions.PositionClosePositionsResponse
 import com.clear_street.api.models.v1.accounts.positions.PositionGetPositionsParams
 import com.clear_street.api.models.v1.accounts.positions.PositionGetPositionsResponse
+import com.clear_street.api.services.blocking.v1.accounts.positions.InstructionService
+import com.clear_street.api.services.blocking.v1.accounts.positions.InstructionServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -33,10 +35,15 @@ class PositionServiceImpl internal constructor(private val clientOptions: Client
         WithRawResponseImpl(clientOptions)
     }
 
+    private val instructions: InstructionService by lazy { InstructionServiceImpl(clientOptions) }
+
     override fun withRawResponse(): PositionService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): PositionService =
         PositionServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
+
+    /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
+    override fun instructions(): InstructionService = instructions
 
     override fun closePosition(
         params: PositionClosePositionParams,
@@ -65,12 +72,19 @@ class PositionServiceImpl internal constructor(private val clientOptions: Client
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
+        private val instructions: InstructionService.WithRawResponse by lazy {
+            InstructionServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): PositionService.WithRawResponse =
             PositionServiceImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
+
+        /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
+        override fun instructions(): InstructionService.WithRawResponse = instructions
 
         private val closePositionHandler: Handler<PositionClosePositionResponse> =
             jsonHandler<PositionClosePositionResponse>(clientOptions.jsonMapper)

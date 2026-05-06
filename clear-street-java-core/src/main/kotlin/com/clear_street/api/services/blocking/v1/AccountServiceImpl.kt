@@ -24,8 +24,6 @@ import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdParams
 import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdResponse
 import com.clear_street.api.services.blocking.v1.accounts.BalanceService
 import com.clear_street.api.services.blocking.v1.accounts.BalanceServiceImpl
-import com.clear_street.api.services.blocking.v1.accounts.ExerciseService
-import com.clear_street.api.services.blocking.v1.accounts.ExerciseServiceImpl
 import com.clear_street.api.services.blocking.v1.accounts.OrderService
 import com.clear_street.api.services.blocking.v1.accounts.OrderServiceImpl
 import com.clear_street.api.services.blocking.v1.accounts.PortfolioHistoryService
@@ -45,8 +43,6 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
 
     private val balances: BalanceService by lazy { BalanceServiceImpl(clientOptions) }
 
-    private val exercises: ExerciseService by lazy { ExerciseServiceImpl(clientOptions) }
-
     private val orders: OrderService by lazy { OrderServiceImpl(clientOptions) }
 
     private val portfolioHistory: PortfolioHistoryService by lazy {
@@ -62,9 +58,6 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
 
     /** Manage trading accounts, balances, and portfolio history. */
     override fun balances(): BalanceService = balances
-
-    /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
-    override fun exercises(): ExerciseService = exercises
 
     /** Place, monitor, and manage trading orders. */
     override fun orders(): OrderService = orders
@@ -106,10 +99,6 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
             BalanceServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val exercises: ExerciseService.WithRawResponse by lazy {
-            ExerciseServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val orders: OrderService.WithRawResponse by lazy {
             OrderServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -131,9 +120,6 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
 
         /** Manage trading accounts, balances, and portfolio history. */
         override fun balances(): BalanceService.WithRawResponse = balances
-
-        /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
-        override fun exercises(): ExerciseService.WithRawResponse = exercises
 
         /** Place, monitor, and manage trading orders. */
         override fun orders(): OrderService.WithRawResponse = orders

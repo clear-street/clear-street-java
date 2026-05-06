@@ -3,7 +3,7 @@
 package com.clear_street.api.services.blocking.active.v1
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.services.blocking.active.v1.accounts.ExerciseService
+import com.clear_street.api.services.blocking.active.v1.accounts.PositionService
 import java.util.function.Consumer
 
 interface AccountService {
@@ -20,7 +20,7 @@ interface AccountService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountService
 
-    fun exercises(): ExerciseService
+    fun positions(): PositionService
 
     /** A view of [AccountService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -32,6 +32,6 @@ interface AccountService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountService.WithRawResponse
 
-        fun exercises(): ExerciseService.WithRawResponse
+        fun positions(): PositionService.WithRawResponse
     }
 }

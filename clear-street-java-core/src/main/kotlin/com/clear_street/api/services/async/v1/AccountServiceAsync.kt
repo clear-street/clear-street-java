@@ -12,7 +12,6 @@ import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse
 import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdParams
 import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdResponse
 import com.clear_street.api.services.async.v1.accounts.BalanceServiceAsync
-import com.clear_street.api.services.async.v1.accounts.ExerciseServiceAsync
 import com.clear_street.api.services.async.v1.accounts.OrderServiceAsync
 import com.clear_street.api.services.async.v1.accounts.PortfolioHistoryServiceAsync
 import com.clear_street.api.services.async.v1.accounts.PositionServiceAsync
@@ -36,9 +35,6 @@ interface AccountServiceAsync {
 
     /** Manage trading accounts, balances, and portfolio history. */
     fun balances(): BalanceServiceAsync
-
-    /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
-    fun exercises(): ExerciseServiceAsync
 
     /** Place, monitor, and manage trading orders. */
     fun orders(): OrderServiceAsync
@@ -160,9 +156,6 @@ interface AccountServiceAsync {
 
         /** Manage trading accounts, balances, and portfolio history. */
         fun balances(): BalanceServiceAsync.WithRawResponse
-
-        /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
-        fun exercises(): ExerciseServiceAsync.WithRawResponse
 
         /** Place, monitor, and manage trading orders. */
         fun orders(): OrderServiceAsync.WithRawResponse

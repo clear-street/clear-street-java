@@ -1,12 +1,12 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.services.async.active.v1
+package com.clear_street.api.services.async.active.v1.accounts
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.services.async.active.v1.accounts.PositionServiceAsync
+import com.clear_street.api.services.async.active.v1.accounts.positions.InstructionServiceAsync
 import java.util.function.Consumer
 
-interface AccountServiceAsync {
+interface PositionServiceAsync {
 
     /**
      * Returns a view of this service that provides access to raw HTTP responses for each method.
@@ -18,12 +18,12 @@ interface AccountServiceAsync {
      *
      * The original service is not modified.
      */
-    fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountServiceAsync
+    fun withOptions(modifier: Consumer<ClientOptions.Builder>): PositionServiceAsync
 
-    fun positions(): PositionServiceAsync
+    fun instructions(): InstructionServiceAsync
 
     /**
-     * A view of [AccountServiceAsync] that provides access to raw HTTP responses for each method.
+     * A view of [PositionServiceAsync] that provides access to raw HTTP responses for each method.
      */
     interface WithRawResponse {
 
@@ -34,8 +34,8 @@ interface AccountServiceAsync {
          */
         fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
-        ): AccountServiceAsync.WithRawResponse
+        ): PositionServiceAsync.WithRawResponse
 
-        fun positions(): PositionServiceAsync.WithRawResponse
+        fun instructions(): InstructionServiceAsync.WithRawResponse
     }
 }
