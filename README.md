@@ -238,8 +238,6 @@ The SDK throws custom unchecked exception types:
 
 ## Logging
 
-The SDK uses the standard [OkHttp logging interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor).
-
 Enable logging by setting the `CLEAR_STREET_LOG` environment variable to `info`:
 
 ```sh
@@ -250,6 +248,20 @@ Or to `debug` for more verbose logging:
 
 ```sh
 export CLEAR_STREET_LOG=debug
+```
+
+Or configure the client manually using the `logLevel` method:
+
+```java
+import com.clear_street.api.client.ClearStreetClient;
+import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clear_street.api.core.LogLevel;
+
+ClearStreetClient client = ClearStreetOkHttpClient.builder()
+    .fromEnv()
+    .logLevel(LogLevel.INFO)
+    .apiKey("My API Key")
+    .build();
 ```
 
 ## ProGuard and R8
