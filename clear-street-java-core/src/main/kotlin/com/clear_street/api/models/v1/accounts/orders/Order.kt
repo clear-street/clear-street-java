@@ -55,8 +55,10 @@ private constructor(
     private val queueState: JsonField<QueueState>,
     private val releasesAt: JsonField<OffsetDateTime>,
     private val stopPrice: JsonField<String>,
+    private val trailingLimitPx: JsonField<String>,
     private val trailingOffset: JsonField<String>,
     private val trailingOffsetType: JsonField<TrailingOffsetType>,
+    private val trailingStopPx: JsonField<String>,
     private val trailingWatermarkPx: JsonField<String>,
     private val trailingWatermarkTs: JsonField<OffsetDateTime>,
     private val underlyingInstrumentId: JsonField<String>,
@@ -124,12 +126,18 @@ private constructor(
         @ExcludeMissing
         releasesAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("trailing_limit_px")
+        @ExcludeMissing
+        trailingLimitPx: JsonField<String> = JsonMissing.of(),
         @JsonProperty("trailing_offset")
         @ExcludeMissing
         trailingOffset: JsonField<String> = JsonMissing.of(),
         @JsonProperty("trailing_offset_type")
         @ExcludeMissing
         trailingOffsetType: JsonField<TrailingOffsetType> = JsonMissing.of(),
+        @JsonProperty("trailing_stop_px")
+        @ExcludeMissing
+        trailingStopPx: JsonField<String> = JsonMissing.of(),
         @JsonProperty("trailing_watermark_px")
         @ExcludeMissing
         trailingWatermarkPx: JsonField<String> = JsonMissing.of(),
@@ -165,8 +173,10 @@ private constructor(
         queueState,
         releasesAt,
         stopPrice,
+        trailingLimitPx,
         trailingOffset,
         trailingOffsetType,
+        trailingStopPx,
         trailingWatermarkPx,
         trailingWatermarkTs,
         underlyingInstrumentId,
@@ -374,6 +384,14 @@ private constructor(
     fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
 
     /**
+     * Current trailing limit price computed by the trailing strategy
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun trailingLimitPx(): Optional<String> = trailingLimitPx.getOptional("trailing_limit_px")
+
+    /**
      * Trailing offset amount for trailing orders
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -389,6 +407,14 @@ private constructor(
      */
     fun trailingOffsetType(): Optional<TrailingOffsetType> =
         trailingOffsetType.getOptional("trailing_offset_type")
+
+    /**
+     * Current trailing stop price computed by the trailing strategy
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun trailingStopPx(): Optional<String> = trailingStopPx.getOptional("trailing_stop_px")
 
     /**
      * Trailing watermark price for trailing orders
@@ -624,6 +650,15 @@ private constructor(
     @JsonProperty("stop_price") @ExcludeMissing fun _stopPrice(): JsonField<String> = stopPrice
 
     /**
+     * Returns the raw JSON value of [trailingLimitPx].
+     *
+     * Unlike [trailingLimitPx], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("trailing_limit_px")
+    @ExcludeMissing
+    fun _trailingLimitPx(): JsonField<String> = trailingLimitPx
+
+    /**
      * Returns the raw JSON value of [trailingOffset].
      *
      * Unlike [trailingOffset], this method doesn't throw if the JSON field has an unexpected type.
@@ -641,6 +676,15 @@ private constructor(
     @JsonProperty("trailing_offset_type")
     @ExcludeMissing
     fun _trailingOffsetType(): JsonField<TrailingOffsetType> = trailingOffsetType
+
+    /**
+     * Returns the raw JSON value of [trailingStopPx].
+     *
+     * Unlike [trailingStopPx], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("trailing_stop_px")
+    @ExcludeMissing
+    fun _trailingStopPx(): JsonField<String> = trailingStopPx
 
     /**
      * Returns the raw JSON value of [trailingWatermarkPx].
@@ -740,8 +784,10 @@ private constructor(
         private var queueState: JsonField<QueueState> = JsonMissing.of()
         private var releasesAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
+        private var trailingLimitPx: JsonField<String> = JsonMissing.of()
         private var trailingOffset: JsonField<String> = JsonMissing.of()
         private var trailingOffsetType: JsonField<TrailingOffsetType> = JsonMissing.of()
+        private var trailingStopPx: JsonField<String> = JsonMissing.of()
         private var trailingWatermarkPx: JsonField<String> = JsonMissing.of()
         private var trailingWatermarkTs: JsonField<OffsetDateTime> = JsonMissing.of()
         private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
@@ -774,8 +820,10 @@ private constructor(
             queueState = order.queueState
             releasesAt = order.releasesAt
             stopPrice = order.stopPrice
+            trailingLimitPx = order.trailingLimitPx
             trailingOffset = order.trailingOffset
             trailingOffsetType = order.trailingOffsetType
+            trailingStopPx = order.trailingStopPx
             trailingWatermarkPx = order.trailingWatermarkPx
             trailingWatermarkTs = order.trailingWatermarkTs
             underlyingInstrumentId = order.underlyingInstrumentId
@@ -1146,6 +1194,25 @@ private constructor(
          */
         fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
 
+        /** Current trailing limit price computed by the trailing strategy */
+        fun trailingLimitPx(trailingLimitPx: String?) =
+            trailingLimitPx(JsonField.ofNullable(trailingLimitPx))
+
+        /** Alias for calling [Builder.trailingLimitPx] with `trailingLimitPx.orElse(null)`. */
+        fun trailingLimitPx(trailingLimitPx: Optional<String>) =
+            trailingLimitPx(trailingLimitPx.getOrNull())
+
+        /**
+         * Sets [Builder.trailingLimitPx] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.trailingLimitPx] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun trailingLimitPx(trailingLimitPx: JsonField<String>) = apply {
+            this.trailingLimitPx = trailingLimitPx
+        }
+
         /** Trailing offset amount for trailing orders */
         fun trailingOffset(trailingOffset: String?) =
             trailingOffset(JsonField.ofNullable(trailingOffset))
@@ -1184,6 +1251,25 @@ private constructor(
          */
         fun trailingOffsetType(trailingOffsetType: JsonField<TrailingOffsetType>) = apply {
             this.trailingOffsetType = trailingOffsetType
+        }
+
+        /** Current trailing stop price computed by the trailing strategy */
+        fun trailingStopPx(trailingStopPx: String?) =
+            trailingStopPx(JsonField.ofNullable(trailingStopPx))
+
+        /** Alias for calling [Builder.trailingStopPx] with `trailingStopPx.orElse(null)`. */
+        fun trailingStopPx(trailingStopPx: Optional<String>) =
+            trailingStopPx(trailingStopPx.getOrNull())
+
+        /**
+         * Sets [Builder.trailingStopPx] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.trailingStopPx] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun trailingStopPx(trailingStopPx: JsonField<String>) = apply {
+            this.trailingStopPx = trailingStopPx
         }
 
         /** Trailing watermark price for trailing orders */
@@ -1327,8 +1413,10 @@ private constructor(
                 queueState,
                 releasesAt,
                 stopPrice,
+                trailingLimitPx,
                 trailingOffset,
                 trailingOffsetType,
+                trailingStopPx,
                 trailingWatermarkPx,
                 trailingWatermarkTs,
                 underlyingInstrumentId,
@@ -1376,8 +1464,10 @@ private constructor(
         queueState().ifPresent { it.validate() }
         releasesAt()
         stopPrice()
+        trailingLimitPx()
         trailingOffset()
         trailingOffsetType().ifPresent { it.validate() }
+        trailingStopPx()
         trailingWatermarkPx()
         trailingWatermarkTs()
         underlyingInstrumentId()
@@ -1424,8 +1514,10 @@ private constructor(
             (queueState.asKnown().getOrNull()?.validity() ?: 0) +
             (if (releasesAt.asKnown().isPresent) 1 else 0) +
             (if (stopPrice.asKnown().isPresent) 1 else 0) +
+            (if (trailingLimitPx.asKnown().isPresent) 1 else 0) +
             (if (trailingOffset.asKnown().isPresent) 1 else 0) +
             (trailingOffsetType.asKnown().getOrNull()?.validity() ?: 0) +
+            (if (trailingStopPx.asKnown().isPresent) 1 else 0) +
             (if (trailingWatermarkPx.asKnown().isPresent) 1 else 0) +
             (if (trailingWatermarkTs.asKnown().isPresent) 1 else 0) +
             (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0)
@@ -1461,8 +1553,10 @@ private constructor(
             queueState == other.queueState &&
             releasesAt == other.releasesAt &&
             stopPrice == other.stopPrice &&
+            trailingLimitPx == other.trailingLimitPx &&
             trailingOffset == other.trailingOffset &&
             trailingOffsetType == other.trailingOffsetType &&
+            trailingStopPx == other.trailingStopPx &&
             trailingWatermarkPx == other.trailingWatermarkPx &&
             trailingWatermarkTs == other.trailingWatermarkTs &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
@@ -1496,8 +1590,10 @@ private constructor(
             queueState,
             releasesAt,
             stopPrice,
+            trailingLimitPx,
             trailingOffset,
             trailingOffsetType,
+            trailingStopPx,
             trailingWatermarkPx,
             trailingWatermarkTs,
             underlyingInstrumentId,
@@ -1508,5 +1604,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
 }
