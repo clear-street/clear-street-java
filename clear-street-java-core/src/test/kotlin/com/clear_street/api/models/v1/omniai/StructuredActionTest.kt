@@ -12,7 +12,6 @@ import com.clear_street.api.models.v1.accounts.orders.RequestOrderType
 import com.clear_street.api.models.v1.accounts.orders.RequestTimeInForce
 import com.clear_street.api.models.v1.accounts.orders.Side
 import com.clear_street.api.models.v1.accounts.orders.TrailingOffsetType
-import com.clear_street.api.models.v1.screener.ScreenerFilter
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
