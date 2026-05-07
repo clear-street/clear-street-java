@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.models.active.v1.accounts.positions.instructions
+package com.clear_street.api.models.v1.accounts.positions.instructions
 
 import com.clear_street.api.core.jsonMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef

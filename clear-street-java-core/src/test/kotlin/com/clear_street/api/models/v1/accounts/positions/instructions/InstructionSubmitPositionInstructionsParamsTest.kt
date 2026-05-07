@@ -2,7 +2,6 @@
 
 package com.clear_street.api.models.v1.accounts.positions.instructions
 
-import com.clear_street.api.models.active.v1.accounts.positions.instructions.PositionInstructionType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

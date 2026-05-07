@@ -4,8 +4,6 @@ package com.clear_street.api.client
 
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.getPackageVersion
-import com.clear_street.api.services.async.ActiveServiceAsync
-import com.clear_street.api.services.async.ActiveServiceAsyncImpl
 import com.clear_street.api.services.async.V1ServiceAsync
 import com.clear_street.api.services.async.V1ServiceAsyncImpl
 import java.util.function.Consumer
@@ -28,10 +26,6 @@ class ClearStreetClientAsyncImpl(private val clientOptions: ClientOptions) :
         WithRawResponseImpl(clientOptions)
     }
 
-    private val active: ActiveServiceAsync by lazy {
-        ActiveServiceAsyncImpl(clientOptionsWithUserAgent)
-    }
-
     private val v1: V1ServiceAsync by lazy { V1ServiceAsyncImpl(clientOptionsWithUserAgent) }
 
     override fun sync(): ClearStreetClient = sync
@@ -41,8 +35,6 @@ class ClearStreetClientAsyncImpl(private val clientOptions: ClientOptions) :
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): ClearStreetClientAsync =
         ClearStreetClientAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    override fun active(): ActiveServiceAsync = active
-
     /** Active Websocket. */
     override fun v1(): V1ServiceAsync = v1
 
@@ -50,10 +42,6 @@ class ClearStreetClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         ClearStreetClientAsync.WithRawResponse {
-
-        private val active: ActiveServiceAsync.WithRawResponse by lazy {
-            ActiveServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
 
         private val v1: V1ServiceAsync.WithRawResponse by lazy {
             V1ServiceAsyncImpl.WithRawResponseImpl(clientOptions)
@@ -65,8 +53,6 @@ class ClearStreetClientAsyncImpl(private val clientOptions: ClientOptions) :
             ClearStreetClientAsyncImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
-
-        override fun active(): ActiveServiceAsync.WithRawResponse = active
 
         /** Active Websocket. */
         override fun v1(): V1ServiceAsync.WithRawResponse = v1
