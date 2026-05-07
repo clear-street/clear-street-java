@@ -30,7 +30,6 @@ private constructor(
     private val instructionId: JsonField<String>,
     private val instructionType: JsonField<PositionInstructionType>,
     private val instrumentId: JsonField<String>,
-    private val osi: JsonField<String>,
     private val quantity: JsonField<String>,
     private val status: JsonField<PositionInstructionStatus>,
     private val symbol: JsonField<String>,
@@ -55,7 +54,6 @@ private constructor(
         @JsonProperty("instrument_id")
         @ExcludeMissing
         instrumentId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("osi") @ExcludeMissing osi: JsonField<String> = JsonMissing.of(),
         @JsonProperty("quantity") @ExcludeMissing quantity: JsonField<String> = JsonMissing.of(),
         @JsonProperty("status")
         @ExcludeMissing
@@ -80,7 +78,6 @@ private constructor(
         instructionId,
         instructionType,
         instrumentId,
-        osi,
         quantity,
         status,
         symbol,
@@ -135,15 +132,6 @@ private constructor(
     fun instrumentId(): String = instrumentId.getRequired("instrument_id")
 
     /**
-     * OSI option symbol (e.g. `AAPL 280121C00195000`). Display-only; resolved from the instrument
-     * cache.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun osi(): String = osi.getRequired("osi")
-
-    /**
      * Quantity of contracts.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -160,8 +148,9 @@ private constructor(
     fun status(): PositionInstructionStatus = status.getRequired("status")
 
     /**
-     * Trading symbol resolved from the instrument cache. Empty if the instrument cannot be resolved
-     * (e.g. expired option).
+     * Trading symbol resolved from the instrument cache (OSI for options, since exercises are
+     * options-only). Empty if the instrument cannot be resolved (e.g. expired option).
+     * Display-only.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -248,13 +237,6 @@ private constructor(
     @JsonProperty("instrument_id")
     @ExcludeMissing
     fun _instrumentId(): JsonField<String> = instrumentId
-
-    /**
-     * Returns the raw JSON value of [osi].
-     *
-     * Unlike [osi], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("osi") @ExcludeMissing fun _osi(): JsonField<String> = osi
 
     /**
      * Returns the raw JSON value of [quantity].
@@ -347,7 +329,6 @@ private constructor(
          * .instructionId()
          * .instructionType()
          * .instrumentId()
-         * .osi()
          * .quantity()
          * .status()
          * .symbol()
@@ -364,7 +345,6 @@ private constructor(
         private var instructionId: JsonField<String>? = null
         private var instructionType: JsonField<PositionInstructionType>? = null
         private var instrumentId: JsonField<String>? = null
-        private var osi: JsonField<String>? = null
         private var quantity: JsonField<String>? = null
         private var status: JsonField<PositionInstructionStatus>? = null
         private var symbol: JsonField<String>? = null
@@ -382,7 +362,6 @@ private constructor(
             instructionId = positionInstruction.instructionId
             instructionType = positionInstruction.instructionType
             instrumentId = positionInstruction.instrumentId
-            osi = positionInstruction.osi
             quantity = positionInstruction.quantity
             status = positionInstruction.status
             symbol = positionInstruction.symbol
@@ -465,20 +444,6 @@ private constructor(
             this.instrumentId = instrumentId
         }
 
-        /**
-         * OSI option symbol (e.g. `AAPL 280121C00195000`). Display-only; resolved from the
-         * instrument cache.
-         */
-        fun osi(osi: String) = osi(JsonField.of(osi))
-
-        /**
-         * Sets [Builder.osi] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.osi] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun osi(osi: JsonField<String>) = apply { this.osi = osi }
-
         /** Quantity of contracts. */
         fun quantity(quantity: String) = quantity(JsonField.of(quantity))
 
@@ -503,8 +468,9 @@ private constructor(
         fun status(status: JsonField<PositionInstructionStatus>) = apply { this.status = status }
 
         /**
-         * Trading symbol resolved from the instrument cache. Empty if the instrument cannot be
-         * resolved (e.g. expired option).
+         * Trading symbol resolved from the instrument cache (OSI for options, since exercises are
+         * options-only). Empty if the instrument cannot be resolved (e.g. expired option).
+         * Display-only.
          */
         fun symbol(symbol: String) = symbol(JsonField.of(symbol))
 
@@ -629,7 +595,6 @@ private constructor(
          * .instructionId()
          * .instructionType()
          * .instrumentId()
-         * .osi()
          * .quantity()
          * .status()
          * .symbol()
@@ -644,7 +609,6 @@ private constructor(
                 checkRequired("instructionId", instructionId),
                 checkRequired("instructionType", instructionType),
                 checkRequired("instrumentId", instrumentId),
-                checkRequired("osi", osi),
                 checkRequired("quantity", quantity),
                 checkRequired("status", status),
                 checkRequired("symbol", symbol),
@@ -677,7 +641,6 @@ private constructor(
         instructionId()
         instructionType().validate()
         instrumentId()
-        osi()
         quantity()
         status().validate()
         symbol()
@@ -709,7 +672,6 @@ private constructor(
             (if (instructionId.asKnown().isPresent) 1 else 0) +
             (instructionType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
-            (if (osi.asKnown().isPresent) 1 else 0) +
             (if (quantity.asKnown().isPresent) 1 else 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
@@ -730,7 +692,6 @@ private constructor(
             instructionId == other.instructionId &&
             instructionType == other.instructionType &&
             instrumentId == other.instrumentId &&
-            osi == other.osi &&
             quantity == other.quantity &&
             status == other.status &&
             symbol == other.symbol &&
@@ -749,7 +710,6 @@ private constructor(
             instructionId,
             instructionType,
             instrumentId,
-            osi,
             quantity,
             status,
             symbol,
@@ -765,5 +725,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PositionInstruction{id=$id, accountId=$accountId, instructionId=$instructionId, instructionType=$instructionType, instrumentId=$instrumentId, osi=$osi, quantity=$quantity, status=$status, symbol=$symbol, acceptedQuantity=$acceptedQuantity, createdAt=$createdAt, error=$error, rejectionReason=$rejectionReason, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "PositionInstruction{id=$id, accountId=$accountId, instructionId=$instructionId, instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, status=$status, symbol=$symbol, acceptedQuantity=$acceptedQuantity, createdAt=$createdAt, error=$error, rejectionReason=$rejectionReason, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }
