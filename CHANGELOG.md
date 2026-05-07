@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.2.0 (2026-05-07)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/clear-street/clear-street-java/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **api:** api update ([06e6a2c](https://github.com/clear-street/clear-street-java/commit/06e6a2c1550cbfb5f67d9e0f2bedc1902dd86586))
+* **api:** api update ([879316e](https://github.com/clear-street/clear-street-java/commit/879316eeca76d15ff65acdc11dee0728499ba9fc))
+* **api:** api update ([cc13d1a](https://github.com/clear-street/clear-street-java/commit/cc13d1a84518b7d0fc27c10555adb73908976c3f))
+* **api:** api update ([fc1c46b](https://github.com/clear-street/clear-street-java/commit/fc1c46bcdc8da1f2656c75cf1d3580ac71718e5b))
+* **api:** api update ([55de049](https://github.com/clear-street/clear-street-java/commit/55de0498fa7d5bfa0d9eae38212f4fcfda02b7d2))
+* **api:** api update ([52dc69c](https://github.com/clear-street/clear-street-java/commit/52dc69cf98642c69f1ac37ad5391c407befdb02e))
+* **api:** api update ([77cbc24](https://github.com/clear-street/clear-street-java/commit/77cbc2484e79a955e47970e5f9d948d2e9cbe4ed))
+* **api:** api update ([76e4b4c](https://github.com/clear-street/clear-street-java/commit/76e4b4cb5b2720117bebabb72b2626bccc426c7f))
+* **api:** api update ([4e2f33c](https://github.com/clear-street/clear-street-java/commit/4e2f33ca523c24d3a23940a6f05157f8f63a0386))
+* **api:** manual updates ([46a5ed0](https://github.com/clear-street/clear-street-java/commit/46a5ed0a707ea40c9f784b0b26af1a3db55f1b48))
+* **api:** manual updates ([9b67286](https://github.com/clear-street/clear-street-java/commit/9b67286707f13e86d6ce1ed78c48dfb8c1b5cd8c))
+* **api:** manual updates ([467ee5c](https://github.com/clear-street/clear-street-java/commit/467ee5c580b4958a38cc0ff2c1fc81f80af25b5e))
+* **client:** improve logging ([a9d0749](https://github.com/clear-street/clear-street-java/commit/a9d0749db4c406d8e9eb3261f76c23940adeec7b))
+* **client:** support proxy authentication ([6fb266f](https://github.com/clear-street/clear-street-java/commit/6fb266ff89b460c9856223cef9b18dba1cef7d67))
+
+
+### Performance Improvements
+
+* **ACTIVE-4584:** reduce option index memory ([0e994aa](https://github.com/clear-street/clear-street-java/commit/0e994aa33d1dae6b653e231e3c995e9cd87ec085))
+
 ## 0.1.0 (2026-05-05)
 
 Full Changelog: [v0.0.1...v0.1.0](https://github.com/clear-street/clear-street-java/compare/v0.0.1...v0.1.0)
