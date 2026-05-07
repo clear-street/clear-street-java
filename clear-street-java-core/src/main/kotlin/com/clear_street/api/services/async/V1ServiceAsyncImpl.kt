@@ -28,10 +28,6 @@ import com.clear_street.api.services.async.v1.NewsServiceAsync
 import com.clear_street.api.services.async.v1.NewsServiceAsyncImpl
 import com.clear_street.api.services.async.v1.OmniAiServiceAsync
 import com.clear_street.api.services.async.v1.OmniAiServiceAsyncImpl
-import com.clear_street.api.services.async.v1.SavedScreenerServiceAsync
-import com.clear_street.api.services.async.v1.SavedScreenerServiceAsyncImpl
-import com.clear_street.api.services.async.v1.ScreenerServiceAsync
-import com.clear_street.api.services.async.v1.ScreenerServiceAsyncImpl
 import com.clear_street.api.services.async.v1.VersionServiceAsync
 import com.clear_street.api.services.async.v1.VersionServiceAsyncImpl
 import com.clear_street.api.services.async.v1.WatchlistServiceAsync
@@ -65,12 +61,6 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     private val omniAi: OmniAiServiceAsync by lazy { OmniAiServiceAsyncImpl(clientOptions) }
 
-    private val savedScreeners: SavedScreenerServiceAsync by lazy {
-        SavedScreenerServiceAsyncImpl(clientOptions)
-    }
-
-    private val screener: ScreenerServiceAsync by lazy { ScreenerServiceAsyncImpl(clientOptions) }
-
     private val version: VersionServiceAsync by lazy { VersionServiceAsyncImpl(clientOptions) }
 
     private val watchlists: WatchlistServiceAsync by lazy {
@@ -99,12 +89,6 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     override fun news(): NewsServiceAsync = news
 
     override fun omniAi(): OmniAiServiceAsync = omniAi
-
-    /** Search and manage saved screeners. */
-    override fun savedScreeners(): SavedScreenerServiceAsync = savedScreeners
-
-    /** Search and manage saved screeners. */
-    override fun screener(): ScreenerServiceAsync = screener
 
     /** Endpoints for API service metadata. */
     override fun version(): VersionServiceAsync = version
@@ -153,14 +137,6 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             OmniAiServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val savedScreeners: SavedScreenerServiceAsync.WithRawResponse by lazy {
-            SavedScreenerServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val screener: ScreenerServiceAsync.WithRawResponse by lazy {
-            ScreenerServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val version: VersionServiceAsync.WithRawResponse by lazy {
             VersionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -193,12 +169,6 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         override fun news(): NewsServiceAsync.WithRawResponse = news
 
         override fun omniAi(): OmniAiServiceAsync.WithRawResponse = omniAi
-
-        /** Search and manage saved screeners. */
-        override fun savedScreeners(): SavedScreenerServiceAsync.WithRawResponse = savedScreeners
-
-        /** Search and manage saved screeners. */
-        override fun screener(): ScreenerServiceAsync.WithRawResponse = screener
 
         /** Endpoints for API service metadata. */
         override fun version(): VersionServiceAsync.WithRawResponse = version

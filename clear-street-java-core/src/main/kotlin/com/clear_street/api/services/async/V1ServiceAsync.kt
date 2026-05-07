@@ -13,8 +13,6 @@ import com.clear_street.api.services.async.v1.InstrumentServiceAsync
 import com.clear_street.api.services.async.v1.MarketDataServiceAsync
 import com.clear_street.api.services.async.v1.NewsServiceAsync
 import com.clear_street.api.services.async.v1.OmniAiServiceAsync
-import com.clear_street.api.services.async.v1.SavedScreenerServiceAsync
-import com.clear_street.api.services.async.v1.ScreenerServiceAsync
 import com.clear_street.api.services.async.v1.VersionServiceAsync
 import com.clear_street.api.services.async.v1.WatchlistServiceAsync
 import java.util.concurrent.CompletableFuture
@@ -52,12 +50,6 @@ interface V1ServiceAsync {
     fun news(): NewsServiceAsync
 
     fun omniAi(): OmniAiServiceAsync
-
-    /** Search and manage saved screeners. */
-    fun savedScreeners(): SavedScreenerServiceAsync
-
-    /** Search and manage saved screeners. */
-    fun screener(): ScreenerServiceAsync
 
     /** Endpoints for API service metadata. */
     fun version(): VersionServiceAsync
@@ -111,12 +103,6 @@ interface V1ServiceAsync {
         fun news(): NewsServiceAsync.WithRawResponse
 
         fun omniAi(): OmniAiServiceAsync.WithRawResponse
-
-        /** Search and manage saved screeners. */
-        fun savedScreeners(): SavedScreenerServiceAsync.WithRawResponse
-
-        /** Search and manage saved screeners. */
-        fun screener(): ScreenerServiceAsync.WithRawResponse
 
         /** Endpoints for API service metadata. */
         fun version(): VersionServiceAsync.WithRawResponse

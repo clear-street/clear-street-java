@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.models.v1.screener
+package com.clear_street.api.models.v1.omniai
 
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper

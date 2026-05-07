@@ -12,7 +12,6 @@ internal class InstrumentGetInstrumentsParamsTest {
     fun create() {
         InstrumentGetInstrumentsParams.builder()
             .easyToBorrow(true)
-            .idFilter("id_filter")
             .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .instrumentType(InstrumentGetInstrumentsParams.InstrumentType.COMMON_STOCK)
             .isLiquidationOnly(true)
@@ -30,7 +29,6 @@ internal class InstrumentGetInstrumentsParamsTest {
         val params =
             InstrumentGetInstrumentsParams.builder()
                 .easyToBorrow(true)
-                .idFilter("id_filter")
                 .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .instrumentType(InstrumentGetInstrumentsParams.InstrumentType.COMMON_STOCK)
                 .isLiquidationOnly(true)
@@ -48,7 +46,6 @@ internal class InstrumentGetInstrumentsParamsTest {
             .isEqualTo(
                 QueryParams.builder()
                     .put("easy_to_borrow", "true")
-                    .put("id_filter", "id_filter")
                     .put("instrument_ids[0]", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .put("instrument_type", "COMMON_STOCK")
                     .put("is_liquidation_only", "true")
