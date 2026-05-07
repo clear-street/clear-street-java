@@ -5,6 +5,7 @@ package com.clear_street.api.client.okhttp
 import com.clear_street.api.client.ClearStreetClientAsync
 import com.clear_street.api.client.ClearStreetClientAsyncImpl
 import com.clear_street.api.core.ClientOptions
+import com.clear_street.api.core.LogLevel
 import com.clear_street.api.core.Sleeper
 import com.clear_street.api.core.Timeout
 import com.clear_street.api.core.http.Headers
@@ -282,6 +283,15 @@ class ClearStreetOkHttpClientAsync private constructor() {
          * Defaults to 2.
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
+
+        /**
+         * The level at which to log request and response information.
+         *
+         * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+         *
+         * Defaults to [LogLevel.fromEnv].
+         */
+        fun logLevel(logLevel: LogLevel) = apply { clientOptions.logLevel(logLevel) }
 
         /** A JWT issued by the authentication service. */
         fun apiKey(apiKey: String?) = apply { clientOptions.apiKey(apiKey) }
