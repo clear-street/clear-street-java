@@ -12,7 +12,6 @@ import com.clear_street.api.core.http.Headers
 import com.clear_street.api.core.http.QueryParams
 import com.clear_street.api.core.toImmutable
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.active.v1.accounts.positions.instructions.PositionInstructionType
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator

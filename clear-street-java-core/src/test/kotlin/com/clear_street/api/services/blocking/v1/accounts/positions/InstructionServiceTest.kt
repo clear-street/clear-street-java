@@ -3,10 +3,10 @@
 package com.clear_street.api.services.blocking.v1.accounts.positions
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
-import com.clear_street.api.models.active.v1.accounts.positions.instructions.PositionInstructionType
 import com.clear_street.api.models.v1.accounts.positions.instructions.InstructionCancelPositionInstructionParams
 import com.clear_street.api.models.v1.accounts.positions.instructions.InstructionGetPositionInstructionsParams
 import com.clear_street.api.models.v1.accounts.positions.instructions.InstructionSubmitPositionInstructionsParams
+import com.clear_street.api.models.v1.accounts.positions.instructions.PositionInstructionType
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 

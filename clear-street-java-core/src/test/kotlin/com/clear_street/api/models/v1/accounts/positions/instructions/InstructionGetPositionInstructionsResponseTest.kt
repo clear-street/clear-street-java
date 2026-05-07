@@ -6,9 +6,6 @@ import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.ResponseMetadata
-import com.clear_street.api.models.active.v1.accounts.positions.instructions.PositionInstruction
-import com.clear_street.api.models.active.v1.accounts.positions.instructions.PositionInstructionStatus
-import com.clear_street.api.models.active.v1.accounts.positions.instructions.PositionInstructionType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
