@@ -22,11 +22,7 @@ internal class OrderSubmitOrdersParamsTest {
                                 .security("0193bb84-447a-706f-996f-097254663f02")
                                 .side(Side.BUY)
                                 .id("1")
-                                .positionEffect(
-                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                        .PositionEffect
-                                        .OPEN
-                                )
+                                .positionEffect(PositionEffect.OPEN)
                                 .build(),
                             OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                 .instrumentType(SecurityType.OPTION)
@@ -34,11 +30,7 @@ internal class OrderSubmitOrdersParamsTest {
                                 .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                 .side(Side.SELL)
                                 .id("2")
-                                .positionEffect(
-                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                        .PositionEffect
-                                        .OPEN
-                                )
+                                .positionEffect(PositionEffect.OPEN)
                                 .build(),
                             OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                 .instrumentType(SecurityType.OPTION)
@@ -46,20 +38,12 @@ internal class OrderSubmitOrdersParamsTest {
                                 .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
                                 .side(Side.BUY)
                                 .id("3")
-                                .positionEffect(
-                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                        .PositionEffect
-                                        .OPEN
-                                )
+                                .positionEffect(PositionEffect.OPEN)
                                 .build(),
                         )
                     )
-                    .orderType(
-                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
-                    )
-                    .timeInForce(
-                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
-                    )
+                    .orderType(RequestOrderType.LIMIT)
+                    .timeInForce(RequestTimeInForce.DAY)
                     .id("my-mleg-ref-20251001-001")
                     .limitPrice("0.50")
                     .quantity("1")
@@ -97,12 +81,8 @@ internal class OrderSubmitOrdersParamsTest {
                                     .build(),
                             )
                         )
-                        .orderType(
-                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
-                        )
-                        .timeInForce(
-                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
-                        )
+                        .orderType(RequestOrderType.LIMIT)
+                        .timeInForce(RequestTimeInForce.DAY)
                         .build()
                 )
                 .build()
@@ -127,11 +107,7 @@ internal class OrderSubmitOrdersParamsTest {
                                     .security("0193bb84-447a-706f-996f-097254663f02")
                                     .side(Side.BUY)
                                     .id("1")
-                                    .positionEffect(
-                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                            .PositionEffect
-                                            .OPEN
-                                    )
+                                    .positionEffect(PositionEffect.OPEN)
                                     .build(),
                                 OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
@@ -139,11 +115,7 @@ internal class OrderSubmitOrdersParamsTest {
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                     .side(Side.SELL)
                                     .id("2")
-                                    .positionEffect(
-                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                            .PositionEffect
-                                            .OPEN
-                                    )
+                                    .positionEffect(PositionEffect.OPEN)
                                     .build(),
                                 OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
@@ -151,20 +123,12 @@ internal class OrderSubmitOrdersParamsTest {
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
                                     .side(Side.BUY)
                                     .id("3")
-                                    .positionEffect(
-                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                            .PositionEffect
-                                            .OPEN
-                                    )
+                                    .positionEffect(PositionEffect.OPEN)
                                     .build(),
                             )
                         )
-                        .orderType(
-                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
-                        )
-                        .timeInForce(
-                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
-                        )
+                        .orderType(RequestOrderType.LIMIT)
+                        .timeInForce(RequestTimeInForce.DAY)
                         .id("my-mleg-ref-20251001-001")
                         .limitPrice("0.50")
                         .quantity("1")
@@ -186,11 +150,7 @@ internal class OrderSubmitOrdersParamsTest {
                                     .security("0193bb84-447a-706f-996f-097254663f02")
                                     .side(Side.BUY)
                                     .id("1")
-                                    .positionEffect(
-                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                            .PositionEffect
-                                            .OPEN
-                                    )
+                                    .positionEffect(PositionEffect.OPEN)
                                     .build(),
                                 OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
@@ -198,11 +158,7 @@ internal class OrderSubmitOrdersParamsTest {
                                     .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                     .side(Side.SELL)
                                     .id("2")
-                                    .positionEffect(
-                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                            .PositionEffect
-                                            .OPEN
-                                    )
+                                    .positionEffect(PositionEffect.OPEN)
                                     .build(),
                                 OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg.builder()
                                     .instrumentType(SecurityType.OPTION)
@@ -210,20 +166,12 @@ internal class OrderSubmitOrdersParamsTest {
                                     .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
                                     .side(Side.BUY)
                                     .id("3")
-                                    .positionEffect(
-                                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                            .PositionEffect
-                                            .OPEN
-                                    )
+                                    .positionEffect(PositionEffect.OPEN)
                                     .build(),
                             )
                         )
-                        .orderType(
-                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
-                        )
-                        .timeInForce(
-                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
-                        )
+                        .orderType(RequestOrderType.LIMIT)
+                        .timeInForce(RequestTimeInForce.DAY)
                         .id("my-mleg-ref-20251001-001")
                         .limitPrice("0.50")
                         .quantity("1")
@@ -261,12 +209,8 @@ internal class OrderSubmitOrdersParamsTest {
                                     .build(),
                             )
                         )
-                        .orderType(
-                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
-                        )
-                        .timeInForce(
-                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
-                        )
+                        .orderType(RequestOrderType.LIMIT)
+                        .timeInForce(RequestTimeInForce.DAY)
                         .build()
                 )
                 .build()
@@ -299,12 +243,8 @@ internal class OrderSubmitOrdersParamsTest {
                                     .build(),
                             )
                         )
-                        .orderType(
-                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.OrderType.LIMIT
-                        )
-                        .timeInForce(
-                            OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.TimeInForce.DAY
-                        )
+                        .orderType(RequestOrderType.LIMIT)
+                        .timeInForce(RequestTimeInForce.DAY)
                         .build()
                 )
             )

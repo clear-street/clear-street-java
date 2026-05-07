@@ -22,6 +22,8 @@ import com.clear_street.api.models.v1.accounts.positions.PositionClosePositionsP
 import com.clear_street.api.models.v1.accounts.positions.PositionClosePositionsResponse
 import com.clear_street.api.models.v1.accounts.positions.PositionGetPositionsParams
 import com.clear_street.api.models.v1.accounts.positions.PositionGetPositionsResponse
+import com.clear_street.api.services.async.v1.accounts.positions.InstructionServiceAsync
+import com.clear_street.api.services.async.v1.accounts.positions.InstructionServiceAsyncImpl
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -34,10 +36,17 @@ class PositionServiceAsyncImpl internal constructor(private val clientOptions: C
         WithRawResponseImpl(clientOptions)
     }
 
+    private val instructions: InstructionServiceAsync by lazy {
+        InstructionServiceAsyncImpl(clientOptions)
+    }
+
     override fun withRawResponse(): PositionServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): PositionServiceAsync =
         PositionServiceAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
+
+    /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
+    override fun instructions(): InstructionServiceAsync = instructions
 
     override fun closePosition(
         params: PositionClosePositionParams,
@@ -66,12 +75,19 @@ class PositionServiceAsyncImpl internal constructor(private val clientOptions: C
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
+        private val instructions: InstructionServiceAsync.WithRawResponse by lazy {
+            InstructionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): PositionServiceAsync.WithRawResponse =
             PositionServiceAsyncImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
+
+        /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
+        override fun instructions(): InstructionServiceAsync.WithRawResponse = instructions
 
         private val closePositionHandler: Handler<PositionClosePositionResponse> =
             jsonHandler<PositionClosePositionResponse>(clientOptions.jsonMapper)

@@ -11,6 +11,7 @@ import com.clear_street.api.models.v1.accounts.positions.PositionClosePositionsP
 import com.clear_street.api.models.v1.accounts.positions.PositionClosePositionsResponse
 import com.clear_street.api.models.v1.accounts.positions.PositionGetPositionsParams
 import com.clear_street.api.models.v1.accounts.positions.PositionGetPositionsResponse
+import com.clear_street.api.services.blocking.v1.accounts.positions.InstructionService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -28,6 +29,9 @@ interface PositionService {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): PositionService
+
+    /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
+    fun instructions(): InstructionService
 
     /**
      * Delete a position within an account for an instrument.
@@ -140,6 +144,9 @@ interface PositionService {
          * The original service is not modified.
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): PositionService.WithRawResponse
+
+        /** Submit and monitor option exercise, DNE, CEA, and cancel instructions. */
+        fun instructions(): InstructionService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `delete

@@ -409,6 +409,17 @@ private constructor(
                 this.prefillOrder = prefillOrder
             }
 
+            /**
+             * Alias for calling [prefillOrder] with
+             * `PrefillOrderAction.ofPrefillNewOrderAction(prefillNewOrderAction)`.
+             */
+            fun prefillOrder(prefillNewOrderAction: PrefillOrderAction.PrefillNewOrderAction) =
+                prefillOrder(PrefillOrderAction.ofPrefillNewOrderAction(prefillNewOrderAction))
+
+            /** Alias for calling [prefillOrder] with `PrefillOrderAction.ofCancel(cancel)`. */
+            fun prefillOrder(cancel: PrefillOrderAction.PrefillCancelOrderAction) =
+                prefillOrder(PrefillOrderAction.ofCancel(cancel))
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)

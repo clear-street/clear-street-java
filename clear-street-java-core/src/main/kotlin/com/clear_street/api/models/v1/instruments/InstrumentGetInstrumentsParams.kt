@@ -18,7 +18,6 @@ import kotlin.jvm.optionals.getOrNull
 class InstrumentGetInstrumentsParams
 private constructor(
     private val easyToBorrow: Boolean?,
-    private val idFilter: String?,
     private val instrumentIds: List<String>?,
     private val instrumentType: InstrumentType?,
     private val isLiquidationOnly: Boolean?,
@@ -35,16 +34,14 @@ private constructor(
     /** Filter by easy to borrow status */
     fun easyToBorrow(): Optional<Boolean> = Optional.ofNullable(easyToBorrow)
 
-    /**
-     * Filter IDs to those containing this substring. For options, and when instrument_type is
-     * omitted and no instrument_ids filters are provided, this is required.
-     */
-    fun idFilter(): Optional<String> = Optional.ofNullable(idFilter)
-
     /** Comma-separated OEMS instrument UUIDs */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
-    /** Filter by instrument type. If omitted, returns all supported instrument types. */
+    /**
+     * Filter by instrument type. OPTION is not supported on this endpoint; use GET
+     * /instruments/options/contracts to list option contracts. If omitted, returns all supported
+     * instrument types except options.
+     */
     fun instrumentType(): Optional<InstrumentType> = Optional.ofNullable(instrumentType)
 
     /** Filter by liquidation only status */
@@ -93,7 +90,6 @@ private constructor(
     class Builder internal constructor() {
 
         private var easyToBorrow: Boolean? = null
-        private var idFilter: String? = null
         private var instrumentIds: MutableList<String>? = null
         private var instrumentType: InstrumentType? = null
         private var isLiquidationOnly: Boolean? = null
@@ -109,7 +105,6 @@ private constructor(
         @JvmSynthetic
         internal fun from(instrumentGetInstrumentsParams: InstrumentGetInstrumentsParams) = apply {
             easyToBorrow = instrumentGetInstrumentsParams.easyToBorrow
-            idFilter = instrumentGetInstrumentsParams.idFilter
             instrumentIds = instrumentGetInstrumentsParams.instrumentIds?.toMutableList()
             instrumentType = instrumentGetInstrumentsParams.instrumentType
             isLiquidationOnly = instrumentGetInstrumentsParams.isLiquidationOnly
@@ -136,15 +131,6 @@ private constructor(
         /** Alias for calling [Builder.easyToBorrow] with `easyToBorrow.orElse(null)`. */
         fun easyToBorrow(easyToBorrow: Optional<Boolean>) = easyToBorrow(easyToBorrow.getOrNull())
 
-        /**
-         * Filter IDs to those containing this substring. For options, and when instrument_type is
-         * omitted and no instrument_ids filters are provided, this is required.
-         */
-        fun idFilter(idFilter: String?) = apply { this.idFilter = idFilter }
-
-        /** Alias for calling [Builder.idFilter] with `idFilter.orElse(null)`. */
-        fun idFilter(idFilter: Optional<String>) = idFilter(idFilter.getOrNull())
-
         /** Comma-separated OEMS instrument UUIDs */
         fun instrumentIds(instrumentIds: List<String>?) = apply {
             this.instrumentIds = instrumentIds?.toMutableList()
@@ -163,7 +149,11 @@ private constructor(
             instrumentIds = (instrumentIds ?: mutableListOf()).apply { add(instrumentId) }
         }
 
-        /** Filter by instrument type. If omitted, returns all supported instrument types. */
+        /**
+         * Filter by instrument type. OPTION is not supported on this endpoint; use GET
+         * /instruments/options/contracts to list option contracts. If omitted, returns all
+         * supported instrument types except options.
+         */
         fun instrumentType(instrumentType: InstrumentType?) = apply {
             this.instrumentType = instrumentType
         }
@@ -378,7 +368,6 @@ private constructor(
         fun build(): InstrumentGetInstrumentsParams =
             InstrumentGetInstrumentsParams(
                 easyToBorrow,
-                idFilter,
                 instrumentIds?.toImmutable(),
                 instrumentType,
                 isLiquidationOnly,
@@ -399,7 +388,6 @@ private constructor(
         QueryParams.builder()
             .apply {
                 easyToBorrow?.let { put("easy_to_borrow", it.toString()) }
-                idFilter?.let { put("id_filter", it) }
                 instrumentIds?.forEachIndexed { index, it -> put("instrument_ids[$index]", it) }
                 instrumentType?.let { put("instrument_type", it.toString()) }
                 isLiquidationOnly?.let { put("is_liquidation_only", it.toString()) }
@@ -413,7 +401,11 @@ private constructor(
             }
             .build()
 
-    /** Filter by instrument type. If omitted, returns all supported instrument types. */
+    /**
+     * Filter by instrument type. OPTION is not supported on this endpoint; use GET
+     * /instruments/options/contracts to list option contracts. If omitted, returns all supported
+     * instrument types except options.
+     */
     class InstrumentType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
@@ -579,7 +571,6 @@ private constructor(
 
         return other is InstrumentGetInstrumentsParams &&
             easyToBorrow == other.easyToBorrow &&
-            idFilter == other.idFilter &&
             instrumentIds == other.instrumentIds &&
             instrumentType == other.instrumentType &&
             isLiquidationOnly == other.isLiquidationOnly &&
@@ -596,7 +587,6 @@ private constructor(
     override fun hashCode(): Int =
         Objects.hash(
             easyToBorrow,
-            idFilter,
             instrumentIds,
             instrumentType,
             isLiquidationOnly,
@@ -611,5 +601,5 @@ private constructor(
         )
 
     override fun toString() =
-        "InstrumentGetInstrumentsParams{easyToBorrow=$easyToBorrow, idFilter=$idFilter, instrumentIds=$instrumentIds, instrumentType=$instrumentType, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentGetInstrumentsParams{easyToBorrow=$easyToBorrow, instrumentIds=$instrumentIds, instrumentType=$instrumentType, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

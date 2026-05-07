@@ -10,7 +10,6 @@ import com.clear_street.api.core.checkKnown
 import com.clear_street.api.core.checkRequired
 import com.clear_street.api.core.toImmutable
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.screener.ScreenerFilter
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator

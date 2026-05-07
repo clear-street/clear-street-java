@@ -4,7 +4,6 @@ package com.clear_street.api.models.v1.omniai
 
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
-import com.clear_street.api.models.v1.screener.ScreenerFilter
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat

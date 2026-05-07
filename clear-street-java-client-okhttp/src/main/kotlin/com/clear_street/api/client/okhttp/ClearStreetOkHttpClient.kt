@@ -5,10 +5,12 @@ package com.clear_street.api.client.okhttp
 import com.clear_street.api.client.ClearStreetClient
 import com.clear_street.api.client.ClearStreetClientImpl
 import com.clear_street.api.core.ClientOptions
+import com.clear_street.api.core.LogLevel
 import com.clear_street.api.core.Sleeper
 import com.clear_street.api.core.Timeout
 import com.clear_street.api.core.http.Headers
 import com.clear_street.api.core.http.HttpClient
+import com.clear_street.api.core.http.ProxyAuthenticator
 import com.clear_street.api.core.http.QueryParams
 import com.clear_street.api.core.jsonMapper
 import com.fasterxml.jackson.databind.json.JsonMapper
@@ -47,6 +49,7 @@ class ClearStreetOkHttpClient private constructor() {
         private var clientOptions: ClientOptions.Builder = ClientOptions.builder()
         private var dispatcherExecutorService: ExecutorService? = null
         private var proxy: Proxy? = null
+        private var proxyAuthenticator: ProxyAuthenticator? = null
         private var maxIdleConnections: Int? = null
         private var keepAliveDuration: Duration? = null
         private var sslSocketFactory: SSLSocketFactory? = null
@@ -76,6 +79,20 @@ class ClearStreetOkHttpClient private constructor() {
 
         /** Alias for calling [Builder.proxy] with `proxy.orElse(null)`. */
         fun proxy(proxy: Optional<Proxy>) = proxy(proxy.getOrNull())
+
+        /**
+         * Provides credentials when an HTTP proxy responds with `407 Proxy Authentication
+         * Required`.
+         */
+        fun proxyAuthenticator(proxyAuthenticator: ProxyAuthenticator?) = apply {
+            this.proxyAuthenticator = proxyAuthenticator
+        }
+
+        /**
+         * Alias for calling [Builder.proxyAuthenticator] with `proxyAuthenticator.orElse(null)`.
+         */
+        fun proxyAuthenticator(proxyAuthenticator: Optional<ProxyAuthenticator>) =
+            proxyAuthenticator(proxyAuthenticator.getOrNull())
 
         /**
          * The maximum number of idle connections kept by the underlying OkHttp connection pool.
@@ -267,6 +284,15 @@ class ClearStreetOkHttpClient private constructor() {
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
 
+        /**
+         * The level at which to log request and response information.
+         *
+         * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+         *
+         * Defaults to [LogLevel.fromEnv].
+         */
+        fun logLevel(logLevel: LogLevel) = apply { clientOptions.logLevel(logLevel) }
+
         /** A JWT issued by the authentication service. */
         fun apiKey(apiKey: String?) = apply { clientOptions.apiKey(apiKey) }
 
@@ -372,6 +398,7 @@ class ClearStreetOkHttpClient private constructor() {
                         OkHttpClient.builder()
                             .timeout(clientOptions.timeout())
                             .proxy(proxy)
+                            .proxyAuthenticator(proxyAuthenticator)
                             .maxIdleConnections(maxIdleConnections)
                             .keepAliveDuration(keepAliveDuration)
                             .dispatcherExecutorService(dispatcherExecutorService)

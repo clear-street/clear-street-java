@@ -13,8 +13,6 @@ import com.clear_street.api.services.blocking.v1.InstrumentService
 import com.clear_street.api.services.blocking.v1.MarketDataService
 import com.clear_street.api.services.blocking.v1.NewsService
 import com.clear_street.api.services.blocking.v1.OmniAiService
-import com.clear_street.api.services.blocking.v1.SavedScreenerService
-import com.clear_street.api.services.blocking.v1.ScreenerService
 import com.clear_street.api.services.blocking.v1.VersionService
 import com.clear_street.api.services.blocking.v1.WatchlistService
 import com.google.errorprone.annotations.MustBeClosed
@@ -52,12 +50,6 @@ interface V1Service {
     fun news(): NewsService
 
     fun omniAi(): OmniAiService
-
-    /** Search and manage saved screeners. */
-    fun savedScreeners(): SavedScreenerService
-
-    /** Search and manage saved screeners. */
-    fun screener(): ScreenerService
 
     /** Endpoints for API service metadata. */
     fun version(): VersionService
@@ -109,12 +101,6 @@ interface V1Service {
         fun news(): NewsService.WithRawResponse
 
         fun omniAi(): OmniAiService.WithRawResponse
-
-        /** Search and manage saved screeners. */
-        fun savedScreeners(): SavedScreenerService.WithRawResponse
-
-        /** Search and manage saved screeners. */
-        fun screener(): ScreenerService.WithRawResponse
 
         /** Endpoints for API service metadata. */
         fun version(): VersionService.WithRawResponse

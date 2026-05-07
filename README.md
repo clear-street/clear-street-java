@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.clear_street.api/clear-street-java)](https://central.sonatype.com/artifact/com.clear_street.api/clear-street-java/0.1.0)
-[![javadoc](https://javadoc.io/badge2/com.clear_street.api/clear-street-java/0.1.0/javadoc.svg)](https://javadoc.io/doc/com.clear_street.api/clear-street-java/0.1.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.clear_street.api/clear-street-java)](https://central.sonatype.com/artifact/com.clear_street.api/clear-street-java/0.2.0)
+[![javadoc](https://javadoc.io/badge2/com.clear_street.api/clear-street-java/0.2.0/javadoc.svg)](https://javadoc.io/doc/com.clear_street.api/clear-street-java/0.2.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.clear_street.api/clear-street-java/0.1.0).
+Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.clear_street.api/clear-street-java/0.2.0).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.clear_street.a
 ### Gradle
 
 ```kotlin
-implementation("com.clear_street.api:clear-street-java:0.1.0")
+implementation("com.clear_street.api:clear-street-java:0.2.0")
 ```
 
 ### Maven
@@ -33,7 +33,7 @@ implementation("com.clear_street.api:clear-street-java:0.1.0")
 <dependency>
   <groupId>com.clear_street.api</groupId>
   <artifactId>clear-street-java</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 
@@ -238,8 +238,6 @@ The SDK throws custom unchecked exception types:
 
 ## Logging
 
-The SDK uses the standard [OkHttp logging interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor).
-
 Enable logging by setting the `CLEAR_STREET_LOG` environment variable to `info`:
 
 ```sh
@@ -250,6 +248,20 @@ Or to `debug` for more verbose logging:
 
 ```sh
 export CLEAR_STREET_LOG=debug
+```
+
+Or configure the client manually using the `logLevel` method:
+
+```java
+import com.clear_street.api.client.ClearStreetClient;
+import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clear_street.api.core.LogLevel;
+
+ClearStreetClient client = ClearStreetOkHttpClient.builder()
+    .fromEnv()
+    .logLevel(LogLevel.INFO)
+    .apiKey("My API Key")
+    .build();
 ```
 
 ## ProGuard and R8
@@ -343,6 +355,22 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
         "https://example.com", 8080
       )
     ))
+    .apiKey("My API Key")
+    .build();
+```
+
+If the proxy responds with `407 Proxy Authentication Required`, supply credentials by also configuring `proxyAuthenticator`:
+
+```java
+import com.clear_street.api.client.ClearStreetClient;
+import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clear_street.api.core.http.ProxyAuthenticator;
+
+ClearStreetClient client = ClearStreetOkHttpClient.builder()
+    .fromEnv()
+    .proxy(...)
+    // Or a custom implementation of `ProxyAuthenticator`.
+    .proxyAuthenticator(ProxyAuthenticator.basic("username", "password"))
     .apiKey("My API Key")
     .build();
 ```
