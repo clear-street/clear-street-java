@@ -4,13 +4,21 @@ package com.clear_street.api.proguard
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
 import com.clear_street.api.core.jsonMapper
+import com.clear_street.api.models.v1.SecurityType
 import com.clear_street.api.models.v1.accounts.Account
 import com.clear_street.api.models.v1.accounts.AccountStatus
 import com.clear_street.api.models.v1.accounts.AccountSubtype
 import com.clear_street.api.models.v1.accounts.AccountType
-import com.clear_street.api.models.v1.omniai.MessageContentPart
+import com.clear_street.api.models.v1.omniai.PrefillOrderAction
+import com.clear_street.api.models.v1.orders.NewOrderRequest
+import com.clear_street.api.models.v1.orders.PositionEffect
+import com.clear_street.api.models.v1.orders.RequestOrderType
+import com.clear_street.api.models.v1.orders.RequestTimeInForce
+import com.clear_street.api.models.v1.orders.Side
+import com.clear_street.api.models.v1.orders.TrailingOffsetType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import org.assertj.core.api.Assertions.assertThat
@@ -81,23 +89,42 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun messageContentPartRoundtrip() {
+    fun prefillOrderActionRoundtrip() {
         val jsonMapper = jsonMapper()
-        val messageContentPart =
-            MessageContentPart.ofUnionMember0(
-                MessageContentPart.UnionMember0.builder()
-                    .text("text")
-                    .type(MessageContentPart.UnionMember0.Type.TEXT)
+        val prefillOrderAction =
+            PrefillOrderAction.ofPrefillNewOrderAction(
+                PrefillOrderAction.PrefillNewOrderAction.builder()
+                    .addOrder(
+                        NewOrderRequest.builder()
+                            .instrumentType(SecurityType.COMMON_STOCK)
+                            .orderType(RequestOrderType.LIMIT)
+                            .quantity("100")
+                            .side(Side.BUY)
+                            .timeInForce(RequestTimeInForce.DAY)
+                            .id("my-ref-id-20251001-002")
+                            .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
+                            .extendedHours(true)
+                            .instrumentId("f47ac10b-58cc-4372-a567-0e02b2c3d479")
+                            .limitOffset("0.10")
+                            .limitPrice("150.00")
+                            .positionEffect(PositionEffect.OPEN)
+                            .stopPrice("135.00")
+                            .symbol("AAPL")
+                            .trailingOffset("1.25")
+                            .trailingOffsetType(TrailingOffsetType.PRICE)
+                            .build()
+                    )
+                    .actionType(PrefillOrderAction.PrefillNewOrderAction.ActionType.NEW)
                     .build()
             )
 
-        val roundtrippedMessageContentPart =
+        val roundtrippedPrefillOrderAction =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(messageContentPart),
-                jacksonTypeRef<MessageContentPart>(),
+                jsonMapper.writeValueAsString(prefillOrderAction),
+                jacksonTypeRef<PrefillOrderAction>(),
             )
 
-        assertThat(roundtrippedMessageContentPart).isEqualTo(messageContentPart)
+        assertThat(roundtrippedPrefillOrderAction).isEqualTo(prefillOrderAction)
     }
 
     @Test

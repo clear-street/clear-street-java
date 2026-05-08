@@ -20,6 +20,8 @@ import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntit
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsResponse
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementParams
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementResponse
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementAgreementsParams
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementAgreementsResponse
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsResponse
 import java.util.function.Consumer
@@ -56,6 +58,13 @@ class EntitlementServiceImpl internal constructor(private val clientOptions: Cli
     ): EntitlementDeleteEntitlementResponse =
         // delete /v1/omni-ai/entitlements/{entitlement_id}
         withRawResponse().deleteEntitlement(params, requestOptions).parse()
+
+    override fun getEntitlementAgreements(
+        params: EntitlementGetEntitlementAgreementsParams,
+        requestOptions: RequestOptions,
+    ): EntitlementGetEntitlementAgreementsResponse =
+        // get /v1/omni-ai/entitlement-agreements
+        withRawResponse().getEntitlementAgreements(params, requestOptions).parse()
 
     override fun getEntitlements(
         params: EntitlementGetEntitlementsParams,
@@ -128,6 +137,34 @@ class EntitlementServiceImpl internal constructor(private val clientOptions: Cli
             return errorHandler.handle(response).parseable {
                 response
                     .use { deleteEntitlementHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val getEntitlementAgreementsHandler:
+            Handler<EntitlementGetEntitlementAgreementsResponse> =
+            jsonHandler<EntitlementGetEntitlementAgreementsResponse>(clientOptions.jsonMapper)
+
+        override fun getEntitlementAgreements(
+            params: EntitlementGetEntitlementAgreementsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<EntitlementGetEntitlementAgreementsResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "omni-ai", "entitlement-agreements")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getEntitlementAgreementsHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

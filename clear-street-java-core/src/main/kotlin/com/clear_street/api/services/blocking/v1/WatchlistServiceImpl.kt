@@ -16,16 +16,18 @@ import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.core.http.json
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
-import com.clear_street.api.models.v1.watchlists.WatchlistCreateWatchlistParams
-import com.clear_street.api.models.v1.watchlists.WatchlistCreateWatchlistResponse
-import com.clear_street.api.models.v1.watchlists.WatchlistDeleteWatchlistParams
-import com.clear_street.api.models.v1.watchlists.WatchlistDeleteWatchlistResponse
-import com.clear_street.api.models.v1.watchlists.WatchlistGetWatchlistByIdParams
-import com.clear_street.api.models.v1.watchlists.WatchlistGetWatchlistByIdResponse
-import com.clear_street.api.models.v1.watchlists.WatchlistGetWatchlistsParams
-import com.clear_street.api.models.v1.watchlists.WatchlistGetWatchlistsResponse
-import com.clear_street.api.services.blocking.v1.watchlists.ItemService
-import com.clear_street.api.services.blocking.v1.watchlists.ItemServiceImpl
+import com.clear_street.api.models.v1.watchlist.WatchlistAddWatchlistItemParams
+import com.clear_street.api.models.v1.watchlist.WatchlistAddWatchlistItemResponse
+import com.clear_street.api.models.v1.watchlist.WatchlistCreateWatchlistParams
+import com.clear_street.api.models.v1.watchlist.WatchlistCreateWatchlistResponse
+import com.clear_street.api.models.v1.watchlist.WatchlistDeleteWatchlistItemParams
+import com.clear_street.api.models.v1.watchlist.WatchlistDeleteWatchlistItemResponse
+import com.clear_street.api.models.v1.watchlist.WatchlistDeleteWatchlistParams
+import com.clear_street.api.models.v1.watchlist.WatchlistDeleteWatchlistResponse
+import com.clear_street.api.models.v1.watchlist.WatchlistGetWatchlistByIdParams
+import com.clear_street.api.models.v1.watchlist.WatchlistGetWatchlistByIdResponse
+import com.clear_street.api.models.v1.watchlist.WatchlistGetWatchlistsParams
+import com.clear_street.api.models.v1.watchlist.WatchlistGetWatchlistsResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -37,15 +39,17 @@ class WatchlistServiceImpl internal constructor(private val clientOptions: Clien
         WithRawResponseImpl(clientOptions)
     }
 
-    private val items: ItemService by lazy { ItemServiceImpl(clientOptions) }
-
     override fun withRawResponse(): WatchlistService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): WatchlistService =
         WatchlistServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Create and manage watchlists. */
-    override fun items(): ItemService = items
+    override fun addWatchlistItem(
+        params: WatchlistAddWatchlistItemParams,
+        requestOptions: RequestOptions,
+    ): WatchlistAddWatchlistItemResponse =
+        // post /v1/watchlists/{watchlist_id}/items
+        withRawResponse().addWatchlistItem(params, requestOptions).parse()
 
     override fun createWatchlist(
         params: WatchlistCreateWatchlistParams,
@@ -60,6 +64,13 @@ class WatchlistServiceImpl internal constructor(private val clientOptions: Clien
     ): WatchlistDeleteWatchlistResponse =
         // delete /v1/watchlists/{watchlist_id}
         withRawResponse().deleteWatchlist(params, requestOptions).parse()
+
+    override fun deleteWatchlistItem(
+        params: WatchlistDeleteWatchlistItemParams,
+        requestOptions: RequestOptions,
+    ): WatchlistDeleteWatchlistItemResponse =
+        // delete /v1/watchlists/{watchlist_id}/items/{item_id}
+        withRawResponse().deleteWatchlistItem(params, requestOptions).parse()
 
     override fun getWatchlistById(
         params: WatchlistGetWatchlistByIdParams,
@@ -81,10 +92,6 @@ class WatchlistServiceImpl internal constructor(private val clientOptions: Clien
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
-        private val items: ItemService.WithRawResponse by lazy {
-            ItemServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): WatchlistService.WithRawResponse =
@@ -92,8 +99,36 @@ class WatchlistServiceImpl internal constructor(private val clientOptions: Clien
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Create and manage watchlists. */
-        override fun items(): ItemService.WithRawResponse = items
+        private val addWatchlistItemHandler: Handler<WatchlistAddWatchlistItemResponse> =
+            jsonHandler<WatchlistAddWatchlistItemResponse>(clientOptions.jsonMapper)
+
+        override fun addWatchlistItem(
+            params: WatchlistAddWatchlistItemParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<WatchlistAddWatchlistItemResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("watchlistId", params.watchlistId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "watchlists", params._pathParam(0), "items")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { addWatchlistItemHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
 
         private val createWatchlistHandler: Handler<WatchlistCreateWatchlistResponse> =
             jsonHandler<WatchlistCreateWatchlistResponse>(clientOptions.jsonMapper)
@@ -146,6 +181,43 @@ class WatchlistServiceImpl internal constructor(private val clientOptions: Clien
             return errorHandler.handle(response).parseable {
                 response
                     .use { deleteWatchlistHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val deleteWatchlistItemHandler: Handler<WatchlistDeleteWatchlistItemResponse> =
+            jsonHandler<WatchlistDeleteWatchlistItemResponse>(clientOptions.jsonMapper)
+
+        override fun deleteWatchlistItem(
+            params: WatchlistDeleteWatchlistItemParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<WatchlistDeleteWatchlistItemResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("itemId", params.itemId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.DELETE)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "v1",
+                        "watchlists",
+                        params._pathParam(0),
+                        "items",
+                        params._pathParam(1),
+                    )
+                    .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { deleteWatchlistItemHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

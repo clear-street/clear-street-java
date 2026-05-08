@@ -15,8 +15,8 @@ import com.clear_street.api.core.checkRequired
 import com.clear_street.api.core.getOrThrow
 import com.clear_street.api.core.toImmutable
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.accounts.orders.CancelOrderRequest
-import com.clear_street.api.models.v1.accounts.orders.NewOrderRequest
+import com.clear_street.api.models.v1.orders.CancelOrderRequest
+import com.clear_street.api.models.v1.orders.NewOrderRequest
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator

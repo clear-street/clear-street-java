@@ -2,7 +2,6 @@
 
 package com.clear_street.api.models.v1.omniai.entitlements
 
-import com.clear_street.api.models.v1.omniai.EntitlementCode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

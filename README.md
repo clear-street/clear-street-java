@@ -558,10 +558,10 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](clear-st
 
 ```java
 import com.clear_street.api.core.JsonMissing;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountByIdParams;
+import com.clear_street.api.models.v1.accounts.AccountGetAccountBalancesParams;
 import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
 
-AccountGetAccountsParams params = AccountGetAccountByIdParams.builder()
+AccountGetAccountsParams params = AccountGetAccountBalancesParams.builder()
     .accountId(JsonMissing.of())
     .build();
 ```

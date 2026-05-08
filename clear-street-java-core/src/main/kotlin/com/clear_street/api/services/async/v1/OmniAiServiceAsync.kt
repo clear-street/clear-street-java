@@ -3,7 +3,6 @@
 package com.clear_street.api.services.async.v1
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.services.async.v1.omniai.EntitlementAgreementServiceAsync
 import com.clear_street.api.services.async.v1.omniai.EntitlementServiceAsync
 import com.clear_street.api.services.async.v1.omniai.MessageServiceAsync
 import com.clear_street.api.services.async.v1.omniai.ResponseServiceAsync
@@ -23,14 +22,6 @@ interface OmniAiServiceAsync {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): OmniAiServiceAsync
-
-    /**
-     * Thread-centric AI assistant for conversational trading. Create threads to start
-     * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
-     */
-    fun entitlementAgreements(): EntitlementAgreementServiceAsync
 
     /**
      * Thread-centric AI assistant for conversational trading. Create threads to start
@@ -77,14 +68,6 @@ interface OmniAiServiceAsync {
         fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): OmniAiServiceAsync.WithRawResponse
-
-        /**
-         * Thread-centric AI assistant for conversational trading. Create threads to start
-         * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
-         */
-        fun entitlementAgreements(): EntitlementAgreementServiceAsync.WithRawResponse
 
         /**
          * Thread-centric AI assistant for conversational trading. Create threads to start

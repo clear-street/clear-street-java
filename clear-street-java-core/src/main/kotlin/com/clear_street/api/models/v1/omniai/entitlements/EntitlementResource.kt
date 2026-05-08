@@ -8,7 +8,6 @@ import com.clear_street.api.core.JsonMissing
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.checkRequired
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.omniai.EntitlementCode
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator

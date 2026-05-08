@@ -16,20 +16,16 @@ import com.clear_street.api.core.http.HttpResponseFor
 import com.clear_street.api.core.http.json
 import com.clear_street.api.core.http.parseable
 import com.clear_street.api.core.prepare
+import com.clear_street.api.models.v1.accounts.AccountGetAccountBalancesParams
+import com.clear_street.api.models.v1.accounts.AccountGetAccountBalancesResponse
 import com.clear_street.api.models.v1.accounts.AccountGetAccountByIdParams
 import com.clear_street.api.models.v1.accounts.AccountGetAccountByIdResponse
 import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams
 import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse
+import com.clear_street.api.models.v1.accounts.AccountGetPortfolioHistoryParams
+import com.clear_street.api.models.v1.accounts.AccountGetPortfolioHistoryResponse
 import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdParams
 import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdResponse
-import com.clear_street.api.services.blocking.v1.accounts.BalanceService
-import com.clear_street.api.services.blocking.v1.accounts.BalanceServiceImpl
-import com.clear_street.api.services.blocking.v1.accounts.OrderService
-import com.clear_street.api.services.blocking.v1.accounts.OrderServiceImpl
-import com.clear_street.api.services.blocking.v1.accounts.PortfolioHistoryService
-import com.clear_street.api.services.blocking.v1.accounts.PortfolioHistoryServiceImpl
-import com.clear_street.api.services.blocking.v1.accounts.PositionService
-import com.clear_street.api.services.blocking.v1.accounts.PositionServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -41,32 +37,17 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
         WithRawResponseImpl(clientOptions)
     }
 
-    private val balances: BalanceService by lazy { BalanceServiceImpl(clientOptions) }
-
-    private val orders: OrderService by lazy { OrderServiceImpl(clientOptions) }
-
-    private val portfolioHistory: PortfolioHistoryService by lazy {
-        PortfolioHistoryServiceImpl(clientOptions)
-    }
-
-    private val positions: PositionService by lazy { PositionServiceImpl(clientOptions) }
-
     override fun withRawResponse(): AccountService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountService =
         AccountServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Manage trading accounts, balances, and portfolio history. */
-    override fun balances(): BalanceService = balances
-
-    /** Place, monitor, and manage trading orders. */
-    override fun orders(): OrderService = orders
-
-    /** Manage trading accounts, balances, and portfolio history. */
-    override fun portfolioHistory(): PortfolioHistoryService = portfolioHistory
-
-    /** View account positions. */
-    override fun positions(): PositionService = positions
+    override fun getAccountBalances(
+        params: AccountGetAccountBalancesParams,
+        requestOptions: RequestOptions,
+    ): AccountGetAccountBalancesResponse =
+        // get /v1/accounts/{account_id}/balances
+        withRawResponse().getAccountBalances(params, requestOptions).parse()
 
     override fun getAccountById(
         params: AccountGetAccountByIdParams,
@@ -82,6 +63,13 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
         // get /v1/accounts
         withRawResponse().getAccounts(params, requestOptions).parse()
 
+    override fun getPortfolioHistory(
+        params: AccountGetPortfolioHistoryParams,
+        requestOptions: RequestOptions,
+    ): AccountGetPortfolioHistoryResponse =
+        // get /v1/accounts/{account_id}/portfolio-history
+        withRawResponse().getPortfolioHistory(params, requestOptions).parse()
+
     override fun patchAccountById(
         params: AccountPatchAccountByIdParams,
         requestOptions: RequestOptions,
@@ -95,22 +83,6 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
-        private val balances: BalanceService.WithRawResponse by lazy {
-            BalanceServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val orders: OrderService.WithRawResponse by lazy {
-            OrderServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val portfolioHistory: PortfolioHistoryService.WithRawResponse by lazy {
-            PortfolioHistoryServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val positions: PositionService.WithRawResponse by lazy {
-            PositionServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): AccountService.WithRawResponse =
@@ -118,17 +90,35 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Manage trading accounts, balances, and portfolio history. */
-        override fun balances(): BalanceService.WithRawResponse = balances
+        private val getAccountBalancesHandler: Handler<AccountGetAccountBalancesResponse> =
+            jsonHandler<AccountGetAccountBalancesResponse>(clientOptions.jsonMapper)
 
-        /** Place, monitor, and manage trading orders. */
-        override fun orders(): OrderService.WithRawResponse = orders
-
-        /** Manage trading accounts, balances, and portfolio history. */
-        override fun portfolioHistory(): PortfolioHistoryService.WithRawResponse = portfolioHistory
-
-        /** View account positions. */
-        override fun positions(): PositionService.WithRawResponse = positions
+        override fun getAccountBalances(
+            params: AccountGetAccountBalancesParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<AccountGetAccountBalancesResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("accountId", params.accountId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "accounts", params._pathParam(0), "balances")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getAccountBalancesHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
 
         private val getAccountByIdHandler: Handler<AccountGetAccountByIdResponse> =
             jsonHandler<AccountGetAccountByIdResponse>(clientOptions.jsonMapper)
@@ -179,6 +169,36 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
             return errorHandler.handle(response).parseable {
                 response
                     .use { getAccountsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val getPortfolioHistoryHandler: Handler<AccountGetPortfolioHistoryResponse> =
+            jsonHandler<AccountGetPortfolioHistoryResponse>(clientOptions.jsonMapper)
+
+        override fun getPortfolioHistory(
+            params: AccountGetPortfolioHistoryParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<AccountGetPortfolioHistoryResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("accountId", params.accountId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "accounts", params._pathParam(0), "portfolio-history")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getPortfolioHistoryHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

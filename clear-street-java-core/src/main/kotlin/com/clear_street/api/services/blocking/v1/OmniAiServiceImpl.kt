@@ -3,8 +3,6 @@
 package com.clear_street.api.services.blocking.v1
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.services.blocking.v1.omniai.EntitlementAgreementService
-import com.clear_street.api.services.blocking.v1.omniai.EntitlementAgreementServiceImpl
 import com.clear_street.api.services.blocking.v1.omniai.EntitlementService
 import com.clear_street.api.services.blocking.v1.omniai.EntitlementServiceImpl
 import com.clear_street.api.services.blocking.v1.omniai.MessageService
@@ -22,10 +20,6 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
         WithRawResponseImpl(clientOptions)
     }
 
-    private val entitlementAgreements: EntitlementAgreementService by lazy {
-        EntitlementAgreementServiceImpl(clientOptions)
-    }
-
     private val entitlements: EntitlementService by lazy { EntitlementServiceImpl(clientOptions) }
 
     private val messages: MessageService by lazy { MessageServiceImpl(clientOptions) }
@@ -38,14 +32,6 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): OmniAiService =
         OmniAiServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
-
-    /**
-     * Thread-centric AI assistant for conversational trading. Create threads to start
-     * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
-     */
-    override fun entitlementAgreements(): EntitlementAgreementService = entitlementAgreements
 
     /**
      * Thread-centric AI assistant for conversational trading. Create threads to start
@@ -82,10 +68,6 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         OmniAiService.WithRawResponse {
 
-        private val entitlementAgreements: EntitlementAgreementService.WithRawResponse by lazy {
-            EntitlementAgreementServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val entitlements: EntitlementService.WithRawResponse by lazy {
             EntitlementServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -108,15 +90,6 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
             OmniAiServiceImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
-
-        /**
-         * Thread-centric AI assistant for conversational trading. Create threads to start
-         * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
-         */
-        override fun entitlementAgreements(): EntitlementAgreementService.WithRawResponse =
-            entitlementAgreements
 
         /**
          * Thread-centric AI assistant for conversational trading. Create threads to start
