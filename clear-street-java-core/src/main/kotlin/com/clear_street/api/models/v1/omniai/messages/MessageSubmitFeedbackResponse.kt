@@ -11,7 +11,6 @@ import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.BaseResponse
 import com.clear_street.api.models.ResponseMetadata
-import com.clear_street.api.models.v1.omniai.CreateFeedbackResponse
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator

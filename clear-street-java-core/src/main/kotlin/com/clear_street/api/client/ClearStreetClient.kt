@@ -42,7 +42,6 @@ interface ClearStreetClient {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ClearStreetClient
 
-    /** Active Websocket. */
     fun v1(): V1Service
 
     /**
@@ -70,7 +69,6 @@ interface ClearStreetClient {
             modifier: Consumer<ClientOptions.Builder>
         ): ClearStreetClient.WithRawResponse
 
-        /** Active Websocket. */
         fun v1(): V1Service.WithRawResponse
     }
 }

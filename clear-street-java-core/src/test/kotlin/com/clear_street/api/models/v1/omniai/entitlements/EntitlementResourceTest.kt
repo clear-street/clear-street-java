@@ -3,7 +3,6 @@
 package com.clear_street.api.models.v1.omniai.entitlements
 
 import com.clear_street.api.core.jsonMapper
-import com.clear_street.api.models.v1.omniai.EntitlementCode
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

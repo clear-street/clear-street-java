@@ -5,16 +5,16 @@ package com.clear_street.api.services.blocking.v1
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
+import com.clear_street.api.models.v1.accounts.AccountGetAccountBalancesParams
+import com.clear_street.api.models.v1.accounts.AccountGetAccountBalancesResponse
 import com.clear_street.api.models.v1.accounts.AccountGetAccountByIdParams
 import com.clear_street.api.models.v1.accounts.AccountGetAccountByIdResponse
 import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams
 import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse
+import com.clear_street.api.models.v1.accounts.AccountGetPortfolioHistoryParams
+import com.clear_street.api.models.v1.accounts.AccountGetPortfolioHistoryResponse
 import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdParams
 import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdResponse
-import com.clear_street.api.services.blocking.v1.accounts.BalanceService
-import com.clear_street.api.services.blocking.v1.accounts.OrderService
-import com.clear_street.api.services.blocking.v1.accounts.PortfolioHistoryService
-import com.clear_street.api.services.blocking.v1.accounts.PositionService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -33,17 +33,42 @@ interface AccountService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountService
 
-    /** Manage trading accounts, balances, and portfolio history. */
-    fun balances(): BalanceService
+    /** Fetch account balance information */
+    fun getAccountBalances(accountId: Long): AccountGetAccountBalancesResponse =
+        getAccountBalances(accountId, AccountGetAccountBalancesParams.none())
 
-    /** Place, monitor, and manage trading orders. */
-    fun orders(): OrderService
+    /** @see getAccountBalances */
+    fun getAccountBalances(
+        accountId: Long,
+        params: AccountGetAccountBalancesParams = AccountGetAccountBalancesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AccountGetAccountBalancesResponse =
+        getAccountBalances(params.toBuilder().accountId(accountId).build(), requestOptions)
 
-    /** Manage trading accounts, balances, and portfolio history. */
-    fun portfolioHistory(): PortfolioHistoryService
+    /** @see getAccountBalances */
+    fun getAccountBalances(
+        accountId: Long,
+        params: AccountGetAccountBalancesParams = AccountGetAccountBalancesParams.none(),
+    ): AccountGetAccountBalancesResponse =
+        getAccountBalances(accountId, params, RequestOptions.none())
 
-    /** View account positions. */
-    fun positions(): PositionService
+    /** @see getAccountBalances */
+    fun getAccountBalances(
+        params: AccountGetAccountBalancesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AccountGetAccountBalancesResponse
+
+    /** @see getAccountBalances */
+    fun getAccountBalances(
+        params: AccountGetAccountBalancesParams
+    ): AccountGetAccountBalancesResponse = getAccountBalances(params, RequestOptions.none())
+
+    /** @see getAccountBalances */
+    fun getAccountBalances(
+        accountId: Long,
+        requestOptions: RequestOptions,
+    ): AccountGetAccountBalancesResponse =
+        getAccountBalances(accountId, AccountGetAccountBalancesParams.none(), requestOptions)
 
     /** Fetch account details by ID */
     fun getAccountById(accountId: Long): AccountGetAccountByIdResponse =
@@ -98,6 +123,32 @@ interface AccountService {
     fun getAccounts(requestOptions: RequestOptions): AccountGetAccountsResponse =
         getAccounts(AccountGetAccountsParams.none(), requestOptions)
 
+    /** Retrieves daily portfolio history for the specified account. */
+    fun getPortfolioHistory(
+        accountId: Long,
+        params: AccountGetPortfolioHistoryParams,
+    ): AccountGetPortfolioHistoryResponse =
+        getPortfolioHistory(accountId, params, RequestOptions.none())
+
+    /** @see getPortfolioHistory */
+    fun getPortfolioHistory(
+        accountId: Long,
+        params: AccountGetPortfolioHistoryParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AccountGetPortfolioHistoryResponse =
+        getPortfolioHistory(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+    /** @see getPortfolioHistory */
+    fun getPortfolioHistory(
+        params: AccountGetPortfolioHistoryParams
+    ): AccountGetPortfolioHistoryResponse = getPortfolioHistory(params, RequestOptions.none())
+
+    /** @see getPortfolioHistory */
+    fun getPortfolioHistory(
+        params: AccountGetPortfolioHistoryParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AccountGetPortfolioHistoryResponse
+
     /** Update account risk settings */
     fun patchAccountById(accountId: Long): AccountPatchAccountByIdResponse =
         patchAccountById(accountId, AccountPatchAccountByIdParams.none())
@@ -143,17 +194,54 @@ interface AccountService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountService.WithRawResponse
 
-        /** Manage trading accounts, balances, and portfolio history. */
-        fun balances(): BalanceService.WithRawResponse
+        /**
+         * Returns a raw HTTP response for `get /v1/accounts/{account_id}/balances`, but is
+         * otherwise the same as [AccountService.getAccountBalances].
+         */
+        @MustBeClosed
+        fun getAccountBalances(
+            accountId: Long
+        ): HttpResponseFor<AccountGetAccountBalancesResponse> =
+            getAccountBalances(accountId, AccountGetAccountBalancesParams.none())
 
-        /** Place, monitor, and manage trading orders. */
-        fun orders(): OrderService.WithRawResponse
+        /** @see getAccountBalances */
+        @MustBeClosed
+        fun getAccountBalances(
+            accountId: Long,
+            params: AccountGetAccountBalancesParams = AccountGetAccountBalancesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AccountGetAccountBalancesResponse> =
+            getAccountBalances(params.toBuilder().accountId(accountId).build(), requestOptions)
 
-        /** Manage trading accounts, balances, and portfolio history. */
-        fun portfolioHistory(): PortfolioHistoryService.WithRawResponse
+        /** @see getAccountBalances */
+        @MustBeClosed
+        fun getAccountBalances(
+            accountId: Long,
+            params: AccountGetAccountBalancesParams = AccountGetAccountBalancesParams.none(),
+        ): HttpResponseFor<AccountGetAccountBalancesResponse> =
+            getAccountBalances(accountId, params, RequestOptions.none())
 
-        /** View account positions. */
-        fun positions(): PositionService.WithRawResponse
+        /** @see getAccountBalances */
+        @MustBeClosed
+        fun getAccountBalances(
+            params: AccountGetAccountBalancesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AccountGetAccountBalancesResponse>
+
+        /** @see getAccountBalances */
+        @MustBeClosed
+        fun getAccountBalances(
+            params: AccountGetAccountBalancesParams
+        ): HttpResponseFor<AccountGetAccountBalancesResponse> =
+            getAccountBalances(params, RequestOptions.none())
+
+        /** @see getAccountBalances */
+        @MustBeClosed
+        fun getAccountBalances(
+            accountId: Long,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<AccountGetAccountBalancesResponse> =
+            getAccountBalances(accountId, AccountGetAccountBalancesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/accounts/{account_id}`, but is otherwise the
@@ -229,6 +317,40 @@ interface AccountService {
             requestOptions: RequestOptions
         ): HttpResponseFor<AccountGetAccountsResponse> =
             getAccounts(AccountGetAccountsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /v1/accounts/{account_id}/portfolio-history`, but is
+         * otherwise the same as [AccountService.getPortfolioHistory].
+         */
+        @MustBeClosed
+        fun getPortfolioHistory(
+            accountId: Long,
+            params: AccountGetPortfolioHistoryParams,
+        ): HttpResponseFor<AccountGetPortfolioHistoryResponse> =
+            getPortfolioHistory(accountId, params, RequestOptions.none())
+
+        /** @see getPortfolioHistory */
+        @MustBeClosed
+        fun getPortfolioHistory(
+            accountId: Long,
+            params: AccountGetPortfolioHistoryParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AccountGetPortfolioHistoryResponse> =
+            getPortfolioHistory(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+        /** @see getPortfolioHistory */
+        @MustBeClosed
+        fun getPortfolioHistory(
+            params: AccountGetPortfolioHistoryParams
+        ): HttpResponseFor<AccountGetPortfolioHistoryResponse> =
+            getPortfolioHistory(params, RequestOptions.none())
+
+        /** @see getPortfolioHistory */
+        @MustBeClosed
+        fun getPortfolioHistory(
+            params: AccountGetPortfolioHistoryParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AccountGetPortfolioHistoryResponse>
 
         /**
          * Returns a raw HTTP response for `patch /v1/accounts/{account_id}`, but is otherwise the

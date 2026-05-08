@@ -5,16 +5,16 @@ package com.clear_street.api.services.async.v1
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
+import com.clear_street.api.models.v1.accounts.AccountGetAccountBalancesParams
+import com.clear_street.api.models.v1.accounts.AccountGetAccountBalancesResponse
 import com.clear_street.api.models.v1.accounts.AccountGetAccountByIdParams
 import com.clear_street.api.models.v1.accounts.AccountGetAccountByIdResponse
 import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams
 import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse
+import com.clear_street.api.models.v1.accounts.AccountGetPortfolioHistoryParams
+import com.clear_street.api.models.v1.accounts.AccountGetPortfolioHistoryResponse
 import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdParams
 import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdResponse
-import com.clear_street.api.services.async.v1.accounts.BalanceServiceAsync
-import com.clear_street.api.services.async.v1.accounts.OrderServiceAsync
-import com.clear_street.api.services.async.v1.accounts.PortfolioHistoryServiceAsync
-import com.clear_street.api.services.async.v1.accounts.PositionServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -33,17 +33,43 @@ interface AccountServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): AccountServiceAsync
 
-    /** Manage trading accounts, balances, and portfolio history. */
-    fun balances(): BalanceServiceAsync
+    /** Fetch account balance information */
+    fun getAccountBalances(accountId: Long): CompletableFuture<AccountGetAccountBalancesResponse> =
+        getAccountBalances(accountId, AccountGetAccountBalancesParams.none())
 
-    /** Place, monitor, and manage trading orders. */
-    fun orders(): OrderServiceAsync
+    /** @see getAccountBalances */
+    fun getAccountBalances(
+        accountId: Long,
+        params: AccountGetAccountBalancesParams = AccountGetAccountBalancesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<AccountGetAccountBalancesResponse> =
+        getAccountBalances(params.toBuilder().accountId(accountId).build(), requestOptions)
 
-    /** Manage trading accounts, balances, and portfolio history. */
-    fun portfolioHistory(): PortfolioHistoryServiceAsync
+    /** @see getAccountBalances */
+    fun getAccountBalances(
+        accountId: Long,
+        params: AccountGetAccountBalancesParams = AccountGetAccountBalancesParams.none(),
+    ): CompletableFuture<AccountGetAccountBalancesResponse> =
+        getAccountBalances(accountId, params, RequestOptions.none())
 
-    /** View account positions. */
-    fun positions(): PositionServiceAsync
+    /** @see getAccountBalances */
+    fun getAccountBalances(
+        params: AccountGetAccountBalancesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<AccountGetAccountBalancesResponse>
+
+    /** @see getAccountBalances */
+    fun getAccountBalances(
+        params: AccountGetAccountBalancesParams
+    ): CompletableFuture<AccountGetAccountBalancesResponse> =
+        getAccountBalances(params, RequestOptions.none())
+
+    /** @see getAccountBalances */
+    fun getAccountBalances(
+        accountId: Long,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<AccountGetAccountBalancesResponse> =
+        getAccountBalances(accountId, AccountGetAccountBalancesParams.none(), requestOptions)
 
     /** Fetch account details by ID */
     fun getAccountById(accountId: Long): CompletableFuture<AccountGetAccountByIdResponse> =
@@ -102,6 +128,33 @@ interface AccountServiceAsync {
     fun getAccounts(requestOptions: RequestOptions): CompletableFuture<AccountGetAccountsResponse> =
         getAccounts(AccountGetAccountsParams.none(), requestOptions)
 
+    /** Retrieves daily portfolio history for the specified account. */
+    fun getPortfolioHistory(
+        accountId: Long,
+        params: AccountGetPortfolioHistoryParams,
+    ): CompletableFuture<AccountGetPortfolioHistoryResponse> =
+        getPortfolioHistory(accountId, params, RequestOptions.none())
+
+    /** @see getPortfolioHistory */
+    fun getPortfolioHistory(
+        accountId: Long,
+        params: AccountGetPortfolioHistoryParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<AccountGetPortfolioHistoryResponse> =
+        getPortfolioHistory(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+    /** @see getPortfolioHistory */
+    fun getPortfolioHistory(
+        params: AccountGetPortfolioHistoryParams
+    ): CompletableFuture<AccountGetPortfolioHistoryResponse> =
+        getPortfolioHistory(params, RequestOptions.none())
+
+    /** @see getPortfolioHistory */
+    fun getPortfolioHistory(
+        params: AccountGetPortfolioHistoryParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<AccountGetPortfolioHistoryResponse>
+
     /** Update account risk settings */
     fun patchAccountById(accountId: Long): CompletableFuture<AccountPatchAccountByIdResponse> =
         patchAccountById(accountId, AccountPatchAccountByIdParams.none())
@@ -154,17 +207,48 @@ interface AccountServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): AccountServiceAsync.WithRawResponse
 
-        /** Manage trading accounts, balances, and portfolio history. */
-        fun balances(): BalanceServiceAsync.WithRawResponse
+        /**
+         * Returns a raw HTTP response for `get /v1/accounts/{account_id}/balances`, but is
+         * otherwise the same as [AccountServiceAsync.getAccountBalances].
+         */
+        fun getAccountBalances(
+            accountId: Long
+        ): CompletableFuture<HttpResponseFor<AccountGetAccountBalancesResponse>> =
+            getAccountBalances(accountId, AccountGetAccountBalancesParams.none())
 
-        /** Place, monitor, and manage trading orders. */
-        fun orders(): OrderServiceAsync.WithRawResponse
+        /** @see getAccountBalances */
+        fun getAccountBalances(
+            accountId: Long,
+            params: AccountGetAccountBalancesParams = AccountGetAccountBalancesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<AccountGetAccountBalancesResponse>> =
+            getAccountBalances(params.toBuilder().accountId(accountId).build(), requestOptions)
 
-        /** Manage trading accounts, balances, and portfolio history. */
-        fun portfolioHistory(): PortfolioHistoryServiceAsync.WithRawResponse
+        /** @see getAccountBalances */
+        fun getAccountBalances(
+            accountId: Long,
+            params: AccountGetAccountBalancesParams = AccountGetAccountBalancesParams.none(),
+        ): CompletableFuture<HttpResponseFor<AccountGetAccountBalancesResponse>> =
+            getAccountBalances(accountId, params, RequestOptions.none())
 
-        /** View account positions. */
-        fun positions(): PositionServiceAsync.WithRawResponse
+        /** @see getAccountBalances */
+        fun getAccountBalances(
+            params: AccountGetAccountBalancesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<AccountGetAccountBalancesResponse>>
+
+        /** @see getAccountBalances */
+        fun getAccountBalances(
+            params: AccountGetAccountBalancesParams
+        ): CompletableFuture<HttpResponseFor<AccountGetAccountBalancesResponse>> =
+            getAccountBalances(params, RequestOptions.none())
+
+        /** @see getAccountBalances */
+        fun getAccountBalances(
+            accountId: Long,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<AccountGetAccountBalancesResponse>> =
+            getAccountBalances(accountId, AccountGetAccountBalancesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/accounts/{account_id}`, but is otherwise the
@@ -233,6 +317,36 @@ interface AccountServiceAsync {
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<AccountGetAccountsResponse>> =
             getAccounts(AccountGetAccountsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /v1/accounts/{account_id}/portfolio-history`, but is
+         * otherwise the same as [AccountServiceAsync.getPortfolioHistory].
+         */
+        fun getPortfolioHistory(
+            accountId: Long,
+            params: AccountGetPortfolioHistoryParams,
+        ): CompletableFuture<HttpResponseFor<AccountGetPortfolioHistoryResponse>> =
+            getPortfolioHistory(accountId, params, RequestOptions.none())
+
+        /** @see getPortfolioHistory */
+        fun getPortfolioHistory(
+            accountId: Long,
+            params: AccountGetPortfolioHistoryParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<AccountGetPortfolioHistoryResponse>> =
+            getPortfolioHistory(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+        /** @see getPortfolioHistory */
+        fun getPortfolioHistory(
+            params: AccountGetPortfolioHistoryParams
+        ): CompletableFuture<HttpResponseFor<AccountGetPortfolioHistoryResponse>> =
+            getPortfolioHistory(params, RequestOptions.none())
+
+        /** @see getPortfolioHistory */
+        fun getPortfolioHistory(
+            params: AccountGetPortfolioHistoryParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<AccountGetPortfolioHistoryResponse>>
 
         /**
          * Returns a raw HTTP response for `patch /v1/accounts/{account_id}`, but is otherwise the

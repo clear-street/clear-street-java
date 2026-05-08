@@ -35,7 +35,6 @@ class ClearStreetClientAsyncImpl(private val clientOptions: ClientOptions) :
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): ClearStreetClientAsync =
         ClearStreetClientAsyncImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Active Websocket. */
     override fun v1(): V1ServiceAsync = v1
 
     override fun close() = clientOptions.close()
@@ -54,7 +53,6 @@ class ClearStreetClientAsyncImpl(private val clientOptions: ClientOptions) :
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Active Websocket. */
         override fun v1(): V1ServiceAsync.WithRawResponse = v1
     }
 }

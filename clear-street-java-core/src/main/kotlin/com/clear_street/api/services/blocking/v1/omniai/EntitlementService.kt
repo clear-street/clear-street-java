@@ -9,6 +9,8 @@ import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntit
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsResponse
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementParams
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementResponse
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementAgreementsParams
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementAgreementsResponse
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsResponse
 import com.google.errorprone.annotations.MustBeClosed
@@ -81,6 +83,30 @@ interface EntitlementService {
         requestOptions: RequestOptions,
     ): EntitlementDeleteEntitlementResponse =
         deleteEntitlement(entitlementId, EntitlementDeleteEntitlementParams.none(), requestOptions)
+
+    /** List current signable entitlement agreements for consent UX. */
+    fun getEntitlementAgreements(): EntitlementGetEntitlementAgreementsResponse =
+        getEntitlementAgreements(EntitlementGetEntitlementAgreementsParams.none())
+
+    /** @see getEntitlementAgreements */
+    fun getEntitlementAgreements(
+        params: EntitlementGetEntitlementAgreementsParams =
+            EntitlementGetEntitlementAgreementsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): EntitlementGetEntitlementAgreementsResponse
+
+    /** @see getEntitlementAgreements */
+    fun getEntitlementAgreements(
+        params: EntitlementGetEntitlementAgreementsParams =
+            EntitlementGetEntitlementAgreementsParams.none()
+    ): EntitlementGetEntitlementAgreementsResponse =
+        getEntitlementAgreements(params, RequestOptions.none())
+
+    /** @see getEntitlementAgreements */
+    fun getEntitlementAgreements(
+        requestOptions: RequestOptions
+    ): EntitlementGetEntitlementAgreementsResponse =
+        getEntitlementAgreements(EntitlementGetEntitlementAgreementsParams.none(), requestOptions)
 
     /** List caller's active entitlement grants. */
     fun getEntitlements(): EntitlementGetEntitlementsResponse =
@@ -185,6 +211,41 @@ interface EntitlementService {
             deleteEntitlement(
                 entitlementId,
                 EntitlementDeleteEntitlementParams.none(),
+                requestOptions,
+            )
+
+        /**
+         * Returns a raw HTTP response for `get /v1/omni-ai/entitlement-agreements`, but is
+         * otherwise the same as [EntitlementService.getEntitlementAgreements].
+         */
+        @MustBeClosed
+        fun getEntitlementAgreements():
+            HttpResponseFor<EntitlementGetEntitlementAgreementsResponse> =
+            getEntitlementAgreements(EntitlementGetEntitlementAgreementsParams.none())
+
+        /** @see getEntitlementAgreements */
+        @MustBeClosed
+        fun getEntitlementAgreements(
+            params: EntitlementGetEntitlementAgreementsParams =
+                EntitlementGetEntitlementAgreementsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<EntitlementGetEntitlementAgreementsResponse>
+
+        /** @see getEntitlementAgreements */
+        @MustBeClosed
+        fun getEntitlementAgreements(
+            params: EntitlementGetEntitlementAgreementsParams =
+                EntitlementGetEntitlementAgreementsParams.none()
+        ): HttpResponseFor<EntitlementGetEntitlementAgreementsResponse> =
+            getEntitlementAgreements(params, RequestOptions.none())
+
+        /** @see getEntitlementAgreements */
+        @MustBeClosed
+        fun getEntitlementAgreements(
+            requestOptions: RequestOptions
+        ): HttpResponseFor<EntitlementGetEntitlementAgreementsResponse> =
+            getEntitlementAgreements(
+                EntitlementGetEntitlementAgreementsParams.none(),
                 requestOptions,
             )
 

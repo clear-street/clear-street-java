@@ -1,0 +1,28 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.clear_street.api.models.v1.watchlist
+
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+
+internal class WatchlistDeleteWatchlistParamsTest {
+
+    @Test
+    fun create() {
+        WatchlistDeleteWatchlistParams.builder()
+            .watchlistId("550e8400-e29b-41d4-a716-446655440000")
+            .build()
+    }
+
+    @Test
+    fun pathParams() {
+        val params =
+            WatchlistDeleteWatchlistParams.builder()
+                .watchlistId("550e8400-e29b-41d4-a716-446655440000")
+                .build()
+
+        assertThat(params._pathParam(0)).isEqualTo("550e8400-e29b-41d4-a716-446655440000")
+        // out-of-bound path param
+        assertThat(params._pathParam(1)).isEqualTo("")
+    }
+}

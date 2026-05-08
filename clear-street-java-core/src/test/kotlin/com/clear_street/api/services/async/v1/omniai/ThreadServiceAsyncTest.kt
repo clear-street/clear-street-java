@@ -3,7 +3,9 @@
 package com.clear_street.api.services.async.v1.omniai
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClientAsync
+import com.clear_street.api.models.v1.omniai.threads.ThreadCreateMessageParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadCreateThreadParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetMessagesParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadByIdParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponseParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadsParams
@@ -11,6 +13,26 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 internal class ThreadServiceAsyncTest {
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun createMessage() {
+        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val threadServiceAsync = client.v1().omniAi().threads()
+
+        val responseFuture =
+            threadServiceAsync.createMessage(
+                ThreadCreateMessageParams.builder()
+                    .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .accountId(19816L)
+                    .text("Compare that to AMD.")
+                    .addCapability(ThreadCreateMessageParams.Capability.PREFILL_ORDER)
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
 
     @Disabled("Mock server tests are disabled")
     @Test
@@ -32,6 +54,26 @@ internal class ThreadServiceAsyncTest {
                     )
                     .text("What changed in NVDA today?")
                     .thesis("thesis")
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun getMessages() {
+        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val threadServiceAsync = client.v1().omniAi().threads()
+
+        val responseFuture =
+            threadServiceAsync.getMessages(
+                ThreadGetMessagesParams.builder()
+                    .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .accountId(0L)
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .build()
             )
 

@@ -34,7 +34,6 @@ class ClearStreetClientImpl(private val clientOptions: ClientOptions) : ClearStr
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): ClearStreetClient =
         ClearStreetClientImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
-    /** Active Websocket. */
     override fun v1(): V1Service = v1
 
     override fun close() = clientOptions.close()
@@ -53,7 +52,6 @@ class ClearStreetClientImpl(private val clientOptions: ClientOptions) : ClearStr
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
-        /** Active Websocket. */
         override fun v1(): V1Service.WithRawResponse = v1
     }
 }

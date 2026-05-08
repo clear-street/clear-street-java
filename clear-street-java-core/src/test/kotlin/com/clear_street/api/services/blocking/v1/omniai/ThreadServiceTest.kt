@@ -3,7 +3,9 @@
 package com.clear_street.api.services.blocking.v1.omniai
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
+import com.clear_street.api.models.v1.omniai.threads.ThreadCreateMessageParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadCreateThreadParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetMessagesParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadByIdParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponseParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadsParams
@@ -11,6 +13,25 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 internal class ThreadServiceTest {
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun createMessage() {
+        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val threadService = client.v1().omniAi().threads()
+
+        val response =
+            threadService.createMessage(
+                ThreadCreateMessageParams.builder()
+                    .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .accountId(19816L)
+                    .text("Compare that to AMD.")
+                    .addCapability(ThreadCreateMessageParams.Capability.PREFILL_ORDER)
+                    .build()
+            )
+
+        response.validate()
+    }
 
     @Disabled("Mock server tests are disabled")
     @Test
@@ -32,6 +53,25 @@ internal class ThreadServiceTest {
                     )
                     .text("What changed in NVDA today?")
                     .thesis("thesis")
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun getMessages() {
+        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val threadService = client.v1().omniAi().threads()
+
+        val response =
+            threadService.getMessages(
+                ThreadGetMessagesParams.builder()
+                    .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .accountId(0L)
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .build()
             )
 
