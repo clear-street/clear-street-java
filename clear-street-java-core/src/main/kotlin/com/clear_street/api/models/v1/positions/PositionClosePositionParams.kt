@@ -40,6 +40,8 @@ private constructor(
     fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
 
     /**
+     * Whether to cancel existing open orders for the position before submitting closing orders.
+     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -110,6 +112,9 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
+        /**
+         * Whether to cancel existing open orders for the position before submitting closing orders.
+         */
         fun cancelOrders(cancelOrders: Boolean?) = apply { body.cancelOrders(cancelOrders) }
 
         /**
@@ -300,6 +305,8 @@ private constructor(
         ) : this(cancelOrders, mutableMapOf())
 
         /**
+         * Whether to cancel existing open orders for the position before submitting closing orders.
+         *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -345,6 +352,10 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
+            /**
+             * Whether to cancel existing open orders for the position before submitting closing
+             * orders.
+             */
             fun cancelOrders(cancelOrders: Boolean?) =
                 cancelOrders(JsonField.ofNullable(cancelOrders))
 

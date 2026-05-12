@@ -32,11 +32,12 @@ private constructor(
     /** Comma-separated OEMS instrument UUIDs */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
+    /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
-     * Token for retrieving the next page of results. Contains encoded pagination state (limit +
-     * offset). When provided, page_size is ignored.
+     * Token for retrieving the next or previous page of results. Contains encoded pagination state;
+     * when provided, page_size is ignored.
      */
     fun pageToken(): Optional<String> = Optional.ofNullable(pageToken)
 
@@ -118,6 +119,7 @@ private constructor(
             instrumentIds = (instrumentIds ?: mutableListOf()).apply { add(instrumentId) }
         }
 
+        /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**
@@ -131,8 +133,8 @@ private constructor(
         fun pageSize(pageSize: Optional<Long>) = pageSize(pageSize.getOrNull())
 
         /**
-         * Token for retrieving the next page of results. Contains encoded pagination state (limit +
-         * offset). When provided, page_size is ignored.
+         * Token for retrieving the next or previous page of results. Contains encoded pagination
+         * state; when provided, page_size is ignored.
          */
         fun pageToken(pageToken: String?) = apply { this.pageToken = pageToken }
 

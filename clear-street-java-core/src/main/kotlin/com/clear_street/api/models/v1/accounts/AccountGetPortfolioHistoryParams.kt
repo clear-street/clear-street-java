@@ -23,6 +23,7 @@ private constructor(
 
     fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
+    /** Start date for the portfolio history range, in YYYY-MM-DD format. */
     fun startDate(): LocalDate = startDate
 
     /** Defaults to today in America/New_York when omitted. */
@@ -82,6 +83,7 @@ private constructor(
         /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
         fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
+        /** Start date for the portfolio history range, in YYYY-MM-DD format. */
         fun startDate(startDate: LocalDate) = apply { this.startDate = startDate }
 
         /** Defaults to today in America/New_York when omitted. */
