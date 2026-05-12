@@ -59,11 +59,12 @@ private constructor(
     /** Filter by threshold security status */
     fun isThresholdSecurity(): Optional<Boolean> = Optional.ofNullable(isThresholdSecurity)
 
+    /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
-     * Token for retrieving the next page of results. Contains encoded pagination state (limit +
-     * offset). When provided, page_size is ignored.
+     * Token for retrieving the next or previous page of results. Contains encoded pagination state;
+     * when provided, page_size is ignored.
      */
     fun pageToken(): Optional<String> = Optional.ofNullable(pageToken)
 
@@ -241,6 +242,7 @@ private constructor(
         fun isThresholdSecurity(isThresholdSecurity: Optional<Boolean>) =
             isThresholdSecurity(isThresholdSecurity.getOrNull())
 
+        /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**
@@ -254,8 +256,8 @@ private constructor(
         fun pageSize(pageSize: Optional<Long>) = pageSize(pageSize.getOrNull())
 
         /**
-         * Token for retrieving the next page of results. Contains encoded pagination state (limit +
-         * offset). When provided, page_size is ignored.
+         * Token for retrieving the next or previous page of results. Contains encoded pagination
+         * state; when provided, page_size is ignored.
          */
         fun pageToken(pageToken: String?) = apply { this.pageToken = pageToken }
 

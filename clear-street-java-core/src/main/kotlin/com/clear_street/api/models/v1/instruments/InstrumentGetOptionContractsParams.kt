@@ -34,11 +34,12 @@ private constructor(
     /** Filter to contracts expiring on this date (YYYY-MM-DD) */
     fun expiry(): Optional<LocalDate> = Optional.ofNullable(expiry)
 
+    /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
-     * Token for retrieving the next page of results. Contains encoded pagination state (limit +
-     * offset). When provided, page_size is ignored.
+     * Token for retrieving the next or previous page of results. Contains encoded pagination state;
+     * when provided, page_size is ignored.
      */
     fun pageToken(): Optional<String> = Optional.ofNullable(pageToken)
 
@@ -106,6 +107,7 @@ private constructor(
         /** Alias for calling [Builder.expiry] with `expiry.orElse(null)`. */
         fun expiry(expiry: Optional<LocalDate>) = expiry(expiry.getOrNull())
 
+        /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**
@@ -119,8 +121,8 @@ private constructor(
         fun pageSize(pageSize: Optional<Long>) = pageSize(pageSize.getOrNull())
 
         /**
-         * Token for retrieving the next page of results. Contains encoded pagination state (limit +
-         * offset). When provided, page_size is ignored.
+         * Token for retrieving the next or previous page of results. Contains encoded pagination
+         * state; when provided, page_size is ignored.
          */
         fun pageToken(pageToken: String?) = apply { this.pageToken = pageToken }
 

@@ -32,11 +32,12 @@ private constructor(
     /** The start date for the query range, inclusive (YYYY-MM-DD). */
     fun fromDate(): Optional<String> = Optional.ofNullable(fromDate)
 
+    /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
-     * Token for retrieving the next page of results. Contains encoded pagination state (limit +
-     * offset). When provided, page_size is ignored.
+     * Token for retrieving the next or previous page of results. Contains encoded pagination state;
+     * when provided, page_size is ignored.
      */
     fun pageToken(): Optional<String> = Optional.ofNullable(pageToken)
 
@@ -103,6 +104,7 @@ private constructor(
         /** Alias for calling [Builder.fromDate] with `fromDate.orElse(null)`. */
         fun fromDate(fromDate: Optional<String>) = fromDate(fromDate.getOrNull())
 
+        /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**
@@ -116,8 +118,8 @@ private constructor(
         fun pageSize(pageSize: Optional<Long>) = pageSize(pageSize.getOrNull())
 
         /**
-         * Token for retrieving the next page of results. Contains encoded pagination state (limit +
-         * offset). When provided, page_size is ignored.
+         * Token for retrieving the next or previous page of results. Contains encoded pagination
+         * state; when provided, page_size is ignored.
          */
         fun pageToken(pageToken: String?) = apply { this.pageToken = pageToken }
 
