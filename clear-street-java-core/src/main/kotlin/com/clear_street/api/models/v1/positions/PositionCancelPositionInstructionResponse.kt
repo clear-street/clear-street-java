@@ -60,8 +60,7 @@ private constructor(
     fun error(): Optional<ApiError> = error.getOptional("error")
 
     /**
-     * The API representation of a single CSC instruction, combining the caller's request with the
-     * `oems-csc` lifecycle state.
+     * A position instruction and its current lifecycle state.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -163,10 +162,7 @@ private constructor(
          */
         fun error(error: JsonField<ApiError>) = apply { this.error = error }
 
-        /**
-         * The API representation of a single CSC instruction, combining the caller's request with
-         * the `oems-csc` lifecycle state.
-         */
+        /** A position instruction and its current lifecycle state. */
         fun data(data: PositionInstruction) = data(JsonField.of(data))
 
         /**

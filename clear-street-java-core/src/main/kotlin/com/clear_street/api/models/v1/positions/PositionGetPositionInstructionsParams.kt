@@ -10,8 +10,8 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Returns the current lifecycle state of exercise / DNE / CEA instructions for the account.
- * Optionally filter by a specific instrument.
+ * Returns the current lifecycle state of the account's position instructions. Optionally filter by
+ * a specific contract.
  */
 class PositionGetPositionInstructionsParams
 private constructor(
@@ -23,7 +23,7 @@ private constructor(
 
     fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
-    /** Filter by OEMS instrument id or symbol (CMS / OSI). */
+    /** Limit results to a single contract. Accepts the instrument id or the OSI symbol. */
     fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
 
     /** Additional headers to send with the request. */
@@ -76,7 +76,7 @@ private constructor(
         /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
         fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
-        /** Filter by OEMS instrument id or symbol (CMS / OSI). */
+        /** Limit results to a single contract. Accepts the instrument id or the OSI symbol. */
         fun instrumentId(instrumentId: String?) = apply { this.instrumentId = instrumentId }
 
         /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */

@@ -7,12 +7,7 @@ import com.clear_street.api.core.JsonField
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/**
- * The instruction type a caller wants `oems-csc` to take against an options position.
- *
- * Maps onto FIX `PosTransType` (tag 709) + `PosMaintAction` (tag 712) +
- * `ContraryInstructionIndicator` (tag 719) per `oems-csc`'s `classify_action`.
- */
+/** The action to take against an options position. */
 class PositionInstructionType
 @JsonCreator
 private constructor(private val value: JsonField<String>) : Enum {
