@@ -36,9 +36,9 @@ interface PositionService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): PositionService
 
     /**
-     * Cancel an outstanding exercise / DNE / CEA instruction by its server- assigned `id`. Returns
-     * the updated instruction with status `CANCEL_REQUESTED`; the terminal `CANCELLED` /
-     * `CANCEL_FAILED` state arrives asynchronously via subsequent GETs.
+     * Cancel an outstanding position instruction by its server-assigned `id`. Returns the updated
+     * instruction with status `CANCEL_REQUESTED`. The terminal `CANCELLED` or `CANCEL_FAILED` state
+     * arrives asynchronously and is observable via subsequent GETs.
      */
     fun cancelPositionInstruction(
         instructionId: String,
@@ -137,8 +137,8 @@ interface PositionService {
         closePositions(accountId, PositionClosePositionsParams.none(), requestOptions)
 
     /**
-     * Returns the current lifecycle state of exercise / DNE / CEA instructions for the account.
-     * Optionally filter by a specific instrument.
+     * Returns the current lifecycle state of the account's position instructions. Optionally filter
+     * by a specific contract.
      */
     fun getPositionInstructions(accountId: Long): PositionGetPositionInstructionsResponse =
         getPositionInstructions(accountId, PositionGetPositionInstructionsParams.none())
@@ -218,9 +218,9 @@ interface PositionService {
         getPositions(accountId, PositionGetPositionsParams.none(), requestOptions)
 
     /**
-     * Submit one or more option lifecycle instructions against the account. Each row is routed to
-     * `oems-csc` independently; per-row rejections are surfaced on the corresponding response entry
-     * without failing the batch.
+     * Submit one or more position instructions (Exercise, Do-Not-Exercise, Contrary Exercise
+     * Advice) against the account. Each row is processed independently; a rejected row is returned
+     * with an error on the corresponding response entry without failing the batch.
      */
     fun submitPositionInstructions(
         accountId: Long,

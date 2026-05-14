@@ -13,9 +13,9 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Cancel an outstanding exercise / DNE / CEA instruction by its server- assigned `id`. Returns the
- * updated instruction with status `CANCEL_REQUESTED`; the terminal `CANCELLED` / `CANCEL_FAILED`
- * state arrives asynchronously via subsequent GETs.
+ * Cancel an outstanding position instruction by its server-assigned `id`. Returns the updated
+ * instruction with status `CANCEL_REQUESTED`. The terminal `CANCELLED` or `CANCEL_FAILED` state
+ * arrives asynchronously and is observable via subsequent GETs.
  */
 class PositionCancelPositionInstructionParams
 private constructor(

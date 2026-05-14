@@ -18,10 +18,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/**
- * The API representation of a single CSC instruction, combining the caller's request with the
- * `oems-csc` lifecycle state.
- */
+/** A position instruction and its current lifecycle state. */
 class PositionInstruction
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -90,8 +87,7 @@ private constructor(
     )
 
     /**
-     * Stable server-assigned id for the instruction (the engine instruction UUID). Used as the
-     * `{instruction_id}` path parameter on DELETE.
+     * Server-assigned id. Used as the path parameter on cancel.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -107,8 +103,8 @@ private constructor(
     fun accountId(): Long = accountId.getRequired("account_id")
 
     /**
-     * Caller-supplied instruction id (echoed from the submit request, or the server-generated
-     * fallback when the caller omitted one).
+     * Caller-supplied idempotency key echoed from the submit request; the server-assigned fallback
+     * when none was supplied.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -116,7 +112,7 @@ private constructor(
     fun instructionId(): String = instructionId.getRequired("instruction_id")
 
     /**
-     * The instruction type as understood by this API.
+     * The action this instruction requests.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -124,7 +120,7 @@ private constructor(
     fun instructionType(): PositionInstructionType = instructionType.getRequired("instruction_type")
 
     /**
-     * OEMS instrument identifier the instruction is for.
+     * Identifier of the options contract this instruction acts on.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -132,7 +128,7 @@ private constructor(
     fun instrumentId(): String = instrumentId.getRequired("instrument_id")
 
     /**
-     * Quantity of contracts.
+     * Number of contracts included in the instruction.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -148,9 +144,7 @@ private constructor(
     fun status(): PositionInstructionStatus = status.getRequired("status")
 
     /**
-     * Trading symbol resolved from the instrument cache (OSI for options, since exercises are
-     * options-only). Empty if the instrument cannot be resolved (e.g. expired option).
-     * Display-only.
+     * Options symbol (OSI) for display.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -158,7 +152,8 @@ private constructor(
     fun symbol(): String = symbol.getRequired("symbol")
 
     /**
-     * Quantity accepted by OCC. Populated after `ACCEPTED`.
+     * Number of contracts accepted by the clearing venue. Populated once the instruction reaches
+     * `ACCEPTED`.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -166,7 +161,7 @@ private constructor(
     fun acceptedQuantity(): Optional<String> = acceptedQuantity.getOptional("accepted_quantity")
 
     /**
-     * Row creation timestamp surfaced from `oems-csc`.
+     * When the instruction was first accepted by the service.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -174,7 +169,7 @@ private constructor(
     fun createdAt(): Optional<OffsetDateTime> = createdAt.getOptional("created_at")
 
     /**
-     * Inline error detail when a batch entry was rejected (omitted on success).
+     * Per-row error on a batch submission (omitted on success).
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -182,7 +177,7 @@ private constructor(
     fun error(): Optional<String> = error.getOptional("error")
 
     /**
-     * Reason text populated on terminal reject / cancel-failed statuses.
+     * Explanation populated on terminal reject or cancel-failed statuses.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -190,7 +185,7 @@ private constructor(
     fun rejectionReason(): Optional<String> = rejectionReason.getOptional("rejection_reason")
 
     /**
-     * Last update timestamp surfaced from `oems-csc`.
+     * When the instruction's lifecycle state last changed.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -373,10 +368,7 @@ private constructor(
             additionalProperties = positionInstruction.additionalProperties.toMutableMap()
         }
 
-        /**
-         * Stable server-assigned id for the instruction (the engine instruction UUID). Used as the
-         * `{instruction_id}` path parameter on DELETE.
-         */
+        /** Server-assigned id. Used as the path parameter on cancel. */
         fun id(id: String) = id(JsonField.of(id))
 
         /**
@@ -399,8 +391,8 @@ private constructor(
         fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
 
         /**
-         * Caller-supplied instruction id (echoed from the submit request, or the server-generated
-         * fallback when the caller omitted one).
+         * Caller-supplied idempotency key echoed from the submit request; the server-assigned
+         * fallback when none was supplied.
          */
         fun instructionId(instructionId: String) = instructionId(JsonField.of(instructionId))
 
@@ -415,7 +407,7 @@ private constructor(
             this.instructionId = instructionId
         }
 
-        /** The instruction type as understood by this API. */
+        /** The action this instruction requests. */
         fun instructionType(instructionType: PositionInstructionType) =
             instructionType(JsonField.of(instructionType))
 
@@ -430,7 +422,7 @@ private constructor(
             this.instructionType = instructionType
         }
 
-        /** OEMS instrument identifier the instruction is for. */
+        /** Identifier of the options contract this instruction acts on. */
         fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
 
         /**
@@ -444,7 +436,7 @@ private constructor(
             this.instrumentId = instrumentId
         }
 
-        /** Quantity of contracts. */
+        /** Number of contracts included in the instruction. */
         fun quantity(quantity: String) = quantity(JsonField.of(quantity))
 
         /**
@@ -467,11 +459,7 @@ private constructor(
          */
         fun status(status: JsonField<PositionInstructionStatus>) = apply { this.status = status }
 
-        /**
-         * Trading symbol resolved from the instrument cache (OSI for options, since exercises are
-         * options-only). Empty if the instrument cannot be resolved (e.g. expired option).
-         * Display-only.
-         */
+        /** Options symbol (OSI) for display. */
         fun symbol(symbol: String) = symbol(JsonField.of(symbol))
 
         /**
@@ -482,7 +470,10 @@ private constructor(
          */
         fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
 
-        /** Quantity accepted by OCC. Populated after `ACCEPTED`. */
+        /**
+         * Number of contracts accepted by the clearing venue. Populated once the instruction
+         * reaches `ACCEPTED`.
+         */
         fun acceptedQuantity(acceptedQuantity: String?) =
             acceptedQuantity(JsonField.ofNullable(acceptedQuantity))
 
@@ -501,7 +492,7 @@ private constructor(
             this.acceptedQuantity = acceptedQuantity
         }
 
-        /** Row creation timestamp surfaced from `oems-csc`. */
+        /** When the instruction was first accepted by the service. */
         fun createdAt(createdAt: OffsetDateTime?) = createdAt(JsonField.ofNullable(createdAt))
 
         /** Alias for calling [Builder.createdAt] with `createdAt.orElse(null)`. */
@@ -516,7 +507,7 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
-        /** Inline error detail when a batch entry was rejected (omitted on success). */
+        /** Per-row error on a batch submission (omitted on success). */
         fun error(error: String?) = error(JsonField.ofNullable(error))
 
         /** Alias for calling [Builder.error] with `error.orElse(null)`. */
@@ -530,7 +521,7 @@ private constructor(
          */
         fun error(error: JsonField<String>) = apply { this.error = error }
 
-        /** Reason text populated on terminal reject / cancel-failed statuses. */
+        /** Explanation populated on terminal reject or cancel-failed statuses. */
         fun rejectionReason(rejectionReason: String?) =
             rejectionReason(JsonField.ofNullable(rejectionReason))
 
@@ -549,7 +540,7 @@ private constructor(
             this.rejectionReason = rejectionReason
         }
 
-        /** Last update timestamp surfaced from `oems-csc`. */
+        /** When the instruction's lifecycle state last changed. */
         fun updatedAt(updatedAt: OffsetDateTime?) = updatedAt(JsonField.ofNullable(updatedAt))
 
         /** Alias for calling [Builder.updatedAt] with `updatedAt.orElse(null)`. */

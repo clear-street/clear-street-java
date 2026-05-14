@@ -22,9 +22,9 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Submit one or more option lifecycle instructions against the account. Each row is routed to
- * `oems-csc` independently; per-row rejections are surfaced on the corresponding response entry
- * without failing the batch.
+ * Submit one or more position instructions (Exercise, Do-Not-Exercise, Contrary Exercise Advice)
+ * against the account. Each row is processed independently; a rejected row is returned with an
+ * error on the corresponding response entry without failing the batch.
  */
 class PositionSubmitPositionInstructionsParams
 private constructor(
@@ -237,10 +237,10 @@ private constructor(
     override fun _queryParams(): QueryParams = additionalQueryParams
 
     /**
-     * One exercise / DNE / CEA instruction requested by a client.
+     * A position instruction to submit.
      *
-     * Cancel is not an instruction type — use `DELETE
-     * /accounts/{account_id}/positions/instructions/{instruction_id}`.
+     * Use `DELETE /accounts/{account_id}/positions/instructions/{instruction_id}` to cancel an
+     * outstanding instruction.
      */
     class Instruction
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -269,7 +269,7 @@ private constructor(
         ) : this(instructionType, instrumentId, quantity, instructionId, mutableMapOf())
 
         /**
-         * Instruction type.
+         * The action to take.
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -278,8 +278,7 @@ private constructor(
             instructionType.getRequired("instruction_type")
 
         /**
-         * OEMS instrument identifier. api-gw resolves this to `security_id` + `security_id_source`
-         * via the instrument cache before dispatching to `oems-csc`. Unknown ids return 404.
+         * Identifier of the options contract to act on. Unknown ids return 404.
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -287,7 +286,7 @@ private constructor(
         fun instrumentId(): String = instrumentId.getRequired("instrument_id")
 
         /**
-         * Quantity of contracts to exercise / DNE / CEA.
+         * Number of contracts to include in the instruction.
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -295,8 +294,8 @@ private constructor(
         fun quantity(): String = quantity.getRequired("quantity")
 
         /**
-         * Caller-supplied instruction id. Echoed back on the response and used as the FIX
-         * `pos_req_id` (tag 710) for idempotency. If omitted the server generates a UUID.
+         * Caller-supplied idempotency key. Echoed on the response. The server generates a unique id
+         * when omitted.
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -385,7 +384,7 @@ private constructor(
                 additionalProperties = instruction.additionalProperties.toMutableMap()
             }
 
-            /** Instruction type. */
+            /** The action to take. */
             fun instructionType(instructionType: PositionInstructionType) =
                 instructionType(JsonField.of(instructionType))
 
@@ -400,11 +399,7 @@ private constructor(
                 this.instructionType = instructionType
             }
 
-            /**
-             * OEMS instrument identifier. api-gw resolves this to `security_id` +
-             * `security_id_source` via the instrument cache before dispatching to `oems-csc`.
-             * Unknown ids return 404.
-             */
+            /** Identifier of the options contract to act on. Unknown ids return 404. */
             fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
 
             /**
@@ -418,7 +413,7 @@ private constructor(
                 this.instrumentId = instrumentId
             }
 
-            /** Quantity of contracts to exercise / DNE / CEA. */
+            /** Number of contracts to include in the instruction. */
             fun quantity(quantity: String) = quantity(JsonField.of(quantity))
 
             /**
@@ -431,8 +426,8 @@ private constructor(
             fun quantity(quantity: JsonField<String>) = apply { this.quantity = quantity }
 
             /**
-             * Caller-supplied instruction id. Echoed back on the response and used as the FIX
-             * `pos_req_id` (tag 710) for idempotency. If omitted the server generates a UUID.
+             * Caller-supplied idempotency key. Echoed on the response. The server generates a
+             * unique id when omitted.
              */
             fun instructionId(instructionId: String?) =
                 instructionId(JsonField.ofNullable(instructionId))

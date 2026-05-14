@@ -7,13 +7,7 @@ import com.clear_street.api.core.JsonField
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/**
- * Public Active API lifecycle status for a position instruction.
- *
- * Maps 1:1 to the `oems-csc` wire enum while keeping the REST schema stable: api-gw owns
- * serialization, OpenAPI generation, and the `Unknown` fallback for missing or unrecognized gRPC
- * values.
- */
+/** Lifecycle status of a position instruction. */
 class PositionInstructionStatus
 @JsonCreator
 private constructor(private val value: JsonField<String>) : Enum {
