@@ -24,7 +24,6 @@ internal class PositionInstructionTest {
                 .symbol("AAPL  280121C00195000")
                 .acceptedQuantity(null)
                 .createdAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
-                .error("error")
                 .rejectionReason(null)
                 .updatedAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
                 .build()
@@ -42,7 +41,6 @@ internal class PositionInstructionTest {
         assertThat(positionInstruction.acceptedQuantity()).isEmpty
         assertThat(positionInstruction.createdAt())
             .contains(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
-        assertThat(positionInstruction.error()).contains("error")
         assertThat(positionInstruction.rejectionReason()).isEmpty
         assertThat(positionInstruction.updatedAt())
             .contains(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
@@ -63,7 +61,6 @@ internal class PositionInstructionTest {
                 .symbol("AAPL  280121C00195000")
                 .acceptedQuantity(null)
                 .createdAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
-                .error("error")
                 .rejectionReason(null)
                 .updatedAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
                 .build()
