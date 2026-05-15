@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** Grouped instrument events by type */
@@ -26,6 +27,7 @@ private constructor(
     private val earnings: JsonField<List<InstrumentEarnings>>,
     private val instrumentId: JsonField<String>,
     private val splits: JsonField<List<InstrumentSplitEvent>>,
+    private val reportingCurrency: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -43,7 +45,10 @@ private constructor(
         @JsonProperty("splits")
         @ExcludeMissing
         splits: JsonField<List<InstrumentSplitEvent>> = JsonMissing.of(),
-    ) : this(dividends, earnings, instrumentId, splits, mutableMapOf())
+        @JsonProperty("reporting_currency")
+        @ExcludeMissing
+        reportingCurrency: JsonField<String> = JsonMissing.of(),
+    ) : this(dividends, earnings, instrumentId, splits, reportingCurrency, mutableMapOf())
 
     /**
      * Dividend distribution events
@@ -76,6 +81,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun splits(): List<InstrumentSplitEvent> = splits.getRequired("splits")
+
+    /**
+     * The currency used for reporting financial data
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun reportingCurrency(): Optional<String> = reportingCurrency.getOptional("reporting_currency")
 
     /**
      * Returns the raw JSON value of [dividends].
@@ -113,6 +126,16 @@ private constructor(
     @ExcludeMissing
     fun _splits(): JsonField<List<InstrumentSplitEvent>> = splits
 
+    /**
+     * Returns the raw JSON value of [reportingCurrency].
+     *
+     * Unlike [reportingCurrency], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("reporting_currency")
+    @ExcludeMissing
+    fun _reportingCurrency(): JsonField<String> = reportingCurrency
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -148,6 +171,7 @@ private constructor(
         private var earnings: JsonField<MutableList<InstrumentEarnings>>? = null
         private var instrumentId: JsonField<String>? = null
         private var splits: JsonField<MutableList<InstrumentSplitEvent>>? = null
+        private var reportingCurrency: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -156,6 +180,7 @@ private constructor(
             earnings = instrumentEventsData.earnings.map { it.toMutableList() }
             instrumentId = instrumentEventsData.instrumentId
             splits = instrumentEventsData.splits.map { it.toMutableList() }
+            reportingCurrency = instrumentEventsData.reportingCurrency
             additionalProperties = instrumentEventsData.additionalProperties.toMutableMap()
         }
 
@@ -251,6 +276,25 @@ private constructor(
                 }
         }
 
+        /** The currency used for reporting financial data */
+        fun reportingCurrency(reportingCurrency: String?) =
+            reportingCurrency(JsonField.ofNullable(reportingCurrency))
+
+        /** Alias for calling [Builder.reportingCurrency] with `reportingCurrency.orElse(null)`. */
+        fun reportingCurrency(reportingCurrency: Optional<String>) =
+            reportingCurrency(reportingCurrency.getOrNull())
+
+        /**
+         * Sets [Builder.reportingCurrency] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.reportingCurrency] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun reportingCurrency(reportingCurrency: JsonField<String>) = apply {
+            this.reportingCurrency = reportingCurrency
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -291,6 +335,7 @@ private constructor(
                 checkRequired("earnings", earnings).map { it.toImmutable() },
                 checkRequired("instrumentId", instrumentId),
                 checkRequired("splits", splits).map { it.toImmutable() },
+                reportingCurrency,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -314,6 +359,7 @@ private constructor(
         earnings().forEach { it.validate() }
         instrumentId()
         splits().forEach { it.validate() }
+        reportingCurrency()
         validated = true
     }
 
@@ -335,7 +381,8 @@ private constructor(
         (dividends.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (earnings.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
-            (splits.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+            (splits.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+            (if (reportingCurrency.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -347,15 +394,23 @@ private constructor(
             earnings == other.earnings &&
             instrumentId == other.instrumentId &&
             splits == other.splits &&
+            reportingCurrency == other.reportingCurrency &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(dividends, earnings, instrumentId, splits, additionalProperties)
+        Objects.hash(
+            dividends,
+            earnings,
+            instrumentId,
+            splits,
+            reportingCurrency,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentEventsData{dividends=$dividends, earnings=$earnings, instrumentId=$instrumentId, splits=$splits, additionalProperties=$additionalProperties}"
+        "InstrumentEventsData{dividends=$dividends, earnings=$earnings, instrumentId=$instrumentId, splits=$splits, reportingCurrency=$reportingCurrency, additionalProperties=$additionalProperties}"
 }

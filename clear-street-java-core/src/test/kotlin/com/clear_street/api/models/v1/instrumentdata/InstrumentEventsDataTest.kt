@@ -46,6 +46,7 @@ internal class InstrumentEventsDataTest {
                         .splitType("stock-split")
                         .build()
                 )
+                .reportingCurrency("reporting_currency")
                 .build()
 
         assertThat(instrumentEventsData.dividends())
@@ -84,6 +85,7 @@ internal class InstrumentEventsDataTest {
                     .splitType("stock-split")
                     .build()
             )
+        assertThat(instrumentEventsData.reportingCurrency()).contains("reporting_currency")
     }
 
     @Test
@@ -123,6 +125,7 @@ internal class InstrumentEventsDataTest {
                         .splitType("stock-split")
                         .build()
                 )
+                .reportingCurrency("reporting_currency")
                 .build()
 
         val roundtrippedInstrumentEventsData =

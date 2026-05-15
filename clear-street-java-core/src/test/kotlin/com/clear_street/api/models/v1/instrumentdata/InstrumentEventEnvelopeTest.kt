@@ -53,6 +53,7 @@ internal class InstrumentEventEnvelopeTest {
                         .build()
                 )
                 .name("name")
+                .reportingCurrency("reporting_currency")
                 .stockSplitEventData(
                     InstrumentSplitEvent.builder()
                         .date(LocalDate.parse("2025-08-15"))
@@ -105,6 +106,7 @@ internal class InstrumentEventEnvelopeTest {
                     .build()
             )
         assertThat(instrumentEventEnvelope.name()).contains("name")
+        assertThat(instrumentEventEnvelope.reportingCurrency()).contains("reporting_currency")
         assertThat(instrumentEventEnvelope.stockSplitEventData())
             .contains(
                 InstrumentSplitEvent.builder()
@@ -159,6 +161,7 @@ internal class InstrumentEventEnvelopeTest {
                         .build()
                 )
                 .name("name")
+                .reportingCurrency("reporting_currency")
                 .stockSplitEventData(
                     InstrumentSplitEvent.builder()
                         .date(LocalDate.parse("2025-08-15"))

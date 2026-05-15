@@ -34,6 +34,7 @@ private constructor(
     private val marketCap: JsonField<String>,
     private val previousClose: JsonField<String>,
     private val priceToEarnings: JsonField<String>,
+    private val reportingCurrency: JsonField<String>,
     private val sector: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -71,6 +72,9 @@ private constructor(
         @JsonProperty("price_to_earnings")
         @ExcludeMissing
         priceToEarnings: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("reporting_currency")
+        @ExcludeMissing
+        reportingCurrency: JsonField<String> = JsonMissing.of(),
         @JsonProperty("sector") @ExcludeMissing sector: JsonField<String> = JsonMissing.of(),
     ) : this(
         averageVolume,
@@ -86,6 +90,7 @@ private constructor(
         marketCap,
         previousClose,
         priceToEarnings,
+        reportingCurrency,
         sector,
         mutableMapOf(),
     )
@@ -193,6 +198,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun priceToEarnings(): Optional<String> = priceToEarnings.getOptional("price_to_earnings")
+
+    /**
+     * The currency used for reporting financial data
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun reportingCurrency(): Optional<String> = reportingCurrency.getOptional("reporting_currency")
 
     /**
      * The business sector of the instrument's issuer
@@ -310,6 +323,16 @@ private constructor(
     fun _priceToEarnings(): JsonField<String> = priceToEarnings
 
     /**
+     * Returns the raw JSON value of [reportingCurrency].
+     *
+     * Unlike [reportingCurrency], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("reporting_currency")
+    @ExcludeMissing
+    fun _reportingCurrency(): JsonField<String> = reportingCurrency
+
+    /**
      * Returns the raw JSON value of [sector].
      *
      * Unlike [sector], this method doesn't throw if the JSON field has an unexpected type.
@@ -350,6 +373,7 @@ private constructor(
         private var marketCap: JsonField<String> = JsonMissing.of()
         private var previousClose: JsonField<String> = JsonMissing.of()
         private var priceToEarnings: JsonField<String> = JsonMissing.of()
+        private var reportingCurrency: JsonField<String> = JsonMissing.of()
         private var sector: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -368,6 +392,7 @@ private constructor(
             marketCap = instrumentFundamentals.marketCap
             previousClose = instrumentFundamentals.previousClose
             priceToEarnings = instrumentFundamentals.priceToEarnings
+            reportingCurrency = instrumentFundamentals.reportingCurrency
             sector = instrumentFundamentals.sector
             additionalProperties = instrumentFundamentals.additionalProperties.toMutableMap()
         }
@@ -597,6 +622,25 @@ private constructor(
             this.priceToEarnings = priceToEarnings
         }
 
+        /** The currency used for reporting financial data */
+        fun reportingCurrency(reportingCurrency: String?) =
+            reportingCurrency(JsonField.ofNullable(reportingCurrency))
+
+        /** Alias for calling [Builder.reportingCurrency] with `reportingCurrency.orElse(null)`. */
+        fun reportingCurrency(reportingCurrency: Optional<String>) =
+            reportingCurrency(reportingCurrency.getOrNull())
+
+        /**
+         * Sets [Builder.reportingCurrency] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.reportingCurrency] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun reportingCurrency(reportingCurrency: JsonField<String>) = apply {
+            this.reportingCurrency = reportingCurrency
+        }
+
         /** The business sector of the instrument's issuer */
         fun sector(sector: String?) = sector(JsonField.ofNullable(sector))
 
@@ -650,6 +694,7 @@ private constructor(
                 marketCap,
                 previousClose,
                 priceToEarnings,
+                reportingCurrency,
                 sector,
                 additionalProperties.toMutableMap(),
             )
@@ -683,6 +728,7 @@ private constructor(
         marketCap()
         previousClose()
         priceToEarnings()
+        reportingCurrency()
         sector()
         validated = true
     }
@@ -715,6 +761,7 @@ private constructor(
             (if (marketCap.asKnown().isPresent) 1 else 0) +
             (if (previousClose.asKnown().isPresent) 1 else 0) +
             (if (priceToEarnings.asKnown().isPresent) 1 else 0) +
+            (if (reportingCurrency.asKnown().isPresent) 1 else 0) +
             (if (sector.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
@@ -736,6 +783,7 @@ private constructor(
             marketCap == other.marketCap &&
             previousClose == other.previousClose &&
             priceToEarnings == other.priceToEarnings &&
+            reportingCurrency == other.reportingCurrency &&
             sector == other.sector &&
             additionalProperties == other.additionalProperties
     }
@@ -755,6 +803,7 @@ private constructor(
             marketCap,
             previousClose,
             priceToEarnings,
+            reportingCurrency,
             sector,
             additionalProperties,
         )
@@ -763,5 +812,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentFundamentals{averageVolume=$averageVolume, beta=$beta, description=$description, dividendYield=$dividendYield, earningsPerShare=$earningsPerShare, fiftyTwoWeekHigh=$fiftyTwoWeekHigh, fiftyTwoWeekLow=$fiftyTwoWeekLow, industry=$industry, listDate=$listDate, logoUrl=$logoUrl, marketCap=$marketCap, previousClose=$previousClose, priceToEarnings=$priceToEarnings, sector=$sector, additionalProperties=$additionalProperties}"
+        "InstrumentFundamentals{averageVolume=$averageVolume, beta=$beta, description=$description, dividendYield=$dividendYield, earningsPerShare=$earningsPerShare, fiftyTwoWeekHigh=$fiftyTwoWeekHigh, fiftyTwoWeekLow=$fiftyTwoWeekLow, industry=$industry, listDate=$listDate, logoUrl=$logoUrl, marketCap=$marketCap, previousClose=$previousClose, priceToEarnings=$priceToEarnings, reportingCurrency=$reportingCurrency, sector=$sector, additionalProperties=$additionalProperties}"
 }

@@ -29,6 +29,7 @@ internal class InstrumentFundamentalsTest {
                 .marketCap("2800000000000")
                 .previousClose("210.87")
                 .priceToEarnings("30.5")
+                .reportingCurrency("USD")
                 .sector("Technology")
                 .build()
 
@@ -48,6 +49,7 @@ internal class InstrumentFundamentalsTest {
         assertThat(instrumentFundamentals.marketCap()).contains("2800000000000")
         assertThat(instrumentFundamentals.previousClose()).contains("210.87")
         assertThat(instrumentFundamentals.priceToEarnings()).contains("30.5")
+        assertThat(instrumentFundamentals.reportingCurrency()).contains("USD")
         assertThat(instrumentFundamentals.sector()).contains("Technology")
     }
 
@@ -71,6 +73,7 @@ internal class InstrumentFundamentalsTest {
                 .marketCap("2800000000000")
                 .previousClose("210.87")
                 .priceToEarnings("30.5")
+                .reportingCurrency("USD")
                 .sector("Technology")
                 .build()
 

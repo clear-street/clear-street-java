@@ -28,6 +28,7 @@ private constructor(
     private val instrumentId: JsonField<String>,
     private val ipoEventData: JsonField<InstrumentEventIpoItem>,
     private val name: JsonField<String>,
+    private val reportingCurrency: JsonField<String>,
     private val stockSplitEventData: JsonField<InstrumentSplitEvent>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -51,6 +52,9 @@ private constructor(
         @ExcludeMissing
         ipoEventData: JsonField<InstrumentEventIpoItem> = JsonMissing.of(),
         @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("reporting_currency")
+        @ExcludeMissing
+        reportingCurrency: JsonField<String> = JsonMissing.of(),
         @JsonProperty("stock_split_event_data")
         @ExcludeMissing
         stockSplitEventData: JsonField<InstrumentSplitEvent> = JsonMissing.of(),
@@ -62,6 +66,7 @@ private constructor(
         instrumentId,
         ipoEventData,
         name,
+        reportingCurrency,
         stockSplitEventData,
         mutableMapOf(),
     )
@@ -124,6 +129,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun name(): Optional<String> = name.getOptional("name")
+
+    /**
+     * The currency used for reporting financial data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun reportingCurrency(): Optional<String> = reportingCurrency.getOptional("reporting_currency")
 
     /**
      * Stock split payload when type is STOCK_SPLIT.
@@ -194,6 +207,16 @@ private constructor(
     @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
 
     /**
+     * Returns the raw JSON value of [reportingCurrency].
+     *
+     * Unlike [reportingCurrency], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("reporting_currency")
+    @ExcludeMissing
+    fun _reportingCurrency(): JsonField<String> = reportingCurrency
+
+    /**
      * Returns the raw JSON value of [stockSplitEventData].
      *
      * Unlike [stockSplitEventData], this method doesn't throw if the JSON field has an unexpected
@@ -239,6 +262,7 @@ private constructor(
         private var instrumentId: JsonField<String> = JsonMissing.of()
         private var ipoEventData: JsonField<InstrumentEventIpoItem> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
+        private var reportingCurrency: JsonField<String> = JsonMissing.of()
         private var stockSplitEventData: JsonField<InstrumentSplitEvent> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -251,6 +275,7 @@ private constructor(
             instrumentId = instrumentEventEnvelope.instrumentId
             ipoEventData = instrumentEventEnvelope.ipoEventData
             name = instrumentEventEnvelope.name
+            reportingCurrency = instrumentEventEnvelope.reportingCurrency
             stockSplitEventData = instrumentEventEnvelope.stockSplitEventData
             additionalProperties = instrumentEventEnvelope.additionalProperties.toMutableMap()
         }
@@ -366,6 +391,25 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
 
+        /** The currency used for reporting financial data. */
+        fun reportingCurrency(reportingCurrency: String?) =
+            reportingCurrency(JsonField.ofNullable(reportingCurrency))
+
+        /** Alias for calling [Builder.reportingCurrency] with `reportingCurrency.orElse(null)`. */
+        fun reportingCurrency(reportingCurrency: Optional<String>) =
+            reportingCurrency(reportingCurrency.getOrNull())
+
+        /**
+         * Sets [Builder.reportingCurrency] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.reportingCurrency] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun reportingCurrency(reportingCurrency: JsonField<String>) = apply {
+            this.reportingCurrency = reportingCurrency
+        }
+
         /** Stock split payload when type is STOCK_SPLIT. */
         fun stockSplitEventData(stockSplitEventData: InstrumentSplitEvent?) =
             stockSplitEventData(JsonField.ofNullable(stockSplitEventData))
@@ -428,6 +472,7 @@ private constructor(
                 instrumentId,
                 ipoEventData,
                 name,
+                reportingCurrency,
                 stockSplitEventData,
                 additionalProperties.toMutableMap(),
             )
@@ -455,6 +500,7 @@ private constructor(
         instrumentId()
         ipoEventData().ifPresent { it.validate() }
         name()
+        reportingCurrency()
         stockSplitEventData().ifPresent { it.validate() }
         validated = true
     }
@@ -481,6 +527,7 @@ private constructor(
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (ipoEventData.asKnown().getOrNull()?.validity() ?: 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
+            (if (reportingCurrency.asKnown().isPresent) 1 else 0) +
             (stockSplitEventData.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
@@ -496,6 +543,7 @@ private constructor(
             instrumentId == other.instrumentId &&
             ipoEventData == other.ipoEventData &&
             name == other.name &&
+            reportingCurrency == other.reportingCurrency &&
             stockSplitEventData == other.stockSplitEventData &&
             additionalProperties == other.additionalProperties
     }
@@ -509,6 +557,7 @@ private constructor(
             instrumentId,
             ipoEventData,
             name,
+            reportingCurrency,
             stockSplitEventData,
             additionalProperties,
         )
@@ -517,5 +566,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentEventEnvelope{symbol=$symbol, type=$type, dividendEventData=$dividendEventData, earningsEventData=$earningsEventData, instrumentId=$instrumentId, ipoEventData=$ipoEventData, name=$name, stockSplitEventData=$stockSplitEventData, additionalProperties=$additionalProperties}"
+        "InstrumentEventEnvelope{symbol=$symbol, type=$type, dividendEventData=$dividendEventData, earningsEventData=$earningsEventData, instrumentId=$instrumentId, ipoEventData=$ipoEventData, name=$name, reportingCurrency=$reportingCurrency, stockSplitEventData=$stockSplitEventData, additionalProperties=$additionalProperties}"
 }

@@ -72,6 +72,7 @@ internal class InstrumentDataGetInstrumentEventsResponseTest {
                                 .splitType("stock-split")
                                 .build()
                         )
+                        .reportingCurrency("reporting_currency")
                         .build()
                 )
                 .build()
@@ -134,6 +135,7 @@ internal class InstrumentDataGetInstrumentEventsResponseTest {
                             .splitType("stock-split")
                             .build()
                     )
+                    .reportingCurrency("reporting_currency")
                     .build()
             )
     }
@@ -198,6 +200,7 @@ internal class InstrumentDataGetInstrumentEventsResponseTest {
                                 .splitType("stock-split")
                                 .build()
                         )
+                        .reportingCurrency("reporting_currency")
                         .build()
                 )
                 .build()
