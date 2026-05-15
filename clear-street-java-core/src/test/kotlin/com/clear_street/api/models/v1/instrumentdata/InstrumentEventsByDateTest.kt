@@ -56,6 +56,7 @@ internal class InstrumentEventsByDateTest {
                                 .build()
                         )
                         .name("name")
+                        .reportingCurrency("reporting_currency")
                         .stockSplitEventData(
                             InstrumentSplitEvent.builder()
                                 .date(LocalDate.parse("2025-08-15"))
@@ -110,6 +111,7 @@ internal class InstrumentEventsByDateTest {
                             .build()
                     )
                     .name("name")
+                    .reportingCurrency("reporting_currency")
                     .stockSplitEventData(
                         InstrumentSplitEvent.builder()
                             .date(LocalDate.parse("2025-08-15"))
@@ -168,6 +170,7 @@ internal class InstrumentEventsByDateTest {
                                 .build()
                         )
                         .name("name")
+                        .reportingCurrency("reporting_currency")
                         .stockSplitEventData(
                             InstrumentSplitEvent.builder()
                                 .date(LocalDate.parse("2025-08-15"))
