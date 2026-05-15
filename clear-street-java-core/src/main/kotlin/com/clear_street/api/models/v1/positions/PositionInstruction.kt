@@ -32,7 +32,6 @@ private constructor(
     private val symbol: JsonField<String>,
     private val acceptedQuantity: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
-    private val error: JsonField<String>,
     private val rejectionReason: JsonField<String>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -62,7 +61,6 @@ private constructor(
         @JsonProperty("created_at")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("error") @ExcludeMissing error: JsonField<String> = JsonMissing.of(),
         @JsonProperty("rejection_reason")
         @ExcludeMissing
         rejectionReason: JsonField<String> = JsonMissing.of(),
@@ -80,7 +78,6 @@ private constructor(
         symbol,
         acceptedQuantity,
         createdAt,
-        error,
         rejectionReason,
         updatedAt,
         mutableMapOf(),
@@ -169,15 +166,9 @@ private constructor(
     fun createdAt(): Optional<OffsetDateTime> = createdAt.getOptional("created_at")
 
     /**
-     * Per-row error on a batch submission (omitted on success).
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun error(): Optional<String> = error.getOptional("error")
-
-    /**
-     * Explanation populated on terminal reject or cancel-failed statuses.
+     * Human-readable explanation populated on any non-success terminal status — `REJECTED`,
+     * `ENGINE_REJECTED`, or `CANCEL_FAILED`. On a `207 Multi-Status` batch submit the top-level
+     * `error` field summarizes the batch; per-row detail continues to live here.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -276,13 +267,6 @@ private constructor(
     fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
     /**
-     * Returns the raw JSON value of [error].
-     *
-     * Unlike [error], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("error") @ExcludeMissing fun _error(): JsonField<String> = error
-
-    /**
      * Returns the raw JSON value of [rejectionReason].
      *
      * Unlike [rejectionReason], this method doesn't throw if the JSON field has an unexpected type.
@@ -345,7 +329,6 @@ private constructor(
         private var symbol: JsonField<String>? = null
         private var acceptedQuantity: JsonField<String> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
-        private var error: JsonField<String> = JsonMissing.of()
         private var rejectionReason: JsonField<String> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -362,7 +345,6 @@ private constructor(
             symbol = positionInstruction.symbol
             acceptedQuantity = positionInstruction.acceptedQuantity
             createdAt = positionInstruction.createdAt
-            error = positionInstruction.error
             rejectionReason = positionInstruction.rejectionReason
             updatedAt = positionInstruction.updatedAt
             additionalProperties = positionInstruction.additionalProperties.toMutableMap()
@@ -507,21 +489,11 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
-        /** Per-row error on a batch submission (omitted on success). */
-        fun error(error: String?) = error(JsonField.ofNullable(error))
-
-        /** Alias for calling [Builder.error] with `error.orElse(null)`. */
-        fun error(error: Optional<String>) = error(error.getOrNull())
-
         /**
-         * Sets [Builder.error] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.error] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * Human-readable explanation populated on any non-success terminal status — `REJECTED`,
+         * `ENGINE_REJECTED`, or `CANCEL_FAILED`. On a `207 Multi-Status` batch submit the top-level
+         * `error` field summarizes the batch; per-row detail continues to live here.
          */
-        fun error(error: JsonField<String>) = apply { this.error = error }
-
-        /** Explanation populated on terminal reject or cancel-failed statuses. */
         fun rejectionReason(rejectionReason: String?) =
             rejectionReason(JsonField.ofNullable(rejectionReason))
 
@@ -605,7 +577,6 @@ private constructor(
                 checkRequired("symbol", symbol),
                 acceptedQuantity,
                 createdAt,
-                error,
                 rejectionReason,
                 updatedAt,
                 additionalProperties.toMutableMap(),
@@ -637,7 +608,6 @@ private constructor(
         symbol()
         acceptedQuantity()
         createdAt()
-        error()
         rejectionReason()
         updatedAt()
         validated = true
@@ -668,7 +638,6 @@ private constructor(
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (acceptedQuantity.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
-            (if (error.asKnown().isPresent) 1 else 0) +
             (if (rejectionReason.asKnown().isPresent) 1 else 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0)
 
@@ -688,7 +657,6 @@ private constructor(
             symbol == other.symbol &&
             acceptedQuantity == other.acceptedQuantity &&
             createdAt == other.createdAt &&
-            error == other.error &&
             rejectionReason == other.rejectionReason &&
             updatedAt == other.updatedAt &&
             additionalProperties == other.additionalProperties
@@ -706,7 +674,6 @@ private constructor(
             symbol,
             acceptedQuantity,
             createdAt,
-            error,
             rejectionReason,
             updatedAt,
             additionalProperties,
@@ -716,5 +683,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PositionInstruction{id=$id, accountId=$accountId, instructionId=$instructionId, instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, status=$status, symbol=$symbol, acceptedQuantity=$acceptedQuantity, createdAt=$createdAt, error=$error, rejectionReason=$rejectionReason, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "PositionInstruction{id=$id, accountId=$accountId, instructionId=$instructionId, instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, status=$status, symbol=$symbol, acceptedQuantity=$acceptedQuantity, createdAt=$createdAt, rejectionReason=$rejectionReason, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }
