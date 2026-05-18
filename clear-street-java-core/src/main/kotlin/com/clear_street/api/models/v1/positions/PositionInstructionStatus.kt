@@ -7,7 +7,23 @@ import com.clear_street.api.core.JsonField
 import com.clear_street.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/** Lifecycle status of a position instruction. */
+/**
+ * Lifecycle status of a position instruction.
+ * - `SENT`: accepted and forwarded to the clearing venue.
+ * - `ACCEPTED`: terminal — accepted by the clearing venue.
+ * - `REJECTED`: terminal rejection from the clearing venue; `rejection_reason` carries the
+ *   venue-reported detail.
+ * - `ENGINE_REJECTED`: terminal rejection raised before the instruction reached the clearing venue;
+ *   `rejection_reason` carries the detail. Typical causes: duplicate `instruction_id`,
+ *   `DO_NOT_EXERCISE` / `CONTRARY_EXERCISE` submitted on a non-expiry day, insufficient position,
+ *   or an instrument that does not resolve.
+ * - `CANCEL_REQUESTED`: cancel accepted; final cancel state pending.
+ * - `CANCELLED`: terminal — cancel completed.
+ * - `CANCEL_FAILED`: cancel could not be completed; operator attention required. `rejection_reason`
+ *   carries the detail.
+ * - `UNKNOWN`: status could not be mapped from the upstream service. Not expected in practice;
+ *   surfaces a service version skew.
+ */
 class PositionInstructionStatus
 @JsonCreator
 private constructor(private val value: JsonField<String>) : Enum {
