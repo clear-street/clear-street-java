@@ -4,7 +4,6 @@ package com.clear_street.api.proguard
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
 import com.clear_street.api.core.jsonMapper
-import com.clear_street.api.models.v1.SecurityType
 import com.clear_street.api.models.v1.accounts.Account
 import com.clear_street.api.models.v1.accounts.AccountStatus
 import com.clear_street.api.models.v1.accounts.AccountSubtype
@@ -96,7 +95,6 @@ internal class ProGuardCompatibilityTest {
                 PrefillOrderAction.PrefillNewOrderAction.builder()
                     .addOrder(
                         NewOrderRequest.builder()
-                            .instrumentType(SecurityType.COMMON_STOCK)
                             .orderType(RequestOrderType.LIMIT)
                             .quantity("100")
                             .side(Side.BUY)

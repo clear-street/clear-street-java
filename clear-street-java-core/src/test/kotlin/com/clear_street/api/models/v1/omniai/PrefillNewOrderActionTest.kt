@@ -3,7 +3,6 @@
 package com.clear_street.api.models.v1.omniai
 
 import com.clear_street.api.core.jsonMapper
-import com.clear_street.api.models.v1.SecurityType
 import com.clear_street.api.models.v1.orders.NewOrderRequest
 import com.clear_street.api.models.v1.orders.PositionEffect
 import com.clear_street.api.models.v1.orders.RequestOrderType
@@ -23,7 +22,6 @@ internal class PrefillNewOrderActionTest {
             PrefillNewOrderAction.builder()
                 .addOrder(
                     NewOrderRequest.builder()
-                        .instrumentType(SecurityType.COMMON_STOCK)
                         .orderType(RequestOrderType.LIMIT)
                         .quantity("100")
                         .side(Side.BUY)
@@ -46,7 +44,6 @@ internal class PrefillNewOrderActionTest {
         assertThat(prefillNewOrderAction.orders())
             .containsExactly(
                 NewOrderRequest.builder()
-                    .instrumentType(SecurityType.COMMON_STOCK)
                     .orderType(RequestOrderType.LIMIT)
                     .quantity("100")
                     .side(Side.BUY)
@@ -73,7 +70,6 @@ internal class PrefillNewOrderActionTest {
             PrefillNewOrderAction.builder()
                 .addOrder(
                     NewOrderRequest.builder()
-                        .instrumentType(SecurityType.COMMON_STOCK)
                         .orderType(RequestOrderType.LIMIT)
                         .quantity("100")
                         .side(Side.BUY)

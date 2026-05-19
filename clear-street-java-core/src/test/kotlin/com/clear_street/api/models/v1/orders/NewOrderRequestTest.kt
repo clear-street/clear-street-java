@@ -3,7 +3,6 @@
 package com.clear_street.api.models.v1.orders
 
 import com.clear_street.api.core.jsonMapper
-import com.clear_street.api.models.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -15,7 +14,6 @@ internal class NewOrderRequestTest {
     fun create() {
         val newOrderRequest =
             NewOrderRequest.builder()
-                .instrumentType(SecurityType.COMMON_STOCK)
                 .orderType(RequestOrderType.LIMIT)
                 .quantity("25")
                 .side(Side.BUY)
@@ -33,7 +31,6 @@ internal class NewOrderRequestTest {
                 .trailingOffsetType(TrailingOffsetType.PRICE)
                 .build()
 
-        assertThat(newOrderRequest.instrumentType()).isEqualTo(SecurityType.COMMON_STOCK)
         assertThat(newOrderRequest.orderType()).isEqualTo(RequestOrderType.LIMIT)
         assertThat(newOrderRequest.quantity()).isEqualTo("25")
         assertThat(newOrderRequest.side()).isEqualTo(Side.BUY)
@@ -57,7 +54,6 @@ internal class NewOrderRequestTest {
         val jsonMapper = jsonMapper()
         val newOrderRequest =
             NewOrderRequest.builder()
-                .instrumentType(SecurityType.COMMON_STOCK)
                 .orderType(RequestOrderType.LIMIT)
                 .quantity("25")
                 .side(Side.BUY)

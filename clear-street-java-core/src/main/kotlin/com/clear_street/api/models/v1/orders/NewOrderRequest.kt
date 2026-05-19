@@ -8,7 +8,6 @@ import com.clear_street.api.core.JsonMissing
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.checkRequired
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.SecurityType
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -23,7 +22,6 @@ import kotlin.jvm.optionals.getOrNull
 class NewOrderRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val instrumentType: JsonField<SecurityType>,
     private val orderType: JsonField<RequestOrderType>,
     private val quantity: JsonField<String>,
     private val side: JsonField<Side>,
@@ -44,9 +42,6 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("instrument_type")
-        @ExcludeMissing
-        instrumentType: JsonField<SecurityType> = JsonMissing.of(),
         @JsonProperty("order_type")
         @ExcludeMissing
         orderType: JsonField<RequestOrderType> = JsonMissing.of(),
@@ -83,7 +78,6 @@ private constructor(
         @ExcludeMissing
         trailingOffsetType: JsonField<TrailingOffsetType> = JsonMissing.of(),
     ) : this(
-        instrumentType,
         orderType,
         quantity,
         side,
@@ -101,14 +95,6 @@ private constructor(
         trailingOffsetType,
         mutableMapOf(),
     )
-
-    /**
-     * Type of security
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun instrumentType(): SecurityType = instrumentType.getRequired("instrument_type")
 
     /**
      * Type of order
@@ -193,8 +179,7 @@ private constructor(
     fun limitPrice(): Optional<String> = limitPrice.getOptional("limit_price")
 
     /**
-     * Required when instrument_type is OPTION. Specifies whether the order opens or closes a
-     * position.
+     * Required for options. Specifies whether the order opens or closes a position.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -234,15 +219,6 @@ private constructor(
      */
     fun trailingOffsetType(): Optional<TrailingOffsetType> =
         trailingOffsetType.getOptional("trailing_offset_type")
-
-    /**
-     * Returns the raw JSON value of [instrumentType].
-     *
-     * Unlike [instrumentType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("instrument_type")
-    @ExcludeMissing
-    fun _instrumentType(): JsonField<SecurityType> = instrumentType
 
     /**
      * Returns the raw JSON value of [orderType].
@@ -387,7 +363,6 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .instrumentType()
          * .orderType()
          * .quantity()
          * .side()
@@ -400,7 +375,6 @@ private constructor(
     /** A builder for [NewOrderRequest]. */
     class Builder internal constructor() {
 
-        private var instrumentType: JsonField<SecurityType>? = null
         private var orderType: JsonField<RequestOrderType>? = null
         private var quantity: JsonField<String>? = null
         private var side: JsonField<Side>? = null
@@ -420,7 +394,6 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(newOrderRequest: NewOrderRequest) = apply {
-            instrumentType = newOrderRequest.instrumentType
             orderType = newOrderRequest.orderType
             quantity = newOrderRequest.quantity
             side = newOrderRequest.side
@@ -437,21 +410,6 @@ private constructor(
             trailingOffset = newOrderRequest.trailingOffset
             trailingOffsetType = newOrderRequest.trailingOffsetType
             additionalProperties = newOrderRequest.additionalProperties.toMutableMap()
-        }
-
-        /** Type of security */
-        fun instrumentType(instrumentType: SecurityType) =
-            instrumentType(JsonField.of(instrumentType))
-
-        /**
-         * Sets [Builder.instrumentType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.instrumentType] with a well-typed [SecurityType] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun instrumentType(instrumentType: JsonField<SecurityType>) = apply {
-            this.instrumentType = instrumentType
         }
 
         /** Type of order */
@@ -612,10 +570,7 @@ private constructor(
          */
         fun limitPrice(limitPrice: JsonField<String>) = apply { this.limitPrice = limitPrice }
 
-        /**
-         * Required when instrument_type is OPTION. Specifies whether the order opens or closes a
-         * position.
-         */
+        /** Required for options. Specifies whether the order opens or closes a position. */
         fun positionEffect(positionEffect: PositionEffect) =
             positionEffect(JsonField.of(positionEffect))
 
@@ -729,7 +684,6 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .instrumentType()
          * .orderType()
          * .quantity()
          * .side()
@@ -740,7 +694,6 @@ private constructor(
          */
         fun build(): NewOrderRequest =
             NewOrderRequest(
-                checkRequired("instrumentType", instrumentType),
                 checkRequired("orderType", orderType),
                 checkRequired("quantity", quantity),
                 checkRequired("side", side),
@@ -775,7 +728,6 @@ private constructor(
             return@apply
         }
 
-        instrumentType().validate()
         orderType().validate()
         quantity()
         side().validate()
@@ -809,8 +761,7 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
-            (orderType.asKnown().getOrNull()?.validity() ?: 0) +
+        (orderType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (quantity.asKnown().isPresent) 1 else 0) +
             (side.asKnown().getOrNull()?.validity() ?: 0) +
             (timeInForce.asKnown().getOrNull()?.validity() ?: 0) +
@@ -832,7 +783,6 @@ private constructor(
         }
 
         return other is NewOrderRequest &&
-            instrumentType == other.instrumentType &&
             orderType == other.orderType &&
             quantity == other.quantity &&
             side == other.side &&
@@ -853,7 +803,6 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            instrumentType,
             orderType,
             quantity,
             side,
@@ -876,5 +825,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "NewOrderRequest{instrumentType=$instrumentType, orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, limitOffset=$limitOffset, limitPrice=$limitPrice, positionEffect=$positionEffect, stopPrice=$stopPrice, symbol=$symbol, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
+        "NewOrderRequest{orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, limitOffset=$limitOffset, limitPrice=$limitPrice, positionEffect=$positionEffect, stopPrice=$stopPrice, symbol=$symbol, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
 }

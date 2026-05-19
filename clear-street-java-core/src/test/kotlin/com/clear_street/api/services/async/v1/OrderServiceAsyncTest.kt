@@ -3,7 +3,6 @@
 package com.clear_street.api.services.async.v1
 
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClientAsync
-import com.clear_street.api.models.v1.SecurityType
 import com.clear_street.api.models.v1.orders.OrderCancelAllOpenOrdersParams
 import com.clear_street.api.models.v1.orders.OrderCancelOpenOrderParams
 import com.clear_street.api.models.v1.orders.OrderGetOrderByIdParams
@@ -135,7 +134,6 @@ internal class OrderServiceAsyncTest {
                                 listOf(
                                     OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .builder()
-                                        .instrumentType(SecurityType.OPTION)
                                         .ratio("ratio")
                                         .security("0193bb84-447a-706f-996f-097254663f02")
                                         .side(Side.BUY)
@@ -144,7 +142,6 @@ internal class OrderServiceAsyncTest {
                                         .build(),
                                     OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .builder()
-                                        .instrumentType(SecurityType.OPTION)
                                         .ratio("ratio")
                                         .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
                                         .side(Side.SELL)
@@ -153,7 +150,6 @@ internal class OrderServiceAsyncTest {
                                         .build(),
                                     OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
                                         .builder()
-                                        .instrumentType(SecurityType.OPTION)
                                         .ratio("ratio")
                                         .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
                                         .side(Side.BUY)

@@ -17,7 +17,6 @@ import com.clear_street.api.core.http.Headers
 import com.clear_street.api.core.http.QueryParams
 import com.clear_street.api.core.toImmutable
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.SecurityType
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -875,7 +874,6 @@ private constructor(
             class Leg
             @JsonCreator(mode = JsonCreator.Mode.DISABLED)
             private constructor(
-                private val instrumentType: JsonField<SecurityType>,
                 private val ratio: JsonField<String>,
                 private val security: JsonField<String>,
                 private val side: JsonField<Side>,
@@ -886,9 +884,6 @@ private constructor(
 
                 @JsonCreator
                 private constructor(
-                    @JsonProperty("instrument_type")
-                    @ExcludeMissing
-                    instrumentType: JsonField<SecurityType> = JsonMissing.of(),
                     @JsonProperty("ratio")
                     @ExcludeMissing
                     ratio: JsonField<String> = JsonMissing.of(),
@@ -900,16 +895,7 @@ private constructor(
                     @JsonProperty("position_effect")
                     @ExcludeMissing
                     positionEffect: JsonField<PositionEffect> = JsonMissing.of(),
-                ) : this(instrumentType, ratio, security, side, id, positionEffect, mutableMapOf())
-
-                /**
-                 * Security type for the leg.
-                 *
-                 * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type
-                 *   or is unexpectedly missing or null (e.g. if the server responded with an
-                 *   unexpected value).
-                 */
-                fun instrumentType(): SecurityType = instrumentType.getRequired("instrument_type")
+                ) : this(ratio, security, side, id, positionEffect, mutableMapOf())
 
                 /**
                  * Ratio for the leg.
@@ -954,16 +940,6 @@ private constructor(
                  */
                 fun positionEffect(): Optional<PositionEffect> =
                     positionEffect.getOptional("position_effect")
-
-                /**
-                 * Returns the raw JSON value of [instrumentType].
-                 *
-                 * Unlike [instrumentType], this method doesn't throw if the JSON field has an
-                 * unexpected type.
-                 */
-                @JsonProperty("instrument_type")
-                @ExcludeMissing
-                fun _instrumentType(): JsonField<SecurityType> = instrumentType
 
                 /**
                  * Returns the raw JSON value of [ratio].
@@ -1027,7 +1003,6 @@ private constructor(
                      *
                      * The following fields are required:
                      * ```java
-                     * .instrumentType()
                      * .ratio()
                      * .security()
                      * .side()
@@ -1039,7 +1014,6 @@ private constructor(
                 /** A builder for [Leg]. */
                 class Builder internal constructor() {
 
-                    private var instrumentType: JsonField<SecurityType>? = null
                     private var ratio: JsonField<String>? = null
                     private var security: JsonField<String>? = null
                     private var side: JsonField<Side>? = null
@@ -1049,28 +1023,12 @@ private constructor(
 
                     @JvmSynthetic
                     internal fun from(leg: Leg) = apply {
-                        instrumentType = leg.instrumentType
                         ratio = leg.ratio
                         security = leg.security
                         side = leg.side
                         id = leg.id
                         positionEffect = leg.positionEffect
                         additionalProperties = leg.additionalProperties.toMutableMap()
-                    }
-
-                    /** Security type for the leg. */
-                    fun instrumentType(instrumentType: SecurityType) =
-                        instrumentType(JsonField.of(instrumentType))
-
-                    /**
-                     * Sets [Builder.instrumentType] to an arbitrary JSON value.
-                     *
-                     * You should usually call [Builder.instrumentType] with a well-typed
-                     * [SecurityType] value instead. This method is primarily for setting the field
-                     * to an undocumented or not yet supported value.
-                     */
-                    fun instrumentType(instrumentType: JsonField<SecurityType>) = apply {
-                        this.instrumentType = instrumentType
                     }
 
                     /** Ratio for the leg. */
@@ -1175,7 +1133,6 @@ private constructor(
                      *
                      * The following fields are required:
                      * ```java
-                     * .instrumentType()
                      * .ratio()
                      * .security()
                      * .side()
@@ -1185,7 +1142,6 @@ private constructor(
                      */
                     fun build(): Leg =
                         Leg(
-                            checkRequired("instrumentType", instrumentType),
                             checkRequired("ratio", ratio),
                             checkRequired("security", security),
                             checkRequired("side", side),
@@ -1212,7 +1168,6 @@ private constructor(
                         return@apply
                     }
 
-                    instrumentType().validate()
                     ratio()
                     security()
                     side().validate()
@@ -1237,8 +1192,7 @@ private constructor(
                  */
                 @JvmSynthetic
                 internal fun validity(): Int =
-                    (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
-                        (if (ratio.asKnown().isPresent) 1 else 0) +
+                    (if (ratio.asKnown().isPresent) 1 else 0) +
                         (if (security.asKnown().isPresent) 1 else 0) +
                         (side.asKnown().getOrNull()?.validity() ?: 0) +
                         (if (id.asKnown().isPresent) 1 else 0) +
@@ -1250,7 +1204,6 @@ private constructor(
                     }
 
                     return other is Leg &&
-                        instrumentType == other.instrumentType &&
                         ratio == other.ratio &&
                         security == other.security &&
                         side == other.side &&
@@ -1260,21 +1213,13 @@ private constructor(
                 }
 
                 private val hashCode: Int by lazy {
-                    Objects.hash(
-                        instrumentType,
-                        ratio,
-                        security,
-                        side,
-                        id,
-                        positionEffect,
-                        additionalProperties,
-                    )
+                    Objects.hash(ratio, security, side, id, positionEffect, additionalProperties)
                 }
 
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "Leg{instrumentType=$instrumentType, ratio=$ratio, security=$security, side=$side, id=$id, positionEffect=$positionEffect, additionalProperties=$additionalProperties}"
+                    "Leg{ratio=$ratio, security=$security, side=$side, id=$id, positionEffect=$positionEffect, additionalProperties=$additionalProperties}"
             }
 
             override fun equals(other: Any?): Boolean {
