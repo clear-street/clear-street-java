@@ -11,15 +11,16 @@ internal class SnapshotLastTradeTest {
 
     @Test
     fun create() {
-        val snapshotLastTrade = SnapshotLastTrade.builder().price("price").build()
+        val snapshotLastTrade = SnapshotLastTrade.builder().price("price").size(0).build()
 
         assertThat(snapshotLastTrade.price()).isEqualTo("price")
+        assertThat(snapshotLastTrade.size()).isEqualTo(0)
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val snapshotLastTrade = SnapshotLastTrade.builder().price("price").build()
+        val snapshotLastTrade = SnapshotLastTrade.builder().price("price").size(0).build()
 
         val roundtrippedSnapshotLastTrade =
             jsonMapper.readValue(

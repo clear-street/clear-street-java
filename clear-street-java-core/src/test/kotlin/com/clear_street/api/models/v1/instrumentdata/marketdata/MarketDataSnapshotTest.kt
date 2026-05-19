@@ -25,7 +25,7 @@ internal class MarketDataSnapshotTest {
                         .bidSize(300)
                         .build()
                 )
-                .lastTrade(SnapshotLastTrade.builder().price("210.12").build())
+                .lastTrade(SnapshotLastTrade.builder().price("210.12").size(100).build())
                 .name("Apple Inc.")
                 .session(
                     SnapshotSession.builder()
@@ -51,7 +51,7 @@ internal class MarketDataSnapshotTest {
                     .build()
             )
         assertThat(marketDataSnapshot.lastTrade())
-            .contains(SnapshotLastTrade.builder().price("210.12").build())
+            .contains(SnapshotLastTrade.builder().price("210.12").size(100).build())
         assertThat(marketDataSnapshot.name()).contains("Apple Inc.")
         assertThat(marketDataSnapshot.session())
             .contains(
@@ -80,7 +80,7 @@ internal class MarketDataSnapshotTest {
                         .bidSize(300)
                         .build()
                 )
-                .lastTrade(SnapshotLastTrade.builder().price("210.12").build())
+                .lastTrade(SnapshotLastTrade.builder().price("210.12").size(100).build())
                 .name("Apple Inc.")
                 .session(
                     SnapshotSession.builder()
