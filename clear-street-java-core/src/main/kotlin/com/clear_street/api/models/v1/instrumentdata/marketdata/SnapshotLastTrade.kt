@@ -20,13 +20,15 @@ class SnapshotLastTrade
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val price: JsonField<String>,
+    private val size: JsonField<Int>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("price") @ExcludeMissing price: JsonField<String> = JsonMissing.of()
-    ) : this(price, mutableMapOf())
+        @JsonProperty("price") @ExcludeMissing price: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("size") @ExcludeMissing size: JsonField<Int> = JsonMissing.of(),
+    ) : this(price, size, mutableMapOf())
 
     /**
      * Most recent last-sale eligible trade price.
@@ -37,11 +39,26 @@ private constructor(
     fun price(): String = price.getRequired("price")
 
     /**
+     * Share quantity of the most recent last-sale eligible trade.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun size(): Int = size.getRequired("size")
+
+    /**
      * Returns the raw JSON value of [price].
      *
      * Unlike [price], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("price") @ExcludeMissing fun _price(): JsonField<String> = price
+
+    /**
+     * Returns the raw JSON value of [size].
+     *
+     * Unlike [size], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("size") @ExcludeMissing fun _size(): JsonField<Int> = size
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -63,6 +80,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .price()
+         * .size()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -72,11 +90,13 @@ private constructor(
     class Builder internal constructor() {
 
         private var price: JsonField<String>? = null
+        private var size: JsonField<Int>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(snapshotLastTrade: SnapshotLastTrade) = apply {
             price = snapshotLastTrade.price
+            size = snapshotLastTrade.size
             additionalProperties = snapshotLastTrade.additionalProperties.toMutableMap()
         }
 
@@ -90,6 +110,17 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun price(price: JsonField<String>) = apply { this.price = price }
+
+        /** Share quantity of the most recent last-sale eligible trade. */
+        fun size(size: Int) = size(JsonField.of(size))
+
+        /**
+         * Sets [Builder.size] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.size] with a well-typed [Int] value instead. This method
+         * is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun size(size: JsonField<Int>) = apply { this.size = size }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -118,12 +149,17 @@ private constructor(
          * The following fields are required:
          * ```java
          * .price()
+         * .size()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): SnapshotLastTrade =
-            SnapshotLastTrade(checkRequired("price", price), additionalProperties.toMutableMap())
+            SnapshotLastTrade(
+                checkRequired("price", price),
+                checkRequired("size", size),
+                additionalProperties.toMutableMap(),
+            )
     }
 
     private var validated: Boolean = false
@@ -142,6 +178,7 @@ private constructor(
         }
 
         price()
+        size()
         validated = true
     }
 
@@ -158,7 +195,9 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    @JvmSynthetic internal fun validity(): Int = (if (price.asKnown().isPresent) 1 else 0)
+    @JvmSynthetic
+    internal fun validity(): Int =
+        (if (price.asKnown().isPresent) 1 else 0) + (if (size.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -167,13 +206,14 @@ private constructor(
 
         return other is SnapshotLastTrade &&
             price == other.price &&
+            size == other.size &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(price, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(price, size, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SnapshotLastTrade{price=$price, additionalProperties=$additionalProperties}"
+        "SnapshotLastTrade{price=$price, size=$size, additionalProperties=$additionalProperties}"
 }

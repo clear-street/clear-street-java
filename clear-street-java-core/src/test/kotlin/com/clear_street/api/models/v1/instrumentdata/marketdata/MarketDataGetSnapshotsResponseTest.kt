@@ -51,7 +51,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                                 .bidSize(300)
                                 .build()
                         )
-                        .lastTrade(SnapshotLastTrade.builder().price("210.12").build())
+                        .lastTrade(SnapshotLastTrade.builder().price("210.12").size(100).build())
                         .name("Apple Inc.")
                         .session(
                             SnapshotSession.builder()
@@ -102,7 +102,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                             .bidSize(300)
                             .build()
                     )
-                    .lastTrade(SnapshotLastTrade.builder().price("210.12").build())
+                    .lastTrade(SnapshotLastTrade.builder().price("210.12").size(100).build())
                     .name("Apple Inc.")
                     .session(
                         SnapshotSession.builder()
@@ -155,7 +155,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                                 .bidSize(300)
                                 .build()
                         )
-                        .lastTrade(SnapshotLastTrade.builder().price("210.12").build())
+                        .lastTrade(SnapshotLastTrade.builder().price("210.12").size(100).build())
                         .name("Apple Inc.")
                         .session(
                             SnapshotSession.builder()
