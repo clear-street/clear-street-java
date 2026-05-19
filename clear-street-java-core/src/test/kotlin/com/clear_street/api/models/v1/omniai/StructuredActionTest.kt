@@ -5,7 +5,6 @@ package com.clear_street.api.models.v1.omniai
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.SecurityType
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementAgreementKey
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCode
 import com.clear_street.api.models.v1.orders.NewOrderRequest
@@ -32,7 +31,6 @@ internal class StructuredActionTest {
                     PrefillOrderAction.PrefillNewOrderAction.builder()
                         .addOrder(
                             NewOrderRequest.builder()
-                                .instrumentType(SecurityType.COMMON_STOCK)
                                 .orderType(RequestOrderType.LIMIT)
                                 .quantity("100")
                                 .side(Side.BUY)
@@ -73,7 +71,6 @@ internal class StructuredActionTest {
                         PrefillOrderAction.PrefillNewOrderAction.builder()
                             .addOrder(
                                 NewOrderRequest.builder()
-                                    .instrumentType(SecurityType.COMMON_STOCK)
                                     .orderType(RequestOrderType.LIMIT)
                                     .quantity("100")
                                     .side(Side.BUY)

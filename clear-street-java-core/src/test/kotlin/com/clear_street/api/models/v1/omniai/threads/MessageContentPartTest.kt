@@ -5,7 +5,6 @@ package com.clear_street.api.models.v1.omniai.threads
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.SecurityType
 import com.clear_street.api.models.v1.omniai.ActionButton
 import com.clear_street.api.models.v1.omniai.ChartPayload
 import com.clear_street.api.models.v1.omniai.ChartPoint
@@ -80,7 +79,6 @@ internal class MessageContentPartTest {
                             PrefillOrderAction.PrefillNewOrderAction.builder()
                                 .addOrder(
                                     NewOrderRequest.builder()
-                                        .instrumentType(SecurityType.COMMON_STOCK)
                                         .orderType(RequestOrderType.LIMIT)
                                         .quantity("100")
                                         .side(Side.BUY)
@@ -130,7 +128,6 @@ internal class MessageContentPartTest {
                                 PrefillOrderAction.PrefillNewOrderAction.builder()
                                     .addOrder(
                                         NewOrderRequest.builder()
-                                            .instrumentType(SecurityType.COMMON_STOCK)
                                             .orderType(RequestOrderType.LIMIT)
                                             .quantity("100")
                                             .side(Side.BUY)

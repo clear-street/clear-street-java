@@ -5,7 +5,6 @@ package com.clear_street.api.models.v1.omniai
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.SecurityType
 import com.clear_street.api.models.v1.orders.CancelOrderRequest
 import com.clear_street.api.models.v1.orders.NewOrderRequest
 import com.clear_street.api.models.v1.orders.PositionEffect
@@ -29,7 +28,6 @@ internal class PrefillOrderActionTest {
             PrefillOrderAction.PrefillNewOrderAction.builder()
                 .addOrder(
                     NewOrderRequest.builder()
-                        .instrumentType(SecurityType.COMMON_STOCK)
                         .orderType(RequestOrderType.LIMIT)
                         .quantity("100")
                         .side(Side.BUY)
@@ -64,7 +62,6 @@ internal class PrefillOrderActionTest {
                 PrefillOrderAction.PrefillNewOrderAction.builder()
                     .addOrder(
                         NewOrderRequest.builder()
-                            .instrumentType(SecurityType.COMMON_STOCK)
                             .orderType(RequestOrderType.LIMIT)
                             .quantity("100")
                             .side(Side.BUY)
