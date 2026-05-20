@@ -26,6 +26,7 @@ private constructor(
     private val countryOfIssue: JsonField<String>,
     private val currency: JsonField<String>,
     private val easyToBorrow: JsonField<Boolean>,
+    private val isFractionable: JsonField<Boolean>,
     private val isLiquidationOnly: JsonField<Boolean>,
     private val isMarginable: JsonField<Boolean>,
     private val isRestricted: JsonField<Boolean>,
@@ -56,6 +57,9 @@ private constructor(
         @JsonProperty("easy_to_borrow")
         @ExcludeMissing
         easyToBorrow: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("is_fractionable")
+        @ExcludeMissing
+        isFractionable: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("is_liquidation_only")
         @ExcludeMissing
         isLiquidationOnly: JsonField<Boolean> = JsonMissing.of(),
@@ -102,6 +106,7 @@ private constructor(
         countryOfIssue,
         currency,
         easyToBorrow,
+        isFractionable,
         isLiquidationOnly,
         isMarginable,
         isRestricted,
@@ -153,6 +158,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun easyToBorrow(): Boolean = easyToBorrow.getRequired("easy_to_borrow")
+
+    /**
+     * Indicates if the instrument supports fractional-quantity orders
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun isFractionable(): Boolean = isFractionable.getRequired("is_fractionable")
 
     /**
      * Indicates if the instrument is liquidation only and cannot be bought
@@ -325,6 +338,15 @@ private constructor(
     fun _easyToBorrow(): JsonField<Boolean> = easyToBorrow
 
     /**
+     * Returns the raw JSON value of [isFractionable].
+     *
+     * Unlike [isFractionable], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("is_fractionable")
+    @ExcludeMissing
+    fun _isFractionable(): JsonField<Boolean> = isFractionable
+
+    /**
      * Returns the raw JSON value of [isLiquidationOnly].
      *
      * Unlike [isLiquidationOnly], this method doesn't throw if the JSON field has an unexpected
@@ -491,6 +513,7 @@ private constructor(
          * .countryOfIssue()
          * .currency()
          * .easyToBorrow()
+         * .isFractionable()
          * .isLiquidationOnly()
          * .isMarginable()
          * .isRestricted()
@@ -511,6 +534,7 @@ private constructor(
         private var countryOfIssue: JsonField<String>? = null
         private var currency: JsonField<String>? = null
         private var easyToBorrow: JsonField<Boolean>? = null
+        private var isFractionable: JsonField<Boolean>? = null
         private var isLiquidationOnly: JsonField<Boolean>? = null
         private var isMarginable: JsonField<Boolean>? = null
         private var isRestricted: JsonField<Boolean>? = null
@@ -536,6 +560,7 @@ private constructor(
             countryOfIssue = instrumentCore.countryOfIssue
             currency = instrumentCore.currency
             easyToBorrow = instrumentCore.easyToBorrow
+            isFractionable = instrumentCore.isFractionable
             isLiquidationOnly = instrumentCore.isLiquidationOnly
             isMarginable = instrumentCore.isMarginable
             isRestricted = instrumentCore.isRestricted
@@ -604,6 +629,20 @@ private constructor(
          */
         fun easyToBorrow(easyToBorrow: JsonField<Boolean>) = apply {
             this.easyToBorrow = easyToBorrow
+        }
+
+        /** Indicates if the instrument supports fractional-quantity orders */
+        fun isFractionable(isFractionable: Boolean) = isFractionable(JsonField.of(isFractionable))
+
+        /**
+         * Sets [Builder.isFractionable] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.isFractionable] with a well-typed [Boolean] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun isFractionable(isFractionable: JsonField<Boolean>) = apply {
+            this.isFractionable = isFractionable
         }
 
         /** Indicates if the instrument is liquidation only and cannot be bought */
@@ -896,6 +935,7 @@ private constructor(
          * .countryOfIssue()
          * .currency()
          * .easyToBorrow()
+         * .isFractionable()
          * .isLiquidationOnly()
          * .isMarginable()
          * .isRestricted()
@@ -914,6 +954,7 @@ private constructor(
                 checkRequired("countryOfIssue", countryOfIssue),
                 checkRequired("currency", currency),
                 checkRequired("easyToBorrow", easyToBorrow),
+                checkRequired("isFractionable", isFractionable),
                 checkRequired("isLiquidationOnly", isLiquidationOnly),
                 checkRequired("isMarginable", isMarginable),
                 checkRequired("isRestricted", isRestricted),
@@ -954,6 +995,7 @@ private constructor(
         countryOfIssue()
         currency()
         easyToBorrow()
+        isFractionable()
         isLiquidationOnly()
         isMarginable()
         isRestricted()
@@ -993,6 +1035,7 @@ private constructor(
             (if (countryOfIssue.asKnown().isPresent) 1 else 0) +
             (if (currency.asKnown().isPresent) 1 else 0) +
             (if (easyToBorrow.asKnown().isPresent) 1 else 0) +
+            (if (isFractionable.asKnown().isPresent) 1 else 0) +
             (if (isLiquidationOnly.asKnown().isPresent) 1 else 0) +
             (if (isMarginable.asKnown().isPresent) 1 else 0) +
             (if (isRestricted.asKnown().isPresent) 1 else 0) +
@@ -1021,6 +1064,7 @@ private constructor(
             countryOfIssue == other.countryOfIssue &&
             currency == other.currency &&
             easyToBorrow == other.easyToBorrow &&
+            isFractionable == other.isFractionable &&
             isLiquidationOnly == other.isLiquidationOnly &&
             isMarginable == other.isMarginable &&
             isRestricted == other.isRestricted &&
@@ -1047,6 +1091,7 @@ private constructor(
             countryOfIssue,
             currency,
             easyToBorrow,
+            isFractionable,
             isLiquidationOnly,
             isMarginable,
             isRestricted,
@@ -1071,5 +1116,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, additionalProperties=$additionalProperties}"
+        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, additionalProperties=$additionalProperties}"
 }
