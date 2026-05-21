@@ -3,39 +3,28 @@
 package com.clear_street.api.services.async
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.core.RequestOptions
-import com.clear_street.api.core.handlers.emptyHandler
-import com.clear_street.api.core.handlers.errorBodyHandler
-import com.clear_street.api.core.handlers.errorHandler
-import com.clear_street.api.core.http.HttpMethod
-import com.clear_street.api.core.http.HttpRequest
-import com.clear_street.api.core.http.HttpResponse
-import com.clear_street.api.core.http.HttpResponse.Handler
-import com.clear_street.api.core.http.parseable
-import com.clear_street.api.core.prepareAsync
-import com.clear_street.api.models.v1.V1WebsocketHandlerParams
 import com.clear_street.api.services.async.v1.AccountServiceAsync
 import com.clear_street.api.services.async.v1.AccountServiceAsyncImpl
+import com.clear_street.api.services.async.v1.ApiVersionServiceAsync
+import com.clear_street.api.services.async.v1.ApiVersionServiceAsyncImpl
 import com.clear_street.api.services.async.v1.CalendarServiceAsync
 import com.clear_street.api.services.async.v1.CalendarServiceAsyncImpl
-import com.clear_street.api.services.async.v1.ClockServiceAsync
-import com.clear_street.api.services.async.v1.ClockServiceAsyncImpl
+import com.clear_street.api.services.async.v1.InstrumentDataServiceAsync
+import com.clear_street.api.services.async.v1.InstrumentDataServiceAsyncImpl
 import com.clear_street.api.services.async.v1.InstrumentServiceAsync
 import com.clear_street.api.services.async.v1.InstrumentServiceAsyncImpl
-import com.clear_street.api.services.async.v1.MarketDataServiceAsync
-import com.clear_street.api.services.async.v1.MarketDataServiceAsyncImpl
-import com.clear_street.api.services.async.v1.NewsServiceAsync
-import com.clear_street.api.services.async.v1.NewsServiceAsyncImpl
 import com.clear_street.api.services.async.v1.OmniAiServiceAsync
 import com.clear_street.api.services.async.v1.OmniAiServiceAsyncImpl
-import com.clear_street.api.services.async.v1.VersionServiceAsync
-import com.clear_street.api.services.async.v1.VersionServiceAsyncImpl
+import com.clear_street.api.services.async.v1.OrderServiceAsync
+import com.clear_street.api.services.async.v1.OrderServiceAsyncImpl
+import com.clear_street.api.services.async.v1.PositionServiceAsync
+import com.clear_street.api.services.async.v1.PositionServiceAsyncImpl
 import com.clear_street.api.services.async.v1.WatchlistServiceAsync
 import com.clear_street.api.services.async.v1.WatchlistServiceAsyncImpl
-import java.util.concurrent.CompletableFuture
+import com.clear_street.api.services.async.v1.WebsocketServiceAsync
+import com.clear_street.api.services.async.v1.WebsocketServiceAsyncImpl
 import java.util.function.Consumer
 
-/** Active Websocket. */
 class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     V1ServiceAsync {
 
@@ -45,26 +34,32 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     private val accounts: AccountServiceAsync by lazy { AccountServiceAsyncImpl(clientOptions) }
 
-    private val calendars: CalendarServiceAsync by lazy { CalendarServiceAsyncImpl(clientOptions) }
+    private val apiVersion: ApiVersionServiceAsync by lazy {
+        ApiVersionServiceAsyncImpl(clientOptions)
+    }
 
-    private val clock: ClockServiceAsync by lazy { ClockServiceAsyncImpl(clientOptions) }
+    private val calendar: CalendarServiceAsync by lazy { CalendarServiceAsyncImpl(clientOptions) }
+
+    private val instrumentData: InstrumentDataServiceAsync by lazy {
+        InstrumentDataServiceAsyncImpl(clientOptions)
+    }
 
     private val instruments: InstrumentServiceAsync by lazy {
         InstrumentServiceAsyncImpl(clientOptions)
     }
 
-    private val marketData: MarketDataServiceAsync by lazy {
-        MarketDataServiceAsyncImpl(clientOptions)
-    }
-
-    private val news: NewsServiceAsync by lazy { NewsServiceAsyncImpl(clientOptions) }
-
     private val omniAi: OmniAiServiceAsync by lazy { OmniAiServiceAsyncImpl(clientOptions) }
 
-    private val version: VersionServiceAsync by lazy { VersionServiceAsyncImpl(clientOptions) }
+    private val orders: OrderServiceAsync by lazy { OrderServiceAsyncImpl(clientOptions) }
 
-    private val watchlists: WatchlistServiceAsync by lazy {
+    private val positions: PositionServiceAsync by lazy { PositionServiceAsyncImpl(clientOptions) }
+
+    private val watchlist: WatchlistServiceAsync by lazy {
         WatchlistServiceAsyncImpl(clientOptions)
+    }
+
+    private val websocket: WebsocketServiceAsync by lazy {
+        WebsocketServiceAsyncImpl(clientOptions)
     }
 
     override fun withRawResponse(): V1ServiceAsync.WithRawResponse = withRawResponse
@@ -75,74 +70,73 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     /** Manage trading accounts, balances, and portfolio history. */
     override fun accounts(): AccountServiceAsync = accounts
 
-    override fun calendars(): CalendarServiceAsync = calendars
+    /** Endpoints for API service metadata. */
+    override fun apiVersion(): ApiVersionServiceAsync = apiVersion
 
-    /** Access financial calendars for events like earnings, dividends, and splits. */
-    override fun clock(): ClockServiceAsync = clock
+    /** Access clocks and financial calendars for market sessions and events. */
+    override fun calendar(): CalendarServiceAsync = calendar
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Retrieve instrument analytics, market data, news, and related reference data. */
+    override fun instrumentData(): InstrumentDataServiceAsync = instrumentData
+
+    /** Retrieve core details and discovery endpoints for tradable instruments. */
     override fun instruments(): InstrumentServiceAsync = instruments
-
-    override fun marketData(): MarketDataServiceAsync = marketData
-
-    /** Retrieve market news and related instrument metadata. */
-    override fun news(): NewsServiceAsync = news
 
     override fun omniAi(): OmniAiServiceAsync = omniAi
 
-    /** Endpoints for API service metadata. */
-    override fun version(): VersionServiceAsync = version
+    /** Place, monitor, and manage trading orders. */
+    override fun orders(): OrderServiceAsync = orders
+
+    /** View positions and manage position instructions. */
+    override fun positions(): PositionServiceAsync = positions
 
     /** Create and manage watchlists. */
-    override fun watchlists(): WatchlistServiceAsync = watchlists
+    override fun watchlist(): WatchlistServiceAsync = watchlist
 
-    override fun websocketHandler(
-        params: V1WebsocketHandlerParams,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<Void?> =
-        // get /v1/ws
-        withRawResponse().websocketHandler(params, requestOptions).thenAccept {}
+    /** Active Websocket. */
+    override fun websocket(): WebsocketServiceAsync = websocket
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1ServiceAsync.WithRawResponse {
-
-        private val errorHandler: Handler<HttpResponse> =
-            errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
         private val accounts: AccountServiceAsync.WithRawResponse by lazy {
             AccountServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val calendars: CalendarServiceAsync.WithRawResponse by lazy {
+        private val apiVersion: ApiVersionServiceAsync.WithRawResponse by lazy {
+            ApiVersionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val calendar: CalendarServiceAsync.WithRawResponse by lazy {
             CalendarServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val clock: ClockServiceAsync.WithRawResponse by lazy {
-            ClockServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        private val instrumentData: InstrumentDataServiceAsync.WithRawResponse by lazy {
+            InstrumentDataServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val instruments: InstrumentServiceAsync.WithRawResponse by lazy {
             InstrumentServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val marketData: MarketDataServiceAsync.WithRawResponse by lazy {
-            MarketDataServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
-        private val news: NewsServiceAsync.WithRawResponse by lazy {
-            NewsServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val omniAi: OmniAiServiceAsync.WithRawResponse by lazy {
             OmniAiServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val version: VersionServiceAsync.WithRawResponse by lazy {
-            VersionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        private val orders: OrderServiceAsync.WithRawResponse by lazy {
+            OrderServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val watchlists: WatchlistServiceAsync.WithRawResponse by lazy {
+        private val positions: PositionServiceAsync.WithRawResponse by lazy {
+            PositionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val watchlist: WatchlistServiceAsync.WithRawResponse by lazy {
             WatchlistServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val websocket: WebsocketServiceAsync.WithRawResponse by lazy {
+            WebsocketServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -155,48 +149,30 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         /** Manage trading accounts, balances, and portfolio history. */
         override fun accounts(): AccountServiceAsync.WithRawResponse = accounts
 
-        override fun calendars(): CalendarServiceAsync.WithRawResponse = calendars
+        /** Endpoints for API service metadata. */
+        override fun apiVersion(): ApiVersionServiceAsync.WithRawResponse = apiVersion
 
-        /** Access financial calendars for events like earnings, dividends, and splits. */
-        override fun clock(): ClockServiceAsync.WithRawResponse = clock
+        /** Access clocks and financial calendars for market sessions and events. */
+        override fun calendar(): CalendarServiceAsync.WithRawResponse = calendar
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Retrieve instrument analytics, market data, news, and related reference data. */
+        override fun instrumentData(): InstrumentDataServiceAsync.WithRawResponse = instrumentData
+
+        /** Retrieve core details and discovery endpoints for tradable instruments. */
         override fun instruments(): InstrumentServiceAsync.WithRawResponse = instruments
-
-        override fun marketData(): MarketDataServiceAsync.WithRawResponse = marketData
-
-        /** Retrieve market news and related instrument metadata. */
-        override fun news(): NewsServiceAsync.WithRawResponse = news
 
         override fun omniAi(): OmniAiServiceAsync.WithRawResponse = omniAi
 
-        /** Endpoints for API service metadata. */
-        override fun version(): VersionServiceAsync.WithRawResponse = version
+        /** Place, monitor, and manage trading orders. */
+        override fun orders(): OrderServiceAsync.WithRawResponse = orders
+
+        /** View positions and manage position instructions. */
+        override fun positions(): PositionServiceAsync.WithRawResponse = positions
 
         /** Create and manage watchlists. */
-        override fun watchlists(): WatchlistServiceAsync.WithRawResponse = watchlists
+        override fun watchlist(): WatchlistServiceAsync.WithRawResponse = watchlist
 
-        private val websocketHandlerHandler: Handler<Void?> = emptyHandler()
-
-        override fun websocketHandler(
-            params: V1WebsocketHandlerParams,
-            requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponse> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.GET)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("v1", "ws")
-                    .build()
-                    .prepareAsync(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            return request
-                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
-                .thenApply { response ->
-                    errorHandler.handle(response).parseable {
-                        response.use { websocketHandlerHandler.handle(it) }
-                    }
-                }
-        }
+        /** Active Websocket. */
+        override fun websocket(): WebsocketServiceAsync.WithRawResponse = websocket
     }
 }

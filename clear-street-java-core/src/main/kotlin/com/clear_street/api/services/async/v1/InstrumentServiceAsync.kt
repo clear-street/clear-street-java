@@ -9,19 +9,14 @@ import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdPar
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentByIdResponse
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsParams
 import com.clear_street.api.models.v1.instruments.InstrumentGetInstrumentsResponse
+import com.clear_street.api.models.v1.instruments.InstrumentGetOptionContractsParams
+import com.clear_street.api.models.v1.instruments.InstrumentGetOptionContractsResponse
 import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsParams
 import com.clear_street.api.models.v1.instruments.InstrumentSearchInstrumentsResponse
-import com.clear_street.api.services.async.v1.instruments.AnalystReportingServiceAsync
-import com.clear_street.api.services.async.v1.instruments.BalanceSheetServiceAsync
-import com.clear_street.api.services.async.v1.instruments.CashFlowStatementServiceAsync
-import com.clear_street.api.services.async.v1.instruments.EventServiceAsync
-import com.clear_street.api.services.async.v1.instruments.FundamentalServiceAsync
-import com.clear_street.api.services.async.v1.instruments.IncomeStatementServiceAsync
-import com.clear_street.api.services.async.v1.instruments.OptionServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/** Retrieve details and lists of tradable instruments. */
+/** Retrieve core details and discovery endpoints for tradable instruments. */
 interface InstrumentServiceAsync {
 
     /**
@@ -35,27 +30,6 @@ interface InstrumentServiceAsync {
      * The original service is not modified.
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): InstrumentServiceAsync
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun analystReporting(): AnalystReportingServiceAsync
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun balanceSheets(): BalanceSheetServiceAsync
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun cashFlowStatements(): CashFlowStatementServiceAsync
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun events(): EventServiceAsync
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun fundamentals(): FundamentalServiceAsync
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun incomeStatements(): IncomeStatementServiceAsync
-
-    /** Retrieve details and lists of tradable instruments. */
-    fun options(): OptionServiceAsync
 
     /** Retrieves detailed information for a specific instrument. */
     fun getInstrumentById(
@@ -120,6 +94,33 @@ interface InstrumentServiceAsync {
         getInstruments(InstrumentGetInstrumentsParams.none(), requestOptions)
 
     /**
+     * List options contracts.
+     *
+     * Returns options contracts for a given underlier with options-specific metadata. Exactly one
+     * underlier identifier must be provided.
+     */
+    fun getOptionContracts(): CompletableFuture<InstrumentGetOptionContractsResponse> =
+        getOptionContracts(InstrumentGetOptionContractsParams.none())
+
+    /** @see getOptionContracts */
+    fun getOptionContracts(
+        params: InstrumentGetOptionContractsParams = InstrumentGetOptionContractsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<InstrumentGetOptionContractsResponse>
+
+    /** @see getOptionContracts */
+    fun getOptionContracts(
+        params: InstrumentGetOptionContractsParams = InstrumentGetOptionContractsParams.none()
+    ): CompletableFuture<InstrumentGetOptionContractsResponse> =
+        getOptionContracts(params, RequestOptions.none())
+
+    /** @see getOptionContracts */
+    fun getOptionContracts(
+        requestOptions: RequestOptions
+    ): CompletableFuture<InstrumentGetOptionContractsResponse> =
+        getOptionContracts(InstrumentGetOptionContractsParams.none(), requestOptions)
+
+    /**
      * Search instruments by symbol, alternate identifier, or company name.
      *
      * The `q` parameter is case-insensitive and supports ticker symbols, alternate identifiers such
@@ -155,27 +156,6 @@ interface InstrumentServiceAsync {
         fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): InstrumentServiceAsync.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun analystReporting(): AnalystReportingServiceAsync.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun balanceSheets(): BalanceSheetServiceAsync.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun cashFlowStatements(): CashFlowStatementServiceAsync.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun events(): EventServiceAsync.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun fundamentals(): FundamentalServiceAsync.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun incomeStatements(): IncomeStatementServiceAsync.WithRawResponse
-
-        /** Retrieve details and lists of tradable instruments. */
-        fun options(): OptionServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /v1/instruments/{instrument_id}`, but is otherwise
@@ -248,6 +228,32 @@ interface InstrumentServiceAsync {
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<InstrumentGetInstrumentsResponse>> =
             getInstruments(InstrumentGetInstrumentsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /v1/instruments/options/contracts`, but is otherwise
+         * the same as [InstrumentServiceAsync.getOptionContracts].
+         */
+        fun getOptionContracts():
+            CompletableFuture<HttpResponseFor<InstrumentGetOptionContractsResponse>> =
+            getOptionContracts(InstrumentGetOptionContractsParams.none())
+
+        /** @see getOptionContracts */
+        fun getOptionContracts(
+            params: InstrumentGetOptionContractsParams = InstrumentGetOptionContractsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<InstrumentGetOptionContractsResponse>>
+
+        /** @see getOptionContracts */
+        fun getOptionContracts(
+            params: InstrumentGetOptionContractsParams = InstrumentGetOptionContractsParams.none()
+        ): CompletableFuture<HttpResponseFor<InstrumentGetOptionContractsResponse>> =
+            getOptionContracts(params, RequestOptions.none())
+
+        /** @see getOptionContracts */
+        fun getOptionContracts(
+            requestOptions: RequestOptions
+        ): CompletableFuture<HttpResponseFor<InstrumentGetOptionContractsResponse>> =
+            getOptionContracts(InstrumentGetOptionContractsParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/instruments/search`, but is otherwise the same

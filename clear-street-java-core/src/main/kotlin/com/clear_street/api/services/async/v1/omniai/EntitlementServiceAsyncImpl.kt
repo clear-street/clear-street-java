@@ -20,6 +20,8 @@ import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntit
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsResponse
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementParams
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementResponse
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementAgreementsParams
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementAgreementsResponse
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
 import com.clear_street.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsResponse
 import java.util.concurrent.CompletableFuture
@@ -30,7 +32,7 @@ import kotlin.jvm.optionals.getOrNull
  * Thread-centric AI assistant for conversational trading. Create threads to start conversations,
  * poll response objects for in-progress output, and read finalized messages from thread history.
  * Thread/message/response endpoints require an explicit account_id. Entitlement endpoints are
- * caller-scoped and use trading_account_ids.
+ * caller-scoped and use account_ids.
  */
 class EntitlementServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     EntitlementServiceAsync {
@@ -57,6 +59,13 @@ class EntitlementServiceAsyncImpl internal constructor(private val clientOptions
     ): CompletableFuture<EntitlementDeleteEntitlementResponse> =
         // delete /v1/omni-ai/entitlements/{entitlement_id}
         withRawResponse().deleteEntitlement(params, requestOptions).thenApply { it.parse() }
+
+    override fun getEntitlementAgreements(
+        params: EntitlementGetEntitlementAgreementsParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<EntitlementGetEntitlementAgreementsResponse> =
+        // get /v1/omni-ai/entitlement-agreements
+        withRawResponse().getEntitlementAgreements(params, requestOptions).thenApply { it.parse() }
 
     override fun getEntitlements(
         params: EntitlementGetEntitlementsParams,
@@ -134,6 +143,37 @@ class EntitlementServiceAsyncImpl internal constructor(private val clientOptions
                     errorHandler.handle(response).parseable {
                         response
                             .use { deleteEntitlementHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val getEntitlementAgreementsHandler:
+            Handler<EntitlementGetEntitlementAgreementsResponse> =
+            jsonHandler<EntitlementGetEntitlementAgreementsResponse>(clientOptions.jsonMapper)
+
+        override fun getEntitlementAgreements(
+            params: EntitlementGetEntitlementAgreementsParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<EntitlementGetEntitlementAgreementsResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "omni-ai", "entitlement-agreements")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { getEntitlementAgreementsHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

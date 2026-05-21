@@ -5,15 +5,18 @@ package com.clear_street.api.services.blocking.v1
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
-import com.clear_street.api.models.v1.watchlists.WatchlistCreateWatchlistParams
-import com.clear_street.api.models.v1.watchlists.WatchlistCreateWatchlistResponse
-import com.clear_street.api.models.v1.watchlists.WatchlistDeleteWatchlistParams
-import com.clear_street.api.models.v1.watchlists.WatchlistDeleteWatchlistResponse
-import com.clear_street.api.models.v1.watchlists.WatchlistGetWatchlistByIdParams
-import com.clear_street.api.models.v1.watchlists.WatchlistGetWatchlistByIdResponse
-import com.clear_street.api.models.v1.watchlists.WatchlistGetWatchlistsParams
-import com.clear_street.api.models.v1.watchlists.WatchlistGetWatchlistsResponse
-import com.clear_street.api.services.blocking.v1.watchlists.ItemService
+import com.clear_street.api.models.v1.watchlist.WatchlistAddWatchlistItemParams
+import com.clear_street.api.models.v1.watchlist.WatchlistAddWatchlistItemResponse
+import com.clear_street.api.models.v1.watchlist.WatchlistCreateWatchlistParams
+import com.clear_street.api.models.v1.watchlist.WatchlistCreateWatchlistResponse
+import com.clear_street.api.models.v1.watchlist.WatchlistDeleteWatchlistItemParams
+import com.clear_street.api.models.v1.watchlist.WatchlistDeleteWatchlistItemResponse
+import com.clear_street.api.models.v1.watchlist.WatchlistDeleteWatchlistParams
+import com.clear_street.api.models.v1.watchlist.WatchlistDeleteWatchlistResponse
+import com.clear_street.api.models.v1.watchlist.WatchlistGetWatchlistByIdParams
+import com.clear_street.api.models.v1.watchlist.WatchlistGetWatchlistByIdResponse
+import com.clear_street.api.models.v1.watchlist.WatchlistGetWatchlistsParams
+import com.clear_street.api.models.v1.watchlist.WatchlistGetWatchlistsResponse
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -32,8 +35,31 @@ interface WatchlistService {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): WatchlistService
 
-    /** Create and manage watchlists. */
-    fun items(): ItemService
+    /** Add an instrument to a watchlist */
+    fun addWatchlistItem(
+        watchlistId: String,
+        params: WatchlistAddWatchlistItemParams,
+    ): WatchlistAddWatchlistItemResponse =
+        addWatchlistItem(watchlistId, params, RequestOptions.none())
+
+    /** @see addWatchlistItem */
+    fun addWatchlistItem(
+        watchlistId: String,
+        params: WatchlistAddWatchlistItemParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): WatchlistAddWatchlistItemResponse =
+        addWatchlistItem(params.toBuilder().watchlistId(watchlistId).build(), requestOptions)
+
+    /** @see addWatchlistItem */
+    fun addWatchlistItem(
+        params: WatchlistAddWatchlistItemParams
+    ): WatchlistAddWatchlistItemResponse = addWatchlistItem(params, RequestOptions.none())
+
+    /** @see addWatchlistItem */
+    fun addWatchlistItem(
+        params: WatchlistAddWatchlistItemParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): WatchlistAddWatchlistItemResponse
 
     /** Create Watchlist */
     fun createWatchlist(params: WatchlistCreateWatchlistParams): WatchlistCreateWatchlistResponse =
@@ -80,6 +106,32 @@ interface WatchlistService {
         requestOptions: RequestOptions,
     ): WatchlistDeleteWatchlistResponse =
         deleteWatchlist(watchlistId, WatchlistDeleteWatchlistParams.none(), requestOptions)
+
+    /** Delete an instrument from a watchlist */
+    fun deleteWatchlistItem(
+        itemId: String,
+        params: WatchlistDeleteWatchlistItemParams,
+    ): WatchlistDeleteWatchlistItemResponse =
+        deleteWatchlistItem(itemId, params, RequestOptions.none())
+
+    /** @see deleteWatchlistItem */
+    fun deleteWatchlistItem(
+        itemId: String,
+        params: WatchlistDeleteWatchlistItemParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): WatchlistDeleteWatchlistItemResponse =
+        deleteWatchlistItem(params.toBuilder().itemId(itemId).build(), requestOptions)
+
+    /** @see deleteWatchlistItem */
+    fun deleteWatchlistItem(
+        params: WatchlistDeleteWatchlistItemParams
+    ): WatchlistDeleteWatchlistItemResponse = deleteWatchlistItem(params, RequestOptions.none())
+
+    /** @see deleteWatchlistItem */
+    fun deleteWatchlistItem(
+        params: WatchlistDeleteWatchlistItemParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): WatchlistDeleteWatchlistItemResponse
 
     /** Get a watchlist by ID with all its items */
     fun getWatchlistById(watchlistId: String): WatchlistGetWatchlistByIdResponse =
@@ -147,8 +199,39 @@ interface WatchlistService {
          */
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): WatchlistService.WithRawResponse
 
-        /** Create and manage watchlists. */
-        fun items(): ItemService.WithRawResponse
+        /**
+         * Returns a raw HTTP response for `post /v1/watchlists/{watchlist_id}/items`, but is
+         * otherwise the same as [WatchlistService.addWatchlistItem].
+         */
+        @MustBeClosed
+        fun addWatchlistItem(
+            watchlistId: String,
+            params: WatchlistAddWatchlistItemParams,
+        ): HttpResponseFor<WatchlistAddWatchlistItemResponse> =
+            addWatchlistItem(watchlistId, params, RequestOptions.none())
+
+        /** @see addWatchlistItem */
+        @MustBeClosed
+        fun addWatchlistItem(
+            watchlistId: String,
+            params: WatchlistAddWatchlistItemParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<WatchlistAddWatchlistItemResponse> =
+            addWatchlistItem(params.toBuilder().watchlistId(watchlistId).build(), requestOptions)
+
+        /** @see addWatchlistItem */
+        @MustBeClosed
+        fun addWatchlistItem(
+            params: WatchlistAddWatchlistItemParams
+        ): HttpResponseFor<WatchlistAddWatchlistItemResponse> =
+            addWatchlistItem(params, RequestOptions.none())
+
+        /** @see addWatchlistItem */
+        @MustBeClosed
+        fun addWatchlistItem(
+            params: WatchlistAddWatchlistItemParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<WatchlistAddWatchlistItemResponse>
 
         /**
          * Returns a raw HTTP response for `post /v1/watchlists`, but is otherwise the same as
@@ -215,6 +298,40 @@ interface WatchlistService {
             requestOptions: RequestOptions,
         ): HttpResponseFor<WatchlistDeleteWatchlistResponse> =
             deleteWatchlist(watchlistId, WatchlistDeleteWatchlistParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `delete /v1/watchlists/{watchlist_id}/items/{item_id}`,
+         * but is otherwise the same as [WatchlistService.deleteWatchlistItem].
+         */
+        @MustBeClosed
+        fun deleteWatchlistItem(
+            itemId: String,
+            params: WatchlistDeleteWatchlistItemParams,
+        ): HttpResponseFor<WatchlistDeleteWatchlistItemResponse> =
+            deleteWatchlistItem(itemId, params, RequestOptions.none())
+
+        /** @see deleteWatchlistItem */
+        @MustBeClosed
+        fun deleteWatchlistItem(
+            itemId: String,
+            params: WatchlistDeleteWatchlistItemParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<WatchlistDeleteWatchlistItemResponse> =
+            deleteWatchlistItem(params.toBuilder().itemId(itemId).build(), requestOptions)
+
+        /** @see deleteWatchlistItem */
+        @MustBeClosed
+        fun deleteWatchlistItem(
+            params: WatchlistDeleteWatchlistItemParams
+        ): HttpResponseFor<WatchlistDeleteWatchlistItemResponse> =
+            deleteWatchlistItem(params, RequestOptions.none())
+
+        /** @see deleteWatchlistItem */
+        @MustBeClosed
+        fun deleteWatchlistItem(
+            params: WatchlistDeleteWatchlistItemParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<WatchlistDeleteWatchlistItemResponse>
 
         /**
          * Returns a raw HTTP response for `get /v1/watchlists/{watchlist_id}`, but is otherwise the

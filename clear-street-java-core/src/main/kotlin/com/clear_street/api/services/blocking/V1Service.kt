@@ -3,22 +3,18 @@
 package com.clear_street.api.services.blocking
 
 import com.clear_street.api.core.ClientOptions
-import com.clear_street.api.core.RequestOptions
-import com.clear_street.api.core.http.HttpResponse
-import com.clear_street.api.models.v1.V1WebsocketHandlerParams
 import com.clear_street.api.services.blocking.v1.AccountService
+import com.clear_street.api.services.blocking.v1.ApiVersionService
 import com.clear_street.api.services.blocking.v1.CalendarService
-import com.clear_street.api.services.blocking.v1.ClockService
+import com.clear_street.api.services.blocking.v1.InstrumentDataService
 import com.clear_street.api.services.blocking.v1.InstrumentService
-import com.clear_street.api.services.blocking.v1.MarketDataService
-import com.clear_street.api.services.blocking.v1.NewsService
 import com.clear_street.api.services.blocking.v1.OmniAiService
-import com.clear_street.api.services.blocking.v1.VersionService
+import com.clear_street.api.services.blocking.v1.OrderService
+import com.clear_street.api.services.blocking.v1.PositionService
 import com.clear_street.api.services.blocking.v1.WatchlistService
-import com.google.errorprone.annotations.MustBeClosed
+import com.clear_street.api.services.blocking.v1.WebsocketService
 import java.util.function.Consumer
 
-/** Active Websocket. */
 interface V1Service {
 
     /**
@@ -36,43 +32,31 @@ interface V1Service {
     /** Manage trading accounts, balances, and portfolio history. */
     fun accounts(): AccountService
 
-    fun calendars(): CalendarService
+    /** Endpoints for API service metadata. */
+    fun apiVersion(): ApiVersionService
 
-    /** Access financial calendars for events like earnings, dividends, and splits. */
-    fun clock(): ClockService
+    /** Access clocks and financial calendars for market sessions and events. */
+    fun calendar(): CalendarService
 
-    /** Retrieve details and lists of tradable instruments. */
+    /** Retrieve instrument analytics, market data, news, and related reference data. */
+    fun instrumentData(): InstrumentDataService
+
+    /** Retrieve core details and discovery endpoints for tradable instruments. */
     fun instruments(): InstrumentService
-
-    fun marketData(): MarketDataService
-
-    /** Retrieve market news and related instrument metadata. */
-    fun news(): NewsService
 
     fun omniAi(): OmniAiService
 
-    /** Endpoints for API service metadata. */
-    fun version(): VersionService
+    /** Place, monitor, and manage trading orders. */
+    fun orders(): OrderService
+
+    /** View positions and manage position instructions. */
+    fun positions(): PositionService
 
     /** Create and manage watchlists. */
-    fun watchlists(): WatchlistService
+    fun watchlist(): WatchlistService
 
-    /** Upgrade the HTTP connection to a WebSocket and echo incoming messages. */
-    fun websocketHandler() = websocketHandler(V1WebsocketHandlerParams.none())
-
-    /** @see websocketHandler */
-    fun websocketHandler(
-        params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    )
-
-    /** @see websocketHandler */
-    fun websocketHandler(params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none()) =
-        websocketHandler(params, RequestOptions.none())
-
-    /** @see websocketHandler */
-    fun websocketHandler(requestOptions: RequestOptions) =
-        websocketHandler(V1WebsocketHandlerParams.none(), requestOptions)
+    /** Active Websocket. */
+    fun websocket(): WebsocketService
 
     /** A view of [V1Service] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -87,50 +71,30 @@ interface V1Service {
         /** Manage trading accounts, balances, and portfolio history. */
         fun accounts(): AccountService.WithRawResponse
 
-        fun calendars(): CalendarService.WithRawResponse
+        /** Endpoints for API service metadata. */
+        fun apiVersion(): ApiVersionService.WithRawResponse
 
-        /** Access financial calendars for events like earnings, dividends, and splits. */
-        fun clock(): ClockService.WithRawResponse
+        /** Access clocks and financial calendars for market sessions and events. */
+        fun calendar(): CalendarService.WithRawResponse
 
-        /** Retrieve details and lists of tradable instruments. */
+        /** Retrieve instrument analytics, market data, news, and related reference data. */
+        fun instrumentData(): InstrumentDataService.WithRawResponse
+
+        /** Retrieve core details and discovery endpoints for tradable instruments. */
         fun instruments(): InstrumentService.WithRawResponse
-
-        fun marketData(): MarketDataService.WithRawResponse
-
-        /** Retrieve market news and related instrument metadata. */
-        fun news(): NewsService.WithRawResponse
 
         fun omniAi(): OmniAiService.WithRawResponse
 
-        /** Endpoints for API service metadata. */
-        fun version(): VersionService.WithRawResponse
+        /** Place, monitor, and manage trading orders. */
+        fun orders(): OrderService.WithRawResponse
+
+        /** View positions and manage position instructions. */
+        fun positions(): PositionService.WithRawResponse
 
         /** Create and manage watchlists. */
-        fun watchlists(): WatchlistService.WithRawResponse
+        fun watchlist(): WatchlistService.WithRawResponse
 
-        /**
-         * Returns a raw HTTP response for `get /v1/ws`, but is otherwise the same as
-         * [V1Service.websocketHandler].
-         */
-        @MustBeClosed
-        fun websocketHandler(): HttpResponse = websocketHandler(V1WebsocketHandlerParams.none())
-
-        /** @see websocketHandler */
-        @MustBeClosed
-        fun websocketHandler(
-            params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponse
-
-        /** @see websocketHandler */
-        @MustBeClosed
-        fun websocketHandler(
-            params: V1WebsocketHandlerParams = V1WebsocketHandlerParams.none()
-        ): HttpResponse = websocketHandler(params, RequestOptions.none())
-
-        /** @see websocketHandler */
-        @MustBeClosed
-        fun websocketHandler(requestOptions: RequestOptions): HttpResponse =
-            websocketHandler(V1WebsocketHandlerParams.none(), requestOptions)
+        /** Active Websocket. */
+        fun websocket(): WebsocketService.WithRawResponse
     }
 }

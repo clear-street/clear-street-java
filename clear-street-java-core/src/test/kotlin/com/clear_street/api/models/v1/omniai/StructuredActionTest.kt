@@ -5,13 +5,14 @@ package com.clear_street.api.models.v1.omniai
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.SecurityType
-import com.clear_street.api.models.v1.accounts.orders.NewOrderRequest
-import com.clear_street.api.models.v1.accounts.orders.PositionEffect
-import com.clear_street.api.models.v1.accounts.orders.RequestOrderType
-import com.clear_street.api.models.v1.accounts.orders.RequestTimeInForce
-import com.clear_street.api.models.v1.accounts.orders.Side
-import com.clear_street.api.models.v1.accounts.orders.TrailingOffsetType
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementAgreementKey
+import com.clear_street.api.models.v1.omniai.entitlements.EntitlementCode
+import com.clear_street.api.models.v1.orders.NewOrderRequest
+import com.clear_street.api.models.v1.orders.PositionEffect
+import com.clear_street.api.models.v1.orders.RequestOrderType
+import com.clear_street.api.models.v1.orders.RequestTimeInForce
+import com.clear_street.api.models.v1.orders.Side
+import com.clear_street.api.models.v1.orders.TrailingOffsetType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -30,7 +31,6 @@ internal class StructuredActionTest {
                     PrefillOrderAction.PrefillNewOrderAction.builder()
                         .addOrder(
                             NewOrderRequest.builder()
-                                .instrumentType(SecurityType.COMMON_STOCK)
                                 .orderType(RequestOrderType.LIMIT)
                                 .quantity("100")
                                 .side(Side.BUY)
@@ -71,7 +71,6 @@ internal class StructuredActionTest {
                         PrefillOrderAction.PrefillNewOrderAction.builder()
                             .addOrder(
                                 NewOrderRequest.builder()
-                                    .instrumentType(SecurityType.COMMON_STOCK)
                                     .orderType(RequestOrderType.LIMIT)
                                     .quantity("100")
                                     .side(Side.BUY)
@@ -234,10 +233,10 @@ internal class StructuredActionTest {
             StructuredAction.OpenEntitlementConsent.builder()
                 .openEntitlementConsent(
                     OpenEntitlementConsentAction.builder()
+                        .addAccountId(100019L)
                         .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                        .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                         .reason("Portfolio analysis requires Omni consent to access account data.")
-                        .addRequestedEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
-                        .addTradingAccountId(100019L)
                         .build()
                 )
                 .build()
@@ -258,12 +257,12 @@ internal class StructuredActionTest {
                 StructuredAction.OpenEntitlementConsent.builder()
                     .openEntitlementConsent(
                         OpenEntitlementConsentAction.builder()
+                            .addAccountId(100019L)
                             .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                            .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                             .reason(
                                 "Portfolio analysis requires Omni consent to access account data."
                             )
-                            .addRequestedEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
-                            .addTradingAccountId(100019L)
                             .build()
                     )
                     .build()

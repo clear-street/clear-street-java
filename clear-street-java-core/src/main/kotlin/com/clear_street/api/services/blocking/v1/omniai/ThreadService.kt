@@ -5,15 +5,18 @@ package com.clear_street.api.services.blocking.v1.omniai
 import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.core.RequestOptions
 import com.clear_street.api.core.http.HttpResponseFor
+import com.clear_street.api.models.v1.omniai.threads.ThreadCreateMessageParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadCreateMessageResponse
 import com.clear_street.api.models.v1.omniai.threads.ThreadCreateThreadParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadCreateThreadResponse
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetMessagesParams
+import com.clear_street.api.models.v1.omniai.threads.ThreadGetMessagesResponse
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadByIdParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadByIdResponse
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponseParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadResponseResponse
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadsParams
 import com.clear_street.api.models.v1.omniai.threads.ThreadGetThreadsResponse
-import com.clear_street.api.services.blocking.v1.omniai.threads.MessageService
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -21,7 +24,7 @@ import java.util.function.Consumer
  * Thread-centric AI assistant for conversational trading. Create threads to start conversations,
  * poll response objects for in-progress output, and read finalized messages from thread history.
  * Thread/message/response endpoints require an explicit account_id. Entitlement endpoints are
- * caller-scoped and use trading_account_ids.
+ * caller-scoped and use account_ids.
  */
 interface ThreadService {
 
@@ -38,12 +41,38 @@ interface ThreadService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ThreadService
 
     /**
-     * Thread-centric AI assistant for conversational trading. Create threads to start
-     * conversations, poll response objects for in-progress output, and read finalized messages from
-     * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
+     * Continue an existing conversation thread.
+     *
+     * Appends a new user message to the thread and starts an assistant response. Only one response
+     * may be active per thread at a time — if the previous turn is still in progress, this endpoint
+     * returns **409 Conflict**. Wait for the active response to reach a terminal status before
+     * submitting the next turn.
+     *
+     * Poll the returned `response_id` via `GET /omni-ai/responses/{response_id}` for assistant
+     * output.
      */
-    fun messages(): MessageService
+    fun createMessage(
+        threadId: String,
+        params: ThreadCreateMessageParams,
+    ): ThreadCreateMessageResponse = createMessage(threadId, params, RequestOptions.none())
+
+    /** @see createMessage */
+    fun createMessage(
+        threadId: String,
+        params: ThreadCreateMessageParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ThreadCreateMessageResponse =
+        createMessage(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+    /** @see createMessage */
+    fun createMessage(params: ThreadCreateMessageParams): ThreadCreateMessageResponse =
+        createMessage(params, RequestOptions.none())
+
+    /** @see createMessage */
+    fun createMessage(
+        params: ThreadCreateMessageParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ThreadCreateMessageResponse
 
     /**
      * Create a new conversation thread.
@@ -64,6 +93,38 @@ interface ThreadService {
         params: ThreadCreateThreadParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ThreadCreateThreadResponse
+
+    /**
+     * List finalized messages in a thread.
+     *
+     * Returns the latest page of **finalized** messages by default, with messages within each page
+     * ordered chronologically. Messages from in-progress assistant turns are excluded — use `GET
+     * /omni-ai/threads/{thread_id}/response` or `GET /omni-ai/responses/{response_id}` for live
+     * output.
+     *
+     * If the last finalized message has role `USER`, an active response likely exists and should be
+     * polled separately.
+     */
+    fun getMessages(threadId: String, params: ThreadGetMessagesParams): ThreadGetMessagesResponse =
+        getMessages(threadId, params, RequestOptions.none())
+
+    /** @see getMessages */
+    fun getMessages(
+        threadId: String,
+        params: ThreadGetMessagesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ThreadGetMessagesResponse =
+        getMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+    /** @see getMessages */
+    fun getMessages(params: ThreadGetMessagesParams): ThreadGetMessagesResponse =
+        getMessages(params, RequestOptions.none())
+
+    /** @see getMessages */
+    fun getMessages(
+        params: ThreadGetMessagesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ThreadGetMessagesResponse
 
     /**
      * Get a specific thread.
@@ -153,12 +214,38 @@ interface ThreadService {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): ThreadService.WithRawResponse
 
         /**
-         * Thread-centric AI assistant for conversational trading. Create threads to start
-         * conversations, poll response objects for in-progress output, and read finalized messages
-         * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
+         * Returns a raw HTTP response for `post /v1/omni-ai/threads/{thread_id}/messages`, but is
+         * otherwise the same as [ThreadService.createMessage].
          */
-        fun messages(): MessageService.WithRawResponse
+        @MustBeClosed
+        fun createMessage(
+            threadId: String,
+            params: ThreadCreateMessageParams,
+        ): HttpResponseFor<ThreadCreateMessageResponse> =
+            createMessage(threadId, params, RequestOptions.none())
+
+        /** @see createMessage */
+        @MustBeClosed
+        fun createMessage(
+            threadId: String,
+            params: ThreadCreateMessageParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ThreadCreateMessageResponse> =
+            createMessage(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+        /** @see createMessage */
+        @MustBeClosed
+        fun createMessage(
+            params: ThreadCreateMessageParams
+        ): HttpResponseFor<ThreadCreateMessageResponse> =
+            createMessage(params, RequestOptions.none())
+
+        /** @see createMessage */
+        @MustBeClosed
+        fun createMessage(
+            params: ThreadCreateMessageParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ThreadCreateMessageResponse>
 
         /**
          * Returns a raw HTTP response for `post /v1/omni-ai/threads`, but is otherwise the same as
@@ -175,6 +262,39 @@ interface ThreadService {
             params: ThreadCreateThreadParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<ThreadCreateThreadResponse>
+
+        /**
+         * Returns a raw HTTP response for `get /v1/omni-ai/threads/{thread_id}/messages`, but is
+         * otherwise the same as [ThreadService.getMessages].
+         */
+        @MustBeClosed
+        fun getMessages(
+            threadId: String,
+            params: ThreadGetMessagesParams,
+        ): HttpResponseFor<ThreadGetMessagesResponse> =
+            getMessages(threadId, params, RequestOptions.none())
+
+        /** @see getMessages */
+        @MustBeClosed
+        fun getMessages(
+            threadId: String,
+            params: ThreadGetMessagesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ThreadGetMessagesResponse> =
+            getMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+        /** @see getMessages */
+        @MustBeClosed
+        fun getMessages(
+            params: ThreadGetMessagesParams
+        ): HttpResponseFor<ThreadGetMessagesResponse> = getMessages(params, RequestOptions.none())
+
+        /** @see getMessages */
+        @MustBeClosed
+        fun getMessages(
+            params: ThreadGetMessagesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ThreadGetMessagesResponse>
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/threads/{thread_id}`, but is otherwise

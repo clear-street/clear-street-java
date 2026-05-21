@@ -3,13 +3,12 @@
 package com.clear_street.api.models.v1.omniai
 
 import com.clear_street.api.core.jsonMapper
-import com.clear_street.api.models.v1.SecurityType
-import com.clear_street.api.models.v1.accounts.orders.NewOrderRequest
-import com.clear_street.api.models.v1.accounts.orders.PositionEffect
-import com.clear_street.api.models.v1.accounts.orders.RequestOrderType
-import com.clear_street.api.models.v1.accounts.orders.RequestTimeInForce
-import com.clear_street.api.models.v1.accounts.orders.Side
-import com.clear_street.api.models.v1.accounts.orders.TrailingOffsetType
+import com.clear_street.api.models.v1.orders.NewOrderRequest
+import com.clear_street.api.models.v1.orders.PositionEffect
+import com.clear_street.api.models.v1.orders.RequestOrderType
+import com.clear_street.api.models.v1.orders.RequestTimeInForce
+import com.clear_street.api.models.v1.orders.Side
+import com.clear_street.api.models.v1.orders.TrailingOffsetType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -23,7 +22,6 @@ internal class PrefillNewOrderActionTest {
             PrefillNewOrderAction.builder()
                 .addOrder(
                     NewOrderRequest.builder()
-                        .instrumentType(SecurityType.COMMON_STOCK)
                         .orderType(RequestOrderType.LIMIT)
                         .quantity("100")
                         .side(Side.BUY)
@@ -46,7 +44,6 @@ internal class PrefillNewOrderActionTest {
         assertThat(prefillNewOrderAction.orders())
             .containsExactly(
                 NewOrderRequest.builder()
-                    .instrumentType(SecurityType.COMMON_STOCK)
                     .orderType(RequestOrderType.LIMIT)
                     .quantity("100")
                     .side(Side.BUY)
@@ -73,7 +70,6 @@ internal class PrefillNewOrderActionTest {
             PrefillNewOrderAction.builder()
                 .addOrder(
                     NewOrderRequest.builder()
-                        .instrumentType(SecurityType.COMMON_STOCK)
                         .orderType(RequestOrderType.LIMIT)
                         .quantity("100")
                         .side(Side.BUY)

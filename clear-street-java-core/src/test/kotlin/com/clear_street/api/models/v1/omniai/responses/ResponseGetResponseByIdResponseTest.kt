@@ -6,11 +6,6 @@ import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.ResponseMetadata
-import com.clear_street.api.models.v1.omniai.ErrorStatus
-import com.clear_street.api.models.v1.omniai.Response
-import com.clear_street.api.models.v1.omniai.ResponseContent
-import com.clear_street.api.models.v1.omniai.ResponseContentPart
-import com.clear_street.api.models.v1.omniai.ResponseStatus
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
