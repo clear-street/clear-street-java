@@ -15,7 +15,7 @@ internal class ContentPartChartPayloadTest {
             ContentPartChartPayload.builder()
                 .payload(
                     ChartPayload.builder()
-                        .chartId("chart_aapl_3m")
+                        .chartId("chart_revenue_growth")
                         .addActionButton(
                             ActionButton.builder()
                                 .buttonId("btn_compare_aapl_spy")
@@ -36,13 +36,13 @@ internal class ContentPartChartPayloadTest {
                             DataChart.builder()
                                 .addSeries(
                                     ChartSeries.builder()
-                                        .name("name")
-                                        .addPoint(ChartPoint.builder().x("x").y(0.0).build())
+                                        .name("Revenue")
+                                        .addPoint(ChartPoint.builder().x("Q1").y(100.0).build())
+                                        .addPoint(ChartPoint.builder().x("Q2").y(150.0).build())
                                         .build()
                                 )
                                 .build()
                         )
-                        .symbolChart(SymbolChart.builder().symbol("AAPL").timeframe("3M").build())
                         .build()
                 )
                 .build()
@@ -50,7 +50,7 @@ internal class ContentPartChartPayloadTest {
         assertThat(contentPartChartPayload.payload())
             .isEqualTo(
                 ChartPayload.builder()
-                    .chartId("chart_aapl_3m")
+                    .chartId("chart_revenue_growth")
                     .addActionButton(
                         ActionButton.builder()
                             .buttonId("btn_compare_aapl_spy")
@@ -71,13 +71,13 @@ internal class ContentPartChartPayloadTest {
                         DataChart.builder()
                             .addSeries(
                                 ChartSeries.builder()
-                                    .name("name")
-                                    .addPoint(ChartPoint.builder().x("x").y(0.0).build())
+                                    .name("Revenue")
+                                    .addPoint(ChartPoint.builder().x("Q1").y(100.0).build())
+                                    .addPoint(ChartPoint.builder().x("Q2").y(150.0).build())
                                     .build()
                             )
                             .build()
                     )
-                    .symbolChart(SymbolChart.builder().symbol("AAPL").timeframe("3M").build())
                     .build()
             )
     }
@@ -89,7 +89,7 @@ internal class ContentPartChartPayloadTest {
             ContentPartChartPayload.builder()
                 .payload(
                     ChartPayload.builder()
-                        .chartId("chart_aapl_3m")
+                        .chartId("chart_revenue_growth")
                         .addActionButton(
                             ActionButton.builder()
                                 .buttonId("btn_compare_aapl_spy")
@@ -110,13 +110,13 @@ internal class ContentPartChartPayloadTest {
                             DataChart.builder()
                                 .addSeries(
                                     ChartSeries.builder()
-                                        .name("name")
-                                        .addPoint(ChartPoint.builder().x("x").y(0.0).build())
+                                        .name("Revenue")
+                                        .addPoint(ChartPoint.builder().x("Q1").y(100.0).build())
+                                        .addPoint(ChartPoint.builder().x("Q2").y(150.0).build())
                                         .build()
                                 )
                                 .build()
                         )
-                        .symbolChart(SymbolChart.builder().symbol("AAPL").timeframe("3M").build())
                         .build()
                 )
                 .build()

@@ -233,10 +233,10 @@ internal class StructuredActionTest {
             StructuredAction.OpenEntitlementConsent.builder()
                 .openEntitlementConsent(
                     OpenEntitlementConsentAction.builder()
+                        .addAccountId(100019L)
                         .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                        .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                         .reason("Portfolio analysis requires Omni consent to access account data.")
-                        .addRequestedEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
-                        .addTradingAccountId(100019L)
                         .build()
                 )
                 .build()
@@ -257,12 +257,12 @@ internal class StructuredActionTest {
                 StructuredAction.OpenEntitlementConsent.builder()
                     .openEntitlementConsent(
                         OpenEntitlementConsentAction.builder()
+                            .addAccountId(100019L)
                             .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                            .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                             .reason(
                                 "Portfolio analysis requires Omni consent to access account data."
                             )
-                            .addRequestedEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
-                            .addTradingAccountId(100019L)
                             .build()
                     )
                     .build()

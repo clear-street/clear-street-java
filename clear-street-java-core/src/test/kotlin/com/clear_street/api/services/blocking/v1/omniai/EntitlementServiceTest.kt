@@ -20,10 +20,10 @@ internal class EntitlementServiceTest {
         val response =
             entitlementService.createEntitlements(
                 EntitlementCreateEntitlementsParams.builder()
+                    .addAccountId(100019L)
+                    .addAccountId(100021L)
                     .agreementId("01JZ0000000000000000000000")
-                    .addRequestedEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
-                    .addTradingAccountId(100019L)
-                    .addTradingAccountId(100021L)
+                    .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                     .build()
             )
 

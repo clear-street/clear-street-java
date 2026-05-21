@@ -15,7 +15,6 @@ import com.clear_street.api.models.v1.omniai.PromptButtonAction
 import com.clear_street.api.models.v1.omniai.StructuredAction
 import com.clear_street.api.models.v1.omniai.StructuredActionButtonAction
 import com.clear_street.api.models.v1.omniai.SuggestedActionsPayload
-import com.clear_street.api.models.v1.omniai.SymbolChart
 import com.clear_street.api.models.v1.orders.NewOrderRequest
 import com.clear_street.api.models.v1.orders.PositionEffect
 import com.clear_street.api.models.v1.orders.RequestOrderType
@@ -216,7 +215,7 @@ internal class ResponseContentPartTest {
             ResponseContentPart.UnionMember3.builder()
                 .payload(
                     ChartPayload.builder()
-                        .chartId("chart_aapl_3m")
+                        .chartId("chart_revenue_growth")
                         .addActionButton(
                             ActionButton.builder()
                                 .buttonId("btn_compare_aapl_spy")
@@ -237,13 +236,13 @@ internal class ResponseContentPartTest {
                             DataChart.builder()
                                 .addSeries(
                                     ChartSeries.builder()
-                                        .name("name")
-                                        .addPoint(ChartPoint.builder().x("x").y(0.0).build())
+                                        .name("Revenue")
+                                        .addPoint(ChartPoint.builder().x("Q1").y(100.0).build())
+                                        .addPoint(ChartPoint.builder().x("Q2").y(150.0).build())
                                         .build()
                                 )
                                 .build()
                         )
-                        .symbolChart(SymbolChart.builder().symbol("AAPL").timeframe("3M").build())
                         .build()
                 )
                 .type(ResponseContentPart.UnionMember3.Type.CHART)
@@ -267,7 +266,7 @@ internal class ResponseContentPartTest {
                 ResponseContentPart.UnionMember3.builder()
                     .payload(
                         ChartPayload.builder()
-                            .chartId("chart_aapl_3m")
+                            .chartId("chart_revenue_growth")
                             .addActionButton(
                                 ActionButton.builder()
                                     .buttonId("btn_compare_aapl_spy")
@@ -288,14 +287,12 @@ internal class ResponseContentPartTest {
                                 DataChart.builder()
                                     .addSeries(
                                         ChartSeries.builder()
-                                            .name("name")
-                                            .addPoint(ChartPoint.builder().x("x").y(0.0).build())
+                                            .name("Revenue")
+                                            .addPoint(ChartPoint.builder().x("Q1").y(100.0).build())
+                                            .addPoint(ChartPoint.builder().x("Q2").y(150.0).build())
                                             .build()
                                     )
                                     .build()
-                            )
-                            .symbolChart(
-                                SymbolChart.builder().symbol("AAPL").timeframe("3M").build()
                             )
                             .build()
                     )

@@ -64,7 +64,7 @@ private constructor(
     fun requestId(): String = requestId.getRequired("request_id")
 
     /**
-     * Base64URL-encoded pagination token containing limit and offset
+     * Base64URL-encoded pagination token
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -80,7 +80,7 @@ private constructor(
     fun pageNumber(): Optional<Int> = pageNumber.getOptional("page_number")
 
     /**
-     * Base64URL-encoded pagination token containing limit and offset
+     * Base64URL-encoded pagination token
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -209,7 +209,7 @@ private constructor(
          */
         fun requestId(requestId: JsonField<String>) = apply { this.requestId = requestId }
 
-        /** Base64URL-encoded pagination token containing limit and offset */
+        /** Base64URL-encoded pagination token */
         fun nextPageToken(nextPageToken: String?) =
             nextPageToken(JsonField.ofNullable(nextPageToken))
 
@@ -249,7 +249,7 @@ private constructor(
          */
         fun pageNumber(pageNumber: JsonField<Int>) = apply { this.pageNumber = pageNumber }
 
-        /** Base64URL-encoded pagination token containing limit and offset */
+        /** Base64URL-encoded pagination token */
         fun previousPageToken(previousPageToken: String?) =
             previousPageToken(JsonField.ofNullable(previousPageToken))
 

@@ -13,9 +13,9 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * List finalized messages in a thread.
  *
- * Returns **finalized** messages in chronological order. Messages from in-progress assistant turns
- * are excluded — use `GET /omni-ai/threads/{thread_id}/response` or `GET
- * /omni-ai/responses/{response_id}` for live output.
+ * Returns the latest page of **finalized** messages by default, with messages within each page
+ * ordered chronologically. Messages from in-progress assistant turns are excluded — use `GET
+ * /omni-ai/threads/{thread_id}/response` or `GET /omni-ai/responses/{response_id}` for live output.
  *
  * If the last finalized message has role `USER`, an active response likely exists and should be
  * polled separately.

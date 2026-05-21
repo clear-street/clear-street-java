@@ -37,7 +37,7 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
      * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
+     * endpoints are caller-scoped and use account_ids.
      */
     override fun entitlements(): EntitlementService = entitlements
 
@@ -45,7 +45,7 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
      * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
+     * endpoints are caller-scoped and use account_ids.
      */
     override fun messages(): MessageService = messages
 
@@ -53,7 +53,7 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
      * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
+     * endpoints are caller-scoped and use account_ids.
      */
     override fun responses(): ResponseService = responses
 
@@ -61,7 +61,7 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
      * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
+     * endpoints are caller-scoped and use account_ids.
      */
     override fun threads(): ThreadService = threads
 
@@ -95,7 +95,7 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
          * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
+         * Entitlement endpoints are caller-scoped and use account_ids.
          */
         override fun entitlements(): EntitlementService.WithRawResponse = entitlements
 
@@ -103,7 +103,7 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
          * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
+         * Entitlement endpoints are caller-scoped and use account_ids.
          */
         override fun messages(): MessageService.WithRawResponse = messages
 
@@ -111,7 +111,7 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
          * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
+         * Entitlement endpoints are caller-scoped and use account_ids.
          */
         override fun responses(): ResponseService.WithRawResponse = responses
 
@@ -119,7 +119,7 @@ class OmniAiServiceImpl internal constructor(private val clientOptions: ClientOp
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
          * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
+         * Entitlement endpoints are caller-scoped and use account_ids.
          */
         override fun threads(): ThreadService.WithRawResponse = threads
     }

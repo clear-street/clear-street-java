@@ -32,7 +32,7 @@ import kotlin.jvm.optionals.getOrNull
  * Thread-centric AI assistant for conversational trading. Create threads to start conversations,
  * poll response objects for in-progress output, and read finalized messages from thread history.
  * Thread/message/response endpoints require an explicit account_id. Entitlement endpoints are
- * caller-scoped and use trading_account_ids.
+ * caller-scoped and use account_ids.
  */
 class EntitlementServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     EntitlementServiceAsync {

@@ -26,7 +26,6 @@ private constructor(
     private val chartId: JsonField<String>,
     private val actionButtons: JsonField<List<ActionButton>>,
     private val dataChart: JsonField<DataChart>,
-    private val symbolChart: JsonField<SymbolChart>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -39,10 +38,7 @@ private constructor(
         @JsonProperty("dataChart")
         @ExcludeMissing
         dataChart: JsonField<DataChart> = JsonMissing.of(),
-        @JsonProperty("symbolChart")
-        @ExcludeMissing
-        symbolChart: JsonField<SymbolChart> = JsonMissing.of(),
-    ) : this(chartId, actionButtons, dataChart, symbolChart, mutableMapOf())
+    ) : this(chartId, actionButtons, dataChart, mutableMapOf())
 
     /**
      * Stable chart identifier scoped to the content part.
@@ -69,14 +65,6 @@ private constructor(
     fun dataChart(): Optional<DataChart> = dataChart.getOptional("dataChart")
 
     /**
-     * Symbol-driven chart definition.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun symbolChart(): Optional<SymbolChart> = symbolChart.getOptional("symbolChart")
-
-    /**
      * Returns the raw JSON value of [chartId].
      *
      * Unlike [chartId], this method doesn't throw if the JSON field has an unexpected type.
@@ -98,15 +86,6 @@ private constructor(
      * Unlike [dataChart], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("dataChart") @ExcludeMissing fun _dataChart(): JsonField<DataChart> = dataChart
-
-    /**
-     * Returns the raw JSON value of [symbolChart].
-     *
-     * Unlike [symbolChart], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("symbolChart")
-    @ExcludeMissing
-    fun _symbolChart(): JsonField<SymbolChart> = symbolChart
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -139,7 +118,6 @@ private constructor(
         private var chartId: JsonField<String>? = null
         private var actionButtons: JsonField<MutableList<ActionButton>>? = null
         private var dataChart: JsonField<DataChart> = JsonMissing.of()
-        private var symbolChart: JsonField<SymbolChart> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -147,7 +125,6 @@ private constructor(
             chartId = chartPayload.chartId
             actionButtons = chartPayload.actionButtons.map { it.toMutableList() }
             dataChart = chartPayload.dataChart
-            symbolChart = chartPayload.symbolChart
             additionalProperties = chartPayload.additionalProperties.toMutableMap()
         }
 
@@ -204,23 +181,6 @@ private constructor(
          */
         fun dataChart(dataChart: JsonField<DataChart>) = apply { this.dataChart = dataChart }
 
-        /** Symbol-driven chart definition. */
-        fun symbolChart(symbolChart: SymbolChart?) = symbolChart(JsonField.ofNullable(symbolChart))
-
-        /** Alias for calling [Builder.symbolChart] with `symbolChart.orElse(null)`. */
-        fun symbolChart(symbolChart: Optional<SymbolChart>) = symbolChart(symbolChart.getOrNull())
-
-        /**
-         * Sets [Builder.symbolChart] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.symbolChart] with a well-typed [SymbolChart] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun symbolChart(symbolChart: JsonField<SymbolChart>) = apply {
-            this.symbolChart = symbolChart
-        }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -257,7 +217,6 @@ private constructor(
                 checkRequired("chartId", chartId),
                 (actionButtons ?: JsonMissing.of()).map { it.toImmutable() },
                 dataChart,
-                symbolChart,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -280,7 +239,6 @@ private constructor(
         chartId()
         actionButtons().ifPresent { it.forEach { it.validate() } }
         dataChart().ifPresent { it.validate() }
-        symbolChart().ifPresent { it.validate() }
         validated = true
     }
 
@@ -301,8 +259,7 @@ private constructor(
     internal fun validity(): Int =
         (if (chartId.asKnown().isPresent) 1 else 0) +
             (actionButtons.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-            (dataChart.asKnown().getOrNull()?.validity() ?: 0) +
-            (symbolChart.asKnown().getOrNull()?.validity() ?: 0)
+            (dataChart.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -313,16 +270,15 @@ private constructor(
             chartId == other.chartId &&
             actionButtons == other.actionButtons &&
             dataChart == other.dataChart &&
-            symbolChart == other.symbolChart &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(chartId, actionButtons, dataChart, symbolChart, additionalProperties)
+        Objects.hash(chartId, actionButtons, dataChart, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ChartPayload{chartId=$chartId, actionButtons=$actionButtons, dataChart=$dataChart, symbolChart=$symbolChart, additionalProperties=$additionalProperties}"
+        "ChartPayload{chartId=$chartId, actionButtons=$actionButtons, dataChart=$dataChart, additionalProperties=$additionalProperties}"
 }

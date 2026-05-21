@@ -27,7 +27,7 @@ interface OmniAiServiceAsync {
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
      * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
+     * endpoints are caller-scoped and use account_ids.
      */
     fun entitlements(): EntitlementServiceAsync
 
@@ -35,7 +35,7 @@ interface OmniAiServiceAsync {
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
      * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
+     * endpoints are caller-scoped and use account_ids.
      */
     fun messages(): MessageServiceAsync
 
@@ -43,7 +43,7 @@ interface OmniAiServiceAsync {
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
      * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
+     * endpoints are caller-scoped and use account_ids.
      */
     fun responses(): ResponseServiceAsync
 
@@ -51,7 +51,7 @@ interface OmniAiServiceAsync {
      * Thread-centric AI assistant for conversational trading. Create threads to start
      * conversations, poll response objects for in-progress output, and read finalized messages from
      * thread history. Thread/message/response endpoints require an explicit account_id. Entitlement
-     * endpoints are caller-scoped and use trading_account_ids.
+     * endpoints are caller-scoped and use account_ids.
      */
     fun threads(): ThreadServiceAsync
 
@@ -73,7 +73,7 @@ interface OmniAiServiceAsync {
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
          * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
+         * Entitlement endpoints are caller-scoped and use account_ids.
          */
         fun entitlements(): EntitlementServiceAsync.WithRawResponse
 
@@ -81,7 +81,7 @@ interface OmniAiServiceAsync {
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
          * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
+         * Entitlement endpoints are caller-scoped and use account_ids.
          */
         fun messages(): MessageServiceAsync.WithRawResponse
 
@@ -89,7 +89,7 @@ interface OmniAiServiceAsync {
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
          * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
+         * Entitlement endpoints are caller-scoped and use account_ids.
          */
         fun responses(): ResponseServiceAsync.WithRawResponse
 
@@ -97,7 +97,7 @@ interface OmniAiServiceAsync {
          * Thread-centric AI assistant for conversational trading. Create threads to start
          * conversations, poll response objects for in-progress output, and read finalized messages
          * from thread history. Thread/message/response endpoints require an explicit account_id.
-         * Entitlement endpoints are caller-scoped and use trading_account_ids.
+         * Entitlement endpoints are caller-scoped and use account_ids.
          */
         fun threads(): ThreadServiceAsync.WithRawResponse
     }

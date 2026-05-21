@@ -14,7 +14,7 @@ internal class ChartPayloadTest {
     fun create() {
         val chartPayload =
             ChartPayload.builder()
-                .chartId("chart_aapl_3m")
+                .chartId("chart_revenue_growth")
                 .addActionButton(
                     ActionButton.builder()
                         .buttonId("btn_compare_aapl_spy")
@@ -35,16 +35,16 @@ internal class ChartPayloadTest {
                     DataChart.builder()
                         .addSeries(
                             ChartSeries.builder()
-                                .name("name")
-                                .addPoint(ChartPoint.builder().x("x").y(0.0).build())
+                                .name("Revenue")
+                                .addPoint(ChartPoint.builder().x("Q1").y(100.0).build())
+                                .addPoint(ChartPoint.builder().x("Q2").y(150.0).build())
                                 .build()
                         )
                         .build()
                 )
-                .symbolChart(SymbolChart.builder().symbol("AAPL").timeframe("3M").build())
                 .build()
 
-        assertThat(chartPayload.chartId()).isEqualTo("chart_aapl_3m")
+        assertThat(chartPayload.chartId()).isEqualTo("chart_revenue_growth")
         assertThat(chartPayload.actionButtons().getOrNull())
             .containsExactly(
                 ActionButton.builder()
@@ -67,14 +67,13 @@ internal class ChartPayloadTest {
                 DataChart.builder()
                     .addSeries(
                         ChartSeries.builder()
-                            .name("name")
-                            .addPoint(ChartPoint.builder().x("x").y(0.0).build())
+                            .name("Revenue")
+                            .addPoint(ChartPoint.builder().x("Q1").y(100.0).build())
+                            .addPoint(ChartPoint.builder().x("Q2").y(150.0).build())
                             .build()
                     )
                     .build()
             )
-        assertThat(chartPayload.symbolChart())
-            .contains(SymbolChart.builder().symbol("AAPL").timeframe("3M").build())
     }
 
     @Test
@@ -82,7 +81,7 @@ internal class ChartPayloadTest {
         val jsonMapper = jsonMapper()
         val chartPayload =
             ChartPayload.builder()
-                .chartId("chart_aapl_3m")
+                .chartId("chart_revenue_growth")
                 .addActionButton(
                     ActionButton.builder()
                         .buttonId("btn_compare_aapl_spy")
@@ -103,13 +102,13 @@ internal class ChartPayloadTest {
                     DataChart.builder()
                         .addSeries(
                             ChartSeries.builder()
-                                .name("name")
-                                .addPoint(ChartPoint.builder().x("x").y(0.0).build())
+                                .name("Revenue")
+                                .addPoint(ChartPoint.builder().x("Q1").y(100.0).build())
+                                .addPoint(ChartPoint.builder().x("Q2").y(150.0).build())
                                 .build()
                         )
                         .build()
                 )
-                .symbolChart(SymbolChart.builder().symbol("AAPL").timeframe("3M").build())
                 .build()
 
         val roundtrippedChartPayload =

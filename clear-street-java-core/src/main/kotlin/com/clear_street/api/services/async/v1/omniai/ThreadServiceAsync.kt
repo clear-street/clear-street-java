@@ -24,7 +24,7 @@ import java.util.function.Consumer
  * Thread-centric AI assistant for conversational trading. Create threads to start conversations,
  * poll response objects for in-progress output, and read finalized messages from thread history.
  * Thread/message/response endpoints require an explicit account_id. Entitlement endpoints are
- * caller-scoped and use trading_account_ids.
+ * caller-scoped and use account_ids.
  */
 interface ThreadServiceAsync {
 
@@ -100,9 +100,10 @@ interface ThreadServiceAsync {
     /**
      * List finalized messages in a thread.
      *
-     * Returns **finalized** messages in chronological order. Messages from in-progress assistant
-     * turns are excluded — use `GET /omni-ai/threads/{thread_id}/response` or `GET
-     * /omni-ai/responses/{response_id}` for live output.
+     * Returns the latest page of **finalized** messages by default, with messages within each page
+     * ordered chronologically. Messages from in-progress assistant turns are excluded — use `GET
+     * /omni-ai/threads/{thread_id}/response` or `GET /omni-ai/responses/{response_id}` for live
+     * output.
      *
      * If the last finalized message has role `USER`, an active response likely exists and should be
      * polled separately.
