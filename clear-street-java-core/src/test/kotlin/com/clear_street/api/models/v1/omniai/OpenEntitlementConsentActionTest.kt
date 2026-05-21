@@ -15,19 +15,19 @@ internal class OpenEntitlementConsentActionTest {
     fun create() {
         val openEntitlementConsentAction =
             OpenEntitlementConsentAction.builder()
+                .addAccountId(100019L)
                 .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                 .reason("Portfolio analysis requires Omni consent to access account data.")
-                .addRequestedEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
-                .addTradingAccountId(100019L)
                 .build()
 
+        assertThat(openEntitlementConsentAction.accountIds()).containsExactly(100019L)
         assertThat(openEntitlementConsentAction.agreementKey())
             .isEqualTo(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+        assertThat(openEntitlementConsentAction.entitlementCodes())
+            .containsExactly(EntitlementCode.OMNI_ACCOUNT_DATA)
         assertThat(openEntitlementConsentAction.reason())
             .isEqualTo("Portfolio analysis requires Omni consent to access account data.")
-        assertThat(openEntitlementConsentAction.requestedEntitlementCodes())
-            .containsExactly(EntitlementCode.OMNI_ACCOUNT_DATA)
-        assertThat(openEntitlementConsentAction.tradingAccountIds()).containsExactly(100019L)
     }
 
     @Test
@@ -35,10 +35,10 @@ internal class OpenEntitlementConsentActionTest {
         val jsonMapper = jsonMapper()
         val openEntitlementConsentAction =
             OpenEntitlementConsentAction.builder()
+                .addAccountId(100019L)
                 .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
+                .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                 .reason("Portfolio analysis requires Omni consent to access account data.")
-                .addRequestedEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
-                .addTradingAccountId(100019L)
                 .build()
 
         val roundtrippedOpenEntitlementConsentAction =
