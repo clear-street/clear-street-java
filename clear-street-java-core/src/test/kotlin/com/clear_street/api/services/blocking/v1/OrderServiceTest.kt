@@ -5,6 +5,7 @@ package com.clear_street.api.services.blocking.v1
 import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient
 import com.clear_street.api.models.v1.orders.OrderCancelAllOpenOrdersParams
 import com.clear_street.api.models.v1.orders.OrderCancelOpenOrderParams
+import com.clear_street.api.models.v1.orders.OrderGetExecutionsParams
 import com.clear_street.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.v1.orders.OrderGetOrdersParams
 import com.clear_street.api.models.v1.orders.OrderReplaceOrderParams
@@ -48,6 +49,27 @@ internal class OrderServiceTest {
         val response =
             orderService.cancelOpenOrder(
                 OrderCancelOpenOrderParams.builder().accountId(0L).orderId("order_id").build()
+            )
+
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun getExecutions() {
+        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val orderService = client.v1().orders()
+
+        val response =
+            orderService.getExecutions(
+                OrderGetExecutionsParams.builder()
+                    .accountId(0L)
+                    .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .build()
             )
 
         response.validate()

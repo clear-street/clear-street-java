@@ -20,6 +20,8 @@ import com.clear_street.api.models.v1.orders.OrderCancelAllOpenOrdersParams
 import com.clear_street.api.models.v1.orders.OrderCancelAllOpenOrdersResponse
 import com.clear_street.api.models.v1.orders.OrderCancelOpenOrderParams
 import com.clear_street.api.models.v1.orders.OrderCancelOpenOrderResponse
+import com.clear_street.api.models.v1.orders.OrderGetExecutionsParams
+import com.clear_street.api.models.v1.orders.OrderGetExecutionsResponse
 import com.clear_street.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.v1.orders.OrderGetOrderByIdResponse
 import com.clear_street.api.models.v1.orders.OrderGetOrdersParams
@@ -58,6 +60,13 @@ class OrderServiceAsyncImpl internal constructor(private val clientOptions: Clie
     ): CompletableFuture<OrderCancelOpenOrderResponse> =
         // delete /v1/accounts/{account_id}/orders/{order_id}
         withRawResponse().cancelOpenOrder(params, requestOptions).thenApply { it.parse() }
+
+    override fun getExecutions(
+        params: OrderGetExecutionsParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<OrderGetExecutionsResponse> =
+        // get /v1/accounts/{account_id}/executions
+        withRawResponse().getExecutions(params, requestOptions).thenApply { it.parse() }
 
     override fun getOrderById(
         params: OrderGetOrderByIdParams,
@@ -165,6 +174,39 @@ class OrderServiceAsyncImpl internal constructor(private val clientOptions: Clie
                     errorHandler.handle(response).parseable {
                         response
                             .use { cancelOpenOrderHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val getExecutionsHandler: Handler<OrderGetExecutionsResponse> =
+            jsonHandler<OrderGetExecutionsResponse>(clientOptions.jsonMapper)
+
+        override fun getExecutions(
+            params: OrderGetExecutionsParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<OrderGetExecutionsResponse>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("accountId", params.accountId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "accounts", params._pathParam(0), "executions")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { getExecutionsHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

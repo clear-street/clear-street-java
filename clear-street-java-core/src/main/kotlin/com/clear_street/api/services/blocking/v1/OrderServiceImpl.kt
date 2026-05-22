@@ -20,6 +20,8 @@ import com.clear_street.api.models.v1.orders.OrderCancelAllOpenOrdersParams
 import com.clear_street.api.models.v1.orders.OrderCancelAllOpenOrdersResponse
 import com.clear_street.api.models.v1.orders.OrderCancelOpenOrderParams
 import com.clear_street.api.models.v1.orders.OrderCancelOpenOrderResponse
+import com.clear_street.api.models.v1.orders.OrderGetExecutionsParams
+import com.clear_street.api.models.v1.orders.OrderGetExecutionsResponse
 import com.clear_street.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.v1.orders.OrderGetOrderByIdResponse
 import com.clear_street.api.models.v1.orders.OrderGetOrdersParams
@@ -57,6 +59,13 @@ class OrderServiceImpl internal constructor(private val clientOptions: ClientOpt
     ): OrderCancelOpenOrderResponse =
         // delete /v1/accounts/{account_id}/orders/{order_id}
         withRawResponse().cancelOpenOrder(params, requestOptions).parse()
+
+    override fun getExecutions(
+        params: OrderGetExecutionsParams,
+        requestOptions: RequestOptions,
+    ): OrderGetExecutionsResponse =
+        // get /v1/accounts/{account_id}/executions
+        withRawResponse().getExecutions(params, requestOptions).parse()
 
     override fun getOrderById(
         params: OrderGetOrderByIdParams,
@@ -159,6 +168,36 @@ class OrderServiceImpl internal constructor(private val clientOptions: ClientOpt
             return errorHandler.handle(response).parseable {
                 response
                     .use { cancelOpenOrderHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val getExecutionsHandler: Handler<OrderGetExecutionsResponse> =
+            jsonHandler<OrderGetExecutionsResponse>(clientOptions.jsonMapper)
+
+        override fun getExecutions(
+            params: OrderGetExecutionsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<OrderGetExecutionsResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("accountId", params.accountId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "accounts", params._pathParam(0), "executions")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getExecutionsHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
