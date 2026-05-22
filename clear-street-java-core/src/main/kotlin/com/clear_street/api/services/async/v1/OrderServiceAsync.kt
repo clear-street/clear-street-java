@@ -9,6 +9,8 @@ import com.clear_street.api.models.v1.orders.OrderCancelAllOpenOrdersParams
 import com.clear_street.api.models.v1.orders.OrderCancelAllOpenOrdersResponse
 import com.clear_street.api.models.v1.orders.OrderCancelOpenOrderParams
 import com.clear_street.api.models.v1.orders.OrderCancelOpenOrderResponse
+import com.clear_street.api.models.v1.orders.OrderGetExecutionsParams
+import com.clear_street.api.models.v1.orders.OrderGetExecutionsResponse
 import com.clear_street.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.v1.orders.OrderGetOrderByIdResponse
 import com.clear_street.api.models.v1.orders.OrderGetOrdersParams
@@ -99,6 +101,46 @@ interface OrderServiceAsync {
         params: OrderCancelOpenOrderParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<OrderCancelOpenOrderResponse>
+
+    /**
+     * Retrieves filled and partially-filled execution reports for the specified trading account,
+     * ordered by transaction time (nanosecond precision) descending.
+     */
+    fun getExecutions(accountId: Long): CompletableFuture<OrderGetExecutionsResponse> =
+        getExecutions(accountId, OrderGetExecutionsParams.none())
+
+    /** @see getExecutions */
+    fun getExecutions(
+        accountId: Long,
+        params: OrderGetExecutionsParams = OrderGetExecutionsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<OrderGetExecutionsResponse> =
+        getExecutions(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+    /** @see getExecutions */
+    fun getExecutions(
+        accountId: Long,
+        params: OrderGetExecutionsParams = OrderGetExecutionsParams.none(),
+    ): CompletableFuture<OrderGetExecutionsResponse> =
+        getExecutions(accountId, params, RequestOptions.none())
+
+    /** @see getExecutions */
+    fun getExecutions(
+        params: OrderGetExecutionsParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<OrderGetExecutionsResponse>
+
+    /** @see getExecutions */
+    fun getExecutions(
+        params: OrderGetExecutionsParams
+    ): CompletableFuture<OrderGetExecutionsResponse> = getExecutions(params, RequestOptions.none())
+
+    /** @see getExecutions */
+    fun getExecutions(
+        accountId: Long,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<OrderGetExecutionsResponse> =
+        getExecutions(accountId, OrderGetExecutionsParams.none(), requestOptions)
 
     /** Get Order By ID */
     fun getOrderById(
@@ -298,6 +340,49 @@ interface OrderServiceAsync {
             params: OrderCancelOpenOrderParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<OrderCancelOpenOrderResponse>>
+
+        /**
+         * Returns a raw HTTP response for `get /v1/accounts/{account_id}/executions`, but is
+         * otherwise the same as [OrderServiceAsync.getExecutions].
+         */
+        fun getExecutions(
+            accountId: Long
+        ): CompletableFuture<HttpResponseFor<OrderGetExecutionsResponse>> =
+            getExecutions(accountId, OrderGetExecutionsParams.none())
+
+        /** @see getExecutions */
+        fun getExecutions(
+            accountId: Long,
+            params: OrderGetExecutionsParams = OrderGetExecutionsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<OrderGetExecutionsResponse>> =
+            getExecutions(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+        /** @see getExecutions */
+        fun getExecutions(
+            accountId: Long,
+            params: OrderGetExecutionsParams = OrderGetExecutionsParams.none(),
+        ): CompletableFuture<HttpResponseFor<OrderGetExecutionsResponse>> =
+            getExecutions(accountId, params, RequestOptions.none())
+
+        /** @see getExecutions */
+        fun getExecutions(
+            params: OrderGetExecutionsParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<OrderGetExecutionsResponse>>
+
+        /** @see getExecutions */
+        fun getExecutions(
+            params: OrderGetExecutionsParams
+        ): CompletableFuture<HttpResponseFor<OrderGetExecutionsResponse>> =
+            getExecutions(params, RequestOptions.none())
+
+        /** @see getExecutions */
+        fun getExecutions(
+            accountId: Long,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<OrderGetExecutionsResponse>> =
+            getExecutions(accountId, OrderGetExecutionsParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/accounts/{account_id}/orders/{order_id}`, but is

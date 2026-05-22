@@ -6,6 +6,7 @@ import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.services.async.v1.AccountServiceAsync
 import com.clear_street.api.services.async.v1.ApiVersionServiceAsync
 import com.clear_street.api.services.async.v1.CalendarServiceAsync
+import com.clear_street.api.services.async.v1.ExecutionServiceAsync
 import com.clear_street.api.services.async.v1.InstrumentDataServiceAsync
 import com.clear_street.api.services.async.v1.InstrumentServiceAsync
 import com.clear_street.api.services.async.v1.OmniAiServiceAsync
@@ -37,6 +38,8 @@ interface V1ServiceAsync {
 
     /** Access clocks and financial calendars for market sessions and events. */
     fun calendar(): CalendarServiceAsync
+
+    fun executions(): ExecutionServiceAsync
 
     /** Retrieve instrument analytics, market data, news, and related reference data. */
     fun instrumentData(): InstrumentDataServiceAsync
@@ -76,6 +79,8 @@ interface V1ServiceAsync {
 
         /** Access clocks and financial calendars for market sessions and events. */
         fun calendar(): CalendarServiceAsync.WithRawResponse
+
+        fun executions(): ExecutionServiceAsync.WithRawResponse
 
         /** Retrieve instrument analytics, market data, news, and related reference data. */
         fun instrumentData(): InstrumentDataServiceAsync.WithRawResponse

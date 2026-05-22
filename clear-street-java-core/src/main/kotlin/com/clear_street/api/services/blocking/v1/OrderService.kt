@@ -9,6 +9,8 @@ import com.clear_street.api.models.v1.orders.OrderCancelAllOpenOrdersParams
 import com.clear_street.api.models.v1.orders.OrderCancelAllOpenOrdersResponse
 import com.clear_street.api.models.v1.orders.OrderCancelOpenOrderParams
 import com.clear_street.api.models.v1.orders.OrderCancelOpenOrderResponse
+import com.clear_street.api.models.v1.orders.OrderGetExecutionsParams
+import com.clear_street.api.models.v1.orders.OrderGetExecutionsResponse
 import com.clear_street.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clear_street.api.models.v1.orders.OrderGetOrderByIdResponse
 import com.clear_street.api.models.v1.orders.OrderGetOrdersParams
@@ -95,6 +97,41 @@ interface OrderService {
         params: OrderCancelOpenOrderParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): OrderCancelOpenOrderResponse
+
+    /**
+     * Retrieves filled and partially-filled execution reports for the specified trading account,
+     * ordered by transaction time (nanosecond precision) descending.
+     */
+    fun getExecutions(accountId: Long): OrderGetExecutionsResponse =
+        getExecutions(accountId, OrderGetExecutionsParams.none())
+
+    /** @see getExecutions */
+    fun getExecutions(
+        accountId: Long,
+        params: OrderGetExecutionsParams = OrderGetExecutionsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): OrderGetExecutionsResponse =
+        getExecutions(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+    /** @see getExecutions */
+    fun getExecutions(
+        accountId: Long,
+        params: OrderGetExecutionsParams = OrderGetExecutionsParams.none(),
+    ): OrderGetExecutionsResponse = getExecutions(accountId, params, RequestOptions.none())
+
+    /** @see getExecutions */
+    fun getExecutions(
+        params: OrderGetExecutionsParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): OrderGetExecutionsResponse
+
+    /** @see getExecutions */
+    fun getExecutions(params: OrderGetExecutionsParams): OrderGetExecutionsResponse =
+        getExecutions(params, RequestOptions.none())
+
+    /** @see getExecutions */
+    fun getExecutions(accountId: Long, requestOptions: RequestOptions): OrderGetExecutionsResponse =
+        getExecutions(accountId, OrderGetExecutionsParams.none(), requestOptions)
 
     /** Get Order By ID */
     fun getOrderById(orderId: String, params: OrderGetOrderByIdParams): OrderGetOrderByIdResponse =
@@ -286,6 +323,53 @@ interface OrderService {
             params: OrderCancelOpenOrderParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<OrderCancelOpenOrderResponse>
+
+        /**
+         * Returns a raw HTTP response for `get /v1/accounts/{account_id}/executions`, but is
+         * otherwise the same as [OrderService.getExecutions].
+         */
+        @MustBeClosed
+        fun getExecutions(accountId: Long): HttpResponseFor<OrderGetExecutionsResponse> =
+            getExecutions(accountId, OrderGetExecutionsParams.none())
+
+        /** @see getExecutions */
+        @MustBeClosed
+        fun getExecutions(
+            accountId: Long,
+            params: OrderGetExecutionsParams = OrderGetExecutionsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<OrderGetExecutionsResponse> =
+            getExecutions(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+        /** @see getExecutions */
+        @MustBeClosed
+        fun getExecutions(
+            accountId: Long,
+            params: OrderGetExecutionsParams = OrderGetExecutionsParams.none(),
+        ): HttpResponseFor<OrderGetExecutionsResponse> =
+            getExecutions(accountId, params, RequestOptions.none())
+
+        /** @see getExecutions */
+        @MustBeClosed
+        fun getExecutions(
+            params: OrderGetExecutionsParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<OrderGetExecutionsResponse>
+
+        /** @see getExecutions */
+        @MustBeClosed
+        fun getExecutions(
+            params: OrderGetExecutionsParams
+        ): HttpResponseFor<OrderGetExecutionsResponse> =
+            getExecutions(params, RequestOptions.none())
+
+        /** @see getExecutions */
+        @MustBeClosed
+        fun getExecutions(
+            accountId: Long,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<OrderGetExecutionsResponse> =
+            getExecutions(accountId, OrderGetExecutionsParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/accounts/{account_id}/orders/{order_id}`, but is

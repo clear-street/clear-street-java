@@ -9,6 +9,8 @@ import com.clear_street.api.services.blocking.v1.ApiVersionService
 import com.clear_street.api.services.blocking.v1.ApiVersionServiceImpl
 import com.clear_street.api.services.blocking.v1.CalendarService
 import com.clear_street.api.services.blocking.v1.CalendarServiceImpl
+import com.clear_street.api.services.blocking.v1.ExecutionService
+import com.clear_street.api.services.blocking.v1.ExecutionServiceImpl
 import com.clear_street.api.services.blocking.v1.InstrumentDataService
 import com.clear_street.api.services.blocking.v1.InstrumentDataServiceImpl
 import com.clear_street.api.services.blocking.v1.InstrumentService
@@ -36,6 +38,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     private val apiVersion: ApiVersionService by lazy { ApiVersionServiceImpl(clientOptions) }
 
     private val calendar: CalendarService by lazy { CalendarServiceImpl(clientOptions) }
+
+    private val executions: ExecutionService by lazy { ExecutionServiceImpl(clientOptions) }
 
     private val instrumentData: InstrumentDataService by lazy {
         InstrumentDataServiceImpl(clientOptions)
@@ -66,6 +70,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     /** Access clocks and financial calendars for market sessions and events. */
     override fun calendar(): CalendarService = calendar
+
+    override fun executions(): ExecutionService = executions
 
     /** Retrieve instrument analytics, market data, news, and related reference data. */
     override fun instrumentData(): InstrumentDataService = instrumentData
@@ -100,6 +106,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         private val calendar: CalendarService.WithRawResponse by lazy {
             CalendarServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val executions: ExecutionService.WithRawResponse by lazy {
+            ExecutionServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val instrumentData: InstrumentDataService.WithRawResponse by lazy {
@@ -145,6 +155,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         /** Access clocks and financial calendars for market sessions and events. */
         override fun calendar(): CalendarService.WithRawResponse = calendar
+
+        override fun executions(): ExecutionService.WithRawResponse = executions
 
         /** Retrieve instrument analytics, market data, news, and related reference data. */
         override fun instrumentData(): InstrumentDataService.WithRawResponse = instrumentData
