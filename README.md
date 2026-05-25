@@ -427,7 +427,7 @@ import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .fromEnv()
-    .staging()
+    .dev()
     .apiKey("My API Key")
     .build();
 ```

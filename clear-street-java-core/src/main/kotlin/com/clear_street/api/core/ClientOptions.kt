@@ -120,7 +120,7 @@ private constructor(
      * Defaults to the production environment: `https://api.clearstreet.com`.
      *
      * The following other environments, with dedicated builder methods, are available:
-     * - staging: `https://oems-api-gw.dev-public.clst.co`
+     * - dev: `https://api-dev.clearstreet.com`
      */
     fun baseUrl(): String = baseUrl ?: PRODUCTION_URL
 
@@ -133,7 +133,7 @@ private constructor(
 
         const val PRODUCTION_URL = "https://api.clearstreet.com"
 
-        const val STAGING_URL = "https://oems-api-gw.dev-public.clst.co"
+        const val DEV_URL = "https://api-dev.clearstreet.com"
 
         /**
          * Returns a mutable builder for constructing an instance of [ClientOptions].
@@ -243,15 +243,15 @@ private constructor(
          * Defaults to the production environment: `https://api.clearstreet.com`.
          *
          * The following other environments, with dedicated builder methods, are available:
-         * - staging: `https://oems-api-gw.dev-public.clst.co`
+         * - dev: `https://api-dev.clearstreet.com`
          */
         fun baseUrl(baseUrl: String?) = apply { this.baseUrl = baseUrl }
 
         /** Alias for calling [Builder.baseUrl] with `baseUrl.orElse(null)`. */
         fun baseUrl(baseUrl: Optional<String>) = baseUrl(baseUrl.getOrNull())
 
-        /** Sets [baseUrl] to `https://oems-api-gw.dev-public.clst.co`. */
-        fun staging() = baseUrl(STAGING_URL)
+        /** Sets [baseUrl] to `https://api-dev.clearstreet.com`. */
+        fun dev() = baseUrl(DEV_URL)
 
         /**
          * Whether to call `validate` on every response before returning it.
