@@ -227,15 +227,15 @@ class ClearStreetOkHttpClientAsync private constructor() {
          * Defaults to the production environment: `https://api.clearstreet.com`.
          *
          * The following other environments, with dedicated builder methods, are available:
-         * - staging: `https://oems-api-gw.dev-public.clst.co`
+         * - dev: `https://api-dev.clearstreet.com`
          */
         fun baseUrl(baseUrl: String?) = apply { clientOptions.baseUrl(baseUrl) }
 
         /** Alias for calling [Builder.baseUrl] with `baseUrl.orElse(null)`. */
         fun baseUrl(baseUrl: Optional<String>) = baseUrl(baseUrl.getOrNull())
 
-        /** Sets [baseUrl] to `https://oems-api-gw.dev-public.clst.co`. */
-        fun staging() = apply { clientOptions.staging() }
+        /** Sets [baseUrl] to `https://api-dev.clearstreet.com`. */
+        fun dev() = apply { clientOptions.dev() }
 
         /**
          * Whether to call `validate` on every response before returning it.
