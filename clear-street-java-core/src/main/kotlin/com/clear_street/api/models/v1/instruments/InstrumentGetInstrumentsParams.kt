@@ -22,6 +22,7 @@ private constructor(
     private val instrumentType: InstrumentType?,
     private val isLiquidationOnly: Boolean?,
     private val isMarginable: Boolean?,
+    private val isPtp: Boolean?,
     private val isRestricted: Boolean?,
     private val isShortProhibited: Boolean?,
     private val isThresholdSecurity: Boolean?,
@@ -49,6 +50,9 @@ private constructor(
 
     /** Filter by marginable status */
     fun isMarginable(): Optional<Boolean> = Optional.ofNullable(isMarginable)
+
+    /** Filter by publicly traded partnership (PTP) status */
+    fun isPtp(): Optional<Boolean> = Optional.ofNullable(isPtp)
 
     /** Filter by restricted status */
     fun isRestricted(): Optional<Boolean> = Optional.ofNullable(isRestricted)
@@ -95,6 +99,7 @@ private constructor(
         private var instrumentType: InstrumentType? = null
         private var isLiquidationOnly: Boolean? = null
         private var isMarginable: Boolean? = null
+        private var isPtp: Boolean? = null
         private var isRestricted: Boolean? = null
         private var isShortProhibited: Boolean? = null
         private var isThresholdSecurity: Boolean? = null
@@ -110,6 +115,7 @@ private constructor(
             instrumentType = instrumentGetInstrumentsParams.instrumentType
             isLiquidationOnly = instrumentGetInstrumentsParams.isLiquidationOnly
             isMarginable = instrumentGetInstrumentsParams.isMarginable
+            isPtp = instrumentGetInstrumentsParams.isPtp
             isRestricted = instrumentGetInstrumentsParams.isRestricted
             isShortProhibited = instrumentGetInstrumentsParams.isShortProhibited
             isThresholdSecurity = instrumentGetInstrumentsParams.isThresholdSecurity
@@ -192,6 +198,19 @@ private constructor(
 
         /** Alias for calling [Builder.isMarginable] with `isMarginable.orElse(null)`. */
         fun isMarginable(isMarginable: Optional<Boolean>) = isMarginable(isMarginable.getOrNull())
+
+        /** Filter by publicly traded partnership (PTP) status */
+        fun isPtp(isPtp: Boolean?) = apply { this.isPtp = isPtp }
+
+        /**
+         * Alias for [Builder.isPtp].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun isPtp(isPtp: Boolean) = isPtp(isPtp as Boolean?)
+
+        /** Alias for calling [Builder.isPtp] with `isPtp.orElse(null)`. */
+        fun isPtp(isPtp: Optional<Boolean>) = isPtp(isPtp.getOrNull())
 
         /** Filter by restricted status */
         fun isRestricted(isRestricted: Boolean?) = apply { this.isRestricted = isRestricted }
@@ -374,6 +393,7 @@ private constructor(
                 instrumentType,
                 isLiquidationOnly,
                 isMarginable,
+                isPtp,
                 isRestricted,
                 isShortProhibited,
                 isThresholdSecurity,
@@ -394,6 +414,7 @@ private constructor(
                 instrumentType?.let { put("instrument_type", it.toString()) }
                 isLiquidationOnly?.let { put("is_liquidation_only", it.toString()) }
                 isMarginable?.let { put("is_marginable", it.toString()) }
+                isPtp?.let { put("is_ptp", it.toString()) }
                 isRestricted?.let { put("is_restricted", it.toString()) }
                 isShortProhibited?.let { put("is_short_prohibited", it.toString()) }
                 isThresholdSecurity?.let { put("is_threshold_security", it.toString()) }
@@ -577,6 +598,7 @@ private constructor(
             instrumentType == other.instrumentType &&
             isLiquidationOnly == other.isLiquidationOnly &&
             isMarginable == other.isMarginable &&
+            isPtp == other.isPtp &&
             isRestricted == other.isRestricted &&
             isShortProhibited == other.isShortProhibited &&
             isThresholdSecurity == other.isThresholdSecurity &&
@@ -593,6 +615,7 @@ private constructor(
             instrumentType,
             isLiquidationOnly,
             isMarginable,
+            isPtp,
             isRestricted,
             isShortProhibited,
             isThresholdSecurity,
@@ -603,5 +626,5 @@ private constructor(
         )
 
     override fun toString() =
-        "InstrumentGetInstrumentsParams{easyToBorrow=$easyToBorrow, instrumentIds=$instrumentIds, instrumentType=$instrumentType, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentGetInstrumentsParams{easyToBorrow=$easyToBorrow, instrumentIds=$instrumentIds, instrumentType=$instrumentType, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
