@@ -32,6 +32,7 @@ private constructor(
     private val isFractionable: JsonField<Boolean>,
     private val isLiquidationOnly: JsonField<Boolean>,
     private val isMarginable: JsonField<Boolean>,
+    private val isPtp: JsonField<Boolean>,
     private val isRestricted: JsonField<Boolean>,
     private val isShortProhibited: JsonField<Boolean>,
     private val isThresholdSecurity: JsonField<Boolean>,
@@ -70,6 +71,7 @@ private constructor(
         @JsonProperty("is_marginable")
         @ExcludeMissing
         isMarginable: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("is_ptp") @ExcludeMissing isPtp: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("is_restricted")
         @ExcludeMissing
         isRestricted: JsonField<Boolean> = JsonMissing.of(),
@@ -116,6 +118,7 @@ private constructor(
         isFractionable,
         isLiquidationOnly,
         isMarginable,
+        isPtp,
         isRestricted,
         isShortProhibited,
         isThresholdSecurity,
@@ -190,6 +193,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun isMarginable(): Boolean = isMarginable.getRequired("is_marginable")
+
+    /**
+     * Indicates if the instrument is a publicly traded partnership (PTP). PTP sales are subject to
+     * a 10% withholding tax for non-US tax residents.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun isPtp(): Boolean = isPtp.getRequired("is_ptp")
 
     /**
      * Indicates if the instrument is restricted from trading
@@ -384,6 +396,13 @@ private constructor(
     fun _isMarginable(): JsonField<Boolean> = isMarginable
 
     /**
+     * Returns the raw JSON value of [isPtp].
+     *
+     * Unlike [isPtp], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("is_ptp") @ExcludeMissing fun _isPtp(): JsonField<Boolean> = isPtp
+
+    /**
      * Returns the raw JSON value of [isRestricted].
      *
      * Unlike [isRestricted], this method doesn't throw if the JSON field has an unexpected type.
@@ -544,6 +563,7 @@ private constructor(
          * .isFractionable()
          * .isLiquidationOnly()
          * .isMarginable()
+         * .isPtp()
          * .isRestricted()
          * .isShortProhibited()
          * .isThresholdSecurity()
@@ -565,6 +585,7 @@ private constructor(
         private var isFractionable: JsonField<Boolean>? = null
         private var isLiquidationOnly: JsonField<Boolean>? = null
         private var isMarginable: JsonField<Boolean>? = null
+        private var isPtp: JsonField<Boolean>? = null
         private var isRestricted: JsonField<Boolean>? = null
         private var isShortProhibited: JsonField<Boolean>? = null
         private var isThresholdSecurity: JsonField<Boolean>? = null
@@ -592,6 +613,7 @@ private constructor(
             isFractionable = instrument.isFractionable
             isLiquidationOnly = instrument.isLiquidationOnly
             isMarginable = instrument.isMarginable
+            isPtp = instrument.isPtp
             isRestricted = instrument.isRestricted
             isShortProhibited = instrument.isShortProhibited
             isThresholdSecurity = instrument.isThresholdSecurity
@@ -703,6 +725,20 @@ private constructor(
         fun isMarginable(isMarginable: JsonField<Boolean>) = apply {
             this.isMarginable = isMarginable
         }
+
+        /**
+         * Indicates if the instrument is a publicly traded partnership (PTP). PTP sales are subject
+         * to a 10% withholding tax for non-US tax residents.
+         */
+        fun isPtp(isPtp: Boolean) = isPtp(JsonField.of(isPtp))
+
+        /**
+         * Sets [Builder.isPtp] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.isPtp] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun isPtp(isPtp: JsonField<Boolean>) = apply { this.isPtp = isPtp }
 
         /** Indicates if the instrument is restricted from trading */
         fun isRestricted(isRestricted: Boolean) = isRestricted(JsonField.of(isRestricted))
@@ -1004,6 +1040,7 @@ private constructor(
          * .isFractionable()
          * .isLiquidationOnly()
          * .isMarginable()
+         * .isPtp()
          * .isRestricted()
          * .isShortProhibited()
          * .isThresholdSecurity()
@@ -1023,6 +1060,7 @@ private constructor(
                 checkRequired("isFractionable", isFractionable),
                 checkRequired("isLiquidationOnly", isLiquidationOnly),
                 checkRequired("isMarginable", isMarginable),
+                checkRequired("isPtp", isPtp),
                 checkRequired("isRestricted", isRestricted),
                 checkRequired("isShortProhibited", isShortProhibited),
                 checkRequired("isThresholdSecurity", isThresholdSecurity),
@@ -1065,6 +1103,7 @@ private constructor(
         isFractionable()
         isLiquidationOnly()
         isMarginable()
+        isPtp()
         isRestricted()
         isShortProhibited()
         isThresholdSecurity()
@@ -1106,6 +1145,7 @@ private constructor(
             (if (isFractionable.asKnown().isPresent) 1 else 0) +
             (if (isLiquidationOnly.asKnown().isPresent) 1 else 0) +
             (if (isMarginable.asKnown().isPresent) 1 else 0) +
+            (if (isPtp.asKnown().isPresent) 1 else 0) +
             (if (isRestricted.asKnown().isPresent) 1 else 0) +
             (if (isShortProhibited.asKnown().isPresent) 1 else 0) +
             (if (isThresholdSecurity.asKnown().isPresent) 1 else 0) +
@@ -1136,6 +1176,7 @@ private constructor(
             isFractionable == other.isFractionable &&
             isLiquidationOnly == other.isLiquidationOnly &&
             isMarginable == other.isMarginable &&
+            isPtp == other.isPtp &&
             isRestricted == other.isRestricted &&
             isShortProhibited == other.isShortProhibited &&
             isThresholdSecurity == other.isThresholdSecurity &&
@@ -1164,6 +1205,7 @@ private constructor(
             isFractionable,
             isLiquidationOnly,
             isMarginable,
+            isPtp,
             isRestricted,
             isShortProhibited,
             isThresholdSecurity,
@@ -1187,5 +1229,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Instrument{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, optionsExpiryDates=$optionsExpiryDates, previousClose=$previousClose, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, additionalProperties=$additionalProperties}"
+        "Instrument{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isRestricted=$isRestricted, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, optionsExpiryDates=$optionsExpiryDates, previousClose=$previousClose, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, additionalProperties=$additionalProperties}"
 }
