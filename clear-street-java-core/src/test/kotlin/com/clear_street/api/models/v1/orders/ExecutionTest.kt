@@ -1,9 +1,8 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.models.v1.executions
+package com.clear_street.api.models.v1.orders
 
 import com.clear_street.api.core.jsonMapper
-import com.clear_street.api.models.v1.orders.Side
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat

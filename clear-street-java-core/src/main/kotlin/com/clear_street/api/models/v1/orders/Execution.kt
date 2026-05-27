@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clear_street.api.models.v1.executions
+package com.clear_street.api.models.v1.orders
 
 import com.clear_street.api.core.ExcludeMissing
 import com.clear_street.api.core.JsonField
@@ -8,7 +8,6 @@ import com.clear_street.api.core.JsonMissing
 import com.clear_street.api.core.JsonValue
 import com.clear_street.api.core.checkRequired
 import com.clear_street.api.errors.ClearStreetInvalidDataException
-import com.clear_street.api.models.v1.orders.Side
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator

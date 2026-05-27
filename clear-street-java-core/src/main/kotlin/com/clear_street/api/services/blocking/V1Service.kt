@@ -6,7 +6,6 @@ import com.clear_street.api.core.ClientOptions
 import com.clear_street.api.services.blocking.v1.AccountService
 import com.clear_street.api.services.blocking.v1.ApiVersionService
 import com.clear_street.api.services.blocking.v1.CalendarService
-import com.clear_street.api.services.blocking.v1.ExecutionService
 import com.clear_street.api.services.blocking.v1.InstrumentDataService
 import com.clear_street.api.services.blocking.v1.InstrumentService
 import com.clear_street.api.services.blocking.v1.OmniAiService
@@ -38,8 +37,6 @@ interface V1Service {
 
     /** Access clocks and financial calendars for market sessions and events. */
     fun calendar(): CalendarService
-
-    fun executions(): ExecutionService
 
     /** Retrieve instrument analytics, market data, news, and related reference data. */
     fun instrumentData(): InstrumentDataService
@@ -79,8 +76,6 @@ interface V1Service {
 
         /** Access clocks and financial calendars for market sessions and events. */
         fun calendar(): CalendarService.WithRawResponse
-
-        fun executions(): ExecutionService.WithRawResponse
 
         /** Retrieve instrument analytics, market data, news, and related reference data. */
         fun instrumentData(): InstrumentDataService.WithRawResponse
