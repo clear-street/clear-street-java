@@ -29,7 +29,6 @@ private constructor(
     private val currency: String?,
     private val includeInactive: Boolean?,
     private val includePtp: Boolean?,
-    private val includeRestricted: Boolean?,
     private val pageSize: Long?,
     private val pageToken: String?,
     private val additionalHeaders: Headers,
@@ -59,9 +58,6 @@ private constructor(
      * Include publicly traded partnership (PTP) instruments. Default true (penalized in ranking).
      */
     fun includePtp(): Optional<Boolean> = Optional.ofNullable(includePtp)
-
-    /** Include restricted instruments. Default true (penalized in ranking). */
-    fun includeRestricted(): Optional<Boolean> = Optional.ofNullable(includeRestricted)
 
     /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
@@ -103,7 +99,6 @@ private constructor(
         private var currency: String? = null
         private var includeInactive: Boolean? = null
         private var includePtp: Boolean? = null
-        private var includeRestricted: Boolean? = null
         private var pageSize: Long? = null
         private var pageToken: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -118,7 +113,6 @@ private constructor(
                 currency = instrumentSearchInstrumentsParams.currency
                 includeInactive = instrumentSearchInstrumentsParams.includeInactive
                 includePtp = instrumentSearchInstrumentsParams.includePtp
-                includeRestricted = instrumentSearchInstrumentsParams.includeRestricted
                 pageSize = instrumentSearchInstrumentsParams.pageSize
                 pageToken = instrumentSearchInstrumentsParams.pageToken
                 additionalHeaders = instrumentSearchInstrumentsParams.additionalHeaders.toBuilder()
@@ -184,23 +178,6 @@ private constructor(
 
         /** Alias for calling [Builder.includePtp] with `includePtp.orElse(null)`. */
         fun includePtp(includePtp: Optional<Boolean>) = includePtp(includePtp.getOrNull())
-
-        /** Include restricted instruments. Default true (penalized in ranking). */
-        fun includeRestricted(includeRestricted: Boolean?) = apply {
-            this.includeRestricted = includeRestricted
-        }
-
-        /**
-         * Alias for [Builder.includeRestricted].
-         *
-         * This unboxed primitive overload exists for backwards compatibility.
-         */
-        fun includeRestricted(includeRestricted: Boolean) =
-            includeRestricted(includeRestricted as Boolean?)
-
-        /** Alias for calling [Builder.includeRestricted] with `includeRestricted.orElse(null)`. */
-        fun includeRestricted(includeRestricted: Optional<Boolean>) =
-            includeRestricted(includeRestricted.getOrNull())
 
         /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
@@ -342,7 +319,6 @@ private constructor(
                 currency,
                 includeInactive,
                 includePtp,
-                includeRestricted,
                 pageSize,
                 pageToken,
                 additionalHeaders.build(),
@@ -361,7 +337,6 @@ private constructor(
                 currency?.let { put("currency", it) }
                 includeInactive?.let { put("include_inactive", it.toString()) }
                 includePtp?.let { put("include_ptp", it.toString()) }
-                includeRestricted?.let { put("include_restricted", it.toString()) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 putAll(additionalQueryParams)
@@ -380,7 +355,6 @@ private constructor(
             currency == other.currency &&
             includeInactive == other.includeInactive &&
             includePtp == other.includePtp &&
-            includeRestricted == other.includeRestricted &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
             additionalHeaders == other.additionalHeaders &&
@@ -395,7 +369,6 @@ private constructor(
             currency,
             includeInactive,
             includePtp,
-            includeRestricted,
             pageSize,
             pageToken,
             additionalHeaders,
@@ -403,5 +376,5 @@ private constructor(
         )
 
     override fun toString() =
-        "InstrumentSearchInstrumentsParams{q=$q, assetClass=$assetClass, country=$country, currency=$currency, includeInactive=$includeInactive, includePtp=$includePtp, includeRestricted=$includeRestricted, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentSearchInstrumentsParams{q=$q, assetClass=$assetClass, country=$country, currency=$currency, includeInactive=$includeInactive, includePtp=$includePtp, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
