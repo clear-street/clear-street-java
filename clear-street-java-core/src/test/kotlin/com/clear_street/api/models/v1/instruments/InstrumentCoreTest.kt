@@ -5,7 +5,6 @@ package com.clear_street.api.models.v1.instruments
 import com.clear_street.api.core.jsonMapper
 import com.clear_street.api.models.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -30,14 +29,12 @@ internal class InstrumentCoreTest {
                 .symbol("AAPL")
                 .venue("XNMS")
                 .adv("75000000")
-                .expiry(LocalDate.parse("2024-12-20"))
                 .instrumentType(SecurityType.COMMON_STOCK)
                 .longMarginRate("0.25")
                 .name("Apple Inc.")
                 .notionalAdv("15815250000")
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
-                .strikePrice("150.00")
                 .build()
 
         assertThat(instrumentCore.id()).isEqualTo("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
@@ -55,14 +52,12 @@ internal class InstrumentCoreTest {
         assertThat(instrumentCore.symbol()).isEqualTo("AAPL")
         assertThat(instrumentCore.venue()).isEqualTo("XNMS")
         assertThat(instrumentCore.adv()).contains("75000000")
-        assertThat(instrumentCore.expiry()).contains(LocalDate.parse("2024-12-20"))
         assertThat(instrumentCore.instrumentType()).contains(SecurityType.COMMON_STOCK)
         assertThat(instrumentCore.longMarginRate()).contains("0.25")
         assertThat(instrumentCore.name()).contains("Apple Inc.")
         assertThat(instrumentCore.notionalAdv()).contains("15815250000")
         assertThat(instrumentCore.previousClose()).contains("210.87")
         assertThat(instrumentCore.shortMarginRate()).contains("0.25")
-        assertThat(instrumentCore.strikePrice()).contains("150.00")
     }
 
     @Test
@@ -85,14 +80,12 @@ internal class InstrumentCoreTest {
                 .symbol("AAPL")
                 .venue("XNMS")
                 .adv("75000000")
-                .expiry(LocalDate.parse("2024-12-20"))
                 .instrumentType(SecurityType.COMMON_STOCK)
                 .longMarginRate("0.25")
                 .name("Apple Inc.")
                 .notionalAdv("15815250000")
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
-                .strikePrice("150.00")
                 .build()
 
         val roundtrippedInstrumentCore =
