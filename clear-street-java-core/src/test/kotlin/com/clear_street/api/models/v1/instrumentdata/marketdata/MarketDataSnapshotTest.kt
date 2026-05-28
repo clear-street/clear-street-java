@@ -4,6 +4,7 @@ package com.clear_street.api.models.v1.instrumentdata.marketdata
 
 import com.clear_street.api.core.jsonMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -16,6 +17,18 @@ internal class MarketDataSnapshotTest {
                 .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
                 .symbol("AAPL")
                 .cumulativeVolume(12345678L)
+                .greeks(
+                    SnapshotGreeks.builder()
+                        .delta("delta")
+                        .gamma("gamma")
+                        .iv("iv")
+                        .rho("rho")
+                        .theoPrice("theo_price")
+                        .theta("theta")
+                        .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .vega("vega")
+                        .build()
+                )
                 .lastQuote(
                     SnapshotQuote.builder()
                         .ask("210.14")
@@ -40,6 +53,19 @@ internal class MarketDataSnapshotTest {
             .isEqualTo("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
         assertThat(marketDataSnapshot.symbol()).isEqualTo("AAPL")
         assertThat(marketDataSnapshot.cumulativeVolume()).contains(12345678L)
+        assertThat(marketDataSnapshot.greeks())
+            .contains(
+                SnapshotGreeks.builder()
+                    .delta("delta")
+                    .gamma("gamma")
+                    .iv("iv")
+                    .rho("rho")
+                    .theoPrice("theo_price")
+                    .theta("theta")
+                    .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .vega("vega")
+                    .build()
+            )
         assertThat(marketDataSnapshot.lastQuote())
             .contains(
                 SnapshotQuote.builder()
@@ -71,6 +97,18 @@ internal class MarketDataSnapshotTest {
                 .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
                 .symbol("AAPL")
                 .cumulativeVolume(12345678L)
+                .greeks(
+                    SnapshotGreeks.builder()
+                        .delta("delta")
+                        .gamma("gamma")
+                        .iv("iv")
+                        .rho("rho")
+                        .theoPrice("theo_price")
+                        .theta("theta")
+                        .timestamp(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .vega("vega")
+                        .build()
+                )
                 .lastQuote(
                     SnapshotQuote.builder()
                         .ask("210.14")
