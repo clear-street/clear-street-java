@@ -387,13 +387,9 @@ private constructor(
 
             @JvmField val COMMON_STOCK = of("COMMON_STOCK")
 
-            @JvmField val PREFERRED_STOCK = of("PREFERRED_STOCK")
-
             @JvmField val OPTION = of("OPTION")
 
             @JvmField val CASH = of("CASH")
-
-            @JvmField val OTHER = of("OTHER")
 
             @JvmStatic fun of(value: String) = InstrumentType(JsonField.of(value))
         }
@@ -401,10 +397,8 @@ private constructor(
         /** An enum containing [InstrumentType]'s known values. */
         enum class Known {
             COMMON_STOCK,
-            PREFERRED_STOCK,
             OPTION,
             CASH,
-            OTHER,
         }
 
         /**
@@ -418,10 +412,8 @@ private constructor(
          */
         enum class Value {
             COMMON_STOCK,
-            PREFERRED_STOCK,
             OPTION,
             CASH,
-            OTHER,
             /**
              * An enum member indicating that [InstrumentType] was instantiated with an unknown
              * value.
@@ -439,10 +431,8 @@ private constructor(
         fun value(): Value =
             when (this) {
                 COMMON_STOCK -> Value.COMMON_STOCK
-                PREFERRED_STOCK -> Value.PREFERRED_STOCK
                 OPTION -> Value.OPTION
                 CASH -> Value.CASH
-                OTHER -> Value.OTHER
                 else -> Value._UNKNOWN
             }
 
@@ -458,10 +448,8 @@ private constructor(
         fun known(): Known =
             when (this) {
                 COMMON_STOCK -> Known.COMMON_STOCK
-                PREFERRED_STOCK -> Known.PREFERRED_STOCK
                 OPTION -> Known.OPTION
                 CASH -> Known.CASH
-                OTHER -> Known.OTHER
                 else -> throw ClearStreetInvalidDataException("Unknown InstrumentType: $value")
             }
 

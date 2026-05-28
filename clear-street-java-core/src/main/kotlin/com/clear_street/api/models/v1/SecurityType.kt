@@ -23,13 +23,9 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
 
         @JvmField val COMMON_STOCK = of("COMMON_STOCK")
 
-        @JvmField val PREFERRED_STOCK = of("PREFERRED_STOCK")
-
         @JvmField val OPTION = of("OPTION")
 
         @JvmField val CASH = of("CASH")
-
-        @JvmField val OTHER = of("OTHER")
 
         @JvmStatic fun of(value: String) = SecurityType(JsonField.of(value))
     }
@@ -37,10 +33,8 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
     /** An enum containing [SecurityType]'s known values. */
     enum class Known {
         COMMON_STOCK,
-        PREFERRED_STOCK,
         OPTION,
         CASH,
-        OTHER,
     }
 
     /**
@@ -54,10 +48,8 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
      */
     enum class Value {
         COMMON_STOCK,
-        PREFERRED_STOCK,
         OPTION,
         CASH,
-        OTHER,
         /** An enum member indicating that [SecurityType] was instantiated with an unknown value. */
         _UNKNOWN,
     }
@@ -72,10 +64,8 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
     fun value(): Value =
         when (this) {
             COMMON_STOCK -> Value.COMMON_STOCK
-            PREFERRED_STOCK -> Value.PREFERRED_STOCK
             OPTION -> Value.OPTION
             CASH -> Value.CASH
-            OTHER -> Value.OTHER
             else -> Value._UNKNOWN
         }
 
@@ -91,10 +81,8 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
     fun known(): Known =
         when (this) {
             COMMON_STOCK -> Known.COMMON_STOCK
-            PREFERRED_STOCK -> Known.PREFERRED_STOCK
             OPTION -> Known.OPTION
             CASH -> Known.CASH
-            OTHER -> Known.OTHER
             else -> throw ClearStreetInvalidDataException("Unknown SecurityType: $value")
         }
 
