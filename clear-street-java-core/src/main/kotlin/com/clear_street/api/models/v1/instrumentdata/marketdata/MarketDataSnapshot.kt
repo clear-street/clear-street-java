@@ -24,6 +24,7 @@ private constructor(
     private val instrumentId: JsonField<String>,
     private val symbol: JsonField<String>,
     private val cumulativeVolume: JsonField<Long>,
+    private val greeks: JsonField<SnapshotGreeks>,
     private val lastQuote: JsonField<SnapshotQuote>,
     private val lastTrade: JsonField<SnapshotLastTrade>,
     private val name: JsonField<String>,
@@ -40,6 +41,9 @@ private constructor(
         @JsonProperty("cumulative_volume")
         @ExcludeMissing
         cumulativeVolume: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("greeks")
+        @ExcludeMissing
+        greeks: JsonField<SnapshotGreeks> = JsonMissing.of(),
         @JsonProperty("last_quote")
         @ExcludeMissing
         lastQuote: JsonField<SnapshotQuote> = JsonMissing.of(),
@@ -54,6 +58,7 @@ private constructor(
         instrumentId,
         symbol,
         cumulativeVolume,
+        greeks,
         lastQuote,
         lastTrade,
         name,
@@ -85,6 +90,15 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun cumulativeVolume(): Optional<Long> = cumulativeVolume.getOptional("cumulative_volume")
+
+    /**
+     * Theoretical price and Greeks for option instruments. `None` for equities, and for options
+     * whose Greeks have not yet been observed
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun greeks(): Optional<SnapshotGreeks> = greeks.getOptional("greeks")
 
     /**
      * Most recent quote if available.
@@ -143,6 +157,13 @@ private constructor(
     @JsonProperty("cumulative_volume")
     @ExcludeMissing
     fun _cumulativeVolume(): JsonField<Long> = cumulativeVolume
+
+    /**
+     * Returns the raw JSON value of [greeks].
+     *
+     * Unlike [greeks], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("greeks") @ExcludeMissing fun _greeks(): JsonField<SnapshotGreeks> = greeks
 
     /**
      * Returns the raw JSON value of [lastQuote].
@@ -208,6 +229,7 @@ private constructor(
         private var instrumentId: JsonField<String>? = null
         private var symbol: JsonField<String>? = null
         private var cumulativeVolume: JsonField<Long> = JsonMissing.of()
+        private var greeks: JsonField<SnapshotGreeks> = JsonMissing.of()
         private var lastQuote: JsonField<SnapshotQuote> = JsonMissing.of()
         private var lastTrade: JsonField<SnapshotLastTrade> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
@@ -219,6 +241,7 @@ private constructor(
             instrumentId = marketDataSnapshot.instrumentId
             symbol = marketDataSnapshot.symbol
             cumulativeVolume = marketDataSnapshot.cumulativeVolume
+            greeks = marketDataSnapshot.greeks
             lastQuote = marketDataSnapshot.lastQuote
             lastTrade = marketDataSnapshot.lastTrade
             name = marketDataSnapshot.name
@@ -279,6 +302,24 @@ private constructor(
         fun cumulativeVolume(cumulativeVolume: JsonField<Long>) = apply {
             this.cumulativeVolume = cumulativeVolume
         }
+
+        /**
+         * Theoretical price and Greeks for option instruments. `None` for equities, and for options
+         * whose Greeks have not yet been observed
+         */
+        fun greeks(greeks: SnapshotGreeks?) = greeks(JsonField.ofNullable(greeks))
+
+        /** Alias for calling [Builder.greeks] with `greeks.orElse(null)`. */
+        fun greeks(greeks: Optional<SnapshotGreeks>) = greeks(greeks.getOrNull())
+
+        /**
+         * Sets [Builder.greeks] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.greeks] with a well-typed [SnapshotGreeks] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun greeks(greeks: JsonField<SnapshotGreeks>) = apply { this.greeks = greeks }
 
         /** Most recent quote if available. */
         fun lastQuote(lastQuote: SnapshotQuote?) = lastQuote(JsonField.ofNullable(lastQuote))
@@ -378,6 +419,7 @@ private constructor(
                 checkRequired("instrumentId", instrumentId),
                 checkRequired("symbol", symbol),
                 cumulativeVolume,
+                greeks,
                 lastQuote,
                 lastTrade,
                 name,
@@ -404,6 +446,7 @@ private constructor(
         instrumentId()
         symbol()
         cumulativeVolume()
+        greeks().ifPresent { it.validate() }
         lastQuote().ifPresent { it.validate() }
         lastTrade().ifPresent { it.validate() }
         name()
@@ -429,6 +472,7 @@ private constructor(
         (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (cumulativeVolume.asKnown().isPresent) 1 else 0) +
+            (greeks.asKnown().getOrNull()?.validity() ?: 0) +
             (lastQuote.asKnown().getOrNull()?.validity() ?: 0) +
             (lastTrade.asKnown().getOrNull()?.validity() ?: 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
@@ -443,6 +487,7 @@ private constructor(
             instrumentId == other.instrumentId &&
             symbol == other.symbol &&
             cumulativeVolume == other.cumulativeVolume &&
+            greeks == other.greeks &&
             lastQuote == other.lastQuote &&
             lastTrade == other.lastTrade &&
             name == other.name &&
@@ -455,6 +500,7 @@ private constructor(
             instrumentId,
             symbol,
             cumulativeVolume,
+            greeks,
             lastQuote,
             lastTrade,
             name,
@@ -466,5 +512,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "MarketDataSnapshot{instrumentId=$instrumentId, symbol=$symbol, cumulativeVolume=$cumulativeVolume, lastQuote=$lastQuote, lastTrade=$lastTrade, name=$name, session=$session, additionalProperties=$additionalProperties}"
+        "MarketDataSnapshot{instrumentId=$instrumentId, symbol=$symbol, cumulativeVolume=$cumulativeVolume, greeks=$greeks, lastQuote=$lastQuote, lastTrade=$lastTrade, name=$name, session=$session, additionalProperties=$additionalProperties}"
 }
