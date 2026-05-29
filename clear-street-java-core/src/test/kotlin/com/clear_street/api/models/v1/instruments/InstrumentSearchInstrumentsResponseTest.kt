@@ -8,6 +8,7 @@ import com.clear_street.api.models.ApiError
 import com.clear_street.api.models.ResponseMetadata
 import com.clear_street.api.models.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -54,12 +55,14 @@ internal class InstrumentSearchInstrumentsResponseTest {
                         .symbol("AAPL")
                         .venue("XNMS")
                         .adv("75000000")
+                        .expiry(LocalDate.parse("2024-12-20"))
                         .instrumentType(SecurityType.COMMON_STOCK)
                         .longMarginRate("0.25")
                         .name("Apple Inc.")
                         .notionalAdv("15815250000")
                         .previousClose("210.87")
                         .shortMarginRate("0.25")
+                        .strikePrice("150.00")
                         .build()
                 )
                 .build()
@@ -104,12 +107,14 @@ internal class InstrumentSearchInstrumentsResponseTest {
                     .symbol("AAPL")
                     .venue("XNMS")
                     .adv("75000000")
+                    .expiry(LocalDate.parse("2024-12-20"))
                     .instrumentType(SecurityType.COMMON_STOCK)
                     .longMarginRate("0.25")
                     .name("Apple Inc.")
                     .notionalAdv("15815250000")
                     .previousClose("210.87")
                     .shortMarginRate("0.25")
+                    .strikePrice("150.00")
                     .build()
             )
     }
@@ -156,12 +161,14 @@ internal class InstrumentSearchInstrumentsResponseTest {
                         .symbol("AAPL")
                         .venue("XNMS")
                         .adv("75000000")
+                        .expiry(LocalDate.parse("2024-12-20"))
                         .instrumentType(SecurityType.COMMON_STOCK)
                         .longMarginRate("0.25")
                         .name("Apple Inc.")
                         .notionalAdv("15815250000")
                         .previousClose("210.87")
                         .shortMarginRate("0.25")
+                        .strikePrice("150.00")
                         .build()
                 )
                 .build()

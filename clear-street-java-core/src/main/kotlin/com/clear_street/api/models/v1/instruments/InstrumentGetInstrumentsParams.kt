@@ -2,10 +2,14 @@
 
 package com.clear_street.api.models.v1.instruments
 
+import com.clear_street.api.core.Enum
+import com.clear_street.api.core.JsonField
 import com.clear_street.api.core.Params
 import com.clear_street.api.core.http.Headers
 import com.clear_street.api.core.http.QueryParams
 import com.clear_street.api.core.toImmutable
+import com.clear_street.api.errors.ClearStreetInvalidDataException
+import com.fasterxml.jackson.annotation.JsonCreator
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
@@ -15,6 +19,7 @@ class InstrumentGetInstrumentsParams
 private constructor(
     private val easyToBorrow: Boolean?,
     private val instrumentIds: List<String>?,
+    private val instrumentType: InstrumentType?,
     private val isLiquidationOnly: Boolean?,
     private val isMarginable: Boolean?,
     private val isPtp: Boolean?,
@@ -31,6 +36,9 @@ private constructor(
 
     /** Comma-separated OEMS instrument UUIDs */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
+
+    /** Filter by instrument type (e.g. COMMON_STOCK, OPTION) */
+    fun instrumentType(): Optional<InstrumentType> = Optional.ofNullable(instrumentType)
 
     /** Filter by liquidation only status */
     fun isLiquidationOnly(): Optional<Boolean> = Optional.ofNullable(isLiquidationOnly)
@@ -80,6 +88,7 @@ private constructor(
 
         private var easyToBorrow: Boolean? = null
         private var instrumentIds: MutableList<String>? = null
+        private var instrumentType: InstrumentType? = null
         private var isLiquidationOnly: Boolean? = null
         private var isMarginable: Boolean? = null
         private var isPtp: Boolean? = null
@@ -94,6 +103,7 @@ private constructor(
         internal fun from(instrumentGetInstrumentsParams: InstrumentGetInstrumentsParams) = apply {
             easyToBorrow = instrumentGetInstrumentsParams.easyToBorrow
             instrumentIds = instrumentGetInstrumentsParams.instrumentIds?.toMutableList()
+            instrumentType = instrumentGetInstrumentsParams.instrumentType
             isLiquidationOnly = instrumentGetInstrumentsParams.isLiquidationOnly
             isMarginable = instrumentGetInstrumentsParams.isMarginable
             isPtp = instrumentGetInstrumentsParams.isPtp
@@ -135,6 +145,15 @@ private constructor(
         fun addInstrumentId(instrumentId: String) = apply {
             instrumentIds = (instrumentIds ?: mutableListOf()).apply { add(instrumentId) }
         }
+
+        /** Filter by instrument type (e.g. COMMON_STOCK, OPTION) */
+        fun instrumentType(instrumentType: InstrumentType?) = apply {
+            this.instrumentType = instrumentType
+        }
+
+        /** Alias for calling [Builder.instrumentType] with `instrumentType.orElse(null)`. */
+        fun instrumentType(instrumentType: Optional<InstrumentType>) =
+            instrumentType(instrumentType.getOrNull())
 
         /** Filter by liquidation only status */
         fun isLiquidationOnly(isLiquidationOnly: Boolean?) = apply {
@@ -344,6 +363,7 @@ private constructor(
             InstrumentGetInstrumentsParams(
                 easyToBorrow,
                 instrumentIds?.toImmutable(),
+                instrumentType,
                 isLiquidationOnly,
                 isMarginable,
                 isPtp,
@@ -363,6 +383,7 @@ private constructor(
             .apply {
                 easyToBorrow?.let { put("easy_to_borrow", it.toString()) }
                 instrumentIds?.forEachIndexed { index, it -> put("instrument_ids[$index]", it) }
+                instrumentType?.let { put("instrument_type", it.toString()) }
                 isLiquidationOnly?.let { put("is_liquidation_only", it.toString()) }
                 isMarginable?.let { put("is_marginable", it.toString()) }
                 isPtp?.let { put("is_ptp", it.toString()) }
@@ -374,6 +395,153 @@ private constructor(
             }
             .build()
 
+    /** Filter by instrument type (e.g. COMMON_STOCK, OPTION) */
+    class InstrumentType @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val COMMON_STOCK = of("COMMON_STOCK")
+
+            @JvmField val OPTION = of("OPTION")
+
+            @JvmField val CASH = of("CASH")
+
+            @JvmStatic fun of(value: String) = InstrumentType(JsonField.of(value))
+        }
+
+        /** An enum containing [InstrumentType]'s known values. */
+        enum class Known {
+            COMMON_STOCK,
+            OPTION,
+            CASH,
+        }
+
+        /**
+         * An enum containing [InstrumentType]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [InstrumentType] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            COMMON_STOCK,
+            OPTION,
+            CASH,
+            /**
+             * An enum member indicating that [InstrumentType] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                COMMON_STOCK -> Value.COMMON_STOCK
+                OPTION -> Value.OPTION
+                CASH -> Value.CASH
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws ClearStreetInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                COMMON_STOCK -> Known.COMMON_STOCK
+                OPTION -> Known.OPTION
+                CASH -> Known.CASH
+                else -> throw ClearStreetInvalidDataException("Unknown InstrumentType: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws ClearStreetInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow {
+                ClearStreetInvalidDataException("Value is not a String")
+            }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws ClearStreetInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): InstrumentType = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: ClearStreetInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is InstrumentType && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -382,6 +550,7 @@ private constructor(
         return other is InstrumentGetInstrumentsParams &&
             easyToBorrow == other.easyToBorrow &&
             instrumentIds == other.instrumentIds &&
+            instrumentType == other.instrumentType &&
             isLiquidationOnly == other.isLiquidationOnly &&
             isMarginable == other.isMarginable &&
             isPtp == other.isPtp &&
@@ -397,6 +566,7 @@ private constructor(
         Objects.hash(
             easyToBorrow,
             instrumentIds,
+            instrumentType,
             isLiquidationOnly,
             isMarginable,
             isPtp,
@@ -409,5 +579,5 @@ private constructor(
         )
 
     override fun toString() =
-        "InstrumentGetInstrumentsParams{easyToBorrow=$easyToBorrow, instrumentIds=$instrumentIds, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentGetInstrumentsParams{easyToBorrow=$easyToBorrow, instrumentIds=$instrumentIds, instrumentType=$instrumentType, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
