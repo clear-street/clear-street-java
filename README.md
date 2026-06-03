@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.clear_street.api/clear-street-java)](https://central.sonatype.com/artifact/com.clear_street.api/clear-street-java/0.2.0)
-[![javadoc](https://javadoc.io/badge2/com.clear_street.api/clear-street-java/0.2.0/javadoc.svg)](https://javadoc.io/doc/com.clear_street.api/clear-street-java/0.2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.clearstreet.api/clear-street-java)](https://central.sonatype.com/artifact/com.clearstreet.api/clear-street-java/0.2.0)
+[![javadoc](https://javadoc.io/badge2/com.clearstreet.api/clear-street-java/0.2.0/javadoc.svg)](https://javadoc.io/doc/com.clearstreet.api/clear-street-java/0.2.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.clear_street.api/clear-street-java/0.2.0).
+Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.clearstreet.api/clear-street-java/0.2.0).
 
 <!-- x-release-please-end -->
 
@@ -24,14 +24,14 @@ Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.clear_street.a
 ### Gradle
 
 ```kotlin
-implementation("com.clear_street.api:clear-street-java:0.2.0")
+implementation("com.clearstreet.api:clear-street-java:0.2.0")
 ```
 
 ### Maven
 
 ```xml
 <dependency>
-  <groupId>com.clear_street.api</groupId>
+  <groupId>com.clearstreet.api</groupId>
   <artifactId>clear-street-java</artifactId>
   <version>0.2.0</version>
 </dependency>
@@ -46,10 +46,10 @@ This library requires Java 8 or later.
 ## Usage
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsResponse;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     // Configures using the `clearstreet.baseUrl` system property
@@ -66,8 +66,8 @@ AccountGetAccountsResponse response = client.v1().accounts().getAccounts();
 Configure the client using system properties or environment variables:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     // Configures using the `clearstreet.baseUrl` system property
@@ -80,8 +80,8 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
 Or manually:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .apiKey("My API Key")
@@ -91,8 +91,8 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
 Or using a combination of the two approaches:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     // Configures using the `clearstreet.baseUrl` system property
@@ -119,7 +119,7 @@ System properties take precedence over environment variables.
 To temporarily use a modified client configuration, while reusing the same connection and thread pools, call `withOptions()` on any client or service:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
+import com.clearstreet.api.client.ClearStreetClient;
 
 ClearStreetClient clientWithOptions = client.withOptions(optionsBuilder -> {
     optionsBuilder.baseUrl("https://example.com");
@@ -148,10 +148,10 @@ Because each class is immutable, builder modification will _never_ affect alread
 The default client is synchronous. To switch to asynchronous execution, call the `async()` method:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsResponse;
 import java.util.concurrent.CompletableFuture;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
@@ -167,10 +167,10 @@ CompletableFuture<AccountGetAccountsResponse> response = client.async().v1().acc
 Or create an asynchronous client from the beginning:
 
 ```java
-import com.clear_street.api.client.ClearStreetClientAsync;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClientAsync;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
+import com.clearstreet.api.client.ClearStreetClientAsync;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsResponse;
 import java.util.concurrent.CompletableFuture;
 
 ClearStreetClientAsync client = ClearStreetOkHttpClientAsync.builder()
@@ -192,10 +192,10 @@ The SDK defines methods that deserialize responses into instances of Java classe
 To access this data, prefix any HTTP method call on a client or service with `withRawResponse()`:
 
 ```java
-import com.clear_street.api.core.http.Headers;
-import com.clear_street.api.core.http.HttpResponseFor;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
+import com.clearstreet.api.core.http.Headers;
+import com.clearstreet.api.core.http.HttpResponseFor;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsResponse;
 
 HttpResponseFor<AccountGetAccountsResponse> response = client.v1().accounts().withRawResponse().getAccounts();
 
@@ -206,7 +206,7 @@ Headers headers = response.headers();
 You can still deserialize the response into an instance of a Java class if needed:
 
 ```java
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsResponse;
 
 AccountGetAccountsResponse parsedResponse = response.parse();
 ```
@@ -215,26 +215,26 @@ AccountGetAccountsResponse parsedResponse = response.parse();
 
 The SDK throws custom unchecked exception types:
 
-- [`ClearStreetServiceException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/ClearStreetServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
+- [`ClearStreetServiceException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/ClearStreetServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
 
-  | Status | Exception                                                                                                                              |
-  | ------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-  | 400    | [`BadRequestException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/BadRequestException.kt)                     |
-  | 401    | [`UnauthorizedException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/UnauthorizedException.kt)                 |
-  | 403    | [`PermissionDeniedException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/PermissionDeniedException.kt)         |
-  | 404    | [`NotFoundException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/NotFoundException.kt)                         |
-  | 422    | [`UnprocessableEntityException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/UnprocessableEntityException.kt)   |
-  | 429    | [`RateLimitException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/RateLimitException.kt)                       |
-  | 5xx    | [`InternalServerException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/InternalServerException.kt)             |
-  | others | [`UnexpectedStatusCodeException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/UnexpectedStatusCodeException.kt) |
+  | Status | Exception                                                                                                                             |
+  | ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+  | 400    | [`BadRequestException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/BadRequestException.kt)                     |
+  | 401    | [`UnauthorizedException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/UnauthorizedException.kt)                 |
+  | 403    | [`PermissionDeniedException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/PermissionDeniedException.kt)         |
+  | 404    | [`NotFoundException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/NotFoundException.kt)                         |
+  | 422    | [`UnprocessableEntityException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/UnprocessableEntityException.kt)   |
+  | 429    | [`RateLimitException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/RateLimitException.kt)                       |
+  | 5xx    | [`InternalServerException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/InternalServerException.kt)             |
+  | others | [`UnexpectedStatusCodeException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/UnexpectedStatusCodeException.kt) |
 
-- [`ClearStreetIoException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/ClearStreetIoException.kt): I/O networking errors.
+- [`ClearStreetIoException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/ClearStreetIoException.kt): I/O networking errors.
 
-- [`ClearStreetRetryableException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/ClearStreetRetryableException.kt): Generic error indicating a failure that could be retried by the client.
+- [`ClearStreetRetryableException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/ClearStreetRetryableException.kt): Generic error indicating a failure that could be retried by the client.
 
-- [`ClearStreetInvalidDataException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/ClearStreetInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
+- [`ClearStreetInvalidDataException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/ClearStreetInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
 
-- [`ClearStreetException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/ClearStreetException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
+- [`ClearStreetException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/ClearStreetException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
 
 ## Logging
 
@@ -253,9 +253,9 @@ export CLEAR_STREET_LOG=debug
 Or configure the client manually using the `logLevel` method:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
-import com.clear_street.api.core.LogLevel;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.core.LogLevel;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .fromEnv()
@@ -276,7 +276,7 @@ The SDK depends on [Jackson](https://github.com/FasterXML/jackson) for JSON seri
 
 The SDK throws an exception if it detects an incompatible Jackson version at runtime (e.g. if the default version was overridden in your Maven or Gradle config).
 
-If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`ClearStreetOkHttpClient`](clear-street-java-client-okhttp/src/main/kotlin/com/clear_street/api/client/okhttp/ClearStreetOkHttpClient.kt) or [`ClearStreetOkHttpClientAsync`](clear-street-java-client-okhttp/src/main/kotlin/com/clear_street/api/client/okhttp/ClearStreetOkHttpClientAsync.kt).
+If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`ClearStreetOkHttpClient`](clear-street-java-client-okhttp/src/main/kotlin/com/clearstreet/api/client/okhttp/ClearStreetOkHttpClient.kt) or [`ClearStreetOkHttpClientAsync`](clear-street-java-client-okhttp/src/main/kotlin/com/clearstreet/api/client/okhttp/ClearStreetOkHttpClientAsync.kt).
 
 > [!CAUTION]
 > We make no guarantee that the SDK works correctly when the Jackson version check is disabled.
@@ -302,8 +302,8 @@ The API may also explicitly instruct the SDK to retry or not retry a request.
 To set a custom number of retries, configure the client using the `maxRetries` method:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .fromEnv()
@@ -319,7 +319,7 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```java
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsResponse;
 
 AccountGetAccountsResponse response = client.v1().accounts().getAccounts(RequestOptions.builder().timeout(Duration.ofSeconds(30)).build());
 ```
@@ -327,8 +327,8 @@ AccountGetAccountsResponse response = client.v1().accounts().getAccounts(Request
 Or configure the default for all method calls at the client level:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
 import java.time.Duration;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
@@ -343,8 +343,8 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
 To route requests through a proxy, configure the client using the `proxy` method:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
@@ -362,9 +362,9 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
 If the proxy responds with `407 Proxy Authentication Required`, supply credentials by also configuring `proxyAuthenticator`:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
-import com.clear_street.api.core.http.ProxyAuthenticator;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.core.http.ProxyAuthenticator;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .fromEnv()
@@ -380,8 +380,8 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
 To customize the underlying OkHttp connection pool, configure the client using the `maxIdleConnections` and `keepAliveDuration` methods:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
 import java.time.Duration;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
@@ -404,8 +404,8 @@ If both options are unset, OkHttp's default connection pool settings are used.
 To configure how HTTPS connections are secured, configure the client using the `sslSocketFactory`, `trustManager`, and `hostnameVerifier` methods:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .fromEnv()
@@ -422,8 +422,8 @@ ClearStreetClient client = ClearStreetOkHttpClient.builder()
 The SDK sends requests to the production by default. To send requests to a different environment, configure the client like so:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .fromEnv()
@@ -439,10 +439,10 @@ The SDK consists of three artifacts:
 - `clear-street-java-core`
   - Contains core SDK logic
   - Does not depend on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`ClearStreetClient`](clear-street-java-core/src/main/kotlin/com/clear_street/api/client/ClearStreetClient.kt), [`ClearStreetClientAsync`](clear-street-java-core/src/main/kotlin/com/clear_street/api/client/ClearStreetClientAsync.kt), [`ClearStreetClientImpl`](clear-street-java-core/src/main/kotlin/com/clear_street/api/client/ClearStreetClientImpl.kt), and [`ClearStreetClientAsyncImpl`](clear-street-java-core/src/main/kotlin/com/clear_street/api/client/ClearStreetClientAsyncImpl.kt), all of which can work with any HTTP client
+  - Exposes [`ClearStreetClient`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/client/ClearStreetClient.kt), [`ClearStreetClientAsync`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/client/ClearStreetClientAsync.kt), [`ClearStreetClientImpl`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/client/ClearStreetClientImpl.kt), and [`ClearStreetClientAsyncImpl`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/client/ClearStreetClientAsyncImpl.kt), all of which can work with any HTTP client
 - `clear-street-java-client-okhttp`
   - Depends on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`ClearStreetOkHttpClient`](clear-street-java-client-okhttp/src/main/kotlin/com/clear_street/api/client/okhttp/ClearStreetOkHttpClient.kt) and [`ClearStreetOkHttpClientAsync`](clear-street-java-client-okhttp/src/main/kotlin/com/clear_street/api/client/okhttp/ClearStreetOkHttpClientAsync.kt), which provide a way to construct [`ClearStreetClientImpl`](clear-street-java-core/src/main/kotlin/com/clear_street/api/client/ClearStreetClientImpl.kt) and [`ClearStreetClientAsyncImpl`](clear-street-java-core/src/main/kotlin/com/clear_street/api/client/ClearStreetClientAsyncImpl.kt), respectively, using OkHttp
+  - Exposes [`ClearStreetOkHttpClient`](clear-street-java-client-okhttp/src/main/kotlin/com/clearstreet/api/client/okhttp/ClearStreetOkHttpClient.kt) and [`ClearStreetOkHttpClientAsync`](clear-street-java-client-okhttp/src/main/kotlin/com/clearstreet/api/client/okhttp/ClearStreetOkHttpClientAsync.kt), which provide a way to construct [`ClearStreetClientImpl`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/client/ClearStreetClientImpl.kt) and [`ClearStreetClientAsyncImpl`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/client/ClearStreetClientAsyncImpl.kt), respectively, using OkHttp
 - `clear-street-java`
   - Depends on and exposes the APIs of both `clear-street-java-core` and `clear-street-java-client-okhttp`
   - Does not have its own logic
@@ -457,16 +457,16 @@ This structure allows replacing the SDK's default HTTP client without pulling in
 To use a customized `OkHttpClient`:
 
 1. Replace your [`clear-street-java` dependency](#installation) with `clear-street-java-core`
-2. Copy `clear-street-java-client-okhttp`'s [`OkHttpClient`](clear-street-java-client-okhttp/src/main/kotlin/com/clear_street/api/client/okhttp/OkHttpClient.kt) class into your code and customize it
-3. Construct [`ClearStreetClientImpl`](clear-street-java-core/src/main/kotlin/com/clear_street/api/client/ClearStreetClientImpl.kt) or [`ClearStreetClientAsyncImpl`](clear-street-java-core/src/main/kotlin/com/clear_street/api/client/ClearStreetClientAsyncImpl.kt), similarly to [`ClearStreetOkHttpClient`](clear-street-java-client-okhttp/src/main/kotlin/com/clear_street/api/client/okhttp/ClearStreetOkHttpClient.kt) or [`ClearStreetOkHttpClientAsync`](clear-street-java-client-okhttp/src/main/kotlin/com/clear_street/api/client/okhttp/ClearStreetOkHttpClientAsync.kt), using your customized client
+2. Copy `clear-street-java-client-okhttp`'s [`OkHttpClient`](clear-street-java-client-okhttp/src/main/kotlin/com/clearstreet/api/client/okhttp/OkHttpClient.kt) class into your code and customize it
+3. Construct [`ClearStreetClientImpl`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/client/ClearStreetClientImpl.kt) or [`ClearStreetClientAsyncImpl`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/client/ClearStreetClientAsyncImpl.kt), similarly to [`ClearStreetOkHttpClient`](clear-street-java-client-okhttp/src/main/kotlin/com/clearstreet/api/client/okhttp/ClearStreetOkHttpClient.kt) or [`ClearStreetOkHttpClientAsync`](clear-street-java-client-okhttp/src/main/kotlin/com/clearstreet/api/client/okhttp/ClearStreetOkHttpClientAsync.kt), using your customized client
 
 ### Completely custom HTTP client
 
 To use a completely custom HTTP client:
 
 1. Replace your [`clear-street-java` dependency](#installation) with `clear-street-java-core`
-2. Write a class that implements the [`HttpClient`](clear-street-java-core/src/main/kotlin/com/clear_street/api/core/http/HttpClient.kt) interface
-3. Construct [`ClearStreetClientImpl`](clear-street-java-core/src/main/kotlin/com/clear_street/api/client/ClearStreetClientImpl.kt) or [`ClearStreetClientAsyncImpl`](clear-street-java-core/src/main/kotlin/com/clear_street/api/client/ClearStreetClientAsyncImpl.kt), similarly to [`ClearStreetOkHttpClient`](clear-street-java-client-okhttp/src/main/kotlin/com/clear_street/api/client/okhttp/ClearStreetOkHttpClient.kt) or [`ClearStreetOkHttpClientAsync`](clear-street-java-client-okhttp/src/main/kotlin/com/clear_street/api/client/okhttp/ClearStreetOkHttpClientAsync.kt), using your new client class
+2. Write a class that implements the [`HttpClient`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/core/http/HttpClient.kt) interface
+3. Construct [`ClearStreetClientImpl`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/client/ClearStreetClientImpl.kt) or [`ClearStreetClientAsyncImpl`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/client/ClearStreetClientAsyncImpl.kt), similarly to [`ClearStreetOkHttpClient`](clear-street-java-client-okhttp/src/main/kotlin/com/clearstreet/api/client/okhttp/ClearStreetOkHttpClient.kt) or [`ClearStreetOkHttpClientAsync`](clear-street-java-client-okhttp/src/main/kotlin/com/clearstreet/api/client/okhttp/ClearStreetOkHttpClientAsync.kt), using your new client class
 
 ## Undocumented API functionality
 
@@ -477,8 +477,8 @@ The SDK is typed for convenient usage of the documented API. However, it also su
 To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQueryParam`, or `putAdditionalBodyProperty` methods on any `Params` class:
 
 ```java
-import com.clear_street.api.core.JsonValue;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clearstreet.api.core.JsonValue;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams;
 
 AccountGetAccountsParams params = AccountGetAccountsParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
@@ -492,9 +492,9 @@ These can be accessed on the built object later using the `_additionalHeaders()`
 To set undocumented parameters on _nested_ headers, query params, or body classes, call the `putAdditionalProperty` method on the nested class:
 
 ```java
-import com.clear_street.api.core.JsonValue;
-import com.clear_street.api.models.v1.accounts.AccountPatchAccountByIdParams;
-import com.clear_street.api.models.v1.accounts.RiskSettings;
+import com.clearstreet.api.core.JsonValue;
+import com.clearstreet.api.models.v1.accounts.AccountPatchAccountByIdParams;
+import com.clearstreet.api.models.v1.accounts.RiskSettings;
 
 AccountPatchAccountByIdParams params = AccountPatchAccountByIdParams.builder()
     .risk(RiskSettings.builder()
@@ -505,18 +505,18 @@ AccountPatchAccountByIdParams params = AccountPatchAccountByIdParams.builder()
 
 These properties can be accessed on the nested built object later using the `_additionalProperties()` method.
 
-To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](clear-street-java-core/src/main/kotlin/com/clear_street/api/core/Values.kt) object to its setter:
+To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/core/Values.kt) object to its setter:
 
 ```java
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams;
 
 AccountGetAccountsParams params = AccountGetAccountsParams.builder().build();
 ```
 
-The most straightforward way to create a [`JsonValue`](clear-street-java-core/src/main/kotlin/com/clear_street/api/core/Values.kt) is using its `from(...)` method:
+The most straightforward way to create a [`JsonValue`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/core/Values.kt) is using its `from(...)` method:
 
 ```java
-import com.clear_street.api.core.JsonValue;
+import com.clearstreet.api.core.JsonValue;
 import java.util.List;
 import java.util.Map;
 
@@ -554,12 +554,12 @@ JsonValue complexValue = JsonValue.from(Map.of(
 
 Normally a `Builder` class's `build` method will throw [`IllegalStateException`](https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html) if any required parameter or property is unset.
 
-To forcibly omit a required parameter or property, pass [`JsonMissing`](clear-street-java-core/src/main/kotlin/com/clear_street/api/core/Values.kt):
+To forcibly omit a required parameter or property, pass [`JsonMissing`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/core/Values.kt):
 
 ```java
-import com.clear_street.api.core.JsonMissing;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountBalancesParams;
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsParams;
+import com.clearstreet.api.core.JsonMissing;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountBalancesParams;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams;
 
 AccountGetAccountsParams params = AccountGetAccountBalancesParams.builder()
     .accountId(JsonMissing.of())
@@ -571,7 +571,7 @@ AccountGetAccountsParams params = AccountGetAccountBalancesParams.builder()
 To access undocumented response properties, call the `_additionalProperties()` method:
 
 ```java
-import com.clear_street.api.core.JsonValue;
+import com.clearstreet.api.core.JsonValue;
 import java.util.Map;
 
 Map<String, JsonValue> additionalProperties = client.v1().accounts().getAccounts(params)._additionalProperties();
@@ -601,7 +601,7 @@ String result = secretPropertyValue.accept(new JsonValue.Visitor<>() {
 To access a property's raw JSON value, which may be undocumented, call its `_` prefixed method:
 
 ```java
-import com.clear_street.api.core.JsonField;
+import com.clearstreet.api.core.JsonField;
 import java.util.Optional;
 
 JsonField<Object> field = client.v1().accounts().getAccounts(params)._field();
@@ -624,14 +624,14 @@ if (field.isMissing()) {
 
 In rare cases, the API may return a response that doesn't match the expected type. For example, the SDK may expect a property to contain a `String`, but the API could return something else.
 
-By default, the SDK will not throw an exception in this case. It will throw [`ClearStreetInvalidDataException`](clear-street-java-core/src/main/kotlin/com/clear_street/api/errors/ClearStreetInvalidDataException.kt) only if you directly access the property.
+By default, the SDK will not throw an exception in this case. It will throw [`ClearStreetInvalidDataException`](clear-street-java-core/src/main/kotlin/com/clearstreet/api/errors/ClearStreetInvalidDataException.kt) only if you directly access the property.
 
 Validating the response is _not_ forwards compatible with new types from the API for existing fields.
 
 If you would still prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```java
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsResponse;
 
 AccountGetAccountsResponse response = client.v1().accounts().getAccounts(params).validate();
 ```
@@ -639,7 +639,7 @@ AccountGetAccountsResponse response = client.v1().accounts().getAccounts(params)
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```java
-import com.clear_street.api.models.v1.accounts.AccountGetAccountsResponse;
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsResponse;
 
 AccountGetAccountsResponse response = client.v1().accounts().getAccounts(RequestOptions.builder().responseValidation(true).build());
 ```
@@ -647,8 +647,8 @@ AccountGetAccountsResponse response = client.v1().accounts().getAccounts(Request
 Or configure the default for all method calls at the client level:
 
 ```java
-import com.clear_street.api.client.ClearStreetClient;
-import com.clear_street.api.client.okhttp.ClearStreetOkHttpClient;
+import com.clearstreet.api.client.ClearStreetClient;
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient;
 
 ClearStreetClient client = ClearStreetOkHttpClient.builder()
     .fromEnv()
