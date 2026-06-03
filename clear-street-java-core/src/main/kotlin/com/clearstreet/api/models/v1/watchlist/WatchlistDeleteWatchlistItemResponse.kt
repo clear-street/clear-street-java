@@ -1,0 +1,274 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.clearstreet.api.models.v1.watchlist
+
+import com.clearstreet.api.core.ExcludeMissing
+import com.clearstreet.api.core.JsonField
+import com.clearstreet.api.core.JsonMissing
+import com.clearstreet.api.core.JsonValue
+import com.clearstreet.api.core.checkRequired
+import com.clearstreet.api.errors.ClearStreetInvalidDataException
+import com.clearstreet.api.models.ApiError
+import com.clearstreet.api.models.BaseResponse
+import com.clearstreet.api.models.ResponseMetadata
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Collections
+import java.util.Objects
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
+
+class WatchlistDeleteWatchlistItemResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
+private constructor(
+    private val metadata: JsonField<ResponseMetadata>,
+    private val error: JsonField<ApiError>,
+    private val data: JsonValue,
+    private val additionalProperties: MutableMap<String, JsonValue>,
+) {
+
+    @JsonCreator
+    private constructor(
+        @JsonProperty("metadata")
+        @ExcludeMissing
+        metadata: JsonField<ResponseMetadata> = JsonMissing.of(),
+        @JsonProperty("error") @ExcludeMissing error: JsonField<ApiError> = JsonMissing.of(),
+        @JsonProperty("data") @ExcludeMissing data: JsonValue = JsonMissing.of(),
+    ) : this(metadata, error, data, mutableMapOf())
+
+    fun toBaseResponse(): BaseResponse =
+        BaseResponse.builder().metadata(metadata).error(error).build()
+
+    /**
+     * Response metadata, including the request ID and optional pagination info.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun metadata(): ResponseMetadata = metadata.getRequired("metadata")
+
+    /**
+     * Structured error details when the request is unsuccessful.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun error(): Optional<ApiError> = error.getOptional("error")
+
+    /**
+     * Expected to always return the following:
+     * ```java
+     * JsonValue.from(null)
+     * ```
+     *
+     * However, this method can be useful for debugging and logging (e.g. if the server responded
+     * with an unexpected value).
+     */
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonValue = data
+
+    /**
+     * Returns the raw JSON value of [metadata].
+     *
+     * Unlike [metadata], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("metadata")
+    @ExcludeMissing
+    fun _metadata(): JsonField<ResponseMetadata> = metadata
+
+    /**
+     * Returns the raw JSON value of [error].
+     *
+     * Unlike [error], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("error") @ExcludeMissing fun _error(): JsonField<ApiError> = error
+
+    @JsonAnySetter
+    private fun putAdditionalProperty(key: String, value: JsonValue) {
+        additionalProperties.put(key, value)
+    }
+
+    @JsonAnyGetter
+    @ExcludeMissing
+    fun _additionalProperties(): Map<String, JsonValue> =
+        Collections.unmodifiableMap(additionalProperties)
+
+    fun toBuilder() = Builder().from(this)
+
+    companion object {
+
+        /**
+         * Returns a mutable builder for constructing an instance of
+         * [WatchlistDeleteWatchlistItemResponse].
+         *
+         * The following fields are required:
+         * ```java
+         * .metadata()
+         * ```
+         */
+        @JvmStatic fun builder() = Builder()
+    }
+
+    /** A builder for [WatchlistDeleteWatchlistItemResponse]. */
+    class Builder internal constructor() {
+
+        private var metadata: JsonField<ResponseMetadata>? = null
+        private var error: JsonField<ApiError> = JsonMissing.of()
+        private var data: JsonValue = JsonValue.from(null)
+        private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+        @JvmSynthetic
+        internal fun from(
+            watchlistDeleteWatchlistItemResponse: WatchlistDeleteWatchlistItemResponse
+        ) = apply {
+            metadata = watchlistDeleteWatchlistItemResponse.metadata
+            error = watchlistDeleteWatchlistItemResponse.error
+            data = watchlistDeleteWatchlistItemResponse.data
+            additionalProperties =
+                watchlistDeleteWatchlistItemResponse.additionalProperties.toMutableMap()
+        }
+
+        /** Response metadata, including the request ID and optional pagination info. */
+        fun metadata(metadata: ResponseMetadata) = metadata(JsonField.of(metadata))
+
+        /**
+         * Sets [Builder.metadata] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.metadata] with a well-typed [ResponseMetadata] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun metadata(metadata: JsonField<ResponseMetadata>) = apply { this.metadata = metadata }
+
+        /** Structured error details when the request is unsuccessful. */
+        fun error(error: ApiError?) = error(JsonField.ofNullable(error))
+
+        /** Alias for calling [Builder.error] with `error.orElse(null)`. */
+        fun error(error: Optional<ApiError>) = error(error.getOrNull())
+
+        /**
+         * Sets [Builder.error] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.error] with a well-typed [ApiError] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun error(error: JsonField<ApiError>) = apply { this.error = error }
+
+        /**
+         * Sets the field to an arbitrary JSON value.
+         *
+         * It is usually unnecessary to call this method because the field defaults to the
+         * following:
+         * ```java
+         * JsonValue.from(null)
+         * ```
+         *
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun data(data: JsonValue) = apply { this.data = data }
+
+        fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+            this.additionalProperties.clear()
+            putAllAdditionalProperties(additionalProperties)
+        }
+
+        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+            additionalProperties.put(key, value)
+        }
+
+        fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+            this.additionalProperties.putAll(additionalProperties)
+        }
+
+        fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+            keys.forEach(::removeAdditionalProperty)
+        }
+
+        /**
+         * Returns an immutable instance of [WatchlistDeleteWatchlistItemResponse].
+         *
+         * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```java
+         * .metadata()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
+         */
+        fun build(): WatchlistDeleteWatchlistItemResponse =
+            WatchlistDeleteWatchlistItemResponse(
+                checkRequired("metadata", metadata),
+                error,
+                data,
+                additionalProperties.toMutableMap(),
+            )
+    }
+
+    private var validated: Boolean = false
+
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws ClearStreetInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
+    fun validate(): WatchlistDeleteWatchlistItemResponse = apply {
+        if (validated) {
+            return@apply
+        }
+
+        metadata().validate()
+        error().ifPresent { it.validate() }
+        _data().let {
+            if (it != JsonValue.from(null)) {
+                throw ClearStreetInvalidDataException("'data' is invalid, received $it")
+            }
+        }
+        validated = true
+    }
+
+    fun isValid(): Boolean =
+        try {
+            validate()
+            true
+        } catch (e: ClearStreetInvalidDataException) {
+            false
+        }
+
+    /**
+     * Returns a score indicating how many valid values are contained in this object recursively.
+     *
+     * Used for best match union deserialization.
+     */
+    @JvmSynthetic
+    internal fun validity(): Int =
+        (metadata.asKnown().getOrNull()?.validity() ?: 0) +
+            (error.asKnown().getOrNull()?.validity() ?: 0) +
+            data.let { if (it == JsonValue.from(null)) 1 else 0 }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+
+        return other is WatchlistDeleteWatchlistItemResponse &&
+            metadata == other.metadata &&
+            error == other.error &&
+            data == other.data &&
+            additionalProperties == other.additionalProperties
+    }
+
+    private val hashCode: Int by lazy { Objects.hash(metadata, error, data, additionalProperties) }
+
+    override fun hashCode(): Int = hashCode
+
+    override fun toString() =
+        "WatchlistDeleteWatchlistItemResponse{metadata=$metadata, error=$error, data=$data, additionalProperties=$additionalProperties}"
+}
