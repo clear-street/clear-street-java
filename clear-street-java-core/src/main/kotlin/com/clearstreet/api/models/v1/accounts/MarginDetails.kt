@@ -82,6 +82,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
+    @Deprecated("deprecated")
     fun dayTradeCount(): Int = dayTradeCount.getRequired("day_trade_count")
 
     /**
@@ -125,6 +126,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
+    @Deprecated("deprecated")
     fun patternDayTrader(): Boolean = patternDayTrader.getRequired("pattern_day_trader")
 
     /**
@@ -133,6 +135,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
+    @Deprecated("deprecated")
     fun dayTradeBuyingPowerUsage(): Optional<String> =
         dayTradeBuyingPowerUsage.getOptional("day_trade_buying_power_usage")
 
@@ -158,6 +161,7 @@ private constructor(
      *
      * Unlike [dayTradeCount], this method doesn't throw if the JSON field has an unexpected type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("day_trade_count")
     @ExcludeMissing
     fun _dayTradeCount(): JsonField<Int> = dayTradeCount
@@ -208,6 +212,7 @@ private constructor(
      * Unlike [patternDayTrader], this method doesn't throw if the JSON field has an unexpected
      * type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("pattern_day_trader")
     @ExcludeMissing
     fun _patternDayTrader(): JsonField<Boolean> = patternDayTrader
@@ -218,6 +223,7 @@ private constructor(
      * Unlike [dayTradeBuyingPowerUsage], this method doesn't throw if the JSON field has an
      * unexpected type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("day_trade_buying_power_usage")
     @ExcludeMissing
     fun _dayTradeBuyingPowerUsage(): JsonField<String> = dayTradeBuyingPowerUsage
@@ -297,6 +303,7 @@ private constructor(
         }
 
         /** The number of day trades executed over the 5 most recent trading days. */
+        @Deprecated("deprecated")
         fun dayTradeCount(dayTradeCount: Int) = dayTradeCount(JsonField.of(dayTradeCount))
 
         /**
@@ -306,6 +313,7 @@ private constructor(
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
+        @Deprecated("deprecated")
         fun dayTradeCount(dayTradeCount: JsonField<Int>) = apply {
             this.dayTradeCount = dayTradeCount
         }
@@ -371,6 +379,7 @@ private constructor(
         }
 
         /** `true` if the account is currently flagged as a PDT, otherwise `false`. */
+        @Deprecated("deprecated")
         fun patternDayTrader(patternDayTrader: Boolean) =
             patternDayTrader(JsonField.of(patternDayTrader))
 
@@ -381,11 +390,13 @@ private constructor(
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
+        @Deprecated("deprecated")
         fun patternDayTrader(patternDayTrader: JsonField<Boolean>) = apply {
             this.patternDayTrader = patternDayTrader
         }
 
         /** The amount of day-trade buying power used during the current trading day. */
+        @Deprecated("deprecated")
         fun dayTradeBuyingPowerUsage(dayTradeBuyingPowerUsage: String?) =
             dayTradeBuyingPowerUsage(JsonField.ofNullable(dayTradeBuyingPowerUsage))
 
@@ -393,6 +404,7 @@ private constructor(
          * Alias for calling [Builder.dayTradeBuyingPowerUsage] with
          * `dayTradeBuyingPowerUsage.orElse(null)`.
          */
+        @Deprecated("deprecated")
         fun dayTradeBuyingPowerUsage(dayTradeBuyingPowerUsage: Optional<String>) =
             dayTradeBuyingPowerUsage(dayTradeBuyingPowerUsage.getOrNull())
 
@@ -403,6 +415,7 @@ private constructor(
          * value instead. This method is primarily for setting the field to an undocumented or not
          * yet supported value.
          */
+        @Deprecated("deprecated")
         fun dayTradeBuyingPowerUsage(dayTradeBuyingPowerUsage: JsonField<String>) = apply {
             this.dayTradeBuyingPowerUsage = dayTradeBuyingPowerUsage
         }

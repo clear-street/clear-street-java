@@ -18,8 +18,9 @@ import kotlin.jvm.optionals.getOrNull
  * Results are ranked by match quality plus instrument quality signals including log-scaled ADV,
  * listing status, marginability, easy-to-borrow status, and OTC, restricted, and liquidation-only
  * penalties. Defaults to the `EQUITY` asset class (common stocks, preferred shares, ADRs, ETFs, and
- * exchange-traded mutual funds). Pass `asset_class=OPTION` to search option contracts by symbol or
- * alternate identifier.
+ * exchange-traded mutual funds). Pass `asset_class=OPTION` to search option contracts: by full OSI
+ * symbol, by an OSI prefix (root + `YYMMDD` expiry, e.g. `AAPL 261217`), or by a root-scoped phrase
+ * such as `AAPL Dec 250 call`.
  */
 class InstrumentSearchInstrumentsParams
 private constructor(
