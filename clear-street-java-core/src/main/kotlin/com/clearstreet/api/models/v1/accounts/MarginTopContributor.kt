@@ -59,6 +59,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
+    @Deprecated("deprecated")
     fun dayTradeBuyingPowerUsage(): String =
         dayTradeBuyingPowerUsage.getRequired("day_trade_buying_power_usage")
 
@@ -103,6 +104,7 @@ private constructor(
      * Unlike [dayTradeBuyingPowerUsage], this method doesn't throw if the JSON field has an
      * unexpected type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("day_trade_buying_power_usage")
     @ExcludeMissing
     fun _dayTradeBuyingPowerUsage(): JsonField<String> = dayTradeBuyingPowerUsage
@@ -199,6 +201,7 @@ private constructor(
          * Day-trade buying power consumed by fills against this underlying on the current trade
          * date. Populated only for pattern day trader accounts.
          */
+        @Deprecated("deprecated")
         fun dayTradeBuyingPowerUsage(dayTradeBuyingPowerUsage: String) =
             dayTradeBuyingPowerUsage(JsonField.of(dayTradeBuyingPowerUsage))
 
@@ -209,6 +212,7 @@ private constructor(
          * value instead. This method is primarily for setting the field to an undocumented or not
          * yet supported value.
          */
+        @Deprecated("deprecated")
         fun dayTradeBuyingPowerUsage(dayTradeBuyingPowerUsage: JsonField<String>) = apply {
             this.dayTradeBuyingPowerUsage = dayTradeBuyingPowerUsage
         }
