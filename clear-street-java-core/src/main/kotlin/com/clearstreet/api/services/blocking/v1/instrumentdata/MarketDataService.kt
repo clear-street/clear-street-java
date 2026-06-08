@@ -28,18 +28,13 @@ interface MarketDataService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): MarketDataService
 
     /**
-     * Returns the most recent OHLV and current price for the requested OEMS instruments. Backed by
-     * the in-memory Polygon snapshot cache.
+     * Returns the most recent open, high, low, volume (OHLV) and current price for the requested
+     * instruments.
      *
      * Response contract: every request returns one row per **unique** `instrument_id`, in
      * first-seen request order. Unresolvable IDs come back with `symbol = null` and every
-     * market-data field `null`; resolvable IDs with no cache entry come back with `symbol`
+     * market-data field `null`; resolvable IDs with no available data come back with `symbol`
      * populated but market-data fields `null`.
-     *
-     * **Note (temporary):** ID resolution currently goes through the supplemental screener (OEMS
-     * instrument_id → FMP fmp_symbol → metadata_id → realtime cache). Removed when the market-data
-     * service serves daily aggregates directly, or when Polygon symbology is loaded into the
-     * instrument cache.
      */
     fun getDailySummaries(
         params: MarketDataGetDailySummariesParams

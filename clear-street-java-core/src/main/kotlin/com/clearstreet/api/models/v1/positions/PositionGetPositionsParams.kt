@@ -29,7 +29,7 @@ private constructor(
 
     fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
-    /** Comma-separated OEMS instrument UUIDs */
+    /** Comma-separated instrument identifiers */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
     /** The number of items to return per page. Only used when page_token is not provided. */
@@ -101,7 +101,7 @@ private constructor(
         /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
         fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
-        /** Comma-separated OEMS instrument UUIDs */
+        /** Comma-separated instrument identifiers */
         fun instrumentIds(instrumentIds: List<String>?) = apply {
             this.instrumentIds = instrumentIds?.toMutableList()
         }

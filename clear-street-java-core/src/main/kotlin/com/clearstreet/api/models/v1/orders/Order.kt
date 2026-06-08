@@ -200,7 +200,7 @@ private constructor(
     fun accountId(): Long = accountId.getRequired("account_id")
 
     /**
-     * Client-provided identifier echoed back (FIX tag 11).
+     * Client-provided identifier echoed back.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -224,7 +224,7 @@ private constructor(
     fun filledQuantity(): String = filledQuantity.getRequired("filled_quantity")
 
     /**
-     * OEMS instrument UUID for the traded instrument.
+     * Instrument identifier for the traded instrument.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -435,9 +435,8 @@ private constructor(
         trailingWatermarkTs.getOptional("trailing_watermark_ts")
 
     /**
-     * OEMS instrument ID of the option's underlying instrument. Populated only for OPTIONS orders;
-     * `null` for non-options and for options whose underlier cannot be resolved from the instrument
-     * cache.
+     * Instrument ID of the option's underlying instrument. Populated only for options orders;
+     * `null` for non-options and for options whose underlier cannot be resolved.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -852,7 +851,7 @@ private constructor(
          */
         fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
 
-        /** Client-provided identifier echoed back (FIX tag 11). */
+        /** Client-provided identifier echoed back. */
         fun clientOrderId(clientOrderId: String) = clientOrderId(JsonField.of(clientOrderId))
 
         /**
@@ -892,7 +891,7 @@ private constructor(
             this.filledQuantity = filledQuantity
         }
 
-        /** OEMS instrument UUID for the traded instrument. */
+        /** Instrument identifier for the traded instrument. */
         fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
 
         /**
@@ -1315,9 +1314,8 @@ private constructor(
         }
 
         /**
-         * OEMS instrument ID of the option's underlying instrument. Populated only for OPTIONS
-         * orders; `null` for non-options and for options whose underlier cannot be resolved from
-         * the instrument cache.
+         * Instrument ID of the option's underlying instrument. Populated only for options orders;
+         * `null` for non-options and for options whose underlier cannot be resolved.
          */
         fun underlyingInstrumentId(underlyingInstrumentId: String?) =
             underlyingInstrumentId(JsonField.ofNullable(underlyingInstrumentId))

@@ -20,7 +20,7 @@ private constructor(
 
     fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
-    /** Limit the number of top margin contributors returned by the engine. */
+    /** Limit the number of top margin contributors returned. */
     fun topMarginContributorsLimit(): Optional<Int> =
         Optional.ofNullable(topMarginContributorsLimit)
 
@@ -74,7 +74,7 @@ private constructor(
         /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
         fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
-        /** Limit the number of top margin contributors returned by the engine. */
+        /** Limit the number of top margin contributors returned. */
         fun topMarginContributorsLimit(topMarginContributorsLimit: Int?) = apply {
             this.topMarginContributorsLimit = topMarginContributorsLimit
         }

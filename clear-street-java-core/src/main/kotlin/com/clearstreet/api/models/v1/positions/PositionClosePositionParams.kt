@@ -36,7 +36,7 @@ private constructor(
 
     fun accountId(): Long = accountId
 
-    /** OEMS instrument UUID */
+    /** Instrument identifier */
     fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
 
     /**
@@ -97,7 +97,7 @@ private constructor(
 
         fun accountId(accountId: Long) = apply { this.accountId = accountId }
 
-        /** OEMS instrument UUID */
+        /** Instrument identifier */
         fun instrumentId(instrumentId: String?) = apply { this.instrumentId = instrumentId }
 
         /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */

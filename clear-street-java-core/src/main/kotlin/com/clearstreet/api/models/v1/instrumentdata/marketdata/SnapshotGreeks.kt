@@ -17,8 +17,8 @@ import java.util.Collections
 import java.util.Objects
 
 /**
- * Theoretical price and Greeks for an options snapshot. All values are **per share** as published
- * by RENG; no contract multiplier is applied.
+ * Theoretical price and Greeks for an options snapshot. All values are **per share**; no contract
+ * multiplier is applied.
  */
 class SnapshotGreeks
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -97,7 +97,7 @@ private constructor(
     fun theta(): String = theta.getRequired("theta")
 
     /**
-     * Event timestamp published by RENG.
+     * Timestamp when the Greeks were calculated.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -295,7 +295,7 @@ private constructor(
          */
         fun theta(theta: JsonField<String>) = apply { this.theta = theta }
 
-        /** Event timestamp published by RENG. */
+        /** Timestamp when the Greeks were calculated. */
         fun timestamp(timestamp: OffsetDateTime) = timestamp(JsonField.of(timestamp))
 
         /**

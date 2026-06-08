@@ -47,7 +47,7 @@ private constructor(
      */
     fun includePublishers(): Optional<String> = Optional.ofNullable(includePublishers)
 
-    /** Comma-delimited OEMS instrument UUIDs to filter by. */
+    /** Comma-delimited instrument identifiers to filter by. */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
     /** Filter by news type. */
@@ -149,7 +149,7 @@ private constructor(
         fun includePublishers(includePublishers: Optional<String>) =
             includePublishers(includePublishers.getOrNull())
 
-        /** Comma-delimited OEMS instrument UUIDs to filter by. */
+        /** Comma-delimited instrument identifiers to filter by. */
         fun instrumentIds(instrumentIds: List<String>?) = apply {
             this.instrumentIds = instrumentIds?.toMutableList()
         }

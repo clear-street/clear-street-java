@@ -67,7 +67,7 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * OEMS instrument identifier.
+     * Unique instrument identifier.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -251,7 +251,7 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        /** OEMS instrument identifier. */
+        /** Unique instrument identifier. */
         fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
 
         /**
