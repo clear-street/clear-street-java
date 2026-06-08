@@ -17,8 +17,14 @@ internal class MarginDetailsTest {
                 .dayTradeCount(0)
                 .initialMarginExcess("50000.00")
                 .initialMarginRequirement("50000.00")
+                .intradayDetails(
+                    MarginSessionDetails.builder().buyingPower("500000.00").multiplier("2").build()
+                )
                 .maintenanceMarginExcess("75000.00")
                 .maintenanceMarginRequirement("25000.00")
+                .overnightDetails(
+                    MarginSessionDetails.builder().buyingPower("500000.00").multiplier("2").build()
+                )
                 .patternDayTrader(true)
                 .dayTradeBuyingPowerUsage("50000.00")
                 .addTopContributor(
@@ -36,8 +42,16 @@ internal class MarginDetailsTest {
         assertThat(marginDetails.dayTradeCount()).isEqualTo(0)
         assertThat(marginDetails.initialMarginExcess()).isEqualTo("50000.00")
         assertThat(marginDetails.initialMarginRequirement()).isEqualTo("50000.00")
+        assertThat(marginDetails.intradayDetails())
+            .isEqualTo(
+                MarginSessionDetails.builder().buyingPower("500000.00").multiplier("2").build()
+            )
         assertThat(marginDetails.maintenanceMarginExcess()).isEqualTo("75000.00")
         assertThat(marginDetails.maintenanceMarginRequirement()).isEqualTo("25000.00")
+        assertThat(marginDetails.overnightDetails())
+            .isEqualTo(
+                MarginSessionDetails.builder().buyingPower("500000.00").multiplier("2").build()
+            )
         assertThat(marginDetails.patternDayTrader()).isEqualTo(true)
         assertThat(marginDetails.dayTradeBuyingPowerUsage()).contains("50000.00")
         assertThat(marginDetails.topContributors().getOrNull())
@@ -62,8 +76,14 @@ internal class MarginDetailsTest {
                 .dayTradeCount(0)
                 .initialMarginExcess("50000.00")
                 .initialMarginRequirement("50000.00")
+                .intradayDetails(
+                    MarginSessionDetails.builder().buyingPower("500000.00").multiplier("2").build()
+                )
                 .maintenanceMarginExcess("75000.00")
                 .maintenanceMarginRequirement("25000.00")
+                .overnightDetails(
+                    MarginSessionDetails.builder().buyingPower("500000.00").multiplier("2").build()
+                )
                 .patternDayTrader(true)
                 .dayTradeBuyingPowerUsage("50000.00")
                 .addTopContributor(
