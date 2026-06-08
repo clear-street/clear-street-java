@@ -57,7 +57,7 @@ private constructor(
     ) : this(instrumentId, high, low, open, symbol, tradeDate, volume, mutableMapOf())
 
     /**
-     * OEMS instrument identifier. Always populated; echoes the request ID.
+     * Unique instrument identifier. Always populated; echoes the request ID.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -212,7 +212,7 @@ private constructor(
             additionalProperties = dailySummary.additionalProperties.toMutableMap()
         }
 
-        /** OEMS instrument identifier. Always populated; echoes the request ID. */
+        /** Unique instrument identifier. Always populated; echoes the request ID. */
         fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
 
         /**

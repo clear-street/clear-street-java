@@ -32,7 +32,7 @@ private constructor(
     fun fromDate(): Optional<String> = Optional.ofNullable(fromDate)
 
     /**
-     * Filter by OEMS instrument ID(s). Comma-delimited list of UUIDs. Example:
+     * Filter by instrument ID(s). Comma-delimited list of UUIDs. Example:
      * `instrument_ids=550e8400-e29b-41d4-a716-446655440000`.
      */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
@@ -109,7 +109,7 @@ private constructor(
         fun fromDate(fromDate: Optional<String>) = fromDate(fromDate.getOrNull())
 
         /**
-         * Filter by OEMS instrument ID(s). Comma-delimited list of UUIDs. Example:
+         * Filter by instrument ID(s). Comma-delimited list of UUIDs. Example:
          * `instrument_ids=550e8400-e29b-41d4-a716-446655440000`.
          */
         fun instrumentIds(instrumentIds: List<String>?) = apply {

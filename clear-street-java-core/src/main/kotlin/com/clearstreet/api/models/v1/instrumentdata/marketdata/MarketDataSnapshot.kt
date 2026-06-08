@@ -67,7 +67,7 @@ private constructor(
     )
 
     /**
-     * OEMS instrument identifier.
+     * Unique instrument identifier.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -249,7 +249,7 @@ private constructor(
             additionalProperties = marketDataSnapshot.additionalProperties.toMutableMap()
         }
 
-        /** OEMS instrument identifier. */
+        /** Unique instrument identifier. */
         fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
 
         /**

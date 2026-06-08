@@ -67,7 +67,7 @@ private constructor(
     fun earnings(): List<InstrumentEarnings> = earnings.getRequired("earnings")
 
     /**
-     * OEMS instrument UUID from the request
+     * Instrument identifier
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -236,7 +236,7 @@ private constructor(
                 }
         }
 
-        /** OEMS instrument UUID from the request */
+        /** Instrument identifier */
         fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
 
         /**

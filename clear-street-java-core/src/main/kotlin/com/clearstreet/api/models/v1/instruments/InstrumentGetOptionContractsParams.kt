@@ -46,7 +46,7 @@ private constructor(
     /** Underlier symbol (e.g., AAPL, SPX) */
     fun underlier(): Optional<String> = Optional.ofNullable(underlier)
 
-    /** OEMS instrument UUID or symbol of the underlying equity/index */
+    /** Instrument identifier or symbol of the underlying equity/index */
     fun underlyingInstrumentId(): Optional<String> = Optional.ofNullable(underlyingInstrumentId)
 
     /** Additional headers to send with the request. */
@@ -135,7 +135,7 @@ private constructor(
         /** Alias for calling [Builder.underlier] with `underlier.orElse(null)`. */
         fun underlier(underlier: Optional<String>) = underlier(underlier.getOrNull())
 
-        /** OEMS instrument UUID or symbol of the underlying equity/index */
+        /** Instrument identifier or symbol of the underlying equity/index */
         fun underlyingInstrumentId(underlyingInstrumentId: String?) = apply {
             this.underlyingInstrumentId = underlyingInstrumentId
         }

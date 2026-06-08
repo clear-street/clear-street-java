@@ -126,7 +126,7 @@ private constructor(
     )
 
     /**
-     * Unique OEMS instrument identifier (UUID)
+     * Unique instrument identifier (UUID)
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -271,9 +271,7 @@ private constructor(
     fun name(): Optional<String> = name.getOptional("name")
 
     /**
-     * Notional ADV (`adv × previous_close`). The primary liquidity signal used by
-     * `/instruments/search` ranking. Computed at response time so it stays consistent with whatever
-     * `adv` and `previous_close` show.
+     * Notional average daily volume (ADV multiplied by previous close price).
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -578,7 +576,7 @@ private constructor(
             additionalProperties = instrumentCore.additionalProperties.toMutableMap()
         }
 
-        /** Unique OEMS instrument identifier (UUID) */
+        /** Unique instrument identifier (UUID) */
         fun id(id: String) = id(JsonField.of(id))
 
         /**
@@ -830,11 +828,7 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
 
-        /**
-         * Notional ADV (`adv × previous_close`). The primary liquidity signal used by
-         * `/instruments/search` ranking. Computed at response time so it stays consistent with
-         * whatever `adv` and `previous_close` show.
-         */
+        /** Notional average daily volume (ADV multiplied by previous close price). */
         fun notionalAdv(notionalAdv: String?) = notionalAdv(JsonField.ofNullable(notionalAdv))
 
         /** Alias for calling [Builder.notionalAdv] with `notionalAdv.orElse(null)`. */

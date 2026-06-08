@@ -37,7 +37,7 @@ private constructor(
     ) : this(instrumentId, name, symbol, mutableMapOf())
 
     /**
-     * OEMS instrument UUID.
+     * Instrument identifier.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -45,7 +45,7 @@ private constructor(
     fun instrumentId(): String = instrumentId.getRequired("instrument_id")
 
     /**
-     * Instrument name/description, if available from instrument cache enrichment.
+     * Instrument name/description, if available.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -53,7 +53,7 @@ private constructor(
     fun name(): Optional<String> = name.getOptional("name")
 
     /**
-     * Trading symbol, if available from instrument cache enrichment.
+     * Trading symbol, if available.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -124,7 +124,7 @@ private constructor(
             additionalProperties = newsInstrument.additionalProperties.toMutableMap()
         }
 
-        /** OEMS instrument UUID. */
+        /** Instrument identifier. */
         fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
 
         /**
@@ -138,7 +138,7 @@ private constructor(
             this.instrumentId = instrumentId
         }
 
-        /** Instrument name/description, if available from instrument cache enrichment. */
+        /** Instrument name/description, if available. */
         fun name(name: String?) = name(JsonField.ofNullable(name))
 
         /** Alias for calling [Builder.name] with `name.orElse(null)`. */
@@ -152,7 +152,7 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
 
-        /** Trading symbol, if available from instrument cache enrichment. */
+        /** Trading symbol, if available. */
         fun symbol(symbol: String?) = symbol(JsonField.ofNullable(symbol))
 
         /** Alias for calling [Builder.symbol] with `symbol.orElse(null)`. */

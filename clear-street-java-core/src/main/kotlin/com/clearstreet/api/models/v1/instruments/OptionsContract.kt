@@ -92,7 +92,7 @@ private constructor(
     )
 
     /**
-     * OEMS instrument identifier
+     * Instrument identifier
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -196,7 +196,7 @@ private constructor(
     fun openInterest(): Optional<Long> = openInterest.getOptional("open_interest")
 
     /**
-     * OEMS instrument ID of the underlying instrument, if resolvable
+     * Instrument ID of the underlying instrument, when available
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -394,7 +394,7 @@ private constructor(
             additionalProperties = optionsContract.additionalProperties.toMutableMap()
         }
 
-        /** OEMS instrument identifier */
+        /** Instrument identifier */
         fun id(id: String) = id(JsonField.of(id))
 
         /**
@@ -567,7 +567,7 @@ private constructor(
          */
         fun openInterest(openInterest: JsonField<Long>) = apply { this.openInterest = openInterest }
 
-        /** OEMS instrument ID of the underlying instrument, if resolvable */
+        /** Instrument ID of the underlying instrument, when available */
         fun underlyingInstrumentId(underlyingInstrumentId: String?) =
             underlyingInstrumentId(JsonField.ofNullable(underlyingInstrumentId))
 

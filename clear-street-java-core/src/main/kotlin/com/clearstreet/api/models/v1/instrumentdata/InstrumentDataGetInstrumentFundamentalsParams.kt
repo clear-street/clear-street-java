@@ -17,7 +17,7 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** OEMS instrument UUID */
+    /** Instrument identifier */
     fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
 
     /** Additional headers to send with the request. */
@@ -58,7 +58,7 @@ private constructor(
                 instrumentDataGetInstrumentFundamentalsParams.additionalQueryParams.toBuilder()
         }
 
-        /** OEMS instrument UUID */
+        /** Instrument identifier */
         fun instrumentId(instrumentId: String?) = apply { this.instrumentId = instrumentId }
 
         /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */

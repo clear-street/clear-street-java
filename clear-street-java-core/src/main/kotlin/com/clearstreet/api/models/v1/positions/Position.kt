@@ -129,7 +129,7 @@ private constructor(
     fun availableQuantity(): String = availableQuantity.getRequired("available_quantity")
 
     /**
-     * OEMS instrument UUID
+     * Unique instrument identifier
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -236,7 +236,7 @@ private constructor(
     fun instrumentPrice(): Optional<String> = instrumentPrice.getOptional("instrument_price")
 
     /**
-     * OEMS instrument identifier of the underlying instrument, if resolvable
+     * Identifier of the underlying instrument, when available
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -523,7 +523,7 @@ private constructor(
             this.availableQuantity = availableQuantity
         }
 
-        /** OEMS instrument UUID */
+        /** Unique instrument identifier */
         fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
 
         /**
@@ -730,7 +730,7 @@ private constructor(
             this.instrumentPrice = instrumentPrice
         }
 
-        /** OEMS instrument identifier of the underlying instrument, if resolvable */
+        /** Identifier of the underlying instrument, when available */
         fun underlyingInstrumentId(underlyingInstrumentId: String?) =
             underlyingInstrumentId(JsonField.ofNullable(underlyingInstrumentId))
 

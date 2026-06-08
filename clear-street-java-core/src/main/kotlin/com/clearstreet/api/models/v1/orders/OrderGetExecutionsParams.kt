@@ -33,8 +33,8 @@ private constructor(
     fun from(): Optional<OffsetDateTime> = Optional.ofNullable(from)
 
     /**
-     * Optional instrument to filter by. Accepts either a symbol (e.g. `AAPL`) or an OEMS instrument
-     * UUID.
+     * Optional instrument to filter by. Accepts either a symbol (e.g. `AAPL`) or an instrument
+     * identifier.
      */
     fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
 
@@ -109,8 +109,8 @@ private constructor(
         fun from(from: Optional<OffsetDateTime>) = from(from.getOrNull())
 
         /**
-         * Optional instrument to filter by. Accepts either a symbol (e.g. `AAPL`) or an OEMS
-         * instrument UUID.
+         * Optional instrument to filter by. Accepts either a symbol (e.g. `AAPL`) or an instrument
+         * identifier.
          */
         fun instrumentId(instrumentId: String?) = apply { this.instrumentId = instrumentId }
 

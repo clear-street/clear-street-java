@@ -30,7 +30,7 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** OEMS instrument UUID */
+    /** Instrument identifier */
     fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
 
     /** The start date for the query range, inclusive (YYYY-MM-DD). */
@@ -97,7 +97,7 @@ private constructor(
                     .toBuilder()
         }
 
-        /** OEMS instrument UUID */
+        /** Instrument identifier */
         fun instrumentId(instrumentId: String?) = apply { this.instrumentId = instrumentId }
 
         /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */

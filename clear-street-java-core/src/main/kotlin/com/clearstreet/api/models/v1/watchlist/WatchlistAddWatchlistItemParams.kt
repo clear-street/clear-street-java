@@ -32,7 +32,7 @@ private constructor(
     fun watchlistId(): Optional<String> = Optional.ofNullable(watchlistId)
 
     /**
-     * OEMS instrument UUID
+     * Instrument identifier
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -102,7 +102,7 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** OEMS instrument UUID */
+        /** Instrument identifier */
         fun instrumentId(instrumentId: String) = apply { body.instrumentId(instrumentId) }
 
         /**
@@ -282,7 +282,7 @@ private constructor(
         ) : this(instrumentId, mutableMapOf())
 
         /**
-         * OEMS instrument UUID
+         * Instrument identifier
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -336,7 +336,7 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** OEMS instrument UUID */
+            /** Instrument identifier */
             fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
 
             /**
