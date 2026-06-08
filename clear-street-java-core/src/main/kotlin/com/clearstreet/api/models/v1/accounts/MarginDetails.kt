@@ -25,8 +25,10 @@ private constructor(
     private val dayTradeCount: JsonField<Int>,
     private val initialMarginExcess: JsonField<String>,
     private val initialMarginRequirement: JsonField<String>,
+    private val intradayDetails: JsonField<MarginSessionDetails>,
     private val maintenanceMarginExcess: JsonField<String>,
     private val maintenanceMarginRequirement: JsonField<String>,
+    private val overnightDetails: JsonField<MarginSessionDetails>,
     private val patternDayTrader: JsonField<Boolean>,
     private val dayTradeBuyingPowerUsage: JsonField<String>,
     private val topContributors: JsonField<List<MarginTopContributor>>,
@@ -45,12 +47,18 @@ private constructor(
         @JsonProperty("initial_margin_requirement")
         @ExcludeMissing
         initialMarginRequirement: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("intraday_details")
+        @ExcludeMissing
+        intradayDetails: JsonField<MarginSessionDetails> = JsonMissing.of(),
         @JsonProperty("maintenance_margin_excess")
         @ExcludeMissing
         maintenanceMarginExcess: JsonField<String> = JsonMissing.of(),
         @JsonProperty("maintenance_margin_requirement")
         @ExcludeMissing
         maintenanceMarginRequirement: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("overnight_details")
+        @ExcludeMissing
+        overnightDetails: JsonField<MarginSessionDetails> = JsonMissing.of(),
         @JsonProperty("pattern_day_trader")
         @ExcludeMissing
         patternDayTrader: JsonField<Boolean> = JsonMissing.of(),
@@ -67,8 +75,10 @@ private constructor(
         dayTradeCount,
         initialMarginExcess,
         initialMarginRequirement,
+        intradayDetails,
         maintenanceMarginExcess,
         maintenanceMarginRequirement,
+        overnightDetails,
         patternDayTrader,
         dayTradeBuyingPowerUsage,
         topContributors,
@@ -103,6 +113,14 @@ private constructor(
         initialMarginRequirement.getRequired("initial_margin_requirement")
 
     /**
+     * Intraday session margin calculation details.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun intradayDetails(): MarginSessionDetails = intradayDetails.getRequired("intraday_details")
+
+    /**
      * Maintenance margin excess for trade-date balances.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -119,6 +137,14 @@ private constructor(
      */
     fun maintenanceMarginRequirement(): String =
         maintenanceMarginRequirement.getRequired("maintenance_margin_requirement")
+
+    /**
+     * Overnight session margin calculation details.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun overnightDetails(): MarginSessionDetails = overnightDetails.getRequired("overnight_details")
 
     /**
      * `true` if the account is currently flagged as a PDT, otherwise `false`.
@@ -187,6 +213,15 @@ private constructor(
     fun _initialMarginRequirement(): JsonField<String> = initialMarginRequirement
 
     /**
+     * Returns the raw JSON value of [intradayDetails].
+     *
+     * Unlike [intradayDetails], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("intraday_details")
+    @ExcludeMissing
+    fun _intradayDetails(): JsonField<MarginSessionDetails> = intradayDetails
+
+    /**
      * Returns the raw JSON value of [maintenanceMarginExcess].
      *
      * Unlike [maintenanceMarginExcess], this method doesn't throw if the JSON field has an
@@ -205,6 +240,16 @@ private constructor(
     @JsonProperty("maintenance_margin_requirement")
     @ExcludeMissing
     fun _maintenanceMarginRequirement(): JsonField<String> = maintenanceMarginRequirement
+
+    /**
+     * Returns the raw JSON value of [overnightDetails].
+     *
+     * Unlike [overnightDetails], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("overnight_details")
+    @ExcludeMissing
+    fun _overnightDetails(): JsonField<MarginSessionDetails> = overnightDetails
 
     /**
      * Returns the raw JSON value of [patternDayTrader].
@@ -266,8 +311,10 @@ private constructor(
          * .dayTradeCount()
          * .initialMarginExcess()
          * .initialMarginRequirement()
+         * .intradayDetails()
          * .maintenanceMarginExcess()
          * .maintenanceMarginRequirement()
+         * .overnightDetails()
          * .patternDayTrader()
          * ```
          */
@@ -280,8 +327,10 @@ private constructor(
         private var dayTradeCount: JsonField<Int>? = null
         private var initialMarginExcess: JsonField<String>? = null
         private var initialMarginRequirement: JsonField<String>? = null
+        private var intradayDetails: JsonField<MarginSessionDetails>? = null
         private var maintenanceMarginExcess: JsonField<String>? = null
         private var maintenanceMarginRequirement: JsonField<String>? = null
+        private var overnightDetails: JsonField<MarginSessionDetails>? = null
         private var patternDayTrader: JsonField<Boolean>? = null
         private var dayTradeBuyingPowerUsage: JsonField<String> = JsonMissing.of()
         private var topContributors: JsonField<MutableList<MarginTopContributor>>? = null
@@ -293,8 +342,10 @@ private constructor(
             dayTradeCount = marginDetails.dayTradeCount
             initialMarginExcess = marginDetails.initialMarginExcess
             initialMarginRequirement = marginDetails.initialMarginRequirement
+            intradayDetails = marginDetails.intradayDetails
             maintenanceMarginExcess = marginDetails.maintenanceMarginExcess
             maintenanceMarginRequirement = marginDetails.maintenanceMarginRequirement
+            overnightDetails = marginDetails.overnightDetails
             patternDayTrader = marginDetails.patternDayTrader
             dayTradeBuyingPowerUsage = marginDetails.dayTradeBuyingPowerUsage
             topContributors = marginDetails.topContributors.map { it.toMutableList() }
@@ -348,6 +399,21 @@ private constructor(
             this.initialMarginRequirement = initialMarginRequirement
         }
 
+        /** Intraday session margin calculation details. */
+        fun intradayDetails(intradayDetails: MarginSessionDetails) =
+            intradayDetails(JsonField.of(intradayDetails))
+
+        /**
+         * Sets [Builder.intradayDetails] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.intradayDetails] with a well-typed
+         * [MarginSessionDetails] value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
+         */
+        fun intradayDetails(intradayDetails: JsonField<MarginSessionDetails>) = apply {
+            this.intradayDetails = intradayDetails
+        }
+
         /** Maintenance margin excess for trade-date balances. */
         fun maintenanceMarginExcess(maintenanceMarginExcess: String) =
             maintenanceMarginExcess(JsonField.of(maintenanceMarginExcess))
@@ -376,6 +442,21 @@ private constructor(
          */
         fun maintenanceMarginRequirement(maintenanceMarginRequirement: JsonField<String>) = apply {
             this.maintenanceMarginRequirement = maintenanceMarginRequirement
+        }
+
+        /** Overnight session margin calculation details. */
+        fun overnightDetails(overnightDetails: MarginSessionDetails) =
+            overnightDetails(JsonField.of(overnightDetails))
+
+        /**
+         * Sets [Builder.overnightDetails] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.overnightDetails] with a well-typed
+         * [MarginSessionDetails] value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
+         */
+        fun overnightDetails(overnightDetails: JsonField<MarginSessionDetails>) = apply {
+            this.overnightDetails = overnightDetails
         }
 
         /** `true` if the account is currently flagged as a PDT, otherwise `false`. */
@@ -491,8 +572,10 @@ private constructor(
          * .dayTradeCount()
          * .initialMarginExcess()
          * .initialMarginRequirement()
+         * .intradayDetails()
          * .maintenanceMarginExcess()
          * .maintenanceMarginRequirement()
+         * .overnightDetails()
          * .patternDayTrader()
          * ```
          *
@@ -503,8 +586,10 @@ private constructor(
                 checkRequired("dayTradeCount", dayTradeCount),
                 checkRequired("initialMarginExcess", initialMarginExcess),
                 checkRequired("initialMarginRequirement", initialMarginRequirement),
+                checkRequired("intradayDetails", intradayDetails),
                 checkRequired("maintenanceMarginExcess", maintenanceMarginExcess),
                 checkRequired("maintenanceMarginRequirement", maintenanceMarginRequirement),
+                checkRequired("overnightDetails", overnightDetails),
                 checkRequired("patternDayTrader", patternDayTrader),
                 dayTradeBuyingPowerUsage,
                 (topContributors ?: JsonMissing.of()).map { it.toImmutable() },
@@ -531,8 +616,10 @@ private constructor(
         dayTradeCount()
         initialMarginExcess()
         initialMarginRequirement()
+        intradayDetails().validate()
         maintenanceMarginExcess()
         maintenanceMarginRequirement()
+        overnightDetails().validate()
         patternDayTrader()
         dayTradeBuyingPowerUsage()
         topContributors().ifPresent { it.forEach { it.validate() } }
@@ -558,8 +645,10 @@ private constructor(
         (if (dayTradeCount.asKnown().isPresent) 1 else 0) +
             (if (initialMarginExcess.asKnown().isPresent) 1 else 0) +
             (if (initialMarginRequirement.asKnown().isPresent) 1 else 0) +
+            (intradayDetails.asKnown().getOrNull()?.validity() ?: 0) +
             (if (maintenanceMarginExcess.asKnown().isPresent) 1 else 0) +
             (if (maintenanceMarginRequirement.asKnown().isPresent) 1 else 0) +
+            (overnightDetails.asKnown().getOrNull()?.validity() ?: 0) +
             (if (patternDayTrader.asKnown().isPresent) 1 else 0) +
             (if (dayTradeBuyingPowerUsage.asKnown().isPresent) 1 else 0) +
             (topContributors.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
@@ -574,8 +663,10 @@ private constructor(
             dayTradeCount == other.dayTradeCount &&
             initialMarginExcess == other.initialMarginExcess &&
             initialMarginRequirement == other.initialMarginRequirement &&
+            intradayDetails == other.intradayDetails &&
             maintenanceMarginExcess == other.maintenanceMarginExcess &&
             maintenanceMarginRequirement == other.maintenanceMarginRequirement &&
+            overnightDetails == other.overnightDetails &&
             patternDayTrader == other.patternDayTrader &&
             dayTradeBuyingPowerUsage == other.dayTradeBuyingPowerUsage &&
             topContributors == other.topContributors &&
@@ -588,8 +679,10 @@ private constructor(
             dayTradeCount,
             initialMarginExcess,
             initialMarginRequirement,
+            intradayDetails,
             maintenanceMarginExcess,
             maintenanceMarginRequirement,
+            overnightDetails,
             patternDayTrader,
             dayTradeBuyingPowerUsage,
             topContributors,
@@ -601,5 +694,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "MarginDetails{dayTradeCount=$dayTradeCount, initialMarginExcess=$initialMarginExcess, initialMarginRequirement=$initialMarginRequirement, maintenanceMarginExcess=$maintenanceMarginExcess, maintenanceMarginRequirement=$maintenanceMarginRequirement, patternDayTrader=$patternDayTrader, dayTradeBuyingPowerUsage=$dayTradeBuyingPowerUsage, topContributors=$topContributors, usage=$usage, additionalProperties=$additionalProperties}"
+        "MarginDetails{dayTradeCount=$dayTradeCount, initialMarginExcess=$initialMarginExcess, initialMarginRequirement=$initialMarginRequirement, intradayDetails=$intradayDetails, maintenanceMarginExcess=$maintenanceMarginExcess, maintenanceMarginRequirement=$maintenanceMarginRequirement, overnightDetails=$overnightDetails, patternDayTrader=$patternDayTrader, dayTradeBuyingPowerUsage=$dayTradeBuyingPowerUsage, topContributors=$topContributors, usage=$usage, additionalProperties=$additionalProperties}"
 }

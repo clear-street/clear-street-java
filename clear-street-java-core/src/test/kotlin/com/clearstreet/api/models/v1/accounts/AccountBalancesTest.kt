@@ -47,8 +47,20 @@ internal class AccountBalancesTest {
                         .dayTradeCount(2)
                         .initialMarginExcess("50000.00")
                         .initialMarginRequirement("50000.00")
+                        .intradayDetails(
+                            MarginSessionDetails.builder()
+                                .buyingPower("90000.00")
+                                .multiplier("2")
+                                .build()
+                        )
                         .maintenanceMarginExcess("75000.00")
                         .maintenanceMarginRequirement("25000.00")
+                        .overnightDetails(
+                            MarginSessionDetails.builder()
+                                .buyingPower("90000.00")
+                                .multiplier("2")
+                                .build()
+                        )
                         .patternDayTrader(false)
                         .dayTradeBuyingPowerUsage("0.00")
                         .addTopContributor(
@@ -104,8 +116,20 @@ internal class AccountBalancesTest {
                     .dayTradeCount(2)
                     .initialMarginExcess("50000.00")
                     .initialMarginRequirement("50000.00")
+                    .intradayDetails(
+                        MarginSessionDetails.builder()
+                            .buyingPower("90000.00")
+                            .multiplier("2")
+                            .build()
+                    )
                     .maintenanceMarginExcess("75000.00")
                     .maintenanceMarginRequirement("25000.00")
+                    .overnightDetails(
+                        MarginSessionDetails.builder()
+                            .buyingPower("90000.00")
+                            .multiplier("2")
+                            .build()
+                    )
                     .patternDayTrader(false)
                     .dayTradeBuyingPowerUsage("0.00")
                     .addTopContributor(
@@ -162,8 +186,20 @@ internal class AccountBalancesTest {
                         .dayTradeCount(2)
                         .initialMarginExcess("50000.00")
                         .initialMarginRequirement("50000.00")
+                        .intradayDetails(
+                            MarginSessionDetails.builder()
+                                .buyingPower("90000.00")
+                                .multiplier("2")
+                                .build()
+                        )
                         .maintenanceMarginExcess("75000.00")
                         .maintenanceMarginRequirement("25000.00")
+                        .overnightDetails(
+                            MarginSessionDetails.builder()
+                                .buyingPower("90000.00")
+                                .multiplier("2")
+                                .build()
+                        )
                         .patternDayTrader(false)
                         .dayTradeBuyingPowerUsage("0.00")
                         .addTopContributor(
