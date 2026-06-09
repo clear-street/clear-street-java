@@ -2,6 +2,7 @@
 
 package com.clearstreet.api.services.blocking.v1
 
+import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.models.v1.instrumentdata.AllEventsEventType
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetAllInstrumentEventsParams
@@ -11,15 +12,19 @@ import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentC
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEventsParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentIncomeStatementsParams
 import java.time.LocalDate
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class InstrumentDataServiceTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getAllInstrumentEvents() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentDataService = client.v1().instrumentData()
 
         val response =
@@ -35,10 +40,13 @@ internal class InstrumentDataServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getInstrumentAnalystConsensus() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentDataService = client.v1().instrumentData()
 
         val response =
@@ -53,10 +61,13 @@ internal class InstrumentDataServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getInstrumentBalanceSheetStatements() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentDataService = client.v1().instrumentData()
 
         val response =
@@ -73,10 +84,13 @@ internal class InstrumentDataServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getInstrumentCashFlowStatements() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentDataService = client.v1().instrumentData()
 
         val response =
@@ -93,10 +107,13 @@ internal class InstrumentDataServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getInstrumentEvents() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentDataService = client.v1().instrumentData()
 
         val response =
@@ -111,10 +128,13 @@ internal class InstrumentDataServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getInstrumentFundamentals() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentDataService = client.v1().instrumentData()
 
         val response =
@@ -123,10 +143,13 @@ internal class InstrumentDataServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getInstrumentIncomeStatements() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentDataService = client.v1().instrumentData()
 
         val response =

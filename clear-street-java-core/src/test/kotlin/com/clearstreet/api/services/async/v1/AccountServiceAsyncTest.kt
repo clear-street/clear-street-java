@@ -2,6 +2,7 @@
 
 package com.clearstreet.api.services.async.v1
 
+import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountBalancesParams
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams
@@ -9,15 +10,19 @@ import com.clearstreet.api.models.v1.accounts.AccountGetPortfolioHistoryParams
 import com.clearstreet.api.models.v1.accounts.AccountPatchAccountByIdParams
 import com.clearstreet.api.models.v1.accounts.RiskSettings
 import java.time.LocalDate
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class AccountServiceAsyncTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getAccountBalances() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val accountServiceAsync = client.v1().accounts()
 
         val responseFuture =
@@ -32,10 +37,13 @@ internal class AccountServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getAccountById() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val accountServiceAsync = client.v1().accounts()
 
         val responseFuture = accountServiceAsync.getAccountById(0L)
@@ -44,10 +52,13 @@ internal class AccountServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getAccounts() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val accountServiceAsync = client.v1().accounts()
 
         val responseFuture =
@@ -62,10 +73,13 @@ internal class AccountServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getPortfolioHistory() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val accountServiceAsync = client.v1().accounts()
 
         val responseFuture =
@@ -81,10 +95,13 @@ internal class AccountServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun patchAccountById() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val accountServiceAsync = client.v1().accounts()
 
         val responseFuture =

@@ -2,20 +2,25 @@
 
 package com.clearstreet.api.services.blocking.v1
 
+import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.models.v1.watchlist.WatchlistAddWatchlistItemParams
 import com.clearstreet.api.models.v1.watchlist.WatchlistCreateWatchlistParams
 import com.clearstreet.api.models.v1.watchlist.WatchlistDeleteWatchlistItemParams
 import com.clearstreet.api.models.v1.watchlist.WatchlistGetWatchlistsParams
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class WatchlistServiceTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun addWatchlistItem() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val watchlistService = client.v1().watchlist()
 
         val response =
@@ -29,10 +34,13 @@ internal class WatchlistServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun createWatchlist() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val watchlistService = client.v1().watchlist()
 
         val response =
@@ -43,10 +51,13 @@ internal class WatchlistServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun deleteWatchlist() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val watchlistService = client.v1().watchlist()
 
         val response = watchlistService.deleteWatchlist("550e8400-e29b-41d4-a716-446655440000")
@@ -54,10 +65,13 @@ internal class WatchlistServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun deleteWatchlistItem() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val watchlistService = client.v1().watchlist()
 
         val response =
@@ -71,10 +85,13 @@ internal class WatchlistServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getWatchlistById() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val watchlistService = client.v1().watchlist()
 
         val response = watchlistService.getWatchlistById("550e8400-e29b-41d4-a716-446655440000")
@@ -82,10 +99,13 @@ internal class WatchlistServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getWatchlists() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val watchlistService = client.v1().watchlist()
 
         val response =

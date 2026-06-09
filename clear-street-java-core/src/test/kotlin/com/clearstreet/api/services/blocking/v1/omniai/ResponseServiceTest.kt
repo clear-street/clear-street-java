@@ -2,18 +2,23 @@
 
 package com.clearstreet.api.services.blocking.v1.omniai
 
+import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.models.v1.omniai.responses.ResponseCancelResponseParams
 import com.clearstreet.api.models.v1.omniai.responses.ResponseGetResponseByIdParams
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class ResponseServiceTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun cancelResponse() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val responseService = client.v1().omniAi().responses()
 
         val response =
@@ -27,10 +32,13 @@ internal class ResponseServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getResponseById() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val responseService = client.v1().omniAi().responses()
 
         val response =

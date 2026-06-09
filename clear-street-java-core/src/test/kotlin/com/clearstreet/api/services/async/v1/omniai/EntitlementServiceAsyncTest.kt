@@ -2,19 +2,24 @@
 
 package com.clearstreet.api.services.async.v1.omniai
 
+import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clearstreet.api.models.v1.omniai.EntitlementCode
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsParams
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class EntitlementServiceAsyncTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun createEntitlements() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val entitlementServiceAsync = client.v1().omniAi().entitlements()
 
         val responseFuture =
@@ -31,10 +36,13 @@ internal class EntitlementServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun deleteEntitlement() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val entitlementServiceAsync = client.v1().omniAi().entitlements()
 
         val responseFuture = entitlementServiceAsync.deleteEntitlement("entitlement_id")
@@ -43,10 +51,13 @@ internal class EntitlementServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getEntitlementAgreements() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val entitlementServiceAsync = client.v1().omniAi().entitlements()
 
         val responseFuture = entitlementServiceAsync.getEntitlementAgreements()
@@ -55,10 +66,13 @@ internal class EntitlementServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getEntitlements() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val entitlementServiceAsync = client.v1().omniAi().entitlements()
 
         val responseFuture =

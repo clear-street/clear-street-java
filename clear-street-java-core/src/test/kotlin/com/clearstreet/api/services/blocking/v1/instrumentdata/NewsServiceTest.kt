@@ -2,17 +2,22 @@
 
 package com.clearstreet.api.services.blocking.v1.instrumentdata
 
+import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.models.v1.instrumentdata.news.NewsGetNewsParams
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class NewsServiceTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getNews() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val newsService = client.v1().instrumentData().news()
 
         val response =

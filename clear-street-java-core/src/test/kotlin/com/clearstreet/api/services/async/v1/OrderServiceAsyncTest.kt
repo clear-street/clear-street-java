@@ -2,6 +2,7 @@
 
 package com.clearstreet.api.services.async.v1
 
+import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clearstreet.api.models.v1.orders.OrderCancelAllOpenOrdersParams
 import com.clearstreet.api.models.v1.orders.OrderCancelOpenOrderParams
@@ -15,15 +16,19 @@ import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
 import java.time.OffsetDateTime
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class OrderServiceAsyncTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun cancelAllOpenOrders() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val orderServiceAsync = client.v1().orders()
 
         val responseFuture =
@@ -41,10 +46,13 @@ internal class OrderServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun cancelOpenOrder() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val orderServiceAsync = client.v1().orders()
 
         val responseFuture =
@@ -56,10 +64,13 @@ internal class OrderServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getExecutions() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val orderServiceAsync = client.v1().orders()
 
         val responseFuture =
@@ -78,10 +89,13 @@ internal class OrderServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getOrderById() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val orderServiceAsync = client.v1().orders()
 
         val responseFuture =
@@ -93,10 +107,13 @@ internal class OrderServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getOrders() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val orderServiceAsync = client.v1().orders()
 
         val responseFuture =
@@ -119,10 +136,13 @@ internal class OrderServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun replaceOrder() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val orderServiceAsync = client.v1().orders()
 
         val responseFuture =
@@ -141,10 +161,13 @@ internal class OrderServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun submitOrders() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val orderServiceAsync = client.v1().orders()
 
         val responseFuture =
