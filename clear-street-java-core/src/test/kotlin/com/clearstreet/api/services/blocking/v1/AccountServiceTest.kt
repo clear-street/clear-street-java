@@ -2,6 +2,7 @@
 
 package com.clearstreet.api.services.blocking.v1
 
+import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountBalancesParams
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams
@@ -9,15 +10,19 @@ import com.clearstreet.api.models.v1.accounts.AccountGetPortfolioHistoryParams
 import com.clearstreet.api.models.v1.accounts.AccountPatchAccountByIdParams
 import com.clearstreet.api.models.v1.accounts.RiskSettings
 import java.time.LocalDate
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class AccountServiceTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getAccountBalances() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val accountService = client.v1().accounts()
 
         val response =
@@ -31,10 +36,13 @@ internal class AccountServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getAccountById() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val accountService = client.v1().accounts()
 
         val response = accountService.getAccountById(0L)
@@ -42,10 +50,13 @@ internal class AccountServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getAccounts() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val accountService = client.v1().accounts()
 
         val response =
@@ -59,10 +70,13 @@ internal class AccountServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getPortfolioHistory() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val accountService = client.v1().accounts()
 
         val response =
@@ -77,10 +91,13 @@ internal class AccountServiceTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun patchAccountById() {
-        val client = ClearStreetOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val accountService = client.v1().accounts()
 
         val response =

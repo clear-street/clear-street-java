@@ -2,6 +2,7 @@
 
 package com.clearstreet.api.services.async.v1
 
+import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clearstreet.api.models.v1.positions.PositionCancelPositionInstructionParams
 import com.clearstreet.api.models.v1.positions.PositionClosePositionParams
@@ -10,15 +11,19 @@ import com.clearstreet.api.models.v1.positions.PositionGetPositionInstructionsPa
 import com.clearstreet.api.models.v1.positions.PositionGetPositionsParams
 import com.clearstreet.api.models.v1.positions.PositionInstructionType
 import com.clearstreet.api.models.v1.positions.PositionSubmitPositionInstructionsParams
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class PositionServiceAsyncTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun cancelPositionInstruction() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val positionServiceAsync = client.v1().positions()
 
         val responseFuture =
@@ -33,10 +38,13 @@ internal class PositionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun closePosition() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val positionServiceAsync = client.v1().positions()
 
         val responseFuture =
@@ -52,10 +60,13 @@ internal class PositionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun closePositions() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val positionServiceAsync = client.v1().positions()
 
         val responseFuture =
@@ -67,10 +78,13 @@ internal class PositionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getPositionInstructions() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val positionServiceAsync = client.v1().positions()
 
         val responseFuture =
@@ -85,10 +99,13 @@ internal class PositionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getPositions() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val positionServiceAsync = client.v1().positions()
 
         val responseFuture =
@@ -107,10 +124,13 @@ internal class PositionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun submitPositionInstructions() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val positionServiceAsync = client.v1().positions()
 
         val responseFuture =

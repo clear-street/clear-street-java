@@ -2,6 +2,7 @@
 
 package com.clearstreet.api.services.async.v1
 
+import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clearstreet.api.models.v1.instruments.ContractType
 import com.clearstreet.api.models.v1.instruments.InstrumentGetInstrumentByIdParams
@@ -9,15 +10,19 @@ import com.clearstreet.api.models.v1.instruments.InstrumentGetInstrumentsParams
 import com.clearstreet.api.models.v1.instruments.InstrumentGetOptionContractsParams
 import com.clearstreet.api.models.v1.instruments.InstrumentSearchInstrumentsParams
 import java.time.LocalDate
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(TestServerExtension::class)
 internal class InstrumentServiceAsyncTest {
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getInstrumentById() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentServiceAsync = client.v1().instruments()
 
         val responseFuture =
@@ -32,10 +37,13 @@ internal class InstrumentServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getInstruments() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentServiceAsync = client.v1().instruments()
 
         val responseFuture =
@@ -58,10 +66,13 @@ internal class InstrumentServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getOptionContracts() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentServiceAsync = client.v1().instruments()
 
         val responseFuture =
@@ -80,10 +91,13 @@ internal class InstrumentServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun searchInstruments() {
-        val client = ClearStreetOkHttpClientAsync.builder().apiKey("My API Key").build()
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
         val instrumentServiceAsync = client.v1().instruments()
 
         val responseFuture =

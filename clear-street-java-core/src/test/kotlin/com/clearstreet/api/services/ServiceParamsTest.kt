@@ -15,7 +15,6 @@ import com.github.tomakehurst.wiremock.client.WireMock.verify
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.ResourceLock
 
@@ -34,7 +33,6 @@ internal class ServiceParamsTest {
                 .build()
     }
 
-    @Disabled("Mock server tests are disabled")
     @Test
     fun getAccounts() {
         val accountService = client.v1().accounts()
