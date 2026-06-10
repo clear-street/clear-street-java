@@ -12,6 +12,11 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Returns the current lifecycle state of the account's position instructions. Optionally filter by
  * a specific contract.
+ *
+ * Note: instructions that fail pre-acceptance validation on `POST` — duplicates, `DO_NOT_EXERCISE`
+ * / `CONTRARY_EXERCISE` on a non-expiry day, insufficient position, or an unresolvable instrument —
+ * are rejected (with `status = REJECTED` and a `rejection_reason`) without being persisted, so they
+ * surface only in the `POST` response and never appear in this list.
  */
 class PositionGetPositionInstructionsParams
 private constructor(

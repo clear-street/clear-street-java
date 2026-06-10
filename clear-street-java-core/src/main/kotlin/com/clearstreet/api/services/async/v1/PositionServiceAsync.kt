@@ -145,6 +145,12 @@ interface PositionServiceAsync {
     /**
      * Returns the current lifecycle state of the account's position instructions. Optionally filter
      * by a specific contract.
+     *
+     * Note: instructions that fail pre-acceptance validation on `POST` — duplicates,
+     * `DO_NOT_EXERCISE` / `CONTRARY_EXERCISE` on a non-expiry day, insufficient position, or an
+     * unresolvable instrument — are rejected (with `status = REJECTED` and a `rejection_reason`)
+     * without being persisted, so they surface only in the `POST` response and never appear in this
+     * list.
      */
     fun getPositionInstructions(
         accountId: Long
@@ -234,12 +240,12 @@ interface PositionServiceAsync {
      * Batch semantics:
      * - **All rows accepted** → `200 OK`. Every row is in `data` with `status = SENT`.
      * - **Partial success** → `207 Multi-Status`. `data` contains every row; rejected rows carry
-     *   `status = ENGINE_REJECTED` (or `REJECTED`) and `rejection_reason`. The top-level `error`
-     *   summarizes the batch failure.
+     *   `status = REJECTED` and `rejection_reason`. The top-level `error` summarizes the batch
+     *   failure.
      * - **All rows rejected** → `4xx`/`5xx`. The HTTP status reflects the aggregate cause: `409`
      *   when every row was a duplicate, `400` for validation failures like DNE/CEA on a non-expiry
      *   day, `503` if the clearing service is unavailable. `data` still contains every row carrying
-     *   `status = ENGINE_REJECTED` and `rejection_reason` so callers can attribute failures by
+     *   `status = REJECTED` and `rejection_reason` so callers can attribute failures by
      *   `instruction_id`; the top-level `error` summarizes the batch.
      */
     fun submitPositionInstructions(
