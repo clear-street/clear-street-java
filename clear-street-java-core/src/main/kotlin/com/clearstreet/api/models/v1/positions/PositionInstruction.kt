@@ -166,9 +166,9 @@ private constructor(
     fun createdAt(): Optional<OffsetDateTime> = createdAt.getOptional("created_at")
 
     /**
-     * Human-readable explanation populated on any non-success terminal status — `REJECTED`,
-     * `ENGINE_REJECTED`, or `CANCEL_FAILED`. On a `207 Multi-Status` batch submit the top-level
-     * `error` field summarizes the batch; per-row detail continues to live here.
+     * Human-readable explanation populated on any non-success terminal status — `REJECTED` or
+     * `CANCEL_FAILED`. On a `207 Multi-Status` batch submit the top-level `error` field summarizes
+     * the batch; per-row detail continues to live here.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -490,9 +490,9 @@ private constructor(
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
         /**
-         * Human-readable explanation populated on any non-success terminal status — `REJECTED`,
-         * `ENGINE_REJECTED`, or `CANCEL_FAILED`. On a `207 Multi-Status` batch submit the top-level
-         * `error` field summarizes the batch; per-row detail continues to live here.
+         * Human-readable explanation populated on any non-success terminal status — `REJECTED` or
+         * `CANCEL_FAILED`. On a `207 Multi-Status` batch submit the top-level `error` field
+         * summarizes the batch; per-row detail continues to live here.
          */
         fun rejectionReason(rejectionReason: String?) =
             rejectionReason(JsonField.ofNullable(rejectionReason))

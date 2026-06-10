@@ -11,11 +11,10 @@ import com.fasterxml.jackson.annotation.JsonCreator
  * Lifecycle status of a position instruction.
  * - `SENT`: accepted and submitted to the clearing venue.
  * - `ACCEPTED`: terminal — accepted by the clearing venue.
- * - `REJECTED`: terminal rejection from the clearing venue; `rejection_reason` carries the
- *   venue-reported detail.
- * - `ENGINE_REJECTED`: terminal rejection from validation; `rejection_reason` carries the detail.
- *   Typical causes: duplicate `instruction_id`, `DO_NOT_EXERCISE` / `CONTRARY_EXERCISE` submitted
- *   on a non-expiry day, insufficient position, or an invalid instrument.
+ * - `REJECTED`: terminal rejection; `rejection_reason` carries the detail. Covers both
+ *   venue-reported rejections and rejections raised before the instruction reached the clearing
+ *   venue (e.g. duplicate `instruction_id`, `DO_NOT_EXERCISE` / `CONTRARY_EXERCISE` submitted on a
+ *   non-expiry day, insufficient position, or an instrument that does not resolve).
  * - `CANCEL_REQUESTED`: cancel accepted; final cancel state pending.
  * - `CANCELLED`: terminal — cancel completed.
  * - `CANCEL_FAILED`: cancel could not be completed; operator attention required. `rejection_reason`
@@ -43,8 +42,6 @@ private constructor(private val value: JsonField<String>) : Enum {
 
         @JvmField val REJECTED = of("REJECTED")
 
-        @JvmField val ENGINE_REJECTED = of("ENGINE_REJECTED")
-
         @JvmField val CANCEL_REQUESTED = of("CANCEL_REQUESTED")
 
         @JvmField val CANCELLED = of("CANCELLED")
@@ -61,7 +58,6 @@ private constructor(private val value: JsonField<String>) : Enum {
         SENT,
         ACCEPTED,
         REJECTED,
-        ENGINE_REJECTED,
         CANCEL_REQUESTED,
         CANCELLED,
         CANCEL_FAILED,
@@ -82,7 +78,6 @@ private constructor(private val value: JsonField<String>) : Enum {
         SENT,
         ACCEPTED,
         REJECTED,
-        ENGINE_REJECTED,
         CANCEL_REQUESTED,
         CANCELLED,
         CANCEL_FAILED,
@@ -106,7 +101,6 @@ private constructor(private val value: JsonField<String>) : Enum {
             SENT -> Value.SENT
             ACCEPTED -> Value.ACCEPTED
             REJECTED -> Value.REJECTED
-            ENGINE_REJECTED -> Value.ENGINE_REJECTED
             CANCEL_REQUESTED -> Value.CANCEL_REQUESTED
             CANCELLED -> Value.CANCELLED
             CANCEL_FAILED -> Value.CANCEL_FAILED
@@ -128,7 +122,6 @@ private constructor(private val value: JsonField<String>) : Enum {
             SENT -> Known.SENT
             ACCEPTED -> Known.ACCEPTED
             REJECTED -> Known.REJECTED
-            ENGINE_REJECTED -> Known.ENGINE_REJECTED
             CANCEL_REQUESTED -> Known.CANCEL_REQUESTED
             CANCELLED -> Known.CANCELLED
             CANCEL_FAILED -> Known.CANCEL_FAILED
