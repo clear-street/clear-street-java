@@ -21,8 +21,6 @@ import com.clearstreet.api.services.blocking.v1.PositionService
 import com.clearstreet.api.services.blocking.v1.PositionServiceImpl
 import com.clearstreet.api.services.blocking.v1.WatchlistService
 import com.clearstreet.api.services.blocking.v1.WatchlistServiceImpl
-import com.clearstreet.api.services.blocking.v1.WebsocketService
-import com.clearstreet.api.services.blocking.v1.WebsocketServiceImpl
 import java.util.function.Consumer
 
 class V1ServiceImpl internal constructor(private val clientOptions: ClientOptions) : V1Service {
@@ -50,8 +48,6 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     private val positions: PositionService by lazy { PositionServiceImpl(clientOptions) }
 
     private val watchlist: WatchlistService by lazy { WatchlistServiceImpl(clientOptions) }
-
-    private val websocket: WebsocketService by lazy { WebsocketServiceImpl(clientOptions) }
 
     override fun withRawResponse(): V1Service.WithRawResponse = withRawResponse
 
@@ -83,9 +79,6 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     /** Create and manage watchlists. */
     override fun watchlist(): WatchlistService = watchlist
-
-    /** Active Websocket. */
-    override fun websocket(): WebsocketService = websocket
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         V1Service.WithRawResponse {
@@ -126,10 +119,6 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
             WatchlistServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val websocket: WebsocketService.WithRawResponse by lazy {
-            WebsocketServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: Consumer<ClientOptions.Builder>
         ): V1Service.WithRawResponse =
@@ -162,8 +151,5 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         /** Create and manage watchlists. */
         override fun watchlist(): WatchlistService.WithRawResponse = watchlist
-
-        /** Active Websocket. */
-        override fun websocket(): WebsocketService.WithRawResponse = websocket
     }
 }
