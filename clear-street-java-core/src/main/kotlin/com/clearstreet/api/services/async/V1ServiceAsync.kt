@@ -12,7 +12,6 @@ import com.clearstreet.api.services.async.v1.OmniAiServiceAsync
 import com.clearstreet.api.services.async.v1.OrderServiceAsync
 import com.clearstreet.api.services.async.v1.PositionServiceAsync
 import com.clearstreet.api.services.async.v1.WatchlistServiceAsync
-import com.clearstreet.api.services.async.v1.WebsocketServiceAsync
 import java.util.function.Consumer
 
 interface V1ServiceAsync {
@@ -55,9 +54,6 @@ interface V1ServiceAsync {
     /** Create and manage watchlists. */
     fun watchlist(): WatchlistServiceAsync
 
-    /** Active Websocket. */
-    fun websocket(): WebsocketServiceAsync
-
     /** A view of [V1ServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -93,8 +89,5 @@ interface V1ServiceAsync {
 
         /** Create and manage watchlists. */
         fun watchlist(): WatchlistServiceAsync.WithRawResponse
-
-        /** Active Websocket. */
-        fun websocket(): WebsocketServiceAsync.WithRawResponse
     }
 }

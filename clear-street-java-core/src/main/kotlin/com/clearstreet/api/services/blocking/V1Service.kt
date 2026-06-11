@@ -12,7 +12,6 @@ import com.clearstreet.api.services.blocking.v1.OmniAiService
 import com.clearstreet.api.services.blocking.v1.OrderService
 import com.clearstreet.api.services.blocking.v1.PositionService
 import com.clearstreet.api.services.blocking.v1.WatchlistService
-import com.clearstreet.api.services.blocking.v1.WebsocketService
 import java.util.function.Consumer
 
 interface V1Service {
@@ -55,9 +54,6 @@ interface V1Service {
     /** Create and manage watchlists. */
     fun watchlist(): WatchlistService
 
-    /** Active Websocket. */
-    fun websocket(): WebsocketService
-
     /** A view of [V1Service] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -93,8 +89,5 @@ interface V1Service {
 
         /** Create and manage watchlists. */
         fun watchlist(): WatchlistService.WithRawResponse
-
-        /** Active Websocket. */
-        fun websocket(): WebsocketService.WithRawResponse
     }
 }
