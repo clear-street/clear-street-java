@@ -47,7 +47,8 @@ private constructor(
     ) : this(actions, announcedAt, company, exchange, marketCap, priceRange, shares, mutableMapOf())
 
     /**
-     * IPO action.
+     * IPO action. When a null/undefined value is observed, it indicates that there is no available
+     * data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -55,7 +56,8 @@ private constructor(
     fun actions(): Optional<String> = actions.getOptional("actions")
 
     /**
-     * IPO announced timestamp.
+     * IPO announced timestamp. When a null/undefined value is observed, it indicates that there is
+     * no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -63,7 +65,8 @@ private constructor(
     fun announcedAt(): Optional<OffsetDateTime> = announcedAt.getOptional("announced_at")
 
     /**
-     * IPO company name.
+     * IPO company name. When a null/undefined value is observed, it indicates that there is no
+     * available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -71,7 +74,8 @@ private constructor(
     fun company(): Optional<String> = company.getOptional("company")
 
     /**
-     * IPO exchange.
+     * IPO exchange. When a null/undefined value is observed, it indicates that there is no
+     * available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -79,7 +83,8 @@ private constructor(
     fun exchange(): Optional<String> = exchange.getOptional("exchange")
 
     /**
-     * IPO market cap.
+     * IPO market cap. When a null/undefined value is observed, it indicates that there is no
+     * available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -87,7 +92,8 @@ private constructor(
     fun marketCap(): Optional<String> = marketCap.getOptional("market_cap")
 
     /**
-     * IPO price range.
+     * IPO price range. When a null/undefined value is observed, it indicates that there is no
+     * available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -95,7 +101,8 @@ private constructor(
     fun priceRange(): Optional<String> = priceRange.getOptional("price_range")
 
     /**
-     * IPO shares offered.
+     * IPO shares offered. When a null/undefined value is observed, it indicates that there is no
+     * available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -195,7 +202,10 @@ private constructor(
             additionalProperties = instrumentEventIpoItem.additionalProperties.toMutableMap()
         }
 
-        /** IPO action. */
+        /**
+         * IPO action. When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
         fun actions(actions: String?) = actions(JsonField.ofNullable(actions))
 
         /** Alias for calling [Builder.actions] with `actions.orElse(null)`. */
@@ -209,7 +219,10 @@ private constructor(
          */
         fun actions(actions: JsonField<String>) = apply { this.actions = actions }
 
-        /** IPO announced timestamp. */
+        /**
+         * IPO announced timestamp. When a null/undefined value is observed, it indicates that there
+         * is no available data.
+         */
         fun announcedAt(announcedAt: OffsetDateTime?) =
             announcedAt(JsonField.ofNullable(announcedAt))
 
@@ -228,7 +241,10 @@ private constructor(
             this.announcedAt = announcedAt
         }
 
-        /** IPO company name. */
+        /**
+         * IPO company name. When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
         fun company(company: String?) = company(JsonField.ofNullable(company))
 
         /** Alias for calling [Builder.company] with `company.orElse(null)`. */
@@ -242,7 +258,10 @@ private constructor(
          */
         fun company(company: JsonField<String>) = apply { this.company = company }
 
-        /** IPO exchange. */
+        /**
+         * IPO exchange. When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
         fun exchange(exchange: String?) = exchange(JsonField.ofNullable(exchange))
 
         /** Alias for calling [Builder.exchange] with `exchange.orElse(null)`. */
@@ -256,7 +275,10 @@ private constructor(
          */
         fun exchange(exchange: JsonField<String>) = apply { this.exchange = exchange }
 
-        /** IPO market cap. */
+        /**
+         * IPO market cap. When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
         fun marketCap(marketCap: String?) = marketCap(JsonField.ofNullable(marketCap))
 
         /** Alias for calling [Builder.marketCap] with `marketCap.orElse(null)`. */
@@ -271,7 +293,10 @@ private constructor(
          */
         fun marketCap(marketCap: JsonField<String>) = apply { this.marketCap = marketCap }
 
-        /** IPO price range. */
+        /**
+         * IPO price range. When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
         fun priceRange(priceRange: String?) = priceRange(JsonField.ofNullable(priceRange))
 
         /** Alias for calling [Builder.priceRange] with `priceRange.orElse(null)`. */
@@ -286,7 +311,10 @@ private constructor(
          */
         fun priceRange(priceRange: JsonField<String>) = apply { this.priceRange = priceRange }
 
-        /** IPO shares offered. */
+        /**
+         * IPO shares offered. When a null/undefined value is observed, it indicates that there is
+         * no available data.
+         */
         fun shares(shares: String?) = shares(JsonField.ofNullable(shares))
 
         /** Alias for calling [Builder.shares] with `shares.orElse(null)`. */

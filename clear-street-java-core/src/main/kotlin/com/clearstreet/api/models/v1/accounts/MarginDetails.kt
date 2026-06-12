@@ -156,7 +156,9 @@ private constructor(
     fun patternDayTrader(): Boolean = patternDayTrader.getRequired("pattern_day_trader")
 
     /**
-     * The amount of day-trade buying power used during the current trading day.
+     * The amount of day-trade buying power used during the current trading day. When
+     * null/undefined, the value should be assumed to be zero. The field is omitted to simplify the
+     * response.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -175,7 +177,8 @@ private constructor(
         topContributors.getOptional("top_contributors")
 
     /**
-     * Current usage totals.
+     * Current usage totals. When a null/undefined value is observed, it indicates that there is no
+     * available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -476,7 +479,11 @@ private constructor(
             this.patternDayTrader = patternDayTrader
         }
 
-        /** The amount of day-trade buying power used during the current trading day. */
+        /**
+         * The amount of day-trade buying power used during the current trading day. When
+         * null/undefined, the value should be assumed to be zero. The field is omitted to simplify
+         * the response.
+         */
         @Deprecated("deprecated")
         fun dayTradeBuyingPowerUsage(dayTradeBuyingPowerUsage: String?) =
             dayTradeBuyingPowerUsage(JsonField.ofNullable(dayTradeBuyingPowerUsage))
@@ -528,7 +535,10 @@ private constructor(
                 }
         }
 
-        /** Current usage totals. */
+        /**
+         * Current usage totals. When a null/undefined value is observed, it indicates that there is
+         * no available data.
+         */
         fun usage(usage: MarginDetailsUsage?) = usage(JsonField.ofNullable(usage))
 
         /** Alias for calling [Builder.usage] with `usage.orElse(null)`. */

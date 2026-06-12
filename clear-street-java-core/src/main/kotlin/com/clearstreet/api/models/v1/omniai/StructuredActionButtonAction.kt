@@ -30,7 +30,8 @@ private constructor(
     ) : this(actionId, mutableMapOf())
 
     /**
-     * UUID of a `structured_action` content part in the same message.
+     * UUID of a `structured_action` content part in the same message. When a null/undefined value
+     * is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -76,7 +77,10 @@ private constructor(
             additionalProperties = structuredActionButtonAction.additionalProperties.toMutableMap()
         }
 
-        /** UUID of a `structured_action` content part in the same message. */
+        /**
+         * UUID of a `structured_action` content part in the same message. When a null/undefined
+         * value is observed, it indicates it does not apply.
+         */
         fun actionId(actionId: String?) = actionId(JsonField.ofNullable(actionId))
 
         /** Alias for calling [Builder.actionId] with `actionId.orElse(null)`. */

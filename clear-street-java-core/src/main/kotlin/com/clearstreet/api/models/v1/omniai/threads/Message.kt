@@ -98,7 +98,7 @@ private constructor(
     fun threadId(): String = threadId.getRequired("thread_id")
 
     /**
-     * Shared sanitized error payload.
+     * When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -295,7 +295,7 @@ private constructor(
          */
         fun threadId(threadId: JsonField<String>) = apply { this.threadId = threadId }
 
-        /** Shared sanitized error payload. */
+        /** When a null/undefined value is observed, it indicates it does not apply. */
         fun error(error: ErrorStatus?) = error(JsonField.ofNullable(error))
 
         /** Alias for calling [Builder.error] with `error.orElse(null)`. */

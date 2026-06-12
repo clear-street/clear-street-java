@@ -53,7 +53,8 @@ private constructor(
     fun isOpen(): Boolean = isOpen.getRequired("is_open")
 
     /**
-     * Current session type if market is open, null if closed
+     * Current session type if market is open, null if closed When a null/undefined value is
+     * observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -148,7 +149,10 @@ private constructor(
          */
         fun isOpen(isOpen: JsonField<Boolean>) = apply { this.isOpen = isOpen }
 
-        /** Current session type if market is open, null if closed */
+        /**
+         * Current session type if market is open, null if closed When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun currentSession(currentSession: MarketSessionType?) =
             currentSession(JsonField.ofNullable(currentSession))
 

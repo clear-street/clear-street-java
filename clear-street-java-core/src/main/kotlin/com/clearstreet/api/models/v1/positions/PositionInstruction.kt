@@ -150,7 +150,8 @@ private constructor(
 
     /**
      * Number of contracts accepted by the clearing venue. Populated once the instruction reaches
-     * `ACCEPTED`.
+     * `ACCEPTED`. When a null/undefined value is observed, it indicates that there is no available
+     * data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -158,7 +159,8 @@ private constructor(
     fun acceptedQuantity(): Optional<String> = acceptedQuantity.getOptional("accepted_quantity")
 
     /**
-     * When the instruction was first accepted by the service.
+     * When the instruction was first accepted by the service. When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -168,7 +170,8 @@ private constructor(
     /**
      * Human-readable explanation populated on any non-success terminal status — `REJECTED` or
      * `CANCEL_FAILED`. On a `207 Multi-Status` batch submit the top-level `error` field summarizes
-     * the batch; per-row detail continues to live here.
+     * the batch; per-row detail continues to live here. When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -176,7 +179,8 @@ private constructor(
     fun rejectionReason(): Optional<String> = rejectionReason.getOptional("rejection_reason")
 
     /**
-     * When the instruction's lifecycle state last changed.
+     * When the instruction's lifecycle state last changed. When a null/undefined value is observed,
+     * it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -454,7 +458,8 @@ private constructor(
 
         /**
          * Number of contracts accepted by the clearing venue. Populated once the instruction
-         * reaches `ACCEPTED`.
+         * reaches `ACCEPTED`. When a null/undefined value is observed, it indicates that there is
+         * no available data.
          */
         fun acceptedQuantity(acceptedQuantity: String?) =
             acceptedQuantity(JsonField.ofNullable(acceptedQuantity))
@@ -474,7 +479,10 @@ private constructor(
             this.acceptedQuantity = acceptedQuantity
         }
 
-        /** When the instruction was first accepted by the service. */
+        /**
+         * When the instruction was first accepted by the service. When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun createdAt(createdAt: OffsetDateTime?) = createdAt(JsonField.ofNullable(createdAt))
 
         /** Alias for calling [Builder.createdAt] with `createdAt.orElse(null)`. */
@@ -492,7 +500,8 @@ private constructor(
         /**
          * Human-readable explanation populated on any non-success terminal status — `REJECTED` or
          * `CANCEL_FAILED`. On a `207 Multi-Status` batch submit the top-level `error` field
-         * summarizes the batch; per-row detail continues to live here.
+         * summarizes the batch; per-row detail continues to live here. When a null/undefined value
+         * is observed, it indicates it does not apply.
          */
         fun rejectionReason(rejectionReason: String?) =
             rejectionReason(JsonField.ofNullable(rejectionReason))
@@ -512,7 +521,10 @@ private constructor(
             this.rejectionReason = rejectionReason
         }
 
-        /** When the instruction's lifecycle state last changed. */
+        /**
+         * When the instruction's lifecycle state last changed. When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun updatedAt(updatedAt: OffsetDateTime?) = updatedAt(JsonField.ofNullable(updatedAt))
 
         /** Alias for calling [Builder.updatedAt] with `updatedAt.orElse(null)`. */

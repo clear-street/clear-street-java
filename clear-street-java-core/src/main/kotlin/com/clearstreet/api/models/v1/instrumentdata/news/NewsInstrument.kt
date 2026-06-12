@@ -45,7 +45,8 @@ private constructor(
     fun instrumentId(): String = instrumentId.getRequired("instrument_id")
 
     /**
-     * Instrument name/description, if available.
+     * Instrument name/description, if available. When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -53,7 +54,8 @@ private constructor(
     fun name(): Optional<String> = name.getOptional("name")
 
     /**
-     * Trading symbol, if available.
+     * Trading symbol, if available. When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -138,7 +140,10 @@ private constructor(
             this.instrumentId = instrumentId
         }
 
-        /** Instrument name/description, if available. */
+        /**
+         * Instrument name/description, if available. When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun name(name: String?) = name(JsonField.ofNullable(name))
 
         /** Alias for calling [Builder.name] with `name.orElse(null)`. */
@@ -152,7 +157,10 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
 
-        /** Trading symbol, if available. */
+        /**
+         * Trading symbol, if available. When a null/undefined value is observed, it indicates that
+         * there is no available data.
+         */
         fun symbol(symbol: String?) = symbol(JsonField.ofNullable(symbol))
 
         /** Alias for calling [Builder.symbol] with `symbol.orElse(null)`. */

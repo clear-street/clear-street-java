@@ -84,7 +84,8 @@ private constructor(
 
     /**
      * Cumulative traded volume reported on the most recent trade, in shares for equities or
-     * contracts for options. Absent when no trade is available.
+     * contracts for options. Absent when no trade is available. When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -93,7 +94,8 @@ private constructor(
 
     /**
      * Theoretical price and Greeks for option instruments. `None` for equities, and for options
-     * whose Greeks have not yet been observed
+     * whose Greeks have not yet been observed When a null/undefined value is observed, it indicates
+     * that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -101,7 +103,8 @@ private constructor(
     fun greeks(): Optional<SnapshotGreeks> = greeks.getOptional("greeks")
 
     /**
-     * Most recent quote if available.
+     * Most recent quote if available. When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -109,7 +112,8 @@ private constructor(
     fun lastQuote(): Optional<SnapshotQuote> = lastQuote.getOptional("last_quote")
 
     /**
-     * Most recent last-sale trade if available.
+     * Most recent last-sale trade if available. When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -117,7 +121,8 @@ private constructor(
     fun lastTrade(): Optional<SnapshotLastTrade> = lastTrade.getOptional("last_trade")
 
     /**
-     * Security name if available.
+     * Security name if available. When a null/undefined value is observed, it indicates that there
+     * is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -125,7 +130,8 @@ private constructor(
     fun name(): Optional<String> = name.getOptional("name")
 
     /**
-     * Session metrics computed from previous close and last trade, if available.
+     * Session metrics computed from previous close and last trade, if available. When a
+     * null/undefined value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -276,7 +282,8 @@ private constructor(
 
         /**
          * Cumulative traded volume reported on the most recent trade, in shares for equities or
-         * contracts for options. Absent when no trade is available.
+         * contracts for options. Absent when no trade is available. When a null/undefined value is
+         * observed, it indicates that there is no available data.
          */
         fun cumulativeVolume(cumulativeVolume: Long?) =
             cumulativeVolume(JsonField.ofNullable(cumulativeVolume))
@@ -305,7 +312,8 @@ private constructor(
 
         /**
          * Theoretical price and Greeks for option instruments. `None` for equities, and for options
-         * whose Greeks have not yet been observed
+         * whose Greeks have not yet been observed When a null/undefined value is observed, it
+         * indicates that there is no available data.
          */
         fun greeks(greeks: SnapshotGreeks?) = greeks(JsonField.ofNullable(greeks))
 
@@ -321,7 +329,10 @@ private constructor(
          */
         fun greeks(greeks: JsonField<SnapshotGreeks>) = apply { this.greeks = greeks }
 
-        /** Most recent quote if available. */
+        /**
+         * Most recent quote if available. When a null/undefined value is observed, it indicates
+         * that there is no available data.
+         */
         fun lastQuote(lastQuote: SnapshotQuote?) = lastQuote(JsonField.ofNullable(lastQuote))
 
         /** Alias for calling [Builder.lastQuote] with `lastQuote.orElse(null)`. */
@@ -336,7 +347,10 @@ private constructor(
          */
         fun lastQuote(lastQuote: JsonField<SnapshotQuote>) = apply { this.lastQuote = lastQuote }
 
-        /** Most recent last-sale trade if available. */
+        /**
+         * Most recent last-sale trade if available. When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun lastTrade(lastTrade: SnapshotLastTrade?) = lastTrade(JsonField.ofNullable(lastTrade))
 
         /** Alias for calling [Builder.lastTrade] with `lastTrade.orElse(null)`. */
@@ -353,7 +367,10 @@ private constructor(
             this.lastTrade = lastTrade
         }
 
-        /** Security name if available. */
+        /**
+         * Security name if available. When a null/undefined value is observed, it indicates that
+         * there is no available data.
+         */
         fun name(name: String?) = name(JsonField.ofNullable(name))
 
         /** Alias for calling [Builder.name] with `name.orElse(null)`. */
@@ -367,7 +384,10 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
 
-        /** Session metrics computed from previous close and last trade, if available. */
+        /**
+         * Session metrics computed from previous close and last trade, if available. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
         fun session(session: SnapshotSession?) = session(JsonField.ofNullable(session))
 
         /** Alias for calling [Builder.session] with `session.orElse(null)`. */

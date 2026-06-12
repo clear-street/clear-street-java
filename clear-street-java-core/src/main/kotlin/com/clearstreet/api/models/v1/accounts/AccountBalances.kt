@@ -244,7 +244,8 @@ private constructor(
     fun withdrawableCash(): String = withdrawableCash.getRequired("withdrawable_cash")
 
     /**
-     * Margin-account-only details.
+     * Margin-account-only details. When a null/undefined value is observed, it indicates it does
+     * not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -252,7 +253,8 @@ private constructor(
     fun marginDetails(): Optional<MarginDetails> = marginDetails.getOptional("margin_details")
 
     /**
-     * Applied multiplier for margin calculations.
+     * Applied multiplier for margin calculations. When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -260,7 +262,8 @@ private constructor(
     fun multiplier(): Optional<String> = multiplier.getOptional("multiplier")
 
     /**
-     * The total market value of all short positions.
+     * The total market value of all short positions. When null/undefined, the value should be
+     * assumed to be zero. The field is omitted to simplify the response.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -732,7 +735,10 @@ private constructor(
             this.withdrawableCash = withdrawableCash
         }
 
-        /** Margin-account-only details. */
+        /**
+         * Margin-account-only details. When a null/undefined value is observed, it indicates it
+         * does not apply.
+         */
         fun marginDetails(marginDetails: MarginDetails?) =
             marginDetails(JsonField.ofNullable(marginDetails))
 
@@ -751,7 +757,10 @@ private constructor(
             this.marginDetails = marginDetails
         }
 
-        /** Applied multiplier for margin calculations. */
+        /**
+         * Applied multiplier for margin calculations. When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun multiplier(multiplier: String?) = multiplier(JsonField.ofNullable(multiplier))
 
         /** Alias for calling [Builder.multiplier] with `multiplier.orElse(null)`. */
@@ -766,7 +775,10 @@ private constructor(
          */
         fun multiplier(multiplier: JsonField<String>) = apply { this.multiplier = multiplier }
 
-        /** The total market value of all short positions. */
+        /**
+         * The total market value of all short positions. When null/undefined, the value should be
+         * assumed to be zero. The field is omitted to simplify the response.
+         */
         fun shortMarketValue(shortMarketValue: String?) =
             shortMarketValue(JsonField.ofNullable(shortMarketValue))
 

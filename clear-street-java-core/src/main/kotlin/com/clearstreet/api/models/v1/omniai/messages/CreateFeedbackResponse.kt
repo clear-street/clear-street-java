@@ -40,6 +40,8 @@ private constructor(
     fun createdAt(): String = createdAt.getRequired("created_at")
 
     /**
+     * When a null/undefined value is observed, it indicates that there is no available data.
+     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -109,6 +111,9 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<String>) = apply { this.createdAt = createdAt }
 
+        /**
+         * When a null/undefined value is observed, it indicates that there is no available data.
+         */
         fun feedbackId(feedbackId: String?) = feedbackId(JsonField.ofNullable(feedbackId))
 
         /** Alias for calling [Builder.feedbackId] with `feedbackId.orElse(null)`. */

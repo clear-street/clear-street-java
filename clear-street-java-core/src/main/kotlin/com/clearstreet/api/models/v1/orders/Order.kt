@@ -312,7 +312,8 @@ private constructor(
     fun venue(): String = venue.getRequired("venue")
 
     /**
-     * Average fill price across all executions
+     * Average fill price across all executions When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -329,6 +330,7 @@ private constructor(
 
     /**
      * Timestamp when the order will expire (UTC). Present when time_in_force is GOOD_TILL_DATE.
+     * When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -344,7 +346,8 @@ private constructor(
     fun extendedHours(): Optional<Boolean> = extendedHours.getOptional("extended_hours")
 
     /**
-     * Limit offset for trailing stop-limit orders (signed)
+     * Limit offset for trailing stop-limit orders (signed) When a null/undefined value is observed,
+     * it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -352,7 +355,8 @@ private constructor(
     fun limitOffset(): Optional<String> = limitOffset.getOptional("limit_offset")
 
     /**
-     * Limit price (for LIMIT and STOP_LIMIT orders)
+     * Limit price (for LIMIT and STOP_LIMIT orders) When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -360,7 +364,8 @@ private constructor(
     fun limitPrice(): Optional<String> = limitPrice.getOptional("limit_price")
 
     /**
-     * Parent order queue state, present when the order is awaiting release or released.
+     * Parent order queue state, present when the order is awaiting release or released. When a
+     * null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -368,7 +373,8 @@ private constructor(
     fun queueState(): Optional<QueueState> = queueState.getOptional("queue_state")
 
     /**
-     * Scheduled release time for orders awaiting release.
+     * Scheduled release time for orders awaiting release. When a null/undefined value is observed,
+     * it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -376,7 +382,8 @@ private constructor(
     fun releasesAt(): Optional<OffsetDateTime> = releasesAt.getOptional("releases_at")
 
     /**
-     * Stop price (for STOP and STOP_LIMIT orders)
+     * Stop price (for STOP and STOP_LIMIT orders) When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -384,7 +391,8 @@ private constructor(
     fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
 
     /**
-     * Current trailing limit price computed by the trailing strategy
+     * Current trailing limit price computed by the trailing strategy When a null/undefined value is
+     * observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -392,7 +400,8 @@ private constructor(
     fun trailingLimitPx(): Optional<String> = trailingLimitPx.getOptional("trailing_limit_px")
 
     /**
-     * Trailing offset amount for trailing orders
+     * Trailing offset amount for trailing orders When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -400,7 +409,8 @@ private constructor(
     fun trailingOffset(): Optional<String> = trailingOffset.getOptional("trailing_offset")
 
     /**
-     * Trailing offset type for trailing orders
+     * Trailing offset type for trailing orders When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -409,7 +419,8 @@ private constructor(
         trailingOffsetType.getOptional("trailing_offset_type")
 
     /**
-     * Current trailing stop price computed by the trailing strategy
+     * Current trailing stop price computed by the trailing strategy When a null/undefined value is
+     * observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -417,7 +428,8 @@ private constructor(
     fun trailingStopPx(): Optional<String> = trailingStopPx.getOptional("trailing_stop_px")
 
     /**
-     * Trailing watermark price for trailing orders
+     * Trailing watermark price for trailing orders When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -426,7 +438,8 @@ private constructor(
         trailingWatermarkPx.getOptional("trailing_watermark_px")
 
     /**
-     * Trailing watermark timestamp for trailing orders
+     * Trailing watermark timestamp for trailing orders When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -435,8 +448,10 @@ private constructor(
         trailingWatermarkTs.getOptional("trailing_watermark_ts")
 
     /**
-     * Instrument ID of the option's underlying instrument. Populated only for options orders;
-     * `null` for non-options and for options whose underlier cannot be resolved.
+     * Instrument ID of the option's underlying instrument. Populated only for options orders. A
+     * `null` means one of two things: the order is not an option, so the field does not apply; or
+     * the order is an option whose underlier has not yet been resolved. When a null/undefined value
+     * is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -1028,7 +1043,10 @@ private constructor(
          */
         fun venue(venue: JsonField<String>) = apply { this.venue = venue }
 
-        /** Average fill price across all executions */
+        /**
+         * Average fill price across all executions When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun averageFillPrice(averageFillPrice: String?) =
             averageFillPrice(JsonField.ofNullable(averageFillPrice))
 
@@ -1075,6 +1093,7 @@ private constructor(
 
         /**
          * Timestamp when the order will expire (UTC). Present when time_in_force is GOOD_TILL_DATE.
+         * When a null/undefined value is observed, it indicates it does not apply.
          */
         fun expiresAt(expiresAt: OffsetDateTime?) = expiresAt(JsonField.ofNullable(expiresAt))
 
@@ -1116,7 +1135,10 @@ private constructor(
             this.extendedHours = extendedHours
         }
 
-        /** Limit offset for trailing stop-limit orders (signed) */
+        /**
+         * Limit offset for trailing stop-limit orders (signed) When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun limitOffset(limitOffset: String?) = limitOffset(JsonField.ofNullable(limitOffset))
 
         /** Alias for calling [Builder.limitOffset] with `limitOffset.orElse(null)`. */
@@ -1131,7 +1153,10 @@ private constructor(
          */
         fun limitOffset(limitOffset: JsonField<String>) = apply { this.limitOffset = limitOffset }
 
-        /** Limit price (for LIMIT and STOP_LIMIT orders) */
+        /**
+         * Limit price (for LIMIT and STOP_LIMIT orders) When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun limitPrice(limitPrice: String?) = limitPrice(JsonField.ofNullable(limitPrice))
 
         /** Alias for calling [Builder.limitPrice] with `limitPrice.orElse(null)`. */
@@ -1146,7 +1171,10 @@ private constructor(
          */
         fun limitPrice(limitPrice: JsonField<String>) = apply { this.limitPrice = limitPrice }
 
-        /** Parent order queue state, present when the order is awaiting release or released. */
+        /**
+         * Parent order queue state, present when the order is awaiting release or released. When a
+         * null/undefined value is observed, it indicates it does not apply.
+         */
         fun queueState(queueState: QueueState?) = queueState(JsonField.ofNullable(queueState))
 
         /** Alias for calling [Builder.queueState] with `queueState.orElse(null)`. */
@@ -1161,7 +1189,10 @@ private constructor(
          */
         fun queueState(queueState: JsonField<QueueState>) = apply { this.queueState = queueState }
 
-        /** Scheduled release time for orders awaiting release. */
+        /**
+         * Scheduled release time for orders awaiting release. When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun releasesAt(releasesAt: OffsetDateTime?) = releasesAt(JsonField.ofNullable(releasesAt))
 
         /** Alias for calling [Builder.releasesAt] with `releasesAt.orElse(null)`. */
@@ -1178,7 +1209,10 @@ private constructor(
             this.releasesAt = releasesAt
         }
 
-        /** Stop price (for STOP and STOP_LIMIT orders) */
+        /**
+         * Stop price (for STOP and STOP_LIMIT orders) When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun stopPrice(stopPrice: String?) = stopPrice(JsonField.ofNullable(stopPrice))
 
         /** Alias for calling [Builder.stopPrice] with `stopPrice.orElse(null)`. */
@@ -1193,7 +1227,10 @@ private constructor(
          */
         fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
 
-        /** Current trailing limit price computed by the trailing strategy */
+        /**
+         * Current trailing limit price computed by the trailing strategy When a null/undefined
+         * value is observed, it indicates it does not apply.
+         */
         fun trailingLimitPx(trailingLimitPx: String?) =
             trailingLimitPx(JsonField.ofNullable(trailingLimitPx))
 
@@ -1212,7 +1249,10 @@ private constructor(
             this.trailingLimitPx = trailingLimitPx
         }
 
-        /** Trailing offset amount for trailing orders */
+        /**
+         * Trailing offset amount for trailing orders When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun trailingOffset(trailingOffset: String?) =
             trailingOffset(JsonField.ofNullable(trailingOffset))
 
@@ -1231,7 +1271,10 @@ private constructor(
             this.trailingOffset = trailingOffset
         }
 
-        /** Trailing offset type for trailing orders */
+        /**
+         * Trailing offset type for trailing orders When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun trailingOffsetType(trailingOffsetType: TrailingOffsetType?) =
             trailingOffsetType(JsonField.ofNullable(trailingOffsetType))
 
@@ -1252,7 +1295,10 @@ private constructor(
             this.trailingOffsetType = trailingOffsetType
         }
 
-        /** Current trailing stop price computed by the trailing strategy */
+        /**
+         * Current trailing stop price computed by the trailing strategy When a null/undefined value
+         * is observed, it indicates it does not apply.
+         */
         fun trailingStopPx(trailingStopPx: String?) =
             trailingStopPx(JsonField.ofNullable(trailingStopPx))
 
@@ -1271,7 +1317,10 @@ private constructor(
             this.trailingStopPx = trailingStopPx
         }
 
-        /** Trailing watermark price for trailing orders */
+        /**
+         * Trailing watermark price for trailing orders When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun trailingWatermarkPx(trailingWatermarkPx: String?) =
             trailingWatermarkPx(JsonField.ofNullable(trailingWatermarkPx))
 
@@ -1292,7 +1341,10 @@ private constructor(
             this.trailingWatermarkPx = trailingWatermarkPx
         }
 
-        /** Trailing watermark timestamp for trailing orders */
+        /**
+         * Trailing watermark timestamp for trailing orders When a null/undefined value is observed,
+         * it indicates it does not apply.
+         */
         fun trailingWatermarkTs(trailingWatermarkTs: OffsetDateTime?) =
             trailingWatermarkTs(JsonField.ofNullable(trailingWatermarkTs))
 
@@ -1314,8 +1366,10 @@ private constructor(
         }
 
         /**
-         * Instrument ID of the option's underlying instrument. Populated only for options orders;
-         * `null` for non-options and for options whose underlier cannot be resolved.
+         * Instrument ID of the option's underlying instrument. Populated only for options orders. A
+         * `null` means one of two things: the order is not an option, so the field does not apply;
+         * or the order is an option whose underlier has not yet been resolved. When a
+         * null/undefined value is observed, it indicates it does not apply.
          */
         fun underlyingInstrumentId(underlyingInstrumentId: String?) =
             underlyingInstrumentId(JsonField.ofNullable(underlyingInstrumentId))

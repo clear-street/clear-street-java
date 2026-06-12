@@ -231,7 +231,8 @@ private constructor(
     fun venue(): String = venue.getRequired("venue")
 
     /**
-     * Average daily share volume from the security definition.
+     * Average daily share volume from the security definition. When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -239,7 +240,8 @@ private constructor(
     fun adv(): Optional<String> = adv.getOptional("adv")
 
     /**
-     * The expiration date for options instruments
+     * The expiration date for options instruments When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -247,7 +249,8 @@ private constructor(
     fun expiry(): Optional<LocalDate> = expiry.getOptional("expiry")
 
     /**
-     * The type of security (e.g., Common Stock, ETF)
+     * The type of security (e.g., Common Stock, ETF) When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -255,7 +258,8 @@ private constructor(
     fun instrumentType(): Optional<SecurityType> = instrumentType.getOptional("instrument_type")
 
     /**
-     * The percent of a long position's value you must post as margin
+     * The percent of a long position's value you must post as margin When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -263,7 +267,8 @@ private constructor(
     fun longMarginRate(): Optional<String> = longMarginRate.getOptional("long_margin_rate")
 
     /**
-     * The full name of the instrument or its issuer
+     * The full name of the instrument or its issuer When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -271,7 +276,8 @@ private constructor(
     fun name(): Optional<String> = name.getOptional("name")
 
     /**
-     * Notional average daily volume (ADV multiplied by previous close price).
+     * Notional average daily volume (ADV multiplied by previous close price). When a null/undefined
+     * value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -279,7 +285,8 @@ private constructor(
     fun notionalAdv(): Optional<String> = notionalAdv.getOptional("notional_adv")
 
     /**
-     * Last close price from the security definition.
+     * Last close price from the security definition. When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -287,7 +294,8 @@ private constructor(
     fun previousClose(): Optional<String> = previousClose.getOptional("previous_close")
 
     /**
-     * The percent of a short position's value you must post as margin
+     * The percent of a short position's value you must post as margin When a null/undefined value
+     * is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -295,7 +303,8 @@ private constructor(
     fun shortMarginRate(): Optional<String> = shortMarginRate.getOptional("short_margin_rate")
 
     /**
-     * The strike price for options instruments
+     * The strike price for options instruments When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -747,7 +756,10 @@ private constructor(
          */
         fun venue(venue: JsonField<String>) = apply { this.venue = venue }
 
-        /** Average daily share volume from the security definition. */
+        /**
+         * Average daily share volume from the security definition. When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun adv(adv: String?) = adv(JsonField.ofNullable(adv))
 
         /** Alias for calling [Builder.adv] with `adv.orElse(null)`. */
@@ -761,7 +773,10 @@ private constructor(
          */
         fun adv(adv: JsonField<String>) = apply { this.adv = adv }
 
-        /** The expiration date for options instruments */
+        /**
+         * The expiration date for options instruments When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun expiry(expiry: LocalDate?) = expiry(JsonField.ofNullable(expiry))
 
         /** Alias for calling [Builder.expiry] with `expiry.orElse(null)`. */
@@ -776,7 +791,10 @@ private constructor(
          */
         fun expiry(expiry: JsonField<LocalDate>) = apply { this.expiry = expiry }
 
-        /** The type of security (e.g., Common Stock, ETF) */
+        /**
+         * The type of security (e.g., Common Stock, ETF) When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
         fun instrumentType(instrumentType: SecurityType?) =
             instrumentType(JsonField.ofNullable(instrumentType))
 
@@ -795,7 +813,10 @@ private constructor(
             this.instrumentType = instrumentType
         }
 
-        /** The percent of a long position's value you must post as margin */
+        /**
+         * The percent of a long position's value you must post as margin When a null/undefined
+         * value is observed, it indicates that there is no available data.
+         */
         fun longMarginRate(longMarginRate: String?) =
             longMarginRate(JsonField.ofNullable(longMarginRate))
 
@@ -814,7 +835,10 @@ private constructor(
             this.longMarginRate = longMarginRate
         }
 
-        /** The full name of the instrument or its issuer */
+        /**
+         * The full name of the instrument or its issuer When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun name(name: String?) = name(JsonField.ofNullable(name))
 
         /** Alias for calling [Builder.name] with `name.orElse(null)`. */
@@ -828,7 +852,10 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
 
-        /** Notional average daily volume (ADV multiplied by previous close price). */
+        /**
+         * Notional average daily volume (ADV multiplied by previous close price). When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
         fun notionalAdv(notionalAdv: String?) = notionalAdv(JsonField.ofNullable(notionalAdv))
 
         /** Alias for calling [Builder.notionalAdv] with `notionalAdv.orElse(null)`. */
@@ -843,7 +870,10 @@ private constructor(
          */
         fun notionalAdv(notionalAdv: JsonField<String>) = apply { this.notionalAdv = notionalAdv }
 
-        /** Last close price from the security definition. */
+        /**
+         * Last close price from the security definition. When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
         fun previousClose(previousClose: String?) =
             previousClose(JsonField.ofNullable(previousClose))
 
@@ -862,7 +892,10 @@ private constructor(
             this.previousClose = previousClose
         }
 
-        /** The percent of a short position's value you must post as margin */
+        /**
+         * The percent of a short position's value you must post as margin When a null/undefined
+         * value is observed, it indicates that there is no available data.
+         */
         fun shortMarginRate(shortMarginRate: String?) =
             shortMarginRate(JsonField.ofNullable(shortMarginRate))
 
@@ -881,7 +914,10 @@ private constructor(
             this.shortMarginRate = shortMarginRate
         }
 
-        /** The strike price for options instruments */
+        /**
+         * The strike price for options instruments When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun strikePrice(strikePrice: String?) = strikePrice(JsonField.ofNullable(strikePrice))
 
         /** Alias for calling [Builder.strikePrice] with `strikePrice.orElse(null)`. */

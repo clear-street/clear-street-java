@@ -102,7 +102,8 @@ private constructor(
     fun shortMarketValue(): String = shortMarketValue.getRequired("short_market_value")
 
     /**
-     * Timestamp for the start-of-day values.
+     * Timestamp for the start-of-day values. When a null/undefined value is observed, it indicates
+     * that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -110,7 +111,8 @@ private constructor(
     fun asof(): Optional<LocalDate> = asof.getOptional("asof")
 
     /**
-     * Start-of-day day-trade buying power.
+     * Start-of-day day-trade buying power. When a null/undefined value is observed, it indicates it
+     * does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -120,7 +122,8 @@ private constructor(
         dayTradeBuyingPower.getOptional("day_trade_buying_power")
 
     /**
-     * Start-of-day maintenance margin excess.
+     * Start-of-day maintenance margin excess. When a null/undefined value is observed, it indicates
+     * it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -129,7 +132,8 @@ private constructor(
         maintenanceMarginExcess.getOptional("maintenance_margin_excess")
 
     /**
-     * Start-of-day maintenance margin requirement.
+     * Start-of-day maintenance margin requirement. When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -138,7 +142,8 @@ private constructor(
         maintenanceMarginRequirement.getOptional("maintenance_margin_requirement")
 
     /**
-     * Start-of-day trade cash.
+     * Start-of-day trade cash. When a null/undefined value is observed, it indicates it does not
+     * apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -334,7 +339,10 @@ private constructor(
             this.shortMarketValue = shortMarketValue
         }
 
-        /** Timestamp for the start-of-day values. */
+        /**
+         * Timestamp for the start-of-day values. When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun asof(asof: LocalDate?) = asof(JsonField.ofNullable(asof))
 
         /** Alias for calling [Builder.asof] with `asof.orElse(null)`. */
@@ -348,7 +356,10 @@ private constructor(
          */
         fun asof(asof: JsonField<LocalDate>) = apply { this.asof = asof }
 
-        /** Start-of-day day-trade buying power. */
+        /**
+         * Start-of-day day-trade buying power. When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         @Deprecated("deprecated")
         fun dayTradeBuyingPower(dayTradeBuyingPower: String?) =
             dayTradeBuyingPower(JsonField.ofNullable(dayTradeBuyingPower))
@@ -372,7 +383,10 @@ private constructor(
             this.dayTradeBuyingPower = dayTradeBuyingPower
         }
 
-        /** Start-of-day maintenance margin excess. */
+        /**
+         * Start-of-day maintenance margin excess. When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun maintenanceMarginExcess(maintenanceMarginExcess: String?) =
             maintenanceMarginExcess(JsonField.ofNullable(maintenanceMarginExcess))
 
@@ -394,7 +408,10 @@ private constructor(
             this.maintenanceMarginExcess = maintenanceMarginExcess
         }
 
-        /** Start-of-day maintenance margin requirement. */
+        /**
+         * Start-of-day maintenance margin requirement. When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun maintenanceMarginRequirement(maintenanceMarginRequirement: String?) =
             maintenanceMarginRequirement(JsonField.ofNullable(maintenanceMarginRequirement))
 
@@ -416,7 +433,10 @@ private constructor(
             this.maintenanceMarginRequirement = maintenanceMarginRequirement
         }
 
-        /** Start-of-day trade cash. */
+        /**
+         * Start-of-day trade cash. When a null/undefined value is observed, it indicates it does
+         * not apply.
+         */
         fun tradeCash(tradeCash: String?) = tradeCash(JsonField.ofNullable(tradeCash))
 
         /** Alias for calling [Builder.tradeCash] with `tradeCash.orElse(null)`. */

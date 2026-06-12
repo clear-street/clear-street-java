@@ -43,7 +43,8 @@ private constructor(
     fun symbol(): String = symbol.getRequired("symbol")
 
     /**
-     * Additional chart configuration (indicators, overlays, etc.)
+     * Additional chart configuration (indicators, overlays, etc.) When a null/undefined value is
+     * observed, it indicates it does not apply.
      *
      * This arbitrary value can be deserialized into a custom type using the `convert` method:
      * ```java
@@ -53,7 +54,8 @@ private constructor(
     @JsonProperty("extras") @ExcludeMissing fun _extras(): JsonValue = extras
 
     /**
-     * Chart timeframe (e.g., "1D", "1W", "1M", "3M", "1Y", "5Y")
+     * Chart timeframe (e.g., "1D", "1W", "1M", "3M", "1Y", "5Y") When a null/undefined value is
+     * observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -126,10 +128,16 @@ private constructor(
          */
         fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
 
-        /** Additional chart configuration (indicators, overlays, etc.) */
+        /**
+         * Additional chart configuration (indicators, overlays, etc.) When a null/undefined value
+         * is observed, it indicates it does not apply.
+         */
         fun extras(extras: JsonValue) = apply { this.extras = extras }
 
-        /** Chart timeframe (e.g., "1D", "1W", "1M", "3M", "1Y", "5Y") */
+        /**
+         * Chart timeframe (e.g., "1D", "1W", "1M", "3M", "1Y", "5Y") When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun timeframe(timeframe: String?) = timeframe(JsonField.ofNullable(timeframe))
 
         /** Alias for calling [Builder.timeframe] with `timeframe.orElse(null)`. */

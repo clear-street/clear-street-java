@@ -85,7 +85,8 @@ private constructor(
     fun exDate(): LocalDate = exDate.getRequired("ex_date")
 
     /**
-     * The declaration date of the dividend
+     * The declaration date of the dividend When a null/undefined value is observed, it indicates
+     * that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -93,7 +94,8 @@ private constructor(
     fun declarationDate(): Optional<LocalDate> = declarationDate.getOptional("declaration_date")
 
     /**
-     * The dividend amount per share.
+     * The dividend amount per share. When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -101,7 +103,8 @@ private constructor(
     fun dividendAmount(): Optional<String> = dividendAmount.getOptional("dividend_amount")
 
     /**
-     * The dividend yield as a percentage of the stock price.
+     * The dividend yield as a percentage of the stock price. When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -109,7 +112,8 @@ private constructor(
     fun dividendYield(): Optional<String> = dividendYield.getOptional("dividend_yield")
 
     /**
-     * The frequency of the dividend payments (e.g., "Quarterly", "Annual").
+     * The frequency of the dividend payments (e.g., "Quarterly", "Annual"). When a null/undefined
+     * value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -117,7 +121,8 @@ private constructor(
     fun frequency(): Optional<String> = frequency.getOptional("frequency")
 
     /**
-     * The payment date is the date on which a declared stock dividend is scheduled to be paid.
+     * The payment date is the date on which a declared stock dividend is scheduled to be paid. When
+     * a null/undefined value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -126,7 +131,8 @@ private constructor(
 
     /**
      * The record date, set by a company's board of directors, is when a company compiles a list of
-     * shareholders of the stock for which it has declared a dividend.
+     * shareholders of the stock for which it has declared a dividend. When a null/undefined value
+     * is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -281,7 +287,10 @@ private constructor(
          */
         fun exDate(exDate: JsonField<LocalDate>) = apply { this.exDate = exDate }
 
-        /** The declaration date of the dividend */
+        /**
+         * The declaration date of the dividend When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun declarationDate(declarationDate: LocalDate?) =
             declarationDate(JsonField.ofNullable(declarationDate))
 
@@ -300,7 +309,10 @@ private constructor(
             this.declarationDate = declarationDate
         }
 
-        /** The dividend amount per share. */
+        /**
+         * The dividend amount per share. When a null/undefined value is observed, it indicates that
+         * there is no available data.
+         */
         fun dividendAmount(dividendAmount: String?) =
             dividendAmount(JsonField.ofNullable(dividendAmount))
 
@@ -319,7 +331,10 @@ private constructor(
             this.dividendAmount = dividendAmount
         }
 
-        /** The dividend yield as a percentage of the stock price. */
+        /**
+         * The dividend yield as a percentage of the stock price. When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun dividendYield(dividendYield: String?) =
             dividendYield(JsonField.ofNullable(dividendYield))
 
@@ -338,7 +353,10 @@ private constructor(
             this.dividendYield = dividendYield
         }
 
-        /** The frequency of the dividend payments (e.g., "Quarterly", "Annual"). */
+        /**
+         * The frequency of the dividend payments (e.g., "Quarterly", "Annual"). When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
         fun frequency(frequency: String?) = frequency(JsonField.ofNullable(frequency))
 
         /** Alias for calling [Builder.frequency] with `frequency.orElse(null)`. */
@@ -355,6 +373,7 @@ private constructor(
 
         /**
          * The payment date is the date on which a declared stock dividend is scheduled to be paid.
+         * When a null/undefined value is observed, it indicates that there is no available data.
          */
         fun paymentDate(paymentDate: LocalDate?) = paymentDate(JsonField.ofNullable(paymentDate))
 
@@ -374,7 +393,8 @@ private constructor(
 
         /**
          * The record date, set by a company's board of directors, is when a company compiles a list
-         * of shareholders of the stock for which it has declared a dividend.
+         * of shareholders of the stock for which it has declared a dividend. When a null/undefined
+         * value is observed, it indicates that there is no available data.
          */
         fun recordDate(recordDate: LocalDate?) = recordDate(JsonField.ofNullable(recordDate))
 

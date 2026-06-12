@@ -113,7 +113,8 @@ private constructor(
     fun url(): String = url.getRequired("url")
 
     /**
-     * URL of an associated image if provided by the source.
+     * URL of an associated image if provided by the source. When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -121,7 +122,8 @@ private constructor(
     fun imageUrl(): Optional<String> = imageUrl.getOptional("image_url")
 
     /**
-     * The primary domain/site of the publisher.
+     * The primary domain/site of the publisher. When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -129,7 +131,8 @@ private constructor(
     fun site(): Optional<String> = site.getOptional("site")
 
     /**
-     * The full or excerpted article body.
+     * The full or excerpted article body. When a null/undefined value is observed, it indicates
+     * that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -347,7 +350,10 @@ private constructor(
          */
         fun url(url: JsonField<String>) = apply { this.url = url }
 
-        /** URL of an associated image if provided by the source. */
+        /**
+         * URL of an associated image if provided by the source. When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun imageUrl(imageUrl: String?) = imageUrl(JsonField.ofNullable(imageUrl))
 
         /** Alias for calling [Builder.imageUrl] with `imageUrl.orElse(null)`. */
@@ -361,7 +367,10 @@ private constructor(
          */
         fun imageUrl(imageUrl: JsonField<String>) = apply { this.imageUrl = imageUrl }
 
-        /** The primary domain/site of the publisher. */
+        /**
+         * The primary domain/site of the publisher. When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun site(site: String?) = site(JsonField.ofNullable(site))
 
         /** Alias for calling [Builder.site] with `site.orElse(null)`. */
@@ -375,7 +384,10 @@ private constructor(
          */
         fun site(site: JsonField<String>) = apply { this.site = site }
 
-        /** The full or excerpted article body. */
+        /**
+         * The full or excerpted article body. When a null/undefined value is observed, it indicates
+         * that there is no available data.
+         */
         fun text(text: String?) = text(JsonField.ofNullable(text))
 
         /** Alias for calling [Builder.text] with `text.orElse(null)`. */

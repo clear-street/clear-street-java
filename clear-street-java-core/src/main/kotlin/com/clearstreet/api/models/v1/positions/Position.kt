@@ -177,7 +177,8 @@ private constructor(
     fun symbol(): String = symbol.getRequired("symbol")
 
     /**
-     * The average price paid per share or contract for this position
+     * The average price paid per share or contract for this position When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -185,7 +186,8 @@ private constructor(
     fun avgPrice(): Optional<String> = avgPrice.getOptional("avg_price")
 
     /**
-     * The closing price used to value the position for the last trading day
+     * The closing price used to value the position for the last trading day When a null/undefined
+     * value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -193,7 +195,8 @@ private constructor(
     fun closingPrice(): Optional<String> = closingPrice.getOptional("closing_price")
 
     /**
-     * The market date associated with `closing_price`
+     * The market date associated with `closing_price` When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -201,7 +204,8 @@ private constructor(
     fun closingPriceDate(): Optional<LocalDate> = closingPriceDate.getOptional("closing_price_date")
 
     /**
-     * The total cost basis for this position
+     * The total cost basis for this position When a null/undefined value is observed, it indicates
+     * that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -209,7 +213,8 @@ private constructor(
     fun costBasis(): Optional<String> = costBasis.getOptional("cost_basis")
 
     /**
-     * The unrealized profit or loss for this position relative to the previous close
+     * The unrealized profit or loss for this position relative to the previous close When a
+     * null/undefined value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -219,7 +224,8 @@ private constructor(
 
     /**
      * The unrealized profit/loss for the position for the current day, expressed as a percentage of
-     * the baseline value (range: 0-100).
+     * the baseline value (range: 0-100). When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -228,7 +234,8 @@ private constructor(
         dailyUnrealizedPnlPct.getOptional("daily_unrealized_pnl_pct")
 
     /**
-     * The current market price of the instrument
+     * The current market price of the instrument When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -236,7 +243,8 @@ private constructor(
     fun instrumentPrice(): Optional<String> = instrumentPrice.getOptional("instrument_price")
 
     /**
-     * Identifier of the underlying instrument, when available
+     * Identifier of the underlying instrument, when available When a null/undefined value is
+     * observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -245,7 +253,8 @@ private constructor(
         underlyingInstrumentId.getOptional("underlying_instrument_id")
 
     /**
-     * The total unrealized profit or loss for this position based on current market value
+     * The total unrealized profit or loss for this position based on current market value When a
+     * null/undefined value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -254,7 +263,8 @@ private constructor(
 
     /**
      * The unrealized profit/loss for the position, expressed as a percentage of the position's cost
-     * basis (range: 0-100).
+     * basis (range: 0-100). When a null/undefined value is observed, it indicates that there is no
+     * available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -600,7 +610,10 @@ private constructor(
          */
         fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
 
-        /** The average price paid per share or contract for this position */
+        /**
+         * The average price paid per share or contract for this position When a null/undefined
+         * value is observed, it indicates that there is no available data.
+         */
         fun avgPrice(avgPrice: String?) = avgPrice(JsonField.ofNullable(avgPrice))
 
         /** Alias for calling [Builder.avgPrice] with `avgPrice.orElse(null)`. */
@@ -614,7 +627,10 @@ private constructor(
          */
         fun avgPrice(avgPrice: JsonField<String>) = apply { this.avgPrice = avgPrice }
 
-        /** The closing price used to value the position for the last trading day */
+        /**
+         * The closing price used to value the position for the last trading day When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
         fun closingPrice(closingPrice: String?) = closingPrice(JsonField.ofNullable(closingPrice))
 
         /** Alias for calling [Builder.closingPrice] with `closingPrice.orElse(null)`. */
@@ -631,7 +647,10 @@ private constructor(
             this.closingPrice = closingPrice
         }
 
-        /** The market date associated with `closing_price` */
+        /**
+         * The market date associated with `closing_price` When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
         fun closingPriceDate(closingPriceDate: LocalDate?) =
             closingPriceDate(JsonField.ofNullable(closingPriceDate))
 
@@ -650,7 +669,10 @@ private constructor(
             this.closingPriceDate = closingPriceDate
         }
 
-        /** The total cost basis for this position */
+        /**
+         * The total cost basis for this position When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun costBasis(costBasis: String?) = costBasis(JsonField.ofNullable(costBasis))
 
         /** Alias for calling [Builder.costBasis] with `costBasis.orElse(null)`. */
@@ -665,7 +687,10 @@ private constructor(
          */
         fun costBasis(costBasis: JsonField<String>) = apply { this.costBasis = costBasis }
 
-        /** The unrealized profit or loss for this position relative to the previous close */
+        /**
+         * The unrealized profit or loss for this position relative to the previous close When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
         fun dailyUnrealizedPnl(dailyUnrealizedPnl: String?) =
             dailyUnrealizedPnl(JsonField.ofNullable(dailyUnrealizedPnl))
 
@@ -688,7 +713,8 @@ private constructor(
 
         /**
          * The unrealized profit/loss for the position for the current day, expressed as a
-         * percentage of the baseline value (range: 0-100).
+         * percentage of the baseline value (range: 0-100). When a null/undefined value is observed,
+         * it indicates that there is no available data.
          */
         fun dailyUnrealizedPnlPct(dailyUnrealizedPnlPct: String?) =
             dailyUnrealizedPnlPct(JsonField.ofNullable(dailyUnrealizedPnlPct))
@@ -711,7 +737,10 @@ private constructor(
             this.dailyUnrealizedPnlPct = dailyUnrealizedPnlPct
         }
 
-        /** The current market price of the instrument */
+        /**
+         * The current market price of the instrument When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun instrumentPrice(instrumentPrice: String?) =
             instrumentPrice(JsonField.ofNullable(instrumentPrice))
 
@@ -730,7 +759,10 @@ private constructor(
             this.instrumentPrice = instrumentPrice
         }
 
-        /** Identifier of the underlying instrument, when available */
+        /**
+         * Identifier of the underlying instrument, when available When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun underlyingInstrumentId(underlyingInstrumentId: String?) =
             underlyingInstrumentId(JsonField.ofNullable(underlyingInstrumentId))
 
@@ -752,7 +784,10 @@ private constructor(
             this.underlyingInstrumentId = underlyingInstrumentId
         }
 
-        /** The total unrealized profit or loss for this position based on current market value */
+        /**
+         * The total unrealized profit or loss for this position based on current market value When
+         * a null/undefined value is observed, it indicates that there is no available data.
+         */
         fun unrealizedPnl(unrealizedPnl: String?) =
             unrealizedPnl(JsonField.ofNullable(unrealizedPnl))
 
@@ -773,7 +808,8 @@ private constructor(
 
         /**
          * The unrealized profit/loss for the position, expressed as a percentage of the position's
-         * cost basis (range: 0-100).
+         * cost basis (range: 0-100). When a null/undefined value is observed, it indicates that
+         * there is no available data.
          */
         fun unrealizedPnlPct(unrealizedPnlPct: String?) =
             unrealizedPnlPct(JsonField.ofNullable(unrealizedPnlPct))

@@ -58,7 +58,8 @@ private constructor(
     fun open(): OffsetDateTime = open.getRequired("open")
 
     /**
-     * ISO 8601 duration until session closes. Null if session is not currently open.
+     * ISO 8601 duration until session closes. Null if session is not currently open. When a
+     * null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -66,7 +67,8 @@ private constructor(
     fun timeUntilClose(): Optional<String> = timeUntilClose.getOptional("time_until_close")
 
     /**
-     * ISO 8601 duration until session opens. Null if session has already started or closed.
+     * ISO 8601 duration until session opens. Null if session has already started or closed. When a
+     * null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -173,7 +175,10 @@ private constructor(
          */
         fun open(open: JsonField<OffsetDateTime>) = apply { this.open = open }
 
-        /** ISO 8601 duration until session closes. Null if session is not currently open. */
+        /**
+         * ISO 8601 duration until session closes. Null if session is not currently open. When a
+         * null/undefined value is observed, it indicates it does not apply.
+         */
         fun timeUntilClose(timeUntilClose: String?) =
             timeUntilClose(JsonField.ofNullable(timeUntilClose))
 
@@ -192,7 +197,10 @@ private constructor(
             this.timeUntilClose = timeUntilClose
         }
 
-        /** ISO 8601 duration until session opens. Null if session has already started or closed. */
+        /**
+         * ISO 8601 duration until session opens. Null if session has already started or closed.
+         * When a null/undefined value is observed, it indicates it does not apply.
+         */
         fun timeUntilOpen(timeUntilOpen: String?) =
             timeUntilOpen(JsonField.ofNullable(timeUntilOpen))
 
