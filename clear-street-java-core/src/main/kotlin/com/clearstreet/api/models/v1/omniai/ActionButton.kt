@@ -57,7 +57,8 @@ private constructor(
     fun label(): String = label.getRequired("label")
 
     /**
-     * Follow-up prompt to submit as the next user message.
+     * Follow-up prompt to submit as the next user message. When a null/undefined value is observed,
+     * it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -65,7 +66,8 @@ private constructor(
     fun prompt(): Optional<PromptButtonAction> = prompt.getOptional("prompt")
 
     /**
-     * Structured action in the same message to execute on click.
+     * Structured action in the same message to execute on click. When a null/undefined value is
+     * observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -170,7 +172,10 @@ private constructor(
          */
         fun label(label: JsonField<String>) = apply { this.label = label }
 
-        /** Follow-up prompt to submit as the next user message. */
+        /**
+         * Follow-up prompt to submit as the next user message. When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun prompt(prompt: PromptButtonAction?) = prompt(JsonField.ofNullable(prompt))
 
         /** Alias for calling [Builder.prompt] with `prompt.orElse(null)`. */
@@ -185,7 +190,10 @@ private constructor(
          */
         fun prompt(prompt: JsonField<PromptButtonAction>) = apply { this.prompt = prompt }
 
-        /** Structured action in the same message to execute on click. */
+        /**
+         * Structured action in the same message to execute on click. When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun structuredAction(structuredAction: StructuredActionButtonAction?) =
             structuredAction(JsonField.ofNullable(structuredAction))
 

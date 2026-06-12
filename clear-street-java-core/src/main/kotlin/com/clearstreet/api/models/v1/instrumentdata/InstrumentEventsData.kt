@@ -83,7 +83,8 @@ private constructor(
     fun splits(): List<InstrumentSplitEvent> = splits.getRequired("splits")
 
     /**
-     * The currency used for reporting financial data
+     * The currency used for reporting financial data When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -276,7 +277,10 @@ private constructor(
                 }
         }
 
-        /** The currency used for reporting financial data */
+        /**
+         * The currency used for reporting financial data When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
         fun reportingCurrency(reportingCurrency: String?) =
             reportingCurrency(JsonField.ofNullable(reportingCurrency))
 

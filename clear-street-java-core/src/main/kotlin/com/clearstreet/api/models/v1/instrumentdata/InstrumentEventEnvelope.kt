@@ -88,7 +88,8 @@ private constructor(
     fun type(): AllEventsEventType = type.getRequired("type")
 
     /**
-     * Dividend payload when type is DIVIDEND.
+     * Dividend payload when type is DIVIDEND. When a null/undefined value is observed, it indicates
+     * it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -97,7 +98,8 @@ private constructor(
         dividendEventData.getOptional("dividend_event_data")
 
     /**
-     * Earnings payload when type is EARNINGS.
+     * Earnings payload when type is EARNINGS. When a null/undefined value is observed, it indicates
+     * it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -106,7 +108,8 @@ private constructor(
         earningsEventData.getOptional("earnings_event_data")
 
     /**
-     * Instrument identifier, when available.
+     * Instrument identifier, when available. When a null/undefined value is observed, it indicates
+     * that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -114,7 +117,8 @@ private constructor(
     fun instrumentId(): Optional<String> = instrumentId.getOptional("instrument_id")
 
     /**
-     * IPO payload when type is IPO.
+     * IPO payload when type is IPO. When a null/undefined value is observed, it indicates it does
+     * not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -123,7 +127,8 @@ private constructor(
         ipoEventData.getOptional("ipo_event_data")
 
     /**
-     * Instrument name associated with the event, when available.
+     * Instrument name associated with the event, when available. When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -131,7 +136,8 @@ private constructor(
     fun name(): Optional<String> = name.getOptional("name")
 
     /**
-     * The currency used for reporting financial data.
+     * The currency used for reporting financial data. When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -139,7 +145,8 @@ private constructor(
     fun reportingCurrency(): Optional<String> = reportingCurrency.getOptional("reporting_currency")
 
     /**
-     * Stock split payload when type is STOCK_SPLIT.
+     * Stock split payload when type is STOCK_SPLIT. When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -303,7 +310,10 @@ private constructor(
          */
         fun type(type: JsonField<AllEventsEventType>) = apply { this.type = type }
 
-        /** Dividend payload when type is DIVIDEND. */
+        /**
+         * Dividend payload when type is DIVIDEND. When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun dividendEventData(dividendEventData: InstrumentDividendEvent?) =
             dividendEventData(JsonField.ofNullable(dividendEventData))
 
@@ -322,7 +332,10 @@ private constructor(
             this.dividendEventData = dividendEventData
         }
 
-        /** Earnings payload when type is EARNINGS. */
+        /**
+         * Earnings payload when type is EARNINGS. When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun earningsEventData(earningsEventData: InstrumentEarnings?) =
             earningsEventData(JsonField.ofNullable(earningsEventData))
 
@@ -341,7 +354,10 @@ private constructor(
             this.earningsEventData = earningsEventData
         }
 
-        /** Instrument identifier, when available. */
+        /**
+         * Instrument identifier, when available. When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun instrumentId(instrumentId: String?) = instrumentId(JsonField.ofNullable(instrumentId))
 
         /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */
@@ -358,7 +374,10 @@ private constructor(
             this.instrumentId = instrumentId
         }
 
-        /** IPO payload when type is IPO. */
+        /**
+         * IPO payload when type is IPO. When a null/undefined value is observed, it indicates it
+         * does not apply.
+         */
         fun ipoEventData(ipoEventData: InstrumentEventIpoItem?) =
             ipoEventData(JsonField.ofNullable(ipoEventData))
 
@@ -377,7 +396,10 @@ private constructor(
             this.ipoEventData = ipoEventData
         }
 
-        /** Instrument name associated with the event, when available. */
+        /**
+         * Instrument name associated with the event, when available. When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun name(name: String?) = name(JsonField.ofNullable(name))
 
         /** Alias for calling [Builder.name] with `name.orElse(null)`. */
@@ -391,7 +413,10 @@ private constructor(
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
 
-        /** The currency used for reporting financial data. */
+        /**
+         * The currency used for reporting financial data. When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
         fun reportingCurrency(reportingCurrency: String?) =
             reportingCurrency(JsonField.ofNullable(reportingCurrency))
 
@@ -410,7 +435,10 @@ private constructor(
             this.reportingCurrency = reportingCurrency
         }
 
-        /** Stock split payload when type is STOCK_SPLIT. */
+        /**
+         * Stock split payload when type is STOCK_SPLIT. When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun stockSplitEventData(stockSplitEventData: InstrumentSplitEvent?) =
             stockSplitEventData(JsonField.ofNullable(stockSplitEventData))
 

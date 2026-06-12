@@ -145,7 +145,8 @@ private constructor(
     fun type(): AccountType = type.getRequired("type")
 
     /**
-     * The date the account was closed, if applicable
+     * The date the account was closed, if applicable When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -399,7 +400,10 @@ private constructor(
          */
         fun type(type: JsonField<AccountType>) = apply { this.type = type }
 
-        /** The date the account was closed, if applicable */
+        /**
+         * The date the account was closed, if applicable When a null/undefined value is observed,
+         * it indicates it does not apply.
+         */
         fun closeDate(closeDate: LocalDate?) = closeDate(JsonField.ofNullable(closeDate))
 
         /** Alias for calling [Builder.closeDate] with `closeDate.orElse(null)`. */

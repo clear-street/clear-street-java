@@ -29,7 +29,8 @@ private constructor(
     ) : this(risk, mutableMapOf())
 
     /**
-     * Risk settings for the account
+     * Risk settings for the account When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -73,7 +74,10 @@ private constructor(
             additionalProperties = accountSettings.additionalProperties.toMutableMap()
         }
 
-        /** Risk settings for the account */
+        /**
+         * Risk settings for the account When a null/undefined value is observed, it indicates that
+         * there is no available data.
+         */
         fun risk(risk: RiskSettings?) = risk(JsonField.ofNullable(risk))
 
         /** Alias for calling [Builder.risk] with `risk.orElse(null)`. */

@@ -65,7 +65,8 @@ private constructor(
     fun instrumentId(): String = instrumentId.getRequired("instrument_id")
 
     /**
-     * Session high.
+     * Session high. When a null/undefined value is observed, it indicates that there is no
+     * available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -73,7 +74,8 @@ private constructor(
     fun high(): Optional<String> = high.getOptional("high")
 
     /**
-     * Session low.
+     * Session low. When a null/undefined value is observed, it indicates that there is no available
+     * data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -81,7 +83,8 @@ private constructor(
     fun low(): Optional<String> = low.getOptional("low")
 
     /**
-     * Opening price for the session.
+     * Opening price for the session. When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -89,7 +92,8 @@ private constructor(
     fun open(): Optional<String> = open.getOptional("open")
 
     /**
-     * Display symbol for the security. `None` for unresolvable IDs.
+     * Display symbol for the security. `None` for unresolvable IDs. When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -97,7 +101,8 @@ private constructor(
     fun symbol(): Optional<String> = symbol.getOptional("symbol")
 
     /**
-     * Session date the OHLV represents, US/Eastern.
+     * Session date the OHLV represents, US/Eastern. When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -105,7 +110,8 @@ private constructor(
     fun tradeDate(): Optional<LocalDate> = tradeDate.getOptional("trade_date")
 
     /**
-     * Session cumulative trading volume.
+     * Session cumulative trading volume. When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -226,7 +232,10 @@ private constructor(
             this.instrumentId = instrumentId
         }
 
-        /** Session high. */
+        /**
+         * Session high. When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
         fun high(high: String?) = high(JsonField.ofNullable(high))
 
         /** Alias for calling [Builder.high] with `high.orElse(null)`. */
@@ -240,7 +249,10 @@ private constructor(
          */
         fun high(high: JsonField<String>) = apply { this.high = high }
 
-        /** Session low. */
+        /**
+         * Session low. When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
         fun low(low: String?) = low(JsonField.ofNullable(low))
 
         /** Alias for calling [Builder.low] with `low.orElse(null)`. */
@@ -254,7 +266,10 @@ private constructor(
          */
         fun low(low: JsonField<String>) = apply { this.low = low }
 
-        /** Opening price for the session. */
+        /**
+         * Opening price for the session. When a null/undefined value is observed, it indicates that
+         * there is no available data.
+         */
         fun open(open: String?) = open(JsonField.ofNullable(open))
 
         /** Alias for calling [Builder.open] with `open.orElse(null)`. */
@@ -268,7 +283,10 @@ private constructor(
          */
         fun open(open: JsonField<String>) = apply { this.open = open }
 
-        /** Display symbol for the security. `None` for unresolvable IDs. */
+        /**
+         * Display symbol for the security. `None` for unresolvable IDs. When a null/undefined value
+         * is observed, it indicates that there is no available data.
+         */
         fun symbol(symbol: String?) = symbol(JsonField.ofNullable(symbol))
 
         /** Alias for calling [Builder.symbol] with `symbol.orElse(null)`. */
@@ -282,7 +300,10 @@ private constructor(
          */
         fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
 
-        /** Session date the OHLV represents, US/Eastern. */
+        /**
+         * Session date the OHLV represents, US/Eastern. When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun tradeDate(tradeDate: LocalDate?) = tradeDate(JsonField.ofNullable(tradeDate))
 
         /** Alias for calling [Builder.tradeDate] with `tradeDate.orElse(null)`. */
@@ -297,7 +318,10 @@ private constructor(
          */
         fun tradeDate(tradeDate: JsonField<LocalDate>) = apply { this.tradeDate = tradeDate }
 
-        /** Session cumulative trading volume. */
+        /**
+         * Session cumulative trading volume. When a null/undefined value is observed, it indicates
+         * that there is no available data.
+         */
         fun volume(volume: Long?) = volume(JsonField.ofNullable(volume))
 
         /**

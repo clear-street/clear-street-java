@@ -57,7 +57,8 @@ private constructor(
     fun actionButtons(): Optional<List<ActionButton>> = actionButtons.getOptional("actionButtons")
 
     /**
-     * Explicit series-driven chart definition.
+     * Explicit series-driven chart definition. When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -166,7 +167,10 @@ private constructor(
                 }
         }
 
-        /** Explicit series-driven chart definition. */
+        /**
+         * Explicit series-driven chart definition. When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun dataChart(dataChart: DataChart?) = dataChart(JsonField.ofNullable(dataChart))
 
         /** Alias for calling [Builder.dataChart] with `dataChart.orElse(null)`. */

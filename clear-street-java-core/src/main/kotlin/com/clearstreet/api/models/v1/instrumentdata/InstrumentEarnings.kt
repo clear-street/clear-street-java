@@ -71,7 +71,8 @@ private constructor(
     fun date(): LocalDate = date.getRequired("date")
 
     /**
-     * The actual earnings per share (EPS) for the period
+     * The actual earnings per share (EPS) for the period When a null/undefined value is observed,
+     * it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -79,7 +80,8 @@ private constructor(
     fun epsActual(): Optional<String> = epsActual.getOptional("eps_actual")
 
     /**
-     * The estimated earnings per share (EPS) for the period
+     * The estimated earnings per share (EPS) for the period When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -87,7 +89,8 @@ private constructor(
     fun epsEstimate(): Optional<String> = epsEstimate.getOptional("eps_estimate")
 
     /**
-     * The percentage difference between actual and estimated EPS
+     * The percentage difference between actual and estimated EPS When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -96,7 +99,8 @@ private constructor(
         epsSurprisePercent.getOptional("eps_surprise_percent")
 
     /**
-     * The actual total revenue for the period
+     * The actual total revenue for the period When a null/undefined value is observed, it indicates
+     * that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -104,7 +108,8 @@ private constructor(
     fun revenueActual(): Optional<String> = revenueActual.getOptional("revenue_actual")
 
     /**
-     * The estimated total revenue for the period
+     * The estimated total revenue for the period When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -112,7 +117,8 @@ private constructor(
     fun revenueEstimate(): Optional<String> = revenueEstimate.getOptional("revenue_estimate")
 
     /**
-     * The percentage difference between actual and estimated revenue
+     * The percentage difference between actual and estimated revenue When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -241,7 +247,10 @@ private constructor(
          */
         fun date(date: JsonField<LocalDate>) = apply { this.date = date }
 
-        /** The actual earnings per share (EPS) for the period */
+        /**
+         * The actual earnings per share (EPS) for the period When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun epsActual(epsActual: String?) = epsActual(JsonField.ofNullable(epsActual))
 
         /** Alias for calling [Builder.epsActual] with `epsActual.orElse(null)`. */
@@ -256,7 +265,10 @@ private constructor(
          */
         fun epsActual(epsActual: JsonField<String>) = apply { this.epsActual = epsActual }
 
-        /** The estimated earnings per share (EPS) for the period */
+        /**
+         * The estimated earnings per share (EPS) for the period When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun epsEstimate(epsEstimate: String?) = epsEstimate(JsonField.ofNullable(epsEstimate))
 
         /** Alias for calling [Builder.epsEstimate] with `epsEstimate.orElse(null)`. */
@@ -271,7 +283,10 @@ private constructor(
          */
         fun epsEstimate(epsEstimate: JsonField<String>) = apply { this.epsEstimate = epsEstimate }
 
-        /** The percentage difference between actual and estimated EPS */
+        /**
+         * The percentage difference between actual and estimated EPS When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun epsSurprisePercent(epsSurprisePercent: String?) =
             epsSurprisePercent(JsonField.ofNullable(epsSurprisePercent))
 
@@ -292,7 +307,10 @@ private constructor(
             this.epsSurprisePercent = epsSurprisePercent
         }
 
-        /** The actual total revenue for the period */
+        /**
+         * The actual total revenue for the period When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun revenueActual(revenueActual: String?) =
             revenueActual(JsonField.ofNullable(revenueActual))
 
@@ -311,7 +329,10 @@ private constructor(
             this.revenueActual = revenueActual
         }
 
-        /** The estimated total revenue for the period */
+        /**
+         * The estimated total revenue for the period When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun revenueEstimate(revenueEstimate: String?) =
             revenueEstimate(JsonField.ofNullable(revenueEstimate))
 
@@ -330,7 +351,10 @@ private constructor(
             this.revenueEstimate = revenueEstimate
         }
 
-        /** The percentage difference between actual and estimated revenue */
+        /**
+         * The percentage difference between actual and estimated revenue When a null/undefined
+         * value is observed, it indicates that there is no available data.
+         */
         fun revenueSurprisePercent(revenueSurprisePercent: String?) =
             revenueSurprisePercent(JsonField.ofNullable(revenueSurprisePercent))
 

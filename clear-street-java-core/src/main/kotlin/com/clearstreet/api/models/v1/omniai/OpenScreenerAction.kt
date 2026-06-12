@@ -55,7 +55,8 @@ private constructor(
     fun filters(): List<ScreenerFilter> = filters.getRequired("filters")
 
     /**
-     * Optional field/column selection for screener results.
+     * Optional field/column selection for screener results. When a null/undefined value is
+     * observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -63,7 +64,7 @@ private constructor(
     fun fieldFilter(): Optional<List<String>> = fieldFilter.getOptional("field_filter")
 
     /**
-     * Optional page size.
+     * Optional page size. When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -71,7 +72,8 @@ private constructor(
     fun pageSize(): Optional<Int> = pageSize.getOptional("page_size")
 
     /**
-     * Optional sort field for screener rows.
+     * Optional sort field for screener rows. When a null/undefined value is observed, it indicates
+     * it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -79,7 +81,8 @@ private constructor(
     fun sortBy(): Optional<String> = sortBy.getOptional("sort_by")
 
     /**
-     * Optional sort direction (`ASC` or `DESC`).
+     * Optional sort direction (`ASC` or `DESC`). When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -198,7 +201,10 @@ private constructor(
                 }
         }
 
-        /** Optional field/column selection for screener results. */
+        /**
+         * Optional field/column selection for screener results. When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun fieldFilter(fieldFilter: List<String>?) = fieldFilter(JsonField.ofNullable(fieldFilter))
 
         /** Alias for calling [Builder.fieldFilter] with `fieldFilter.orElse(null)`. */
@@ -227,7 +233,10 @@ private constructor(
                 }
         }
 
-        /** Optional page size. */
+        /**
+         * Optional page size. When a null/undefined value is observed, it indicates it does not
+         * apply.
+         */
         fun pageSize(pageSize: Int?) = pageSize(JsonField.ofNullable(pageSize))
 
         /**
@@ -248,7 +257,10 @@ private constructor(
          */
         fun pageSize(pageSize: JsonField<Int>) = apply { this.pageSize = pageSize }
 
-        /** Optional sort field for screener rows. */
+        /**
+         * Optional sort field for screener rows. When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun sortBy(sortBy: String?) = sortBy(JsonField.ofNullable(sortBy))
 
         /** Alias for calling [Builder.sortBy] with `sortBy.orElse(null)`. */
@@ -262,7 +274,10 @@ private constructor(
          */
         fun sortBy(sortBy: JsonField<String>) = apply { this.sortBy = sortBy }
 
-        /** Optional sort direction (`ASC` or `DESC`). */
+        /**
+         * Optional sort direction (`ASC` or `DESC`). When a null/undefined value is observed, it
+         * indicates it does not apply.
+         */
         fun sortDirection(sortDirection: String?) =
             sortDirection(JsonField.ofNullable(sortDirection))
 

@@ -40,7 +40,8 @@ private constructor(
     ) : this(afterHours, preMarket, regular, mutableMapOf())
 
     /**
-     * After-hours session schedule, null if not available
+     * After-hours session schedule, null if not available When a null/undefined value is observed,
+     * it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -48,7 +49,8 @@ private constructor(
     fun afterHours(): Optional<SessionSchedule> = afterHours.getOptional("after_hours")
 
     /**
-     * Pre-market session schedule, null if not available
+     * Pre-market session schedule, null if not available When a null/undefined value is observed,
+     * it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -56,7 +58,8 @@ private constructor(
     fun preMarket(): Optional<SessionSchedule> = preMarket.getOptional("pre_market")
 
     /**
-     * Regular trading session schedule, null if holiday/weekend
+     * Regular trading session schedule, null if holiday/weekend When a null/undefined value is
+     * observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -122,7 +125,10 @@ private constructor(
             additionalProperties = tradingSessions.additionalProperties.toMutableMap()
         }
 
-        /** After-hours session schedule, null if not available */
+        /**
+         * After-hours session schedule, null if not available When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun afterHours(afterHours: SessionSchedule?) = afterHours(JsonField.ofNullable(afterHours))
 
         /** Alias for calling [Builder.afterHours] with `afterHours.orElse(null)`. */
@@ -139,7 +145,10 @@ private constructor(
             this.afterHours = afterHours
         }
 
-        /** Pre-market session schedule, null if not available */
+        /**
+         * Pre-market session schedule, null if not available When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun preMarket(preMarket: SessionSchedule?) = preMarket(JsonField.ofNullable(preMarket))
 
         /** Alias for calling [Builder.preMarket] with `preMarket.orElse(null)`. */
@@ -154,7 +163,10 @@ private constructor(
          */
         fun preMarket(preMarket: JsonField<SessionSchedule>) = apply { this.preMarket = preMarket }
 
-        /** Regular trading session schedule, null if holiday/weekend */
+        /**
+         * Regular trading session schedule, null if holiday/weekend When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
         fun regular(regular: SessionSchedule?) = regular(JsonField.ofNullable(regular))
 
         /** Alias for calling [Builder.regular] with `regular.orElse(null)`. */

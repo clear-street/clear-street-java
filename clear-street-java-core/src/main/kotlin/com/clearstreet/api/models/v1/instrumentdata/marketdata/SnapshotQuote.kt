@@ -63,7 +63,8 @@ private constructor(
     fun midpoint(): String = midpoint.getRequired("midpoint")
 
     /**
-     * Size at the best ask, in shares.
+     * Size at the best ask, in shares. When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -71,7 +72,8 @@ private constructor(
     fun askSize(): Optional<Int> = askSize.getOptional("ask_size")
 
     /**
-     * Size at the best bid, in shares.
+     * Size at the best bid, in shares. When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -193,7 +195,10 @@ private constructor(
          */
         fun midpoint(midpoint: JsonField<String>) = apply { this.midpoint = midpoint }
 
-        /** Size at the best ask, in shares. */
+        /**
+         * Size at the best ask, in shares. When a null/undefined value is observed, it indicates
+         * that there is no available data.
+         */
         fun askSize(askSize: Int?) = askSize(JsonField.ofNullable(askSize))
 
         /**
@@ -214,7 +219,10 @@ private constructor(
          */
         fun askSize(askSize: JsonField<Int>) = apply { this.askSize = askSize }
 
-        /** Size at the best bid, in shares. */
+        /**
+         * Size at the best bid, in shares. When a null/undefined value is observed, it indicates
+         * that there is no available data.
+         */
         fun bidSize(bidSize: Int?) = bidSize(JsonField.ofNullable(bidSize))
 
         /**

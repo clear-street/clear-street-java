@@ -45,6 +45,8 @@ private constructor(
     fun message(): String = message.getRequired("message")
 
     /**
+     * When a null/undefined value is observed, it indicates it does not apply.
+     *
      * This arbitrary value can be deserialized into a custom type using the `convert` method:
      * ```java
      * MyClass myObject = errorStatus.details().convert(MyClass.class);
@@ -128,6 +130,7 @@ private constructor(
          */
         fun message(message: JsonField<String>) = apply { this.message = message }
 
+        /** When a null/undefined value is observed, it indicates it does not apply. */
         fun details(details: JsonValue) = apply { this.details = details }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {

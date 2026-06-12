@@ -96,7 +96,8 @@ private constructor(
     )
 
     /**
-     * The average daily trading volume over the past 30 days
+     * The average daily trading volume over the past 30 days When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -104,7 +105,8 @@ private constructor(
     fun averageVolume(): Optional<Long> = averageVolume.getOptional("average_volume")
 
     /**
-     * The beta value, measuring the instrument's volatility relative to the overall market
+     * The beta value, measuring the instrument's volatility relative to the overall market When a
+     * null/undefined value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -112,7 +114,8 @@ private constructor(
     fun beta(): Optional<String> = beta.getOptional("beta")
 
     /**
-     * A detailed description of the instrument or company
+     * A detailed description of the instrument or company When a null/undefined value is observed,
+     * it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -120,7 +123,8 @@ private constructor(
     fun description(): Optional<String> = description.getOptional("description")
 
     /**
-     * The trailing twelve months (TTM) dividend yield
+     * The trailing twelve months (TTM) dividend yield When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -128,7 +132,8 @@ private constructor(
     fun dividendYield(): Optional<String> = dividendYield.getOptional("dividend_yield")
 
     /**
-     * The trailing twelve months (TTM) earnings per share
+     * The trailing twelve months (TTM) earnings per share When a null/undefined value is observed,
+     * it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -136,7 +141,8 @@ private constructor(
     fun earningsPerShare(): Optional<String> = earningsPerShare.getOptional("earnings_per_share")
 
     /**
-     * The highest price over the last 52 weeks
+     * The highest price over the last 52 weeks When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -144,7 +150,8 @@ private constructor(
     fun fiftyTwoWeekHigh(): Optional<String> = fiftyTwoWeekHigh.getOptional("fifty_two_week_high")
 
     /**
-     * The lowest price over the last 52 weeks
+     * The lowest price over the last 52 weeks When a null/undefined value is observed, it indicates
+     * that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -152,7 +159,8 @@ private constructor(
     fun fiftyTwoWeekLow(): Optional<String> = fiftyTwoWeekLow.getOptional("fifty_two_week_low")
 
     /**
-     * The specific industry of the instrument's issuer
+     * The specific industry of the instrument's issuer When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -160,7 +168,8 @@ private constructor(
     fun industry(): Optional<String> = industry.getOptional("industry")
 
     /**
-     * The date the instrument was first listed
+     * The date the instrument was first listed When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -168,7 +177,8 @@ private constructor(
     fun listDate(): Optional<LocalDate> = listDate.getOptional("list_date")
 
     /**
-     * URL to a representative logo image for the instrument or issuer
+     * URL to a representative logo image for the instrument or issuer When a null/undefined value
+     * is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -176,7 +186,8 @@ private constructor(
     fun logoUrl(): Optional<String> = logoUrl.getOptional("logo_url")
 
     /**
-     * The total market capitalization
+     * The total market capitalization When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -184,7 +195,8 @@ private constructor(
     fun marketCap(): Optional<String> = marketCap.getOptional("market_cap")
 
     /**
-     * The closing price from the previous trading day
+     * The closing price from the previous trading day When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -192,7 +204,8 @@ private constructor(
     fun previousClose(): Optional<String> = previousClose.getOptional("previous_close")
 
     /**
-     * The price-to-earnings (P/E) ratio for the trailing twelve months (TTM)
+     * The price-to-earnings (P/E) ratio for the trailing twelve months (TTM) When a null/undefined
+     * value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -200,7 +213,8 @@ private constructor(
     fun priceToEarnings(): Optional<String> = priceToEarnings.getOptional("price_to_earnings")
 
     /**
-     * The currency used for reporting financial data
+     * The currency used for reporting financial data When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -208,7 +222,8 @@ private constructor(
     fun reportingCurrency(): Optional<String> = reportingCurrency.getOptional("reporting_currency")
 
     /**
-     * The business sector of the instrument's issuer
+     * The business sector of the instrument's issuer When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -397,7 +412,10 @@ private constructor(
             additionalProperties = instrumentFundamentals.additionalProperties.toMutableMap()
         }
 
-        /** The average daily trading volume over the past 30 days */
+        /**
+         * The average daily trading volume over the past 30 days When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun averageVolume(averageVolume: Long?) = averageVolume(JsonField.ofNullable(averageVolume))
 
         /**
@@ -421,7 +439,10 @@ private constructor(
             this.averageVolume = averageVolume
         }
 
-        /** The beta value, measuring the instrument's volatility relative to the overall market */
+        /**
+         * The beta value, measuring the instrument's volatility relative to the overall market When
+         * a null/undefined value is observed, it indicates that there is no available data.
+         */
         fun beta(beta: String?) = beta(JsonField.ofNullable(beta))
 
         /** Alias for calling [Builder.beta] with `beta.orElse(null)`. */
@@ -435,7 +456,10 @@ private constructor(
          */
         fun beta(beta: JsonField<String>) = apply { this.beta = beta }
 
-        /** A detailed description of the instrument or company */
+        /**
+         * A detailed description of the instrument or company When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun description(description: String?) = description(JsonField.ofNullable(description))
 
         /** Alias for calling [Builder.description] with `description.orElse(null)`. */
@@ -450,7 +474,10 @@ private constructor(
          */
         fun description(description: JsonField<String>) = apply { this.description = description }
 
-        /** The trailing twelve months (TTM) dividend yield */
+        /**
+         * The trailing twelve months (TTM) dividend yield When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
         fun dividendYield(dividendYield: String?) =
             dividendYield(JsonField.ofNullable(dividendYield))
 
@@ -469,7 +496,10 @@ private constructor(
             this.dividendYield = dividendYield
         }
 
-        /** The trailing twelve months (TTM) earnings per share */
+        /**
+         * The trailing twelve months (TTM) earnings per share When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun earningsPerShare(earningsPerShare: String?) =
             earningsPerShare(JsonField.ofNullable(earningsPerShare))
 
@@ -488,7 +518,10 @@ private constructor(
             this.earningsPerShare = earningsPerShare
         }
 
-        /** The highest price over the last 52 weeks */
+        /**
+         * The highest price over the last 52 weeks When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun fiftyTwoWeekHigh(fiftyTwoWeekHigh: String?) =
             fiftyTwoWeekHigh(JsonField.ofNullable(fiftyTwoWeekHigh))
 
@@ -507,7 +540,10 @@ private constructor(
             this.fiftyTwoWeekHigh = fiftyTwoWeekHigh
         }
 
-        /** The lowest price over the last 52 weeks */
+        /**
+         * The lowest price over the last 52 weeks When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun fiftyTwoWeekLow(fiftyTwoWeekLow: String?) =
             fiftyTwoWeekLow(JsonField.ofNullable(fiftyTwoWeekLow))
 
@@ -526,7 +562,10 @@ private constructor(
             this.fiftyTwoWeekLow = fiftyTwoWeekLow
         }
 
-        /** The specific industry of the instrument's issuer */
+        /**
+         * The specific industry of the instrument's issuer When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
         fun industry(industry: String?) = industry(JsonField.ofNullable(industry))
 
         /** Alias for calling [Builder.industry] with `industry.orElse(null)`. */
@@ -540,7 +579,10 @@ private constructor(
          */
         fun industry(industry: JsonField<String>) = apply { this.industry = industry }
 
-        /** The date the instrument was first listed */
+        /**
+         * The date the instrument was first listed When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun listDate(listDate: LocalDate?) = listDate(JsonField.ofNullable(listDate))
 
         /** Alias for calling [Builder.listDate] with `listDate.orElse(null)`. */
@@ -555,7 +597,10 @@ private constructor(
          */
         fun listDate(listDate: JsonField<LocalDate>) = apply { this.listDate = listDate }
 
-        /** URL to a representative logo image for the instrument or issuer */
+        /**
+         * URL to a representative logo image for the instrument or issuer When a null/undefined
+         * value is observed, it indicates that there is no available data.
+         */
         fun logoUrl(logoUrl: String?) = logoUrl(JsonField.ofNullable(logoUrl))
 
         /** Alias for calling [Builder.logoUrl] with `logoUrl.orElse(null)`. */
@@ -569,7 +614,10 @@ private constructor(
          */
         fun logoUrl(logoUrl: JsonField<String>) = apply { this.logoUrl = logoUrl }
 
-        /** The total market capitalization */
+        /**
+         * The total market capitalization When a null/undefined value is observed, it indicates
+         * that there is no available data.
+         */
         fun marketCap(marketCap: String?) = marketCap(JsonField.ofNullable(marketCap))
 
         /** Alias for calling [Builder.marketCap] with `marketCap.orElse(null)`. */
@@ -584,7 +632,10 @@ private constructor(
          */
         fun marketCap(marketCap: JsonField<String>) = apply { this.marketCap = marketCap }
 
-        /** The closing price from the previous trading day */
+        /**
+         * The closing price from the previous trading day When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
         fun previousClose(previousClose: String?) =
             previousClose(JsonField.ofNullable(previousClose))
 
@@ -603,7 +654,10 @@ private constructor(
             this.previousClose = previousClose
         }
 
-        /** The price-to-earnings (P/E) ratio for the trailing twelve months (TTM) */
+        /**
+         * The price-to-earnings (P/E) ratio for the trailing twelve months (TTM) When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
         fun priceToEarnings(priceToEarnings: String?) =
             priceToEarnings(JsonField.ofNullable(priceToEarnings))
 
@@ -622,7 +676,10 @@ private constructor(
             this.priceToEarnings = priceToEarnings
         }
 
-        /** The currency used for reporting financial data */
+        /**
+         * The currency used for reporting financial data When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
         fun reportingCurrency(reportingCurrency: String?) =
             reportingCurrency(JsonField.ofNullable(reportingCurrency))
 
@@ -641,7 +698,10 @@ private constructor(
             this.reportingCurrency = reportingCurrency
         }
 
-        /** The business sector of the instrument's issuer */
+        /**
+         * The business sector of the instrument's issuer When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
         fun sector(sector: String?) = sector(JsonField.ofNullable(sector))
 
         /** Alias for calling [Builder.sector] with `sector.orElse(null)`. */

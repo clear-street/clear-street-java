@@ -77,7 +77,7 @@ private constructor(
     fun userMessageId(): String = userMessageId.getRequired("user_message_id")
 
     /**
-     * Dynamic response content container. May include thinking parts.
+     * When a null/undefined value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -85,7 +85,7 @@ private constructor(
     fun content(): Optional<ResponseContent> = content.getOptional("content")
 
     /**
-     * Shared sanitized error payload.
+     * When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -93,6 +93,8 @@ private constructor(
     fun error(): Optional<ErrorStatus> = error.getOptional("error")
 
     /**
+     * When a null/undefined value is observed, it indicates it does not apply.
+     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -248,7 +250,9 @@ private constructor(
             this.userMessageId = userMessageId
         }
 
-        /** Dynamic response content container. May include thinking parts. */
+        /**
+         * When a null/undefined value is observed, it indicates that there is no available data.
+         */
         fun content(content: ResponseContent?) = content(JsonField.ofNullable(content))
 
         /** Alias for calling [Builder.content] with `content.orElse(null)`. */
@@ -263,7 +267,7 @@ private constructor(
          */
         fun content(content: JsonField<ResponseContent>) = apply { this.content = content }
 
-        /** Shared sanitized error payload. */
+        /** When a null/undefined value is observed, it indicates it does not apply. */
         fun error(error: ErrorStatus?) = error(JsonField.ofNullable(error))
 
         /** Alias for calling [Builder.error] with `error.orElse(null)`. */
@@ -278,6 +282,7 @@ private constructor(
          */
         fun error(error: JsonField<ErrorStatus>) = apply { this.error = error }
 
+        /** When a null/undefined value is observed, it indicates it does not apply. */
         fun outputMessageId(outputMessageId: String?) =
             outputMessageId(JsonField.ofNullable(outputMessageId))
 

@@ -61,7 +61,8 @@ private constructor(
     fun addedAt(): OffsetDateTime = addedAt.getRequired("added_at")
 
     /**
-     * Price when the item was added
+     * Price when the item was added When a null/undefined value is observed, it indicates that
+     * there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -69,7 +70,8 @@ private constructor(
     fun addedPrice(): Optional<String> = addedPrice.getOptional("added_price")
 
     /**
-     * Instrument details
+     * Instrument details When a null/undefined value is observed, it indicates that there is no
+     * available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -173,7 +175,10 @@ private constructor(
          */
         fun addedAt(addedAt: JsonField<OffsetDateTime>) = apply { this.addedAt = addedAt }
 
-        /** Price when the item was added */
+        /**
+         * Price when the item was added When a null/undefined value is observed, it indicates that
+         * there is no available data.
+         */
         fun addedPrice(addedPrice: String?) = addedPrice(JsonField.ofNullable(addedPrice))
 
         /** Alias for calling [Builder.addedPrice] with `addedPrice.orElse(null)`. */
@@ -188,7 +193,10 @@ private constructor(
          */
         fun addedPrice(addedPrice: JsonField<String>) = apply { this.addedPrice = addedPrice }
 
-        /** Instrument details */
+        /**
+         * Instrument details When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
         fun instrument(instrument: Instrument?) = instrument(JsonField.ofNullable(instrument))
 
         /** Alias for calling [Builder.instrument] with `instrument.orElse(null)`. */

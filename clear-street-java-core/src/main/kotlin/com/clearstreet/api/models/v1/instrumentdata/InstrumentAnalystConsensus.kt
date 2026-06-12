@@ -50,7 +50,8 @@ private constructor(
     fun date(): LocalDate = date.getRequired("date")
 
     /**
-     * Count of individual analyst recommendations by category
+     * Count of individual analyst recommendations by category When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -58,7 +59,8 @@ private constructor(
     fun distribution(): Optional<AnalystDistribution> = distribution.getOptional("distribution")
 
     /**
-     * Aggregated analyst price target statistics
+     * Aggregated analyst price target statistics When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -66,7 +68,8 @@ private constructor(
     fun priceTarget(): Optional<PriceTarget> = priceTarget.getOptional("price_target")
 
     /**
-     * Consensus analyst rating
+     * Consensus analyst rating When a null/undefined value is observed, it indicates that there is
+     * no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -159,7 +162,10 @@ private constructor(
          */
         fun date(date: JsonField<LocalDate>) = apply { this.date = date }
 
-        /** Count of individual analyst recommendations by category */
+        /**
+         * Count of individual analyst recommendations by category When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun distribution(distribution: AnalystDistribution?) =
             distribution(JsonField.ofNullable(distribution))
 
@@ -178,7 +184,10 @@ private constructor(
             this.distribution = distribution
         }
 
-        /** Aggregated analyst price target statistics */
+        /**
+         * Aggregated analyst price target statistics When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
         fun priceTarget(priceTarget: PriceTarget?) = priceTarget(JsonField.ofNullable(priceTarget))
 
         /** Alias for calling [Builder.priceTarget] with `priceTarget.orElse(null)`. */
@@ -195,7 +204,10 @@ private constructor(
             this.priceTarget = priceTarget
         }
 
-        /** Consensus analyst rating */
+        /**
+         * Consensus analyst rating When a null/undefined value is observed, it indicates that there
+         * is no available data.
+         */
         fun rating(rating: AnalystRating?) = rating(JsonField.ofNullable(rating))
 
         /** Alias for calling [Builder.rating] with `rating.orElse(null)`. */

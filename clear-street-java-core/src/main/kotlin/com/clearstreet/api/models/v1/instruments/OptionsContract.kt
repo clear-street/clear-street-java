@@ -188,7 +188,8 @@ private constructor(
     fun symbol(): String = symbol.getRequired("symbol")
 
     /**
-     * Open interest (number of outstanding contracts), if available
+     * Open interest (number of outstanding contracts), if available When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -196,7 +197,8 @@ private constructor(
     fun openInterest(): Optional<Long> = openInterest.getOptional("open_interest")
 
     /**
-     * Instrument ID of the underlying instrument, when available
+     * Instrument ID of the underlying instrument, when available When a null/undefined value is
+     * observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -545,7 +547,10 @@ private constructor(
          */
         fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
 
-        /** Open interest (number of outstanding contracts), if available */
+        /**
+         * Open interest (number of outstanding contracts), if available When a null/undefined value
+         * is observed, it indicates that there is no available data.
+         */
         fun openInterest(openInterest: Long?) = openInterest(JsonField.ofNullable(openInterest))
 
         /**
@@ -567,7 +572,10 @@ private constructor(
          */
         fun openInterest(openInterest: JsonField<Long>) = apply { this.openInterest = openInterest }
 
-        /** Instrument ID of the underlying instrument, when available */
+        /**
+         * Instrument ID of the underlying instrument, when available When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
         fun underlyingInstrumentId(underlyingInstrumentId: String?) =
             underlyingInstrumentId(JsonField.ofNullable(underlyingInstrumentId))
 
