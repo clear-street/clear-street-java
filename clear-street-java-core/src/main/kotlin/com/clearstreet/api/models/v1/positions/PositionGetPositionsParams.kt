@@ -321,6 +321,8 @@ private constructor(
 
             @JvmField val DAILY_UNREALIZED_PNL = of("DAILY_UNREALIZED_PNL")
 
+            @JvmField val DAILY_REALIZED_PNL = of("DAILY_REALIZED_PNL")
+
             @JvmStatic fun of(value: String) = SortBy(JsonField.of(value))
         }
 
@@ -333,6 +335,7 @@ private constructor(
             POSITION_TYPE,
             UNREALIZED_PNL,
             DAILY_UNREALIZED_PNL,
+            DAILY_REALIZED_PNL,
         }
 
         /**
@@ -352,6 +355,7 @@ private constructor(
             POSITION_TYPE,
             UNREALIZED_PNL,
             DAILY_UNREALIZED_PNL,
+            DAILY_REALIZED_PNL,
             /** An enum member indicating that [SortBy] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -372,6 +376,7 @@ private constructor(
                 POSITION_TYPE -> Value.POSITION_TYPE
                 UNREALIZED_PNL -> Value.UNREALIZED_PNL
                 DAILY_UNREALIZED_PNL -> Value.DAILY_UNREALIZED_PNL
+                DAILY_REALIZED_PNL -> Value.DAILY_REALIZED_PNL
                 else -> Value._UNKNOWN
             }
 
@@ -393,6 +398,7 @@ private constructor(
                 POSITION_TYPE -> Known.POSITION_TYPE
                 UNREALIZED_PNL -> Known.UNREALIZED_PNL
                 DAILY_UNREALIZED_PNL -> Known.DAILY_UNREALIZED_PNL
+                DAILY_REALIZED_PNL -> Known.DAILY_REALIZED_PNL
                 else -> throw ClearStreetInvalidDataException("Unknown SortBy: $value")
             }
 

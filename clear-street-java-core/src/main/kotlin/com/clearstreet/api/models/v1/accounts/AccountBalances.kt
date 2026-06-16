@@ -24,6 +24,8 @@ private constructor(
     private val accountId: JsonField<Long>,
     private val buyingPower: JsonField<String>,
     private val currency: JsonField<String>,
+    private val dailyChange: JsonField<String>,
+    private val dailyPnl: JsonField<String>,
     private val dailyRealizedPnl: JsonField<String>,
     private val dailyTotalPnl: JsonField<String>,
     private val dailyUnrealizedPnl: JsonField<String>,
@@ -34,6 +36,7 @@ private constructor(
     private val settledCash: JsonField<String>,
     private val sod: JsonField<AccountBalancesSod>,
     private val tradeCash: JsonField<String>,
+    private val unrealizedPnl: JsonField<String>,
     private val unsettledCredits: JsonField<String>,
     private val unsettledDebits: JsonField<String>,
     private val withdrawableCash: JsonField<String>,
@@ -50,6 +53,10 @@ private constructor(
         @ExcludeMissing
         buyingPower: JsonField<String> = JsonMissing.of(),
         @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("daily_change")
+        @ExcludeMissing
+        dailyChange: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("daily_pnl") @ExcludeMissing dailyPnl: JsonField<String> = JsonMissing.of(),
         @JsonProperty("daily_realized_pnl")
         @ExcludeMissing
         dailyRealizedPnl: JsonField<String> = JsonMissing.of(),
@@ -74,6 +81,9 @@ private constructor(
         settledCash: JsonField<String> = JsonMissing.of(),
         @JsonProperty("sod") @ExcludeMissing sod: JsonField<AccountBalancesSod> = JsonMissing.of(),
         @JsonProperty("trade_cash") @ExcludeMissing tradeCash: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("unrealized_pnl")
+        @ExcludeMissing
+        unrealizedPnl: JsonField<String> = JsonMissing.of(),
         @JsonProperty("unsettled_credits")
         @ExcludeMissing
         unsettledCredits: JsonField<String> = JsonMissing.of(),
@@ -96,6 +106,8 @@ private constructor(
         accountId,
         buyingPower,
         currency,
+        dailyChange,
+        dailyPnl,
         dailyRealizedPnl,
         dailyTotalPnl,
         dailyUnrealizedPnl,
@@ -106,6 +118,7 @@ private constructor(
         settledCash,
         sod,
         tradeCash,
+        unrealizedPnl,
         unsettledCredits,
         unsettledDebits,
         withdrawableCash,
@@ -138,6 +151,22 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun currency(): String = currency.getRequired("currency")
+
+    /**
+     * Difference between current equity and start-of-day equity.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun dailyChange(): String = dailyChange.getRequired("daily_change")
+
+    /**
+     * Total profit or loss since start of day.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun dailyPnl(): String = dailyPnl.getRequired("daily_pnl")
 
     /**
      * Realized profit or loss since start of day.
@@ -220,6 +249,14 @@ private constructor(
     fun tradeCash(): String = tradeCash.getRequired("trade_cash")
 
     /**
+     * Total unrealized profit or loss across all open positions.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun unrealizedPnl(): String = unrealizedPnl.getRequired("unrealized_pnl")
+
+    /**
      * Trade-date unsettled cash credits.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -292,6 +329,22 @@ private constructor(
      * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
+
+    /**
+     * Returns the raw JSON value of [dailyChange].
+     *
+     * Unlike [dailyChange], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("daily_change")
+    @ExcludeMissing
+    fun _dailyChange(): JsonField<String> = dailyChange
+
+    /**
+     * Returns the raw JSON value of [dailyPnl].
+     *
+     * Unlike [dailyPnl], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("daily_pnl") @ExcludeMissing fun _dailyPnl(): JsonField<String> = dailyPnl
 
     /**
      * Returns the raw JSON value of [dailyRealizedPnl].
@@ -381,6 +434,15 @@ private constructor(
     @JsonProperty("trade_cash") @ExcludeMissing fun _tradeCash(): JsonField<String> = tradeCash
 
     /**
+     * Returns the raw JSON value of [unrealizedPnl].
+     *
+     * Unlike [unrealizedPnl], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("unrealized_pnl")
+    @ExcludeMissing
+    fun _unrealizedPnl(): JsonField<String> = unrealizedPnl
+
+    /**
      * Returns the raw JSON value of [unsettledCredits].
      *
      * Unlike [unsettledCredits], this method doesn't throw if the JSON field has an unexpected
@@ -457,6 +519,8 @@ private constructor(
          * .accountId()
          * .buyingPower()
          * .currency()
+         * .dailyChange()
+         * .dailyPnl()
          * .dailyRealizedPnl()
          * .dailyTotalPnl()
          * .dailyUnrealizedPnl()
@@ -467,6 +531,7 @@ private constructor(
          * .settledCash()
          * .sod()
          * .tradeCash()
+         * .unrealizedPnl()
          * .unsettledCredits()
          * .unsettledDebits()
          * .withdrawableCash()
@@ -481,6 +546,8 @@ private constructor(
         private var accountId: JsonField<Long>? = null
         private var buyingPower: JsonField<String>? = null
         private var currency: JsonField<String>? = null
+        private var dailyChange: JsonField<String>? = null
+        private var dailyPnl: JsonField<String>? = null
         private var dailyRealizedPnl: JsonField<String>? = null
         private var dailyTotalPnl: JsonField<String>? = null
         private var dailyUnrealizedPnl: JsonField<String>? = null
@@ -491,6 +558,7 @@ private constructor(
         private var settledCash: JsonField<String>? = null
         private var sod: JsonField<AccountBalancesSod>? = null
         private var tradeCash: JsonField<String>? = null
+        private var unrealizedPnl: JsonField<String>? = null
         private var unsettledCredits: JsonField<String>? = null
         private var unsettledDebits: JsonField<String>? = null
         private var withdrawableCash: JsonField<String>? = null
@@ -504,6 +572,8 @@ private constructor(
             accountId = accountBalances.accountId
             buyingPower = accountBalances.buyingPower
             currency = accountBalances.currency
+            dailyChange = accountBalances.dailyChange
+            dailyPnl = accountBalances.dailyPnl
             dailyRealizedPnl = accountBalances.dailyRealizedPnl
             dailyTotalPnl = accountBalances.dailyTotalPnl
             dailyUnrealizedPnl = accountBalances.dailyUnrealizedPnl
@@ -514,6 +584,7 @@ private constructor(
             settledCash = accountBalances.settledCash
             sod = accountBalances.sod
             tradeCash = accountBalances.tradeCash
+            unrealizedPnl = accountBalances.unrealizedPnl
             unsettledCredits = accountBalances.unsettledCredits
             unsettledDebits = accountBalances.unsettledDebits
             withdrawableCash = accountBalances.withdrawableCash
@@ -556,6 +627,29 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun currency(currency: JsonField<String>) = apply { this.currency = currency }
+
+        /** Difference between current equity and start-of-day equity. */
+        fun dailyChange(dailyChange: String) = dailyChange(JsonField.of(dailyChange))
+
+        /**
+         * Sets [Builder.dailyChange] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.dailyChange] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun dailyChange(dailyChange: JsonField<String>) = apply { this.dailyChange = dailyChange }
+
+        /** Total profit or loss since start of day. */
+        fun dailyPnl(dailyPnl: String) = dailyPnl(JsonField.of(dailyPnl))
+
+        /**
+         * Sets [Builder.dailyPnl] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.dailyPnl] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun dailyPnl(dailyPnl: JsonField<String>) = apply { this.dailyPnl = dailyPnl }
 
         /** Realized profit or loss since start of day. */
         fun dailyRealizedPnl(dailyRealizedPnl: String) =
@@ -689,6 +783,20 @@ private constructor(
          * value.
          */
         fun tradeCash(tradeCash: JsonField<String>) = apply { this.tradeCash = tradeCash }
+
+        /** Total unrealized profit or loss across all open positions. */
+        fun unrealizedPnl(unrealizedPnl: String) = unrealizedPnl(JsonField.of(unrealizedPnl))
+
+        /**
+         * Sets [Builder.unrealizedPnl] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.unrealizedPnl] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun unrealizedPnl(unrealizedPnl: JsonField<String>) = apply {
+            this.unrealizedPnl = unrealizedPnl
+        }
 
         /** Trade-date unsettled cash credits. */
         fun unsettledCredits(unsettledCredits: String) =
@@ -826,6 +934,8 @@ private constructor(
          * .accountId()
          * .buyingPower()
          * .currency()
+         * .dailyChange()
+         * .dailyPnl()
          * .dailyRealizedPnl()
          * .dailyTotalPnl()
          * .dailyUnrealizedPnl()
@@ -836,6 +946,7 @@ private constructor(
          * .settledCash()
          * .sod()
          * .tradeCash()
+         * .unrealizedPnl()
          * .unsettledCredits()
          * .unsettledDebits()
          * .withdrawableCash()
@@ -848,6 +959,8 @@ private constructor(
                 checkRequired("accountId", accountId),
                 checkRequired("buyingPower", buyingPower),
                 checkRequired("currency", currency),
+                checkRequired("dailyChange", dailyChange),
+                checkRequired("dailyPnl", dailyPnl),
                 checkRequired("dailyRealizedPnl", dailyRealizedPnl),
                 checkRequired("dailyTotalPnl", dailyTotalPnl),
                 checkRequired("dailyUnrealizedPnl", dailyUnrealizedPnl),
@@ -858,6 +971,7 @@ private constructor(
                 checkRequired("settledCash", settledCash),
                 checkRequired("sod", sod),
                 checkRequired("tradeCash", tradeCash),
+                checkRequired("unrealizedPnl", unrealizedPnl),
                 checkRequired("unsettledCredits", unsettledCredits),
                 checkRequired("unsettledDebits", unsettledDebits),
                 checkRequired("withdrawableCash", withdrawableCash),
@@ -886,6 +1000,8 @@ private constructor(
         accountId()
         buyingPower()
         currency()
+        dailyChange()
+        dailyPnl()
         dailyRealizedPnl()
         dailyTotalPnl()
         dailyUnrealizedPnl()
@@ -896,6 +1012,7 @@ private constructor(
         settledCash()
         sod().validate()
         tradeCash()
+        unrealizedPnl()
         unsettledCredits()
         unsettledDebits()
         withdrawableCash()
@@ -923,6 +1040,8 @@ private constructor(
         (if (accountId.asKnown().isPresent) 1 else 0) +
             (if (buyingPower.asKnown().isPresent) 1 else 0) +
             (if (currency.asKnown().isPresent) 1 else 0) +
+            (if (dailyChange.asKnown().isPresent) 1 else 0) +
+            (if (dailyPnl.asKnown().isPresent) 1 else 0) +
             (if (dailyRealizedPnl.asKnown().isPresent) 1 else 0) +
             (if (dailyTotalPnl.asKnown().isPresent) 1 else 0) +
             (if (dailyUnrealizedPnl.asKnown().isPresent) 1 else 0) +
@@ -933,6 +1052,7 @@ private constructor(
             (if (settledCash.asKnown().isPresent) 1 else 0) +
             (sod.asKnown().getOrNull()?.validity() ?: 0) +
             (if (tradeCash.asKnown().isPresent) 1 else 0) +
+            (if (unrealizedPnl.asKnown().isPresent) 1 else 0) +
             (if (unsettledCredits.asKnown().isPresent) 1 else 0) +
             (if (unsettledDebits.asKnown().isPresent) 1 else 0) +
             (if (withdrawableCash.asKnown().isPresent) 1 else 0) +
@@ -949,6 +1069,8 @@ private constructor(
             accountId == other.accountId &&
             buyingPower == other.buyingPower &&
             currency == other.currency &&
+            dailyChange == other.dailyChange &&
+            dailyPnl == other.dailyPnl &&
             dailyRealizedPnl == other.dailyRealizedPnl &&
             dailyTotalPnl == other.dailyTotalPnl &&
             dailyUnrealizedPnl == other.dailyUnrealizedPnl &&
@@ -959,6 +1081,7 @@ private constructor(
             settledCash == other.settledCash &&
             sod == other.sod &&
             tradeCash == other.tradeCash &&
+            unrealizedPnl == other.unrealizedPnl &&
             unsettledCredits == other.unsettledCredits &&
             unsettledDebits == other.unsettledDebits &&
             withdrawableCash == other.withdrawableCash &&
@@ -973,6 +1096,8 @@ private constructor(
             accountId,
             buyingPower,
             currency,
+            dailyChange,
+            dailyPnl,
             dailyRealizedPnl,
             dailyTotalPnl,
             dailyUnrealizedPnl,
@@ -983,6 +1108,7 @@ private constructor(
             settledCash,
             sod,
             tradeCash,
+            unrealizedPnl,
             unsettledCredits,
             unsettledDebits,
             withdrawableCash,
@@ -996,5 +1122,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyRealizedPnl=$dailyRealizedPnl, dailyTotalPnl=$dailyTotalPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, shortMarketValue=$shortMarketValue, additionalProperties=$additionalProperties}"
+        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyChange=$dailyChange, dailyPnl=$dailyPnl, dailyRealizedPnl=$dailyRealizedPnl, dailyTotalPnl=$dailyTotalPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unrealizedPnl=$unrealizedPnl, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, shortMarketValue=$shortMarketValue, additionalProperties=$additionalProperties}"
 }
