@@ -35,6 +35,7 @@ private constructor(
     private val closingPrice: JsonField<String>,
     private val closingPriceDate: JsonField<LocalDate>,
     private val costBasis: JsonField<String>,
+    private val dailyRealizedPnl: JsonField<String>,
     private val dailyUnrealizedPnl: JsonField<String>,
     private val dailyUnrealizedPnlPct: JsonField<String>,
     private val instrumentPrice: JsonField<String>,
@@ -72,6 +73,9 @@ private constructor(
         @ExcludeMissing
         closingPriceDate: JsonField<LocalDate> = JsonMissing.of(),
         @JsonProperty("cost_basis") @ExcludeMissing costBasis: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("daily_realized_pnl")
+        @ExcludeMissing
+        dailyRealizedPnl: JsonField<String> = JsonMissing.of(),
         @JsonProperty("daily_unrealized_pnl")
         @ExcludeMissing
         dailyUnrealizedPnl: JsonField<String> = JsonMissing.of(),
@@ -103,6 +107,7 @@ private constructor(
         closingPrice,
         closingPriceDate,
         costBasis,
+        dailyRealizedPnl,
         dailyUnrealizedPnl,
         dailyUnrealizedPnlPct,
         instrumentPrice,
@@ -211,6 +216,15 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun costBasis(): Optional<String> = costBasis.getOptional("cost_basis")
+
+    /**
+     * The realized profit or loss for this position for the current day When a null/undefined value
+     * is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun dailyRealizedPnl(): Optional<String> = dailyRealizedPnl.getOptional("daily_realized_pnl")
 
     /**
      * The unrealized profit or loss for this position relative to the previous close When a
@@ -372,6 +386,16 @@ private constructor(
     @JsonProperty("cost_basis") @ExcludeMissing fun _costBasis(): JsonField<String> = costBasis
 
     /**
+     * Returns the raw JSON value of [dailyRealizedPnl].
+     *
+     * Unlike [dailyRealizedPnl], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("daily_realized_pnl")
+    @ExcludeMissing
+    fun _dailyRealizedPnl(): JsonField<String> = dailyRealizedPnl
+
+    /**
      * Returns the raw JSON value of [dailyUnrealizedPnl].
      *
      * Unlike [dailyUnrealizedPnl], this method doesn't throw if the JSON field has an unexpected
@@ -476,6 +500,7 @@ private constructor(
         private var closingPrice: JsonField<String> = JsonMissing.of()
         private var closingPriceDate: JsonField<LocalDate> = JsonMissing.of()
         private var costBasis: JsonField<String> = JsonMissing.of()
+        private var dailyRealizedPnl: JsonField<String> = JsonMissing.of()
         private var dailyUnrealizedPnl: JsonField<String> = JsonMissing.of()
         private var dailyUnrealizedPnlPct: JsonField<String> = JsonMissing.of()
         private var instrumentPrice: JsonField<String> = JsonMissing.of()
@@ -498,6 +523,7 @@ private constructor(
             closingPrice = position.closingPrice
             closingPriceDate = position.closingPriceDate
             costBasis = position.costBasis
+            dailyRealizedPnl = position.dailyRealizedPnl
             dailyUnrealizedPnl = position.dailyUnrealizedPnl
             dailyUnrealizedPnlPct = position.dailyUnrealizedPnlPct
             instrumentPrice = position.instrumentPrice
@@ -686,6 +712,28 @@ private constructor(
          * value.
          */
         fun costBasis(costBasis: JsonField<String>) = apply { this.costBasis = costBasis }
+
+        /**
+         * The realized profit or loss for this position for the current day When a null/undefined
+         * value is observed, it indicates that there is no available data.
+         */
+        fun dailyRealizedPnl(dailyRealizedPnl: String?) =
+            dailyRealizedPnl(JsonField.ofNullable(dailyRealizedPnl))
+
+        /** Alias for calling [Builder.dailyRealizedPnl] with `dailyRealizedPnl.orElse(null)`. */
+        fun dailyRealizedPnl(dailyRealizedPnl: Optional<String>) =
+            dailyRealizedPnl(dailyRealizedPnl.getOrNull())
+
+        /**
+         * Sets [Builder.dailyRealizedPnl] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.dailyRealizedPnl] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun dailyRealizedPnl(dailyRealizedPnl: JsonField<String>) = apply {
+            this.dailyRealizedPnl = dailyRealizedPnl
+        }
 
         /**
          * The unrealized profit or loss for this position relative to the previous close When a
@@ -881,6 +929,7 @@ private constructor(
                 closingPrice,
                 closingPriceDate,
                 costBasis,
+                dailyRealizedPnl,
                 dailyUnrealizedPnl,
                 dailyUnrealizedPnlPct,
                 instrumentPrice,
@@ -918,6 +967,7 @@ private constructor(
         closingPrice()
         closingPriceDate()
         costBasis()
+        dailyRealizedPnl()
         dailyUnrealizedPnl()
         dailyUnrealizedPnlPct()
         instrumentPrice()
@@ -954,6 +1004,7 @@ private constructor(
             (if (closingPrice.asKnown().isPresent) 1 else 0) +
             (if (closingPriceDate.asKnown().isPresent) 1 else 0) +
             (if (costBasis.asKnown().isPresent) 1 else 0) +
+            (if (dailyRealizedPnl.asKnown().isPresent) 1 else 0) +
             (if (dailyUnrealizedPnl.asKnown().isPresent) 1 else 0) +
             (if (dailyUnrealizedPnlPct.asKnown().isPresent) 1 else 0) +
             (if (instrumentPrice.asKnown().isPresent) 1 else 0) +
@@ -979,6 +1030,7 @@ private constructor(
             closingPrice == other.closingPrice &&
             closingPriceDate == other.closingPriceDate &&
             costBasis == other.costBasis &&
+            dailyRealizedPnl == other.dailyRealizedPnl &&
             dailyUnrealizedPnl == other.dailyUnrealizedPnl &&
             dailyUnrealizedPnlPct == other.dailyUnrealizedPnlPct &&
             instrumentPrice == other.instrumentPrice &&
@@ -1002,6 +1054,7 @@ private constructor(
             closingPrice,
             closingPriceDate,
             costBasis,
+            dailyRealizedPnl,
             dailyUnrealizedPnl,
             dailyUnrealizedPnlPct,
             instrumentPrice,
@@ -1015,5 +1068,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Position{accountId=$accountId, availableQuantity=$availableQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, marketValue=$marketValue, positionType=$positionType, quantity=$quantity, symbol=$symbol, avgPrice=$avgPrice, closingPrice=$closingPrice, closingPriceDate=$closingPriceDate, costBasis=$costBasis, dailyUnrealizedPnl=$dailyUnrealizedPnl, dailyUnrealizedPnlPct=$dailyUnrealizedPnlPct, instrumentPrice=$instrumentPrice, underlyingInstrumentId=$underlyingInstrumentId, unrealizedPnl=$unrealizedPnl, unrealizedPnlPct=$unrealizedPnlPct, additionalProperties=$additionalProperties}"
+        "Position{accountId=$accountId, availableQuantity=$availableQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, marketValue=$marketValue, positionType=$positionType, quantity=$quantity, symbol=$symbol, avgPrice=$avgPrice, closingPrice=$closingPrice, closingPriceDate=$closingPriceDate, costBasis=$costBasis, dailyRealizedPnl=$dailyRealizedPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, dailyUnrealizedPnlPct=$dailyUnrealizedPnlPct, instrumentPrice=$instrumentPrice, underlyingInstrumentId=$underlyingInstrumentId, unrealizedPnl=$unrealizedPnl, unrealizedPnlPct=$unrealizedPnlPct, additionalProperties=$additionalProperties}"
 }
