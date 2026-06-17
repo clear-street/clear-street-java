@@ -248,13 +248,13 @@ private constructor(
     fun adv(): Optional<String> = adv.getOptional("adv")
 
     /**
-     * The expiration date for options instruments When a null/undefined value is observed, it
-     * indicates it does not apply.
+     * Deprecated. Always null. When a null/undefined value is observed, it indicates it does not
+     * apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun expiry(): Optional<LocalDate> = expiry.getOptional("expiry")
+    @Deprecated("deprecated") fun expiry(): Optional<LocalDate> = expiry.getOptional("expiry")
 
     /**
      * The type of security (e.g., Common Stock, ETF) When a null/undefined value is observed, it
@@ -322,12 +322,13 @@ private constructor(
     fun shortMarginRate(): Optional<String> = shortMarginRate.getOptional("short_margin_rate")
 
     /**
-     * The strike price for options instruments When a null/undefined value is observed, it
-     * indicates it does not apply.
+     * Deprecated. Always null. When a null/undefined value is observed, it indicates it does not
+     * apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
+    @Deprecated("deprecated")
     fun strikePrice(): Optional<String> = strikePrice.getOptional("strike_price")
 
     /**
@@ -450,7 +451,10 @@ private constructor(
      *
      * Unlike [expiry], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("expiry") @ExcludeMissing fun _expiry(): JsonField<LocalDate> = expiry
+    @Deprecated("deprecated")
+    @JsonProperty("expiry")
+    @ExcludeMissing
+    fun _expiry(): JsonField<LocalDate> = expiry
 
     /**
      * Returns the raw JSON value of [instrumentType].
@@ -519,6 +523,7 @@ private constructor(
      *
      * Unlike [strikePrice], this method doesn't throw if the JSON field has an unexpected type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("strike_price")
     @ExcludeMissing
     fun _strikePrice(): JsonField<String> = strikePrice
@@ -805,12 +810,14 @@ private constructor(
         fun adv(adv: JsonField<String>) = apply { this.adv = adv }
 
         /**
-         * The expiration date for options instruments When a null/undefined value is observed, it
-         * indicates it does not apply.
+         * Deprecated. Always null. When a null/undefined value is observed, it indicates it does
+         * not apply.
          */
+        @Deprecated("deprecated")
         fun expiry(expiry: LocalDate?) = expiry(JsonField.ofNullable(expiry))
 
         /** Alias for calling [Builder.expiry] with `expiry.orElse(null)`. */
+        @Deprecated("deprecated")
         fun expiry(expiry: Optional<LocalDate>) = expiry(expiry.getOrNull())
 
         /**
@@ -820,6 +827,7 @@ private constructor(
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
+        @Deprecated("deprecated")
         fun expiry(expiry: JsonField<LocalDate>) = apply { this.expiry = expiry }
 
         /**
@@ -983,12 +991,14 @@ private constructor(
         }
 
         /**
-         * The strike price for options instruments When a null/undefined value is observed, it
-         * indicates it does not apply.
+         * Deprecated. Always null. When a null/undefined value is observed, it indicates it does
+         * not apply.
          */
+        @Deprecated("deprecated")
         fun strikePrice(strikePrice: String?) = strikePrice(JsonField.ofNullable(strikePrice))
 
         /** Alias for calling [Builder.strikePrice] with `strikePrice.orElse(null)`. */
+        @Deprecated("deprecated")
         fun strikePrice(strikePrice: Optional<String>) = strikePrice(strikePrice.getOrNull())
 
         /**
@@ -998,6 +1008,7 @@ private constructor(
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
+        @Deprecated("deprecated")
         fun strikePrice(strikePrice: JsonField<String>) = apply { this.strikePrice = strikePrice }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {

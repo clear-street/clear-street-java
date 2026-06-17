@@ -34,7 +34,10 @@ private constructor(
     /** Filter by easy to borrow status */
     fun easyToBorrow(): Optional<Boolean> = Optional.ofNullable(easyToBorrow)
 
-    /** Comma-separated instrument identifiers */
+    /**
+     * Comma-separated instrument identifiers: unique identifiers or symbols (symbol for equities,
+     * OSI for options)
+     */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
     /** Filter by instrument type (e.g. COMMON_STOCK, OPTION) */
@@ -128,7 +131,10 @@ private constructor(
         /** Alias for calling [Builder.easyToBorrow] with `easyToBorrow.orElse(null)`. */
         fun easyToBorrow(easyToBorrow: Optional<Boolean>) = easyToBorrow(easyToBorrow.getOrNull())
 
-        /** Comma-separated instrument identifiers */
+        /**
+         * Comma-separated instrument identifiers: unique identifiers or symbols (symbol for
+         * equities, OSI for options)
+         */
         fun instrumentIds(instrumentIds: List<String>?) = apply {
             this.instrumentIds = instrumentIds?.toMutableList()
         }
