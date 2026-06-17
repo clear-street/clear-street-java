@@ -30,7 +30,7 @@ internal class InstrumentTest {
                 .symbol("AAPL")
                 .venue("XNMS")
                 .adv("75000000")
-                .expiry(LocalDate.parse("2024-12-20"))
+                .expiry(LocalDate.parse("2019-12-27"))
                 .instrumentType(SecurityType.COMMON_STOCK)
                 .longMarginRate("0.25")
                 .name("Apple Inc.")
@@ -38,7 +38,7 @@ internal class InstrumentTest {
                 .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
-                .strikePrice("150.00")
+                .strikePrice("strike_price")
                 .build()
 
         assertThat(instrument.id()).isEqualTo("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
@@ -55,7 +55,7 @@ internal class InstrumentTest {
         assertThat(instrument.symbol()).isEqualTo("AAPL")
         assertThat(instrument.venue()).isEqualTo("XNMS")
         assertThat(instrument.adv()).contains("75000000")
-        assertThat(instrument.expiry()).contains(LocalDate.parse("2024-12-20"))
+        assertThat(instrument.expiry()).contains(LocalDate.parse("2019-12-27"))
         assertThat(instrument.instrumentType()).contains(SecurityType.COMMON_STOCK)
         assertThat(instrument.longMarginRate()).contains("0.25")
         assertThat(instrument.name()).contains("Apple Inc.")
@@ -64,7 +64,7 @@ internal class InstrumentTest {
             .containsExactly(LocalDate.parse("2019-12-27"))
         assertThat(instrument.previousClose()).contains("210.87")
         assertThat(instrument.shortMarginRate()).contains("0.25")
-        assertThat(instrument.strikePrice()).contains("150.00")
+        assertThat(instrument.strikePrice()).contains("strike_price")
     }
 
     @Test
@@ -86,7 +86,7 @@ internal class InstrumentTest {
                 .symbol("AAPL")
                 .venue("XNMS")
                 .adv("75000000")
-                .expiry(LocalDate.parse("2024-12-20"))
+                .expiry(LocalDate.parse("2019-12-27"))
                 .instrumentType(SecurityType.COMMON_STOCK)
                 .longMarginRate("0.25")
                 .name("Apple Inc.")
@@ -94,7 +94,7 @@ internal class InstrumentTest {
                 .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
-                .strikePrice("150.00")
+                .strikePrice("strike_price")
                 .build()
 
         val roundtrippedInstrument =
