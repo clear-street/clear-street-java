@@ -11,6 +11,7 @@ import com.clearstreet.api.services.blocking.v1.InstrumentService
 import com.clearstreet.api.services.blocking.v1.OmniAiService
 import com.clearstreet.api.services.blocking.v1.OrderService
 import com.clearstreet.api.services.blocking.v1.PositionService
+import com.clearstreet.api.services.blocking.v1.ScreenerService
 import com.clearstreet.api.services.blocking.v1.WatchlistService
 import java.util.function.Consumer
 
@@ -51,6 +52,9 @@ interface V1Service {
     /** View positions and manage position instructions. */
     fun positions(): PositionService
 
+    /** Search instruments and manage saved screeners. */
+    fun screener(): ScreenerService
+
     /** Create and manage watchlists. */
     fun watchlist(): WatchlistService
 
@@ -86,6 +90,9 @@ interface V1Service {
 
         /** View positions and manage position instructions. */
         fun positions(): PositionService.WithRawResponse
+
+        /** Search instruments and manage saved screeners. */
+        fun screener(): ScreenerService.WithRawResponse
 
         /** Create and manage watchlists. */
         fun watchlist(): WatchlistService.WithRawResponse

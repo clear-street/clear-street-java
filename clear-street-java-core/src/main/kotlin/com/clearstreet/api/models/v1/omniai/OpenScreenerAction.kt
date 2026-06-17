@@ -10,6 +10,7 @@ import com.clearstreet.api.core.checkKnown
 import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.toImmutable
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
+import com.clearstreet.api.models.v1.screener.ScreenerFilter
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -24,6 +25,7 @@ class OpenScreenerAction
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val filters: JsonField<List<ScreenerFilter>>,
+    private val columns: JsonField<List<String>>,
     private val fieldFilter: JsonField<List<String>>,
     private val pageSize: JsonField<Int>,
     private val sortBy: JsonField<String>,
@@ -36,6 +38,9 @@ private constructor(
         @JsonProperty("filters")
         @ExcludeMissing
         filters: JsonField<List<ScreenerFilter>> = JsonMissing.of(),
+        @JsonProperty("columns")
+        @ExcludeMissing
+        columns: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("field_filter")
         @ExcludeMissing
         fieldFilter: JsonField<List<String>> = JsonMissing.of(),
@@ -44,7 +49,7 @@ private constructor(
         @JsonProperty("sort_direction")
         @ExcludeMissing
         sortDirection: JsonField<String> = JsonMissing.of(),
-    ) : this(filters, fieldFilter, pageSize, sortBy, sortDirection, mutableMapOf())
+    ) : this(filters, columns, fieldFilter, pageSize, sortBy, sortDirection, mutableMapOf())
 
     /**
      * Filter criteria for the screener
@@ -61,6 +66,15 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
+    fun columns(): Optional<List<String>> = columns.getOptional("columns")
+
+    /**
+     * Deprecated: use `columns` instead. Mirrors `columns`.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    @Deprecated("deprecated")
     fun fieldFilter(): Optional<List<String>> = fieldFilter.getOptional("field_filter")
 
     /**
@@ -99,10 +113,18 @@ private constructor(
     fun _filters(): JsonField<List<ScreenerFilter>> = filters
 
     /**
+     * Returns the raw JSON value of [columns].
+     *
+     * Unlike [columns], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("columns") @ExcludeMissing fun _columns(): JsonField<List<String>> = columns
+
+    /**
      * Returns the raw JSON value of [fieldFilter].
      *
      * Unlike [fieldFilter], this method doesn't throw if the JSON field has an unexpected type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("field_filter")
     @ExcludeMissing
     fun _fieldFilter(): JsonField<List<String>> = fieldFilter
@@ -159,6 +181,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var filters: JsonField<MutableList<ScreenerFilter>>? = null
+        private var columns: JsonField<MutableList<String>>? = null
         private var fieldFilter: JsonField<MutableList<String>>? = null
         private var pageSize: JsonField<Int> = JsonMissing.of()
         private var sortBy: JsonField<String> = JsonMissing.of()
@@ -168,6 +191,7 @@ private constructor(
         @JvmSynthetic
         internal fun from(openScreenerAction: OpenScreenerAction) = apply {
             filters = openScreenerAction.filters.map { it.toMutableList() }
+            columns = openScreenerAction.columns.map { it.toMutableList() }
             fieldFilter = openScreenerAction.fieldFilter.map { it.toMutableList() }
             pageSize = openScreenerAction.pageSize
             sortBy = openScreenerAction.sortBy
@@ -205,9 +229,40 @@ private constructor(
          * Optional field/column selection for screener results. When a null/undefined value is
          * observed, it indicates it does not apply.
          */
+        fun columns(columns: List<String>?) = columns(JsonField.ofNullable(columns))
+
+        /** Alias for calling [Builder.columns] with `columns.orElse(null)`. */
+        fun columns(columns: Optional<List<String>>) = columns(columns.getOrNull())
+
+        /**
+         * Sets [Builder.columns] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.columns] with a well-typed `List<String>` value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun columns(columns: JsonField<List<String>>) = apply {
+            this.columns = columns.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [String] to [columns].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addColumn(column: String) = apply {
+            columns =
+                (columns ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("columns", it).add(column)
+                }
+        }
+
+        /** Deprecated: use `columns` instead. Mirrors `columns`. */
+        @Deprecated("deprecated")
         fun fieldFilter(fieldFilter: List<String>?) = fieldFilter(JsonField.ofNullable(fieldFilter))
 
         /** Alias for calling [Builder.fieldFilter] with `fieldFilter.orElse(null)`. */
+        @Deprecated("deprecated")
         fun fieldFilter(fieldFilter: Optional<List<String>>) = fieldFilter(fieldFilter.getOrNull())
 
         /**
@@ -217,6 +272,7 @@ private constructor(
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
+        @Deprecated("deprecated")
         fun fieldFilter(fieldFilter: JsonField<List<String>>) = apply {
             this.fieldFilter = fieldFilter.map { it.toMutableList() }
         }
@@ -226,6 +282,7 @@ private constructor(
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
+        @Deprecated("deprecated")
         fun addFieldFilter(fieldFilter: String) = apply {
             this.fieldFilter =
                 (this.fieldFilter ?: JsonField.of(mutableListOf())).also {
@@ -330,6 +387,7 @@ private constructor(
         fun build(): OpenScreenerAction =
             OpenScreenerAction(
                 checkRequired("filters", filters).map { it.toImmutable() },
+                (columns ?: JsonMissing.of()).map { it.toImmutable() },
                 (fieldFilter ?: JsonMissing.of()).map { it.toImmutable() },
                 pageSize,
                 sortBy,
@@ -354,6 +412,7 @@ private constructor(
         }
 
         filters().forEach { it.validate() }
+        columns()
         fieldFilter()
         pageSize()
         sortBy()
@@ -377,6 +436,7 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (filters.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+            (columns.asKnown().getOrNull()?.size ?: 0) +
             (fieldFilter.asKnown().getOrNull()?.size ?: 0) +
             (if (pageSize.asKnown().isPresent) 1 else 0) +
             (if (sortBy.asKnown().isPresent) 1 else 0) +
@@ -389,6 +449,7 @@ private constructor(
 
         return other is OpenScreenerAction &&
             filters == other.filters &&
+            columns == other.columns &&
             fieldFilter == other.fieldFilter &&
             pageSize == other.pageSize &&
             sortBy == other.sortBy &&
@@ -397,11 +458,19 @@ private constructor(
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(filters, fieldFilter, pageSize, sortBy, sortDirection, additionalProperties)
+        Objects.hash(
+            filters,
+            columns,
+            fieldFilter,
+            pageSize,
+            sortBy,
+            sortDirection,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OpenScreenerAction{filters=$filters, fieldFilter=$fieldFilter, pageSize=$pageSize, sortBy=$sortBy, sortDirection=$sortDirection, additionalProperties=$additionalProperties}"
+        "OpenScreenerAction{filters=$filters, columns=$columns, fieldFilter=$fieldFilter, pageSize=$pageSize, sortBy=$sortBy, sortDirection=$sortDirection, additionalProperties=$additionalProperties}"
 }
