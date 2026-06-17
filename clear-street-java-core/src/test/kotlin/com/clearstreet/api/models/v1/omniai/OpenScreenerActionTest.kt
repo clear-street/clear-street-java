@@ -4,6 +4,7 @@ package com.clearstreet.api.models.v1.omniai
 
 import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
+import com.clearstreet.api.models.v1.screener.ScreenerFilter
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
@@ -29,6 +30,7 @@ internal class OpenScreenerActionTest {
                         .value(JsonValue.from(10000000000))
                         .build()
                 )
+                .addColumn("string")
                 .addFieldFilter("string")
                 .pageSize(0)
                 .sortBy("sort_by")
@@ -48,6 +50,7 @@ internal class OpenScreenerActionTest {
                     .value(JsonValue.from(10000000000))
                     .build(),
             )
+        assertThat(openScreenerAction.columns().getOrNull()).containsExactly("string")
         assertThat(openScreenerAction.fieldFilter().getOrNull()).containsExactly("string")
         assertThat(openScreenerAction.pageSize()).contains(0)
         assertThat(openScreenerAction.sortBy()).contains("sort_by")
@@ -73,6 +76,7 @@ internal class OpenScreenerActionTest {
                         .value(JsonValue.from(10000000000))
                         .build()
                 )
+                .addColumn("string")
                 .addFieldFilter("string")
                 .pageSize(0)
                 .sortBy("sort_by")

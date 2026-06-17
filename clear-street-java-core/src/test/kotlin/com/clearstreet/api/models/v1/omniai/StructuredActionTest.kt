@@ -11,6 +11,7 @@ import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
 import com.clearstreet.api.models.v1.orders.TrailingOffsetType
+import com.clearstreet.api.models.v1.screener.ScreenerFilter
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -169,6 +170,7 @@ internal class StructuredActionTest {
                                 .value(JsonValue.from(10000000000))
                                 .build()
                         )
+                        .addColumn("string")
                         .addFieldFilter("string")
                         .pageSize(0)
                         .sortBy("sort_by")
@@ -207,6 +209,7 @@ internal class StructuredActionTest {
                                     .value(JsonValue.from(10000000000))
                                     .build()
                             )
+                            .addColumn("string")
                             .addFieldFilter("string")
                             .pageSize(0)
                             .sortBy("sort_by")

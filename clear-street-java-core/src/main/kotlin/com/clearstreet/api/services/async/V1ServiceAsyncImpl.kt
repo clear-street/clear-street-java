@@ -19,6 +19,8 @@ import com.clearstreet.api.services.async.v1.OrderServiceAsync
 import com.clearstreet.api.services.async.v1.OrderServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.PositionServiceAsync
 import com.clearstreet.api.services.async.v1.PositionServiceAsyncImpl
+import com.clearstreet.api.services.async.v1.ScreenerServiceAsync
+import com.clearstreet.api.services.async.v1.ScreenerServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.WatchlistServiceAsync
 import com.clearstreet.api.services.async.v1.WatchlistServiceAsyncImpl
 import java.util.function.Consumer
@@ -52,6 +54,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     private val positions: PositionServiceAsync by lazy { PositionServiceAsyncImpl(clientOptions) }
 
+    private val screener: ScreenerServiceAsync by lazy { ScreenerServiceAsyncImpl(clientOptions) }
+
     private val watchlist: WatchlistServiceAsync by lazy {
         WatchlistServiceAsyncImpl(clientOptions)
     }
@@ -83,6 +87,9 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     /** View positions and manage position instructions. */
     override fun positions(): PositionServiceAsync = positions
+
+    /** Search instruments and manage saved screeners. */
+    override fun screener(): ScreenerServiceAsync = screener
 
     /** Create and manage watchlists. */
     override fun watchlist(): WatchlistServiceAsync = watchlist
@@ -122,6 +129,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             PositionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val screener: ScreenerServiceAsync.WithRawResponse by lazy {
+            ScreenerServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val watchlist: WatchlistServiceAsync.WithRawResponse by lazy {
             WatchlistServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -155,6 +166,9 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         /** View positions and manage position instructions. */
         override fun positions(): PositionServiceAsync.WithRawResponse = positions
+
+        /** Search instruments and manage saved screeners. */
+        override fun screener(): ScreenerServiceAsync.WithRawResponse = screener
 
         /** Create and manage watchlists. */
         override fun watchlist(): WatchlistServiceAsync.WithRawResponse = watchlist

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clearstreet.api.models.v1.omniai
+package com.clearstreet.api.models.v1.screener
 
 import com.clearstreet.api.core.ExcludeMissing
 import com.clearstreet.api.core.JsonField
