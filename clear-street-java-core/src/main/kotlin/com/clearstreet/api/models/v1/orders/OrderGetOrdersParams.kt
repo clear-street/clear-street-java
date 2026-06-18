@@ -23,6 +23,7 @@ private constructor(
     private val from: OffsetDateTime?,
     private val instrumentIds: List<String>?,
     private val instrumentType: InstrumentType?,
+    private val orderIds: List<String>?,
     private val pageSize: Long?,
     private val pageToken: String?,
     private val status: List<Status>?,
@@ -43,6 +44,12 @@ private constructor(
 
     /** Instrument type filter (e.g., COMMON_STOCK, OPTION) */
     fun instrumentType(): Optional<InstrumentType> = Optional.ofNullable(instrumentType)
+
+    /**
+     * Comma-separated order IDs to filter by. When provided, only orders whose order ID is in this
+     * set are returned.
+     */
+    fun orderIds(): Optional<List<String>> = Optional.ofNullable(orderIds)
 
     /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
@@ -92,6 +99,7 @@ private constructor(
         private var from: OffsetDateTime? = null
         private var instrumentIds: MutableList<String>? = null
         private var instrumentType: InstrumentType? = null
+        private var orderIds: MutableList<String>? = null
         private var pageSize: Long? = null
         private var pageToken: String? = null
         private var status: MutableList<Status>? = null
@@ -107,6 +115,7 @@ private constructor(
             from = orderGetOrdersParams.from
             instrumentIds = orderGetOrdersParams.instrumentIds?.toMutableList()
             instrumentType = orderGetOrdersParams.instrumentType
+            orderIds = orderGetOrdersParams.orderIds?.toMutableList()
             pageSize = orderGetOrdersParams.pageSize
             pageToken = orderGetOrdersParams.pageToken
             status = orderGetOrdersParams.status?.toMutableList()
@@ -161,6 +170,24 @@ private constructor(
         /** Alias for calling [Builder.instrumentType] with `instrumentType.orElse(null)`. */
         fun instrumentType(instrumentType: Optional<InstrumentType>) =
             instrumentType(instrumentType.getOrNull())
+
+        /**
+         * Comma-separated order IDs to filter by. When provided, only orders whose order ID is in
+         * this set are returned.
+         */
+        fun orderIds(orderIds: List<String>?) = apply { this.orderIds = orderIds?.toMutableList() }
+
+        /** Alias for calling [Builder.orderIds] with `orderIds.orElse(null)`. */
+        fun orderIds(orderIds: Optional<List<String>>) = orderIds(orderIds.getOrNull())
+
+        /**
+         * Adds a single [String] to [orderIds].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addOrderId(orderId: String) = apply {
+            orderIds = (orderIds ?: mutableListOf()).apply { add(orderId) }
+        }
 
         /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
@@ -345,6 +372,7 @@ private constructor(
                 from,
                 instrumentIds?.toImmutable(),
                 instrumentType,
+                orderIds?.toImmutable(),
                 pageSize,
                 pageToken,
                 status?.toImmutable(),
@@ -370,6 +398,7 @@ private constructor(
                 from?.let { put("from", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 instrumentIds?.let { put("instrument_ids", it.joinToString(",")) }
                 instrumentType?.let { put("instrument_type", it.toString()) }
+                orderIds?.let { put("order_ids", it.joinToString(",")) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 status?.let { put("status", it.joinToString(",") { it.toString() }) }
@@ -754,6 +783,7 @@ private constructor(
             from == other.from &&
             instrumentIds == other.instrumentIds &&
             instrumentType == other.instrumentType &&
+            orderIds == other.orderIds &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
             status == other.status &&
@@ -770,6 +800,7 @@ private constructor(
             from,
             instrumentIds,
             instrumentType,
+            orderIds,
             pageSize,
             pageToken,
             status,
@@ -781,5 +812,5 @@ private constructor(
         )
 
     override fun toString() =
-        "OrderGetOrdersParams{accountId=$accountId, from=$from, instrumentIds=$instrumentIds, instrumentType=$instrumentType, pageSize=$pageSize, pageToken=$pageToken, status=$status, symbol=$symbol, to=$to, underlyingInstrumentIds=$underlyingInstrumentIds, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "OrderGetOrdersParams{accountId=$accountId, from=$from, instrumentIds=$instrumentIds, instrumentType=$instrumentType, orderIds=$orderIds, pageSize=$pageSize, pageToken=$pageToken, status=$status, symbol=$symbol, to=$to, underlyingInstrumentIds=$underlyingInstrumentIds, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

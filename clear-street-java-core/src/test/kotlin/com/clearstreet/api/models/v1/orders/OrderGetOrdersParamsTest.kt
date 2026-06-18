@@ -16,6 +16,7 @@ internal class OrderGetOrdersParamsTest {
             .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .instrumentType(OrderGetOrdersParams.InstrumentType.COMMON_STOCK)
+            .addOrderId("string")
             .pageSize(1L)
             .pageToken("U3RhaW5sZXNzIHJvY2tz")
             .addStatus(OrderGetOrdersParams.Status.PENDING_NEW)
@@ -42,6 +43,7 @@ internal class OrderGetOrdersParamsTest {
                 .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .instrumentType(OrderGetOrdersParams.InstrumentType.COMMON_STOCK)
+                .addOrderId("string")
                 .pageSize(1L)
                 .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .addStatus(OrderGetOrdersParams.Status.PENDING_NEW)
@@ -61,6 +63,7 @@ internal class OrderGetOrdersParamsTest {
                         listOf("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e").joinToString(","),
                     )
                     .put("instrument_type", "COMMON_STOCK")
+                    .put("order_ids", listOf("string").joinToString(","))
                     .put("page_size", "1")
                     .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
                     .put("status", listOf("PENDING_NEW").joinToString(","))
