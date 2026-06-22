@@ -62,6 +62,8 @@ internal class AccountServiceTest {
         val response =
             accountService.getAccounts(
                 AccountGetAccountsParams.builder()
+                    .accountId("account_id")
+                    .accountName("account_name")
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .build()

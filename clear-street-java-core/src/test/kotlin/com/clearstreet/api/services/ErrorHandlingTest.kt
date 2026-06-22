@@ -72,6 +72,8 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -97,6 +99,8 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -122,6 +126,8 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -147,6 +153,8 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -172,6 +180,8 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -197,6 +207,8 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -222,6 +234,8 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -247,6 +261,8 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -272,6 +288,8 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -297,6 +315,8 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -322,6 +342,8 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -347,6 +369,8 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -372,6 +396,8 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -397,6 +423,8 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -422,6 +450,8 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -447,6 +477,8 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
@@ -470,6 +502,8 @@ internal class ErrorHandlingTest {
             assertThrows<ClearStreetException> {
                 accountService.getAccounts(
                     AccountGetAccountsParams.builder()
+                        .accountId("account_id")
+                        .accountName("account_name")
                         .pageSize(1L)
                         .pageToken("U3RhaW5sZXNzIHJvY2tz")
                         .build()
