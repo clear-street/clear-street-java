@@ -40,7 +40,7 @@ internal class ScreenerCreateScreenerParamsTest {
                     )
                     .op(
                         FilterOpSpec.builder()
-                            .name(FilterOperator.LESS_THAN)
+                            .name(FilterOperator.GREATER_OR_EQUAL)
                             .addArg(OperatorArg.LEFT_INCLUSIVE)
                             .build()
                     )
@@ -114,7 +114,7 @@ internal class ScreenerCreateScreenerParamsTest {
                         )
                         .op(
                             FilterOpSpec.builder()
-                                .name(FilterOperator.LESS_THAN)
+                                .name(FilterOperator.GREATER_OR_EQUAL)
                                 .addArg(OperatorArg.LEFT_INCLUSIVE)
                                 .build()
                         )
@@ -188,7 +188,7 @@ internal class ScreenerCreateScreenerParamsTest {
                     )
                     .op(
                         FilterOpSpec.builder()
-                            .name(FilterOperator.LESS_THAN)
+                            .name(FilterOperator.GREATER_OR_EQUAL)
                             .addArg(OperatorArg.LEFT_INCLUSIVE)
                             .build()
                     )

@@ -12,9 +12,9 @@ internal class OrderReplaceOrderParamsTest {
         OrderReplaceOrderParams.builder()
             .accountId(0L)
             .orderId("order_id")
-            .limitPrice("150.50")
-            .quantity("125")
-            .stopPrice("148.00")
+            .limitPrice("49.00")
+            .quantity("1")
+            .stopPrice("52.00")
             .timeInForce(RequestTimeInForce.DAY)
             .build()
     }
@@ -35,17 +35,17 @@ internal class OrderReplaceOrderParamsTest {
             OrderReplaceOrderParams.builder()
                 .accountId(0L)
                 .orderId("order_id")
-                .limitPrice("150.50")
-                .quantity("125")
-                .stopPrice("148.00")
+                .limitPrice("49.00")
+                .quantity("1")
+                .stopPrice("52.00")
                 .timeInForce(RequestTimeInForce.DAY)
                 .build()
 
         val body = params._body()
 
-        assertThat(body.limitPrice()).contains("150.50")
-        assertThat(body.quantity()).contains("125")
-        assertThat(body.stopPrice()).contains("148.00")
+        assertThat(body.limitPrice()).contains("49.00")
+        assertThat(body.quantity()).contains("1")
+        assertThat(body.stopPrice()).contains("52.00")
         assertThat(body.timeInForce()).contains(RequestTimeInForce.DAY)
     }
 
