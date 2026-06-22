@@ -14,11 +14,11 @@ internal class FilterOpSpecTest {
     fun create() {
         val filterOpSpec =
             FilterOpSpec.builder()
-                .name(FilterOperator.LESS_THAN)
+                .name(FilterOperator.GREATER_OR_EQUAL)
                 .addArg(OperatorArg.LEFT_INCLUSIVE)
                 .build()
 
-        assertThat(filterOpSpec.name()).isEqualTo(FilterOperator.LESS_THAN)
+        assertThat(filterOpSpec.name()).isEqualTo(FilterOperator.GREATER_OR_EQUAL)
         assertThat(filterOpSpec.args().getOrNull()).containsExactly(OperatorArg.LEFT_INCLUSIVE)
     }
 
@@ -27,7 +27,7 @@ internal class FilterOpSpecTest {
         val jsonMapper = jsonMapper()
         val filterOpSpec =
             FilterOpSpec.builder()
-                .name(FilterOperator.LESS_THAN)
+                .name(FilterOperator.GREATER_OR_EQUAL)
                 .addArg(OperatorArg.LEFT_INCLUSIVE)
                 .build()
 

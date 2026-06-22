@@ -24,7 +24,7 @@ internal class SearchFilterTest {
                 )
                 .op(
                     FilterOpSpec.builder()
-                        .name(FilterOperator.LESS_THAN)
+                        .name(FilterOperator.GREATER_OR_EQUAL)
                         .addArg(OperatorArg.LEFT_INCLUSIVE)
                         .build()
                 )
@@ -61,7 +61,7 @@ internal class SearchFilterTest {
         assertThat(searchFilter.op())
             .contains(
                 FilterOpSpec.builder()
-                    .name(FilterOperator.LESS_THAN)
+                    .name(FilterOperator.GREATER_OR_EQUAL)
                     .addArg(OperatorArg.LEFT_INCLUSIVE)
                     .build()
             )
@@ -102,7 +102,7 @@ internal class SearchFilterTest {
                 )
                 .op(
                     FilterOpSpec.builder()
-                        .name(FilterOperator.LESS_THAN)
+                        .name(FilterOperator.GREATER_OR_EQUAL)
                         .addArg(OperatorArg.LEFT_INCLUSIVE)
                         .build()
                 )

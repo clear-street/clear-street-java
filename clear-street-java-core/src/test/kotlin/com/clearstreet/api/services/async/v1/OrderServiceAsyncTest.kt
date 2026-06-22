@@ -4,6 +4,7 @@ package com.clearstreet.api.services.async.v1
 
 import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
+import com.clearstreet.api.models.v1.orders.NewOrderRequest
 import com.clearstreet.api.models.v1.orders.OrderCancelAllOpenOrdersParams
 import com.clearstreet.api.models.v1.orders.OrderCancelOpenOrderParams
 import com.clearstreet.api.models.v1.orders.OrderGetExecutionsParams
@@ -15,6 +16,7 @@ import com.clearstreet.api.models.v1.orders.PositionEffect
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
+import com.clearstreet.api.models.v1.orders.TrailingOffsetType
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -151,9 +153,9 @@ internal class OrderServiceAsyncTest {
                 OrderReplaceOrderParams.builder()
                     .accountId(0L)
                     .orderId("order_id")
-                    .limitPrice("150.50")
-                    .quantity("125")
-                    .stopPrice("148.00")
+                    .limitPrice("49.00")
+                    .quantity("1")
+                    .stopPrice("52.00")
                     .timeInForce(RequestTimeInForce.DAY)
                     .build()
             )
@@ -176,40 +178,22 @@ internal class OrderServiceAsyncTest {
                 OrderSubmitOrdersParams.builder()
                     .accountId(0L)
                     .addOrder(
-                        OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.builder()
-                            .legs(
-                                listOf(
-                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                        .builder()
-                                        .ratio("ratio")
-                                        .security("0193bb84-447a-706f-996f-097254663f02")
-                                        .side(Side.BUY)
-                                        .id("1")
-                                        .positionEffect(PositionEffect.OPEN)
-                                        .build(),
-                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                        .builder()
-                                        .ratio("ratio")
-                                        .security("0193bb84-4db4-78ec-b4fd-cba8be61cf8a")
-                                        .side(Side.SELL)
-                                        .id("2")
-                                        .positionEffect(PositionEffect.OPEN)
-                                        .build(),
-                                    OrderSubmitOrdersParams.Order.NewOrderMultilegRequest.Leg
-                                        .builder()
-                                        .ratio("ratio")
-                                        .security("0193bb84-5264-7f20-8fd3-35df82cd6ef0")
-                                        .side(Side.BUY)
-                                        .id("3")
-                                        .positionEffect(PositionEffect.OPEN)
-                                        .build(),
-                                )
-                            )
+                        NewOrderRequest.builder()
                             .orderType(RequestOrderType.LIMIT)
-                            .timeInForce(RequestTimeInForce.DAY)
-                            .id("my-mleg-ref-20251001-001")
-                            .limitPrice("0.50")
                             .quantity("1")
+                            .side(Side.BUY)
+                            .timeInForce(RequestTimeInForce.DAY)
+                            .id("my-ref-id-20251001-002")
+                            .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
+                            .extendedHours(true)
+                            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                            .limitOffset("0.50")
+                            .limitPrice("48.00")
+                            .positionEffect(PositionEffect.OPEN)
+                            .stopPrice("52.00")
+                            .symbol("TSLA")
+                            .trailingOffset("2.00")
+                            .trailingOffsetType(TrailingOffsetType.PRICE)
                             .build()
                     )
                     .build()

@@ -28,7 +28,10 @@ private constructor(
 
     fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
-    /** Limit results to a single contract. Accepts the instrument id or the OSI symbol. */
+    /**
+     * Limit results to a single contract. Instrument ID (UUID) or symbol (equity ticker or OSI
+     * option symbol).
+     */
     fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
 
     /** Additional headers to send with the request. */
@@ -81,7 +84,10 @@ private constructor(
         /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
         fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
-        /** Limit results to a single contract. Accepts the instrument id or the OSI symbol. */
+        /**
+         * Limit results to a single contract. Instrument ID (UUID) or symbol (equity ticker or OSI
+         * option symbol).
+         */
         fun instrumentId(instrumentId: String?) = apply { this.instrumentId = instrumentId }
 
         /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */
