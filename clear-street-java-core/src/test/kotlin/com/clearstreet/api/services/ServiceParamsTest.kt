@@ -40,6 +40,8 @@ internal class ServiceParamsTest {
 
         accountService.getAccounts(
             AccountGetAccountsParams.builder()
+                .accountId("account_id")
+                .accountName("account_name")
                 .pageSize(1L)
                 .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .putAdditionalHeader("Secret-Header", "42")

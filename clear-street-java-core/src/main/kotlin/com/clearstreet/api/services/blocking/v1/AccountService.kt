@@ -105,7 +105,15 @@ interface AccountService {
     ): AccountGetAccountByIdResponse =
         getAccountById(accountId, AccountGetAccountByIdParams.none(), requestOptions)
 
-    /** List accounts the authenticated user has permission to access */
+    /**
+     * List accounts the authenticated user has permission to access.
+     *
+     * Results can be narrowed with the optional `account_id` and `account_name` filters.
+     * `account_id` is a lexicographic prefix match on the decimal account id (e.g. `100` matches
+     * `100345` and `100567`); `account_name` is a case-insensitive substring match on the account's
+     * full name. When both are supplied an account must match both. When neither is supplied every
+     * accessible account is returned.
+     */
     fun getAccounts(): AccountGetAccountsResponse = getAccounts(AccountGetAccountsParams.none())
 
     /** @see getAccounts */

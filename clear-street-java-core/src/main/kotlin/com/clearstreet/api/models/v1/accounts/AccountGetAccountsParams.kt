@@ -9,14 +9,35 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** List accounts the authenticated user has permission to access */
+/**
+ * List accounts the authenticated user has permission to access.
+ *
+ * Results can be narrowed with the optional `account_id` and `account_name` filters. `account_id`
+ * is a lexicographic prefix match on the decimal account id (e.g. `100` matches `100345` and
+ * `100567`); `account_name` is a case-insensitive substring match on the account's full name. When
+ * both are supplied an account must match both. When neither is supplied every accessible account
+ * is returned.
+ */
 class AccountGetAccountsParams
 private constructor(
+    private val accountId: String?,
+    private val accountName: String?,
     private val pageSize: Long?,
     private val pageToken: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
+
+    /**
+     * Filter to accounts whose id starts with this value (lexicographic prefix match on the decimal
+     * id, e.g. `100` matches `100345`).
+     */
+    fun accountId(): Optional<String> = Optional.ofNullable(accountId)
+
+    /**
+     * Filter to accounts whose full name contains this value (case-insensitive substring match).
+     */
+    fun accountName(): Optional<String> = Optional.ofNullable(accountName)
 
     /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
@@ -46,6 +67,8 @@ private constructor(
     /** A builder for [AccountGetAccountsParams]. */
     class Builder internal constructor() {
 
+        private var accountId: String? = null
+        private var accountName: String? = null
         private var pageSize: Long? = null
         private var pageToken: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -53,11 +76,31 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(accountGetAccountsParams: AccountGetAccountsParams) = apply {
+            accountId = accountGetAccountsParams.accountId
+            accountName = accountGetAccountsParams.accountName
             pageSize = accountGetAccountsParams.pageSize
             pageToken = accountGetAccountsParams.pageToken
             additionalHeaders = accountGetAccountsParams.additionalHeaders.toBuilder()
             additionalQueryParams = accountGetAccountsParams.additionalQueryParams.toBuilder()
         }
+
+        /**
+         * Filter to accounts whose id starts with this value (lexicographic prefix match on the
+         * decimal id, e.g. `100` matches `100345`).
+         */
+        fun accountId(accountId: String?) = apply { this.accountId = accountId }
+
+        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+        fun accountId(accountId: Optional<String>) = accountId(accountId.getOrNull())
+
+        /**
+         * Filter to accounts whose full name contains this value (case-insensitive substring
+         * match).
+         */
+        fun accountName(accountName: String?) = apply { this.accountName = accountName }
+
+        /** Alias for calling [Builder.accountName] with `accountName.orElse(null)`. */
+        fun accountName(accountName: Optional<String>) = accountName(accountName.getOrNull())
 
         /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
@@ -186,6 +229,8 @@ private constructor(
          */
         fun build(): AccountGetAccountsParams =
             AccountGetAccountsParams(
+                accountId,
+                accountName,
                 pageSize,
                 pageToken,
                 additionalHeaders.build(),
@@ -198,6 +243,8 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
+                accountId?.let { put("account_id", it) }
+                accountName?.let { put("account_name", it) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 putAll(additionalQueryParams)
@@ -210,6 +257,8 @@ private constructor(
         }
 
         return other is AccountGetAccountsParams &&
+            accountId == other.accountId &&
+            accountName == other.accountName &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
             additionalHeaders == other.additionalHeaders &&
@@ -217,8 +266,15 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(pageSize, pageToken, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            accountId,
+            accountName,
+            pageSize,
+            pageToken,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "AccountGetAccountsParams{pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "AccountGetAccountsParams{accountId=$accountId, accountName=$accountName, pageSize=$pageSize, pageToken=$pageToken, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
