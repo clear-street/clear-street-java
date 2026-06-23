@@ -61,10 +61,10 @@ private constructor(
     /**
      * Dynamic pollable response.
      *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
      */
-    fun data(): Response = data.getRequired("data")
+    fun data(): Optional<Response> = data.getOptional("data")
 
     /**
      * Returns the raw JSON value of [metadata].
@@ -161,7 +161,10 @@ private constructor(
         fun error(error: JsonField<ApiError>) = apply { this.error = error }
 
         /** Dynamic pollable response. */
-        fun data(data: Response) = data(JsonField.of(data))
+        fun data(data: Response?) = data(JsonField.ofNullable(data))
+
+        /** Alias for calling [Builder.data] with `data.orElse(null)`. */
+        fun data(data: Optional<Response>) = data(data.getOrNull())
 
         /**
          * Sets [Builder.data] to an arbitrary JSON value.
@@ -229,7 +232,7 @@ private constructor(
 
         metadata().validate()
         error().ifPresent { it.validate() }
-        data().validate()
+        data().ifPresent { it.validate() }
         validated = true
     }
 
