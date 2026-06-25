@@ -14,17 +14,17 @@ internal class SnapshotQuoteTest {
         val snapshotQuote =
             SnapshotQuote.builder()
                 .ask("ask")
-                .bid("bid")
-                .midpoint("midpoint")
                 .askSize(0)
+                .bid("bid")
                 .bidSize(0)
+                .midpoint("midpoint")
                 .build()
 
-        assertThat(snapshotQuote.ask()).isEqualTo("ask")
-        assertThat(snapshotQuote.bid()).isEqualTo("bid")
-        assertThat(snapshotQuote.midpoint()).isEqualTo("midpoint")
+        assertThat(snapshotQuote.ask()).contains("ask")
         assertThat(snapshotQuote.askSize()).contains(0)
+        assertThat(snapshotQuote.bid()).contains("bid")
         assertThat(snapshotQuote.bidSize()).contains(0)
+        assertThat(snapshotQuote.midpoint()).contains("midpoint")
     }
 
     @Test
@@ -33,10 +33,10 @@ internal class SnapshotQuoteTest {
         val snapshotQuote =
             SnapshotQuote.builder()
                 .ask("ask")
-                .bid("bid")
-                .midpoint("midpoint")
                 .askSize(0)
+                .bid("bid")
                 .bidSize(0)
+                .midpoint("midpoint")
                 .build()
 
         val roundtrippedSnapshotQuote =
