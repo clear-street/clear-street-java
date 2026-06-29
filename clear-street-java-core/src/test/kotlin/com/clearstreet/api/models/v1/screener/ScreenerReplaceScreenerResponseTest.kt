@@ -90,14 +90,6 @@ internal class ScreenerReplaceScreenerResponseTest {
                                 .valueType(FieldType.DECIMAL)
                                 .build()
                         )
-                        .addFieldFilter(
-                            FieldRef.builder()
-                                .name("market_cap")
-                                .lookback(FieldLookback.ONE_DAY)
-                                .period(FieldPeriod.QUARTER)
-                                .valueType(FieldType.DECIMAL)
-                                .build()
-                        )
                         .addSort(
                             SortSpec.builder()
                                 .field(
@@ -183,14 +175,6 @@ internal class ScreenerReplaceScreenerResponseTest {
                     .name("name")
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .addColumn(
-                        FieldRef.builder()
-                            .name("market_cap")
-                            .lookback(FieldLookback.ONE_DAY)
-                            .period(FieldPeriod.QUARTER)
-                            .valueType(FieldType.DECIMAL)
-                            .build()
-                    )
-                    .addFieldFilter(
                         FieldRef.builder()
                             .name("market_cap")
                             .lookback(FieldLookback.ONE_DAY)
@@ -285,14 +269,6 @@ internal class ScreenerReplaceScreenerResponseTest {
                         .name("name")
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .addColumn(
-                            FieldRef.builder()
-                                .name("market_cap")
-                                .lookback(FieldLookback.ONE_DAY)
-                                .period(FieldPeriod.QUARTER)
-                                .valueType(FieldType.DECIMAL)
-                                .build()
-                        )
-                        .addFieldFilter(
                             FieldRef.builder()
                                 .name("market_cap")
                                 .lookback(FieldLookback.ONE_DAY)

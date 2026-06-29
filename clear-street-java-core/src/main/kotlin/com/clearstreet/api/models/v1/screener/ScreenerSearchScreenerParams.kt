@@ -47,14 +47,6 @@ private constructor(
     fun columns(): Optional<List<FieldRef>> = body.columns()
 
     /**
-     * Deprecated: use `columns` instead. Ignored when `columns` is provided.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    @Deprecated("deprecated") fun fieldFilter(): Optional<List<FieldRef>> = body.fieldFilter()
-
-    /**
      * Filter conditions to apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -101,13 +93,6 @@ private constructor(
      * Unlike [columns], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _columns(): JsonField<List<FieldRef>> = body._columns()
-
-    /**
-     * Returns the raw JSON value of [fieldFilter].
-     *
-     * Unlike [fieldFilter], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @Deprecated("deprecated") fun _fieldFilter(): JsonField<List<FieldRef>> = body._fieldFilter()
 
     /**
      * Returns the raw JSON value of [filters].
@@ -185,10 +170,10 @@ private constructor(
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
          * - [columns]
-         * - [fieldFilter]
          * - [filters]
          * - [pageSize]
          * - [pageToken]
+         * - [sortCaseSensitive]
          * - etc.
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
@@ -214,35 +199,6 @@ private constructor(
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
         fun addColumn(column: FieldRef) = apply { body.addColumn(column) }
-
-        /** Deprecated: use `columns` instead. Ignored when `columns` is provided. */
-        @Deprecated("deprecated")
-        fun fieldFilter(fieldFilter: List<FieldRef>?) = apply { body.fieldFilter(fieldFilter) }
-
-        /** Alias for calling [Builder.fieldFilter] with `fieldFilter.orElse(null)`. */
-        @Deprecated("deprecated")
-        fun fieldFilter(fieldFilter: Optional<List<FieldRef>>) =
-            fieldFilter(fieldFilter.getOrNull())
-
-        /**
-         * Sets [Builder.fieldFilter] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.fieldFilter] with a well-typed `List<FieldRef>` value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        @Deprecated("deprecated")
-        fun fieldFilter(fieldFilter: JsonField<List<FieldRef>>) = apply {
-            body.fieldFilter(fieldFilter)
-        }
-
-        /**
-         * Adds a single [FieldRef] to [Builder.fieldFilter].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        @Deprecated("deprecated")
-        fun addFieldFilter(fieldFilter: FieldRef) = apply { body.addFieldFilter(fieldFilter) }
 
         /** Filter conditions to apply. */
         fun filters(filters: List<SearchFilter>?) = apply { body.filters(filters) }
@@ -496,7 +452,6 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val columns: JsonField<List<FieldRef>>,
-        private val fieldFilter: JsonField<List<FieldRef>>,
         private val filters: JsonField<List<SearchFilter>>,
         private val pageSize: JsonField<Long>,
         private val pageToken: JsonField<String>,
@@ -510,9 +465,6 @@ private constructor(
             @JsonProperty("columns")
             @ExcludeMissing
             columns: JsonField<List<FieldRef>> = JsonMissing.of(),
-            @JsonProperty("field_filter")
-            @ExcludeMissing
-            fieldFilter: JsonField<List<FieldRef>> = JsonMissing.of(),
             @JsonProperty("filters")
             @ExcludeMissing
             filters: JsonField<List<SearchFilter>> = JsonMissing.of(),
@@ -526,16 +478,7 @@ private constructor(
             @JsonProperty("sorts")
             @ExcludeMissing
             sorts: JsonField<List<SortSpec>> = JsonMissing.of(),
-        ) : this(
-            columns,
-            fieldFilter,
-            filters,
-            pageSize,
-            pageToken,
-            sortCaseSensitive,
-            sorts,
-            mutableMapOf(),
-        )
+        ) : this(columns, filters, pageSize, pageToken, sortCaseSensitive, sorts, mutableMapOf())
 
         /**
          * Subset of fields to include in the response.
@@ -544,15 +487,6 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun columns(): Optional<List<FieldRef>> = columns.getOptional("columns")
-
-        /**
-         * Deprecated: use `columns` instead. Ignored when `columns` is provided.
-         *
-         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        @Deprecated("deprecated")
-        fun fieldFilter(): Optional<List<FieldRef>> = fieldFilter.getOptional("field_filter")
 
         /**
          * Filter conditions to apply.
@@ -602,16 +536,6 @@ private constructor(
          * Unlike [columns], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("columns") @ExcludeMissing fun _columns(): JsonField<List<FieldRef>> = columns
-
-        /**
-         * Returns the raw JSON value of [fieldFilter].
-         *
-         * Unlike [fieldFilter], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @Deprecated("deprecated")
-        @JsonProperty("field_filter")
-        @ExcludeMissing
-        fun _fieldFilter(): JsonField<List<FieldRef>> = fieldFilter
 
         /**
          * Returns the raw JSON value of [filters].
@@ -675,7 +599,6 @@ private constructor(
         class Builder internal constructor() {
 
             private var columns: JsonField<MutableList<FieldRef>>? = null
-            private var fieldFilter: JsonField<MutableList<FieldRef>>? = null
             private var filters: JsonField<MutableList<SearchFilter>>? = null
             private var pageSize: JsonField<Long> = JsonMissing.of()
             private var pageToken: JsonField<String> = JsonMissing.of()
@@ -686,7 +609,6 @@ private constructor(
             @JvmSynthetic
             internal fun from(body: Body) = apply {
                 columns = body.columns.map { it.toMutableList() }
-                fieldFilter = body.fieldFilter.map { it.toMutableList() }
                 filters = body.filters.map { it.toMutableList() }
                 pageSize = body.pageSize
                 pageToken = body.pageToken
@@ -721,41 +643,6 @@ private constructor(
                 columns =
                     (columns ?: JsonField.of(mutableListOf())).also {
                         checkKnown("columns", it).add(column)
-                    }
-            }
-
-            /** Deprecated: use `columns` instead. Ignored when `columns` is provided. */
-            @Deprecated("deprecated")
-            fun fieldFilter(fieldFilter: List<FieldRef>?) =
-                fieldFilter(JsonField.ofNullable(fieldFilter))
-
-            /** Alias for calling [Builder.fieldFilter] with `fieldFilter.orElse(null)`. */
-            @Deprecated("deprecated")
-            fun fieldFilter(fieldFilter: Optional<List<FieldRef>>) =
-                fieldFilter(fieldFilter.getOrNull())
-
-            /**
-             * Sets [Builder.fieldFilter] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.fieldFilter] with a well-typed `List<FieldRef>`
-             * value instead. This method is primarily for setting the field to an undocumented or
-             * not yet supported value.
-             */
-            @Deprecated("deprecated")
-            fun fieldFilter(fieldFilter: JsonField<List<FieldRef>>) = apply {
-                this.fieldFilter = fieldFilter.map { it.toMutableList() }
-            }
-
-            /**
-             * Adds a single [FieldRef] to [Builder.fieldFilter].
-             *
-             * @throws IllegalStateException if the field was previously set to a non-list.
-             */
-            @Deprecated("deprecated")
-            fun addFieldFilter(fieldFilter: FieldRef) = apply {
-                this.fieldFilter =
-                    (this.fieldFilter ?: JsonField.of(mutableListOf())).also {
-                        checkKnown("fieldFilter", it).add(fieldFilter)
                     }
             }
 
@@ -915,7 +802,6 @@ private constructor(
             fun build(): Body =
                 Body(
                     (columns ?: JsonMissing.of()).map { it.toImmutable() },
-                    (fieldFilter ?: JsonMissing.of()).map { it.toImmutable() },
                     (filters ?: JsonMissing.of()).map { it.toImmutable() },
                     pageSize,
                     pageToken,
@@ -942,7 +828,6 @@ private constructor(
             }
 
             columns().ifPresent { it.forEach { it.validate() } }
-            fieldFilter().ifPresent { it.forEach { it.validate() } }
             filters().ifPresent { it.forEach { it.validate() } }
             pageSize()
             pageToken()
@@ -968,7 +853,6 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (columns.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-                (fieldFilter.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (filters.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (pageSize.asKnown().isPresent) 1 else 0) +
                 (if (pageToken.asKnown().isPresent) 1 else 0) +
@@ -982,7 +866,6 @@ private constructor(
 
             return other is Body &&
                 columns == other.columns &&
-                fieldFilter == other.fieldFilter &&
                 filters == other.filters &&
                 pageSize == other.pageSize &&
                 pageToken == other.pageToken &&
@@ -994,7 +877,6 @@ private constructor(
         private val hashCode: Int by lazy {
             Objects.hash(
                 columns,
-                fieldFilter,
                 filters,
                 pageSize,
                 pageToken,
@@ -1007,7 +889,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{columns=$columns, fieldFilter=$fieldFilter, filters=$filters, pageSize=$pageSize, pageToken=$pageToken, sortCaseSensitive=$sortCaseSensitive, sorts=$sorts, additionalProperties=$additionalProperties}"
+            "Body{columns=$columns, filters=$filters, pageSize=$pageSize, pageToken=$pageToken, sortCaseSensitive=$sortCaseSensitive, sorts=$sorts, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

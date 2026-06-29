@@ -21,14 +21,6 @@ internal class ScreenerReplaceScreenerParamsTest {
                     .valueType(FieldType.DECIMAL)
                     .build()
             )
-            .addFieldFilter(
-                FieldRef.builder()
-                    .name("market_cap")
-                    .lookback(FieldLookback.ONE_DAY)
-                    .period(FieldPeriod.QUARTER)
-                    .valueType(FieldType.DECIMAL)
-                    .build()
-            )
             .addFilter(
                 SearchFilter.builder()
                     .left(
@@ -108,14 +100,6 @@ internal class ScreenerReplaceScreenerParamsTest {
                         .valueType(FieldType.DECIMAL)
                         .build()
                 )
-                .addFieldFilter(
-                    FieldRef.builder()
-                        .name("market_cap")
-                        .lookback(FieldLookback.ONE_DAY)
-                        .period(FieldPeriod.QUARTER)
-                        .valueType(FieldType.DECIMAL)
-                        .build()
-                )
                 .addFilter(
                     SearchFilter.builder()
                         .left(
@@ -172,15 +156,6 @@ internal class ScreenerReplaceScreenerParamsTest {
         val body = params._body()
 
         assertThat(body.columns().getOrNull())
-            .containsExactly(
-                FieldRef.builder()
-                    .name("market_cap")
-                    .lookback(FieldLookback.ONE_DAY)
-                    .period(FieldPeriod.QUARTER)
-                    .valueType(FieldType.DECIMAL)
-                    .build()
-            )
-        assertThat(body.fieldFilter().getOrNull())
             .containsExactly(
                 FieldRef.builder()
                     .name("market_cap")

@@ -65,14 +65,6 @@ internal class ScreenerEntryTest {
                         .valueType(FieldType.DECIMAL)
                         .build()
                 )
-                .addFieldFilter(
-                    FieldRef.builder()
-                        .name("market_cap")
-                        .lookback(FieldLookback.ONE_DAY)
-                        .period(FieldPeriod.QUARTER)
-                        .valueType(FieldType.DECIMAL)
-                        .build()
-                )
                 .addSort(
                     SortSpec.builder()
                         .field(
@@ -133,15 +125,6 @@ internal class ScreenerEntryTest {
         assertThat(screenerEntry.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(screenerEntry.columns().getOrNull())
-            .containsExactly(
-                FieldRef.builder()
-                    .name("market_cap")
-                    .lookback(FieldLookback.ONE_DAY)
-                    .period(FieldPeriod.QUARTER)
-                    .valueType(FieldType.DECIMAL)
-                    .build()
-            )
-        assertThat(screenerEntry.fieldFilter().getOrNull())
             .containsExactly(
                 FieldRef.builder()
                     .name("market_cap")
@@ -213,14 +196,6 @@ internal class ScreenerEntryTest {
                 .name("name")
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addColumn(
-                    FieldRef.builder()
-                        .name("market_cap")
-                        .lookback(FieldLookback.ONE_DAY)
-                        .period(FieldPeriod.QUARTER)
-                        .valueType(FieldType.DECIMAL)
-                        .build()
-                )
-                .addFieldFilter(
                     FieldRef.builder()
                         .name("market_cap")
                         .lookback(FieldLookback.ONE_DAY)

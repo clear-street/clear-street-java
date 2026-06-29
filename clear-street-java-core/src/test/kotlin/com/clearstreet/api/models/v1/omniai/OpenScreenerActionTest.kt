@@ -31,7 +31,6 @@ internal class OpenScreenerActionTest {
                         .build()
                 )
                 .addColumn("string")
-                .addFieldFilter("string")
                 .pageSize(0)
                 .sortBy("sort_by")
                 .sortDirection("sort_direction")
@@ -51,7 +50,6 @@ internal class OpenScreenerActionTest {
                     .build(),
             )
         assertThat(openScreenerAction.columns().getOrNull()).containsExactly("string")
-        assertThat(openScreenerAction.fieldFilter().getOrNull()).containsExactly("string")
         assertThat(openScreenerAction.pageSize()).contains(0)
         assertThat(openScreenerAction.sortBy()).contains("sort_by")
         assertThat(openScreenerAction.sortDirection()).contains("sort_direction")
@@ -77,7 +75,6 @@ internal class OpenScreenerActionTest {
                         .build()
                 )
                 .addColumn("string")
-                .addFieldFilter("string")
                 .pageSize(0)
                 .sortBy("sort_by")
                 .sortDirection("sort_direction")
