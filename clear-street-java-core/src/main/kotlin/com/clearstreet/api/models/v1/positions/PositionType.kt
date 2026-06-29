@@ -25,14 +25,6 @@ class PositionType @JsonCreator private constructor(private val value: JsonField
 
         @JvmField val SHORT = of("SHORT")
 
-        @JvmField val LONG_CALL = of("LONG_CALL")
-
-        @JvmField val SHORT_CALL = of("SHORT_CALL")
-
-        @JvmField val LONG_PUT = of("LONG_PUT")
-
-        @JvmField val SHORT_PUT = of("SHORT_PUT")
-
         @JvmStatic fun of(value: String) = PositionType(JsonField.of(value))
     }
 
@@ -40,10 +32,6 @@ class PositionType @JsonCreator private constructor(private val value: JsonField
     enum class Known {
         LONG,
         SHORT,
-        LONG_CALL,
-        SHORT_CALL,
-        LONG_PUT,
-        SHORT_PUT,
     }
 
     /**
@@ -58,10 +46,6 @@ class PositionType @JsonCreator private constructor(private val value: JsonField
     enum class Value {
         LONG,
         SHORT,
-        LONG_CALL,
-        SHORT_CALL,
-        LONG_PUT,
-        SHORT_PUT,
         /** An enum member indicating that [PositionType] was instantiated with an unknown value. */
         _UNKNOWN,
     }
@@ -77,10 +61,6 @@ class PositionType @JsonCreator private constructor(private val value: JsonField
         when (this) {
             LONG -> Value.LONG
             SHORT -> Value.SHORT
-            LONG_CALL -> Value.LONG_CALL
-            SHORT_CALL -> Value.SHORT_CALL
-            LONG_PUT -> Value.LONG_PUT
-            SHORT_PUT -> Value.SHORT_PUT
             else -> Value._UNKNOWN
         }
 
@@ -97,10 +77,6 @@ class PositionType @JsonCreator private constructor(private val value: JsonField
         when (this) {
             LONG -> Known.LONG
             SHORT -> Known.SHORT
-            LONG_CALL -> Known.LONG_CALL
-            SHORT_CALL -> Known.SHORT_CALL
-            LONG_PUT -> Known.LONG_PUT
-            SHORT_PUT -> Known.SHORT_PUT
             else -> throw ClearStreetInvalidDataException("Unknown PositionType: $value")
         }
 
