@@ -34,14 +34,6 @@ internal class ScreenerSearchScreenerParamsTest {
                         .build(),
                 )
             )
-            .addFieldFilter(
-                FieldRef.builder()
-                    .name("market_cap")
-                    .lookback(FieldLookback.ONE_DAY)
-                    .period(FieldPeriod.QUARTER)
-                    .valueType(FieldType.DECIMAL)
-                    .build()
-            )
             .addFilter(
                 SearchFilter.builder()
                     .left(
@@ -124,14 +116,6 @@ internal class ScreenerSearchScreenerParamsTest {
                             .build(),
                     )
                 )
-                .addFieldFilter(
-                    FieldRef.builder()
-                        .name("market_cap")
-                        .lookback(FieldLookback.ONE_DAY)
-                        .period(FieldPeriod.QUARTER)
-                        .valueType(FieldType.DECIMAL)
-                        .build()
-                )
                 .addFilter(
                     SearchFilter.builder()
                         .left(
@@ -209,15 +193,6 @@ internal class ScreenerSearchScreenerParamsTest {
                     .period(FieldPeriod.QUARTER)
                     .valueType(FieldType.DECIMAL)
                     .build(),
-            )
-        assertThat(body.fieldFilter().getOrNull())
-            .containsExactly(
-                FieldRef.builder()
-                    .name("market_cap")
-                    .lookback(FieldLookback.ONE_DAY)
-                    .period(FieldPeriod.QUARTER)
-                    .valueType(FieldType.DECIMAL)
-                    .build()
             )
         assertThat(body.filters().getOrNull())
             .containsExactly(

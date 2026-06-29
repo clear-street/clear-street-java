@@ -30,7 +30,6 @@ private constructor(
     private val name: JsonField<String>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val columns: JsonField<List<FieldRef>>,
-    private val fieldFilter: JsonField<List<FieldRef>>,
     private val sorts: JsonField<List<SortSpec>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -51,11 +50,8 @@ private constructor(
         @JsonProperty("columns")
         @ExcludeMissing
         columns: JsonField<List<FieldRef>> = JsonMissing.of(),
-        @JsonProperty("field_filter")
-        @ExcludeMissing
-        fieldFilter: JsonField<List<FieldRef>> = JsonMissing.of(),
         @JsonProperty("sorts") @ExcludeMissing sorts: JsonField<List<SortSpec>> = JsonMissing.of(),
-    ) : this(id, createdAt, filters, name, updatedAt, columns, fieldFilter, sorts, mutableMapOf())
+    ) : this(id, createdAt, filters, name, updatedAt, columns, sorts, mutableMapOf())
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -94,15 +90,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun columns(): Optional<List<FieldRef>> = columns.getOptional("columns")
-
-    /**
-     * Deprecated: use `columns` instead. Mirrors `columns`.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    @Deprecated("deprecated")
-    fun fieldFilter(): Optional<List<FieldRef>> = fieldFilter.getOptional("field_filter")
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -157,16 +144,6 @@ private constructor(
     @JsonProperty("columns") @ExcludeMissing fun _columns(): JsonField<List<FieldRef>> = columns
 
     /**
-     * Returns the raw JSON value of [fieldFilter].
-     *
-     * Unlike [fieldFilter], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @Deprecated("deprecated")
-    @JsonProperty("field_filter")
-    @ExcludeMissing
-    fun _fieldFilter(): JsonField<List<FieldRef>> = fieldFilter
-
-    /**
      * Returns the raw JSON value of [sorts].
      *
      * Unlike [sorts], this method doesn't throw if the JSON field has an unexpected type.
@@ -211,7 +188,6 @@ private constructor(
         private var name: JsonField<String>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var columns: JsonField<MutableList<FieldRef>>? = null
-        private var fieldFilter: JsonField<MutableList<FieldRef>>? = null
         private var sorts: JsonField<MutableList<SortSpec>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -223,7 +199,6 @@ private constructor(
             name = screenerEntry.name
             updatedAt = screenerEntry.updatedAt
             columns = screenerEntry.columns.map { it.toMutableList() }
-            fieldFilter = screenerEntry.fieldFilter.map { it.toMutableList() }
             sorts = screenerEntry.sorts.map { it.toMutableList() }
             additionalProperties = screenerEntry.additionalProperties.toMutableMap()
         }
@@ -324,41 +299,6 @@ private constructor(
                 }
         }
 
-        /** Deprecated: use `columns` instead. Mirrors `columns`. */
-        @Deprecated("deprecated")
-        fun fieldFilter(fieldFilter: List<FieldRef>?) =
-            fieldFilter(JsonField.ofNullable(fieldFilter))
-
-        /** Alias for calling [Builder.fieldFilter] with `fieldFilter.orElse(null)`. */
-        @Deprecated("deprecated")
-        fun fieldFilter(fieldFilter: Optional<List<FieldRef>>) =
-            fieldFilter(fieldFilter.getOrNull())
-
-        /**
-         * Sets [Builder.fieldFilter] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.fieldFilter] with a well-typed `List<FieldRef>` value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        @Deprecated("deprecated")
-        fun fieldFilter(fieldFilter: JsonField<List<FieldRef>>) = apply {
-            this.fieldFilter = fieldFilter.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [FieldRef] to [Builder.fieldFilter].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        @Deprecated("deprecated")
-        fun addFieldFilter(fieldFilter: FieldRef) = apply {
-            this.fieldFilter =
-                (this.fieldFilter ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("fieldFilter", it).add(fieldFilter)
-                }
-        }
-
         fun sorts(sorts: List<SortSpec>?) = sorts(JsonField.ofNullable(sorts))
 
         /** Alias for calling [Builder.sorts] with `sorts.orElse(null)`. */
@@ -428,7 +368,6 @@ private constructor(
                 checkRequired("name", name),
                 checkRequired("updatedAt", updatedAt),
                 (columns ?: JsonMissing.of()).map { it.toImmutable() },
-                (fieldFilter ?: JsonMissing.of()).map { it.toImmutable() },
                 (sorts ?: JsonMissing.of()).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
@@ -455,7 +394,6 @@ private constructor(
         name()
         updatedAt()
         columns().ifPresent { it.forEach { it.validate() } }
-        fieldFilter().ifPresent { it.forEach { it.validate() } }
         sorts().ifPresent { it.forEach { it.validate() } }
         validated = true
     }
@@ -481,7 +419,6 @@ private constructor(
             (if (name.asKnown().isPresent) 1 else 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0) +
             (columns.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-            (fieldFilter.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (sorts.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
     override fun equals(other: Any?): Boolean {
@@ -496,27 +433,16 @@ private constructor(
             name == other.name &&
             updatedAt == other.updatedAt &&
             columns == other.columns &&
-            fieldFilter == other.fieldFilter &&
             sorts == other.sorts &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(
-            id,
-            createdAt,
-            filters,
-            name,
-            updatedAt,
-            columns,
-            fieldFilter,
-            sorts,
-            additionalProperties,
-        )
+        Objects.hash(id, createdAt, filters, name, updatedAt, columns, sorts, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ScreenerEntry{id=$id, createdAt=$createdAt, filters=$filters, name=$name, updatedAt=$updatedAt, columns=$columns, fieldFilter=$fieldFilter, sorts=$sorts, additionalProperties=$additionalProperties}"
+        "ScreenerEntry{id=$id, createdAt=$createdAt, filters=$filters, name=$name, updatedAt=$updatedAt, columns=$columns, sorts=$sorts, additionalProperties=$additionalProperties}"
 }
