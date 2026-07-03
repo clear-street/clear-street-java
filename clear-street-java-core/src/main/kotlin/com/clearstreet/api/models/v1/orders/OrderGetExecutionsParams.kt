@@ -5,6 +5,7 @@ package com.clearstreet.api.models.v1.orders
 import com.clearstreet.api.core.Params
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
+import com.clearstreet.api.core.toImmutable
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Objects
@@ -19,7 +20,7 @@ class OrderGetExecutionsParams
 private constructor(
     private val accountId: Long?,
     private val from: OffsetDateTime?,
-    private val instrumentId: String?,
+    private val instrumentIds: List<String>?,
     private val pageSize: Long?,
     private val pageToken: String?,
     private val to: OffsetDateTime?,
@@ -33,10 +34,10 @@ private constructor(
     fun from(): Optional<OffsetDateTime> = Optional.ofNullable(from)
 
     /**
-     * Optional instrument to filter by. Accepts either a symbol (e.g. `AAPL`) or an instrument
-     * identifier.
+     * Comma-separated instrument identifiers (UUIDs) or symbols (e.g. `AAPL`) to filter by. When
+     * provided, only executions for any of the listed instruments are returned.
      */
-    fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
+    fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
     /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
@@ -71,7 +72,7 @@ private constructor(
 
         private var accountId: Long? = null
         private var from: OffsetDateTime? = null
-        private var instrumentId: String? = null
+        private var instrumentIds: MutableList<String>? = null
         private var pageSize: Long? = null
         private var pageToken: String? = null
         private var to: OffsetDateTime? = null
@@ -82,7 +83,7 @@ private constructor(
         internal fun from(orderGetExecutionsParams: OrderGetExecutionsParams) = apply {
             accountId = orderGetExecutionsParams.accountId
             from = orderGetExecutionsParams.from
-            instrumentId = orderGetExecutionsParams.instrumentId
+            instrumentIds = orderGetExecutionsParams.instrumentIds?.toMutableList()
             pageSize = orderGetExecutionsParams.pageSize
             pageToken = orderGetExecutionsParams.pageToken
             to = orderGetExecutionsParams.to
@@ -109,13 +110,25 @@ private constructor(
         fun from(from: Optional<OffsetDateTime>) = from(from.getOrNull())
 
         /**
-         * Optional instrument to filter by. Accepts either a symbol (e.g. `AAPL`) or an instrument
-         * identifier.
+         * Comma-separated instrument identifiers (UUIDs) or symbols (e.g. `AAPL`) to filter by.
+         * When provided, only executions for any of the listed instruments are returned.
          */
-        fun instrumentId(instrumentId: String?) = apply { this.instrumentId = instrumentId }
+        fun instrumentIds(instrumentIds: List<String>?) = apply {
+            this.instrumentIds = instrumentIds?.toMutableList()
+        }
 
-        /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */
-        fun instrumentId(instrumentId: Optional<String>) = instrumentId(instrumentId.getOrNull())
+        /** Alias for calling [Builder.instrumentIds] with `instrumentIds.orElse(null)`. */
+        fun instrumentIds(instrumentIds: Optional<List<String>>) =
+            instrumentIds(instrumentIds.getOrNull())
+
+        /**
+         * Adds a single [String] to [instrumentIds].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addInstrumentId(instrumentId: String) = apply {
+            instrumentIds = (instrumentIds ?: mutableListOf()).apply { add(instrumentId) }
+        }
 
         /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
@@ -252,7 +265,7 @@ private constructor(
             OrderGetExecutionsParams(
                 accountId,
                 from,
-                instrumentId,
+                instrumentIds?.toImmutable(),
                 pageSize,
                 pageToken,
                 to,
@@ -273,7 +286,7 @@ private constructor(
         QueryParams.builder()
             .apply {
                 from?.let { put("from", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
-                instrumentId?.let { put("instrument_id", it) }
+                instrumentIds?.let { put("instrument_ids", it.joinToString(",")) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 to?.let { put("to", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
@@ -289,7 +302,7 @@ private constructor(
         return other is OrderGetExecutionsParams &&
             accountId == other.accountId &&
             from == other.from &&
-            instrumentId == other.instrumentId &&
+            instrumentIds == other.instrumentIds &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
             to == other.to &&
@@ -301,7 +314,7 @@ private constructor(
         Objects.hash(
             accountId,
             from,
-            instrumentId,
+            instrumentIds,
             pageSize,
             pageToken,
             to,
@@ -310,5 +323,5 @@ private constructor(
         )
 
     override fun toString() =
-        "OrderGetExecutionsParams{accountId=$accountId, from=$from, instrumentId=$instrumentId, pageSize=$pageSize, pageToken=$pageToken, to=$to, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "OrderGetExecutionsParams{accountId=$accountId, from=$from, instrumentIds=$instrumentIds, pageSize=$pageSize, pageToken=$pageToken, to=$to, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
