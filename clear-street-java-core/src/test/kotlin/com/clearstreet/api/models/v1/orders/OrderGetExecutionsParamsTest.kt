@@ -14,7 +14,7 @@ internal class OrderGetExecutionsParamsTest {
         OrderGetExecutionsParams.builder()
             .accountId(0L)
             .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
             .pageSize(1L)
             .pageToken("U3RhaW5sZXNzIHJvY2tz")
             .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -36,7 +36,7 @@ internal class OrderGetExecutionsParamsTest {
             OrderGetExecutionsParams.builder()
                 .accountId(0L)
                 .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .pageSize(1L)
                 .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
@@ -48,7 +48,10 @@ internal class OrderGetExecutionsParamsTest {
             .isEqualTo(
                 QueryParams.builder()
                     .put("from", "2019-12-27T18:11:19.117Z")
-                    .put("instrument_id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .put(
+                        "instrument_ids",
+                        listOf("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e").joinToString(","),
+                    )
                     .put("page_size", "1")
                     .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
                     .put("to", "2019-12-27T18:11:19.117Z")
