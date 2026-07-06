@@ -32,7 +32,6 @@ private constructor(
     private val instrumentId: JsonField<String>,
     private val limitOffset: JsonField<String>,
     private val limitPrice: JsonField<String>,
-    private val positionEffect: JsonField<PositionEffect>,
     private val stopPrice: JsonField<String>,
     private val symbol: JsonField<String>,
     private val trailingOffset: JsonField<String>,
@@ -66,9 +65,6 @@ private constructor(
         @JsonProperty("limit_price")
         @ExcludeMissing
         limitPrice: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("position_effect")
-        @ExcludeMissing
-        positionEffect: JsonField<PositionEffect> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("trailing_offset")
@@ -88,7 +84,6 @@ private constructor(
         instrumentId,
         limitOffset,
         limitPrice,
-        positionEffect,
         stopPrice,
         symbol,
         trailingOffset,
@@ -177,14 +172,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun limitPrice(): Optional<String> = limitPrice.getOptional("limit_price")
-
-    /**
-     * Required for options. Specifies whether the order opens or closes a position.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun positionEffect(): Optional<PositionEffect> = positionEffect.getOptional("position_effect")
 
     /**
      * Stop price (required for STOP and STOP_LIMIT orders)
@@ -303,15 +290,6 @@ private constructor(
     @JsonProperty("limit_price") @ExcludeMissing fun _limitPrice(): JsonField<String> = limitPrice
 
     /**
-     * Returns the raw JSON value of [positionEffect].
-     *
-     * Unlike [positionEffect], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("position_effect")
-    @ExcludeMissing
-    fun _positionEffect(): JsonField<PositionEffect> = positionEffect
-
-    /**
      * Returns the raw JSON value of [stopPrice].
      *
      * Unlike [stopPrice], this method doesn't throw if the JSON field has an unexpected type.
@@ -385,7 +363,6 @@ private constructor(
         private var instrumentId: JsonField<String> = JsonMissing.of()
         private var limitOffset: JsonField<String> = JsonMissing.of()
         private var limitPrice: JsonField<String> = JsonMissing.of()
-        private var positionEffect: JsonField<PositionEffect> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
         private var symbol: JsonField<String> = JsonMissing.of()
         private var trailingOffset: JsonField<String> = JsonMissing.of()
@@ -404,7 +381,6 @@ private constructor(
             instrumentId = newOrderRequest.instrumentId
             limitOffset = newOrderRequest.limitOffset
             limitPrice = newOrderRequest.limitPrice
-            positionEffect = newOrderRequest.positionEffect
             stopPrice = newOrderRequest.stopPrice
             symbol = newOrderRequest.symbol
             trailingOffset = newOrderRequest.trailingOffset
@@ -570,21 +546,6 @@ private constructor(
          */
         fun limitPrice(limitPrice: JsonField<String>) = apply { this.limitPrice = limitPrice }
 
-        /** Required for options. Specifies whether the order opens or closes a position. */
-        fun positionEffect(positionEffect: PositionEffect) =
-            positionEffect(JsonField.of(positionEffect))
-
-        /**
-         * Sets [Builder.positionEffect] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.positionEffect] with a well-typed [PositionEffect] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun positionEffect(positionEffect: JsonField<PositionEffect>) = apply {
-            this.positionEffect = positionEffect
-        }
-
         /** Stop price (required for STOP and STOP_LIMIT orders) */
         fun stopPrice(stopPrice: String?) = stopPrice(JsonField.ofNullable(stopPrice))
 
@@ -704,7 +665,6 @@ private constructor(
                 instrumentId,
                 limitOffset,
                 limitPrice,
-                positionEffect,
                 stopPrice,
                 symbol,
                 trailingOffset,
@@ -738,7 +698,6 @@ private constructor(
         instrumentId()
         limitOffset()
         limitPrice()
-        positionEffect().ifPresent { it.validate() }
         stopPrice()
         symbol()
         trailingOffset()
@@ -771,7 +730,6 @@ private constructor(
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (if (limitOffset.asKnown().isPresent) 1 else 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
-            (positionEffect.asKnown().getOrNull()?.validity() ?: 0) +
             (if (stopPrice.asKnown().isPresent) 1 else 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (trailingOffset.asKnown().isPresent) 1 else 0) +
@@ -793,7 +751,6 @@ private constructor(
             instrumentId == other.instrumentId &&
             limitOffset == other.limitOffset &&
             limitPrice == other.limitPrice &&
-            positionEffect == other.positionEffect &&
             stopPrice == other.stopPrice &&
             symbol == other.symbol &&
             trailingOffset == other.trailingOffset &&
@@ -813,7 +770,6 @@ private constructor(
             instrumentId,
             limitOffset,
             limitPrice,
-            positionEffect,
             stopPrice,
             symbol,
             trailingOffset,
@@ -825,5 +781,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "NewOrderRequest{orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, limitOffset=$limitOffset, limitPrice=$limitPrice, positionEffect=$positionEffect, stopPrice=$stopPrice, symbol=$symbol, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
+        "NewOrderRequest{orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, limitOffset=$limitOffset, limitPrice=$limitPrice, stopPrice=$stopPrice, symbol=$symbol, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
 }
