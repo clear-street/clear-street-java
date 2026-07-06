@@ -6,7 +6,6 @@ import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.clearstreet.api.models.v1.orders.NewOrderRequest
-import com.clearstreet.api.models.v1.orders.PositionEffect
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
@@ -40,7 +39,6 @@ internal class StructuredActionTest {
                                 .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .limitOffset("0.50")
                                 .limitPrice("150.00")
-                                .positionEffect(PositionEffect.OPEN)
                                 .stopPrice("52.00")
                                 .symbol("AAPL")
                                 .trailingOffset("2.00")
@@ -82,7 +80,6 @@ internal class StructuredActionTest {
                                     .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                     .limitOffset("0.50")
                                     .limitPrice("150.00")
-                                    .positionEffect(PositionEffect.OPEN)
                                     .stopPrice("52.00")
                                     .symbol("AAPL")
                                     .trailingOffset("2.00")

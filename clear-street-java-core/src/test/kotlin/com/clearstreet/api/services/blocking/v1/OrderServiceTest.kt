@@ -12,7 +12,6 @@ import com.clearstreet.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clearstreet.api.models.v1.orders.OrderGetOrdersParams
 import com.clearstreet.api.models.v1.orders.OrderReplaceOrderParams
 import com.clearstreet.api.models.v1.orders.OrderSubmitOrdersParams
-import com.clearstreet.api.models.v1.orders.PositionEffect
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
@@ -183,7 +182,6 @@ internal class OrderServiceTest {
                             .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .limitOffset("0.50")
                             .limitPrice("48.00")
-                            .positionEffect(PositionEffect.OPEN)
                             .stopPrice("52.00")
                             .symbol("TSLA")
                             .trailingOffset("2.00")
