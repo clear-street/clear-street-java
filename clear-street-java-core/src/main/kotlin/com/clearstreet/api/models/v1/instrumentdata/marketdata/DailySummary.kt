@@ -21,12 +21,16 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Daily aggregate (OHLV) summary for a single instrument.
  *
- * Returned by `GET /market-data/daily-summary`. Every field except `instrument_id` is `Option`:
+ * Returned by `GET /market-data/daily-summary`. Every field except `instrument_id` and
+ * `not_applicable` is `Option`:
  * - Unresolvable `instrument_id` → all other fields `None` (including `symbol`).
  * - Resolvable `instrument_id` with no realtime cache entry → `symbol` populated, OHLV/`trade_date`
  *   `None`.
  * - `trade_date` reflects the session the OHLV represents (today during trading hours, the last
  *   trading date during weekends/holidays).
+ * - `not_applicable` is a non-optional `bool`, always serialized: `true` for instrument types with
+ *   no daily summary by definition (e.g. an index, whose OHLV/`trade_date` are `None`), `false`
+ *   otherwise.
  */
 class DailySummary
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -34,6 +38,7 @@ private constructor(
     private val instrumentId: JsonField<String>,
     private val high: JsonField<String>,
     private val low: JsonField<String>,
+    private val notApplicable: JsonField<Boolean>,
     private val open: JsonField<String>,
     private val symbol: JsonField<String>,
     private val tradeDate: JsonField<LocalDate>,
@@ -48,13 +53,26 @@ private constructor(
         instrumentId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("high") @ExcludeMissing high: JsonField<String> = JsonMissing.of(),
         @JsonProperty("low") @ExcludeMissing low: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("not_applicable")
+        @ExcludeMissing
+        notApplicable: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("open") @ExcludeMissing open: JsonField<String> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("trade_date")
         @ExcludeMissing
         tradeDate: JsonField<LocalDate> = JsonMissing.of(),
         @JsonProperty("volume") @ExcludeMissing volume: JsonField<Long> = JsonMissing.of(),
-    ) : this(instrumentId, high, low, open, symbol, tradeDate, volume, mutableMapOf())
+    ) : this(
+        instrumentId,
+        high,
+        low,
+        notApplicable,
+        open,
+        symbol,
+        tradeDate,
+        volume,
+        mutableMapOf(),
+    )
 
     /**
      * Unique instrument identifier. Always populated; echoes the request ID.
@@ -81,6 +99,16 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun low(): Optional<String> = low.getOptional("low")
+
+    /**
+     * `true` when the instrument type has no daily summary by definition (e.g. an index).
+     * Distinguishes an intentional N/A from OHLV that is merely not loaded yet. `false` for
+     * instruments that can have a summary.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun notApplicable(): Optional<Boolean> = notApplicable.getOptional("not_applicable")
 
     /**
      * Opening price for the session. When a null/undefined value is observed, it indicates that
@@ -142,6 +170,15 @@ private constructor(
     @JsonProperty("low") @ExcludeMissing fun _low(): JsonField<String> = low
 
     /**
+     * Returns the raw JSON value of [notApplicable].
+     *
+     * Unlike [notApplicable], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("not_applicable")
+    @ExcludeMissing
+    fun _notApplicable(): JsonField<Boolean> = notApplicable
+
+    /**
      * Returns the raw JSON value of [open].
      *
      * Unlike [open], this method doesn't throw if the JSON field has an unexpected type.
@@ -200,6 +237,7 @@ private constructor(
         private var instrumentId: JsonField<String>? = null
         private var high: JsonField<String> = JsonMissing.of()
         private var low: JsonField<String> = JsonMissing.of()
+        private var notApplicable: JsonField<Boolean> = JsonMissing.of()
         private var open: JsonField<String> = JsonMissing.of()
         private var symbol: JsonField<String> = JsonMissing.of()
         private var tradeDate: JsonField<LocalDate> = JsonMissing.of()
@@ -211,6 +249,7 @@ private constructor(
             instrumentId = dailySummary.instrumentId
             high = dailySummary.high
             low = dailySummary.low
+            notApplicable = dailySummary.notApplicable
             open = dailySummary.open
             symbol = dailySummary.symbol
             tradeDate = dailySummary.tradeDate
@@ -265,6 +304,24 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun low(low: JsonField<String>) = apply { this.low = low }
+
+        /**
+         * `true` when the instrument type has no daily summary by definition (e.g. an index).
+         * Distinguishes an intentional N/A from OHLV that is merely not loaded yet. `false` for
+         * instruments that can have a summary.
+         */
+        fun notApplicable(notApplicable: Boolean) = notApplicable(JsonField.of(notApplicable))
+
+        /**
+         * Sets [Builder.notApplicable] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.notApplicable] with a well-typed [Boolean] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun notApplicable(notApplicable: JsonField<Boolean>) = apply {
+            this.notApplicable = notApplicable
+        }
 
         /**
          * Opening price for the session. When a null/undefined value is observed, it indicates that
@@ -378,6 +435,7 @@ private constructor(
                 checkRequired("instrumentId", instrumentId),
                 high,
                 low,
+                notApplicable,
                 open,
                 symbol,
                 tradeDate,
@@ -404,6 +462,7 @@ private constructor(
         instrumentId()
         high()
         low()
+        notApplicable()
         open()
         symbol()
         tradeDate()
@@ -429,6 +488,7 @@ private constructor(
         (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (if (high.asKnown().isPresent) 1 else 0) +
             (if (low.asKnown().isPresent) 1 else 0) +
+            (if (notApplicable.asKnown().isPresent) 1 else 0) +
             (if (open.asKnown().isPresent) 1 else 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (tradeDate.asKnown().isPresent) 1 else 0) +
@@ -443,6 +503,7 @@ private constructor(
             instrumentId == other.instrumentId &&
             high == other.high &&
             low == other.low &&
+            notApplicable == other.notApplicable &&
             open == other.open &&
             symbol == other.symbol &&
             tradeDate == other.tradeDate &&
@@ -451,11 +512,21 @@ private constructor(
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(instrumentId, high, low, open, symbol, tradeDate, volume, additionalProperties)
+        Objects.hash(
+            instrumentId,
+            high,
+            low,
+            notApplicable,
+            open,
+            symbol,
+            tradeDate,
+            volume,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DailySummary{instrumentId=$instrumentId, high=$high, low=$low, open=$open, symbol=$symbol, tradeDate=$tradeDate, volume=$volume, additionalProperties=$additionalProperties}"
+        "DailySummary{instrumentId=$instrumentId, high=$high, low=$low, notApplicable=$notApplicable, open=$open, symbol=$symbol, tradeDate=$tradeDate, volume=$volume, additionalProperties=$additionalProperties}"
 }

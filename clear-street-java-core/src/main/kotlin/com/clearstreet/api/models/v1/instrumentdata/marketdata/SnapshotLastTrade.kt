@@ -15,7 +15,12 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
 
-/** Last-trade fields for a market data snapshot. */
+/**
+ * Last-trade fields for a market data snapshot.
+ *
+ * For index instruments this carries the current index *level* — a computed value, not a trade:
+ * `price` is the level and `size` is always `0` (no contract changes hands).
+ */
 class SnapshotLastTrade
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -31,7 +36,7 @@ private constructor(
     ) : this(price, size, mutableMapOf())
 
     /**
-     * Most recent last-sale eligible trade price.
+     * Most recent last-sale eligible trade price. For index instruments, the current index level.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -39,7 +44,8 @@ private constructor(
     fun price(): String = price.getRequired("price")
 
     /**
-     * Share quantity of the most recent last-sale eligible trade.
+     * Share quantity of the most recent last-sale eligible trade. Always `0` for index instruments,
+     * whose level is computed rather than traded.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -100,7 +106,10 @@ private constructor(
             additionalProperties = snapshotLastTrade.additionalProperties.toMutableMap()
         }
 
-        /** Most recent last-sale eligible trade price. */
+        /**
+         * Most recent last-sale eligible trade price. For index instruments, the current index
+         * level.
+         */
         fun price(price: String) = price(JsonField.of(price))
 
         /**
@@ -111,7 +120,10 @@ private constructor(
          */
         fun price(price: JsonField<String>) = apply { this.price = price }
 
-        /** Share quantity of the most recent last-sale eligible trade. */
+        /**
+         * Share quantity of the most recent last-sale eligible trade. Always `0` for index
+         * instruments, whose level is computed rather than traded.
+         */
         fun size(size: Int) = size(JsonField.of(size))
 
         /**
