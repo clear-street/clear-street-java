@@ -55,7 +55,7 @@ configure<MavenPublishBaseExtension> {
         developers {
             developer {
                 name.set("Clear Street")
-                email.set("support@clearstreet.io")
+                email.set("concierge@clearstreet.com")
             }
         }
 
