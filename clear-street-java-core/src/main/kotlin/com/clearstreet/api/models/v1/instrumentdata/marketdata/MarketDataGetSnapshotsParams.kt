@@ -18,7 +18,7 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** Comma-separated instrument identifiers. */
+    /** Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols). */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
     /** Additional headers to send with the request. */
@@ -53,7 +53,9 @@ private constructor(
             additionalQueryParams = marketDataGetSnapshotsParams.additionalQueryParams.toBuilder()
         }
 
-        /** Comma-separated instrument identifiers. */
+        /**
+         * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
+         */
         fun instrumentIds(instrumentIds: List<String>?) = apply {
             this.instrumentIds = instrumentIds?.toMutableList()
         }
