@@ -39,7 +39,7 @@ private constructor(
     /** The start date and time for the query range, inclusive (ISO 8601 format) */
     fun from(): Optional<OffsetDateTime> = Optional.ofNullable(from)
 
-    /** Comma-separated instrument identifiers */
+    /** Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols). */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
     /** Instrument type filter (e.g., COMMON_STOCK, OPTION) */
@@ -70,8 +70,8 @@ private constructor(
     fun to(): Optional<OffsetDateTime> = Optional.ofNullable(to)
 
     /**
-     * Comma-separated instrument identifiers. Matches options orders whose resolved underlier is
-     * any of the given IDs.
+     * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
+     * Matches options orders whose resolved underlier is any of the given instruments.
      */
     fun underlyingInstrumentIds(): Optional<List<String>> =
         Optional.ofNullable(underlyingInstrumentIds)
@@ -144,7 +144,9 @@ private constructor(
         /** Alias for calling [Builder.from] with `from.orElse(null)`. */
         fun from(from: Optional<OffsetDateTime>) = from(from.getOrNull())
 
-        /** Comma-separated instrument identifiers */
+        /**
+         * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
+         */
         fun instrumentIds(instrumentIds: List<String>?) = apply {
             this.instrumentIds = instrumentIds?.toMutableList()
         }
@@ -239,8 +241,8 @@ private constructor(
         fun to(to: Optional<OffsetDateTime>) = to(to.getOrNull())
 
         /**
-         * Comma-separated instrument identifiers. Matches options orders whose resolved underlier
-         * is any of the given IDs.
+         * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
+         * Matches options orders whose resolved underlier is any of the given instruments.
          */
         fun underlyingInstrumentIds(underlyingInstrumentIds: List<String>?) = apply {
             this.underlyingInstrumentIds = underlyingInstrumentIds?.toMutableList()
