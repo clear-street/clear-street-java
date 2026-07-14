@@ -49,16 +49,26 @@ interface CalendarService {
      * Retrieves comprehensive trading hours including pre-market, regular, and after-hours
      * sessions. Returns market status, session times, and next session schedules.
      */
+    fun getMarketHoursCalendar(): CalendarGetMarketHoursCalendarResponse =
+        getMarketHoursCalendar(CalendarGetMarketHoursCalendarParams.none())
+
+    /** @see getMarketHoursCalendar */
     fun getMarketHoursCalendar(
-        params: CalendarGetMarketHoursCalendarParams
+        params: CalendarGetMarketHoursCalendarParams = CalendarGetMarketHoursCalendarParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CalendarGetMarketHoursCalendarResponse
+
+    /** @see getMarketHoursCalendar */
+    fun getMarketHoursCalendar(
+        params: CalendarGetMarketHoursCalendarParams = CalendarGetMarketHoursCalendarParams.none()
     ): CalendarGetMarketHoursCalendarResponse =
         getMarketHoursCalendar(params, RequestOptions.none())
 
     /** @see getMarketHoursCalendar */
     fun getMarketHoursCalendar(
-        params: CalendarGetMarketHoursCalendarParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CalendarGetMarketHoursCalendarResponse
+        requestOptions: RequestOptions
+    ): CalendarGetMarketHoursCalendarResponse =
+        getMarketHoursCalendar(CalendarGetMarketHoursCalendarParams.none(), requestOptions)
 
     /** A view of [CalendarService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -101,16 +111,30 @@ interface CalendarService {
          * same as [CalendarService.getMarketHoursCalendar].
          */
         @MustBeClosed
+        fun getMarketHoursCalendar(): HttpResponseFor<CalendarGetMarketHoursCalendarResponse> =
+            getMarketHoursCalendar(CalendarGetMarketHoursCalendarParams.none())
+
+        /** @see getMarketHoursCalendar */
+        @MustBeClosed
         fun getMarketHoursCalendar(
-            params: CalendarGetMarketHoursCalendarParams
+            params: CalendarGetMarketHoursCalendarParams =
+                CalendarGetMarketHoursCalendarParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CalendarGetMarketHoursCalendarResponse>
+
+        /** @see getMarketHoursCalendar */
+        @MustBeClosed
+        fun getMarketHoursCalendar(
+            params: CalendarGetMarketHoursCalendarParams =
+                CalendarGetMarketHoursCalendarParams.none()
         ): HttpResponseFor<CalendarGetMarketHoursCalendarResponse> =
             getMarketHoursCalendar(params, RequestOptions.none())
 
         /** @see getMarketHoursCalendar */
         @MustBeClosed
         fun getMarketHoursCalendar(
-            params: CalendarGetMarketHoursCalendarParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CalendarGetMarketHoursCalendarResponse>
+            requestOptions: RequestOptions
+        ): HttpResponseFor<CalendarGetMarketHoursCalendarResponse> =
+            getMarketHoursCalendar(CalendarGetMarketHoursCalendarParams.none(), requestOptions)
     }
 }

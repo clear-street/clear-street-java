@@ -34,10 +34,10 @@ internal class CalendarGetMarketHoursCalendarParamsTest {
 
     @Test
     fun queryParamsWithoutOptionalFields() {
-        val params = CalendarGetMarketHoursCalendarParams.builder().date("date").build()
+        val params = CalendarGetMarketHoursCalendarParams.builder().build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams).isEqualTo(QueryParams.builder().put("date", "date").build())
+        assertThat(queryParams).isEqualTo(QueryParams.builder().build())
     }
 }

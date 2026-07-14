@@ -30,7 +30,6 @@ private constructor(
     private val expiry: JsonField<LocalDate>,
     private val isLiquidationOnly: JsonField<Boolean>,
     private val isMarginable: JsonField<Boolean>,
-    private val isTradable: JsonField<Boolean>,
     private val listingType: JsonField<ListingType>,
     private val multiplier: JsonField<String>,
     private val strikePrice: JsonField<String>,
@@ -58,9 +57,6 @@ private constructor(
         @JsonProperty("is_marginable")
         @ExcludeMissing
         isMarginable: JsonField<Boolean> = JsonMissing.of(),
-        @JsonProperty("is_tradable")
-        @ExcludeMissing
-        isTradable: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("listing_type")
         @ExcludeMissing
         listingType: JsonField<ListingType> = JsonMissing.of(),
@@ -86,7 +82,6 @@ private constructor(
         expiry,
         isLiquidationOnly,
         isMarginable,
-        isTradable,
         listingType,
         multiplier,
         strikePrice,
@@ -159,14 +154,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun isMarginable(): Boolean = isMarginable.getRequired("is_marginable")
-
-    /**
-     * Whether the contract is tradable
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun isTradable(): Boolean = isTradable.getRequired("is_tradable")
 
     /**
      * Listing type
@@ -285,13 +272,6 @@ private constructor(
     fun _isMarginable(): JsonField<Boolean> = isMarginable
 
     /**
-     * Returns the raw JSON value of [isTradable].
-     *
-     * Unlike [isTradable], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("is_tradable") @ExcludeMissing fun _isTradable(): JsonField<Boolean> = isTradable
-
-    /**
      * Returns the raw JSON value of [listingType].
      *
      * Unlike [listingType], this method doesn't throw if the JSON field has an unexpected type.
@@ -369,7 +349,6 @@ private constructor(
          * .expiry()
          * .isLiquidationOnly()
          * .isMarginable()
-         * .isTradable()
          * .listingType()
          * .multiplier()
          * .strikePrice()
@@ -390,7 +369,6 @@ private constructor(
         private var expiry: JsonField<LocalDate>? = null
         private var isLiquidationOnly: JsonField<Boolean>? = null
         private var isMarginable: JsonField<Boolean>? = null
-        private var isTradable: JsonField<Boolean>? = null
         private var listingType: JsonField<ListingType>? = null
         private var multiplier: JsonField<String>? = null
         private var strikePrice: JsonField<String>? = null
@@ -409,7 +387,6 @@ private constructor(
             expiry = optionsContract.expiry
             isLiquidationOnly = optionsContract.isLiquidationOnly
             isMarginable = optionsContract.isMarginable
-            isTradable = optionsContract.isTradable
             listingType = optionsContract.listingType
             multiplier = optionsContract.multiplier
             strikePrice = optionsContract.strikePrice
@@ -520,18 +497,6 @@ private constructor(
         fun isMarginable(isMarginable: JsonField<Boolean>) = apply {
             this.isMarginable = isMarginable
         }
-
-        /** Whether the contract is tradable */
-        fun isTradable(isTradable: Boolean) = isTradable(JsonField.of(isTradable))
-
-        /**
-         * Sets [Builder.isTradable] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.isTradable] with a well-typed [Boolean] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun isTradable(isTradable: JsonField<Boolean>) = apply { this.isTradable = isTradable }
 
         /** Listing type */
         fun listingType(listingType: ListingType) = listingType(JsonField.of(listingType))
@@ -666,7 +631,6 @@ private constructor(
          * .expiry()
          * .isLiquidationOnly()
          * .isMarginable()
-         * .isTradable()
          * .listingType()
          * .multiplier()
          * .strikePrice()
@@ -685,7 +649,6 @@ private constructor(
                 checkRequired("expiry", expiry),
                 checkRequired("isLiquidationOnly", isLiquidationOnly),
                 checkRequired("isMarginable", isMarginable),
-                checkRequired("isTradable", isTradable),
                 checkRequired("listingType", listingType),
                 checkRequired("multiplier", multiplier),
                 checkRequired("strikePrice", strikePrice),
@@ -719,7 +682,6 @@ private constructor(
         expiry()
         isLiquidationOnly()
         isMarginable()
-        isTradable()
         listingType().validate()
         multiplier()
         strikePrice()
@@ -752,7 +714,6 @@ private constructor(
             (if (expiry.asKnown().isPresent) 1 else 0) +
             (if (isLiquidationOnly.asKnown().isPresent) 1 else 0) +
             (if (isMarginable.asKnown().isPresent) 1 else 0) +
-            (if (isTradable.asKnown().isPresent) 1 else 0) +
             (listingType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (multiplier.asKnown().isPresent) 1 else 0) +
             (if (strikePrice.asKnown().isPresent) 1 else 0) +
@@ -774,7 +735,6 @@ private constructor(
             expiry == other.expiry &&
             isLiquidationOnly == other.isLiquidationOnly &&
             isMarginable == other.isMarginable &&
-            isTradable == other.isTradable &&
             listingType == other.listingType &&
             multiplier == other.multiplier &&
             strikePrice == other.strikePrice &&
@@ -794,7 +754,6 @@ private constructor(
             expiry,
             isLiquidationOnly,
             isMarginable,
-            isTradable,
             listingType,
             multiplier,
             strikePrice,
@@ -808,5 +767,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OptionsContract{id=$id, contractType=$contractType, currency=$currency, exchange=$exchange, exerciseStyle=$exerciseStyle, expiry=$expiry, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isTradable=$isTradable, listingType=$listingType, multiplier=$multiplier, strikePrice=$strikePrice, symbol=$symbol, openInterest=$openInterest, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
+        "OptionsContract{id=$id, contractType=$contractType, currency=$currency, exchange=$exchange, exerciseStyle=$exerciseStyle, expiry=$expiry, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, listingType=$listingType, multiplier=$multiplier, strikePrice=$strikePrice, symbol=$symbol, openInterest=$openInterest, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
 }
