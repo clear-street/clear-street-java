@@ -3,6 +3,7 @@
 package com.clearstreet.api.models.v1.calendar
 
 import com.clearstreet.api.core.Params
+import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
 import java.util.Objects
@@ -15,14 +16,14 @@ import kotlin.jvm.optionals.getOrNull
  */
 class CalendarGetMarketHoursCalendarParams
 private constructor(
-    private val date: String?,
+    private val date: String,
     private val market: MarketType?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     /** The date to query market hours for (YYYY-MM-DD). Defaults to today. */
-    fun date(): Optional<String> = Optional.ofNullable(date)
+    fun date(): String = date
 
     /** Market type to query (us_equities, us_options). If omitted, returns all markets. */
     fun market(): Optional<MarketType> = Optional.ofNullable(market)
@@ -37,11 +38,14 @@ private constructor(
 
     companion object {
 
-        @JvmStatic fun none(): CalendarGetMarketHoursCalendarParams = builder().build()
-
         /**
          * Returns a mutable builder for constructing an instance of
          * [CalendarGetMarketHoursCalendarParams].
+         *
+         * The following fields are required:
+         * ```java
+         * .date()
+         * ```
          */
         @JvmStatic fun builder() = Builder()
     }
@@ -66,10 +70,7 @@ private constructor(
         }
 
         /** The date to query market hours for (YYYY-MM-DD). Defaults to today. */
-        fun date(date: String?) = apply { this.date = date }
-
-        /** Alias for calling [Builder.date] with `date.orElse(null)`. */
-        fun date(date: Optional<String>) = date(date.getOrNull())
+        fun date(date: String) = apply { this.date = date }
 
         /** Market type to query (us_equities, us_options). If omitted, returns all markets. */
         fun market(market: MarketType?) = apply { this.market = market }
@@ -179,10 +180,17 @@ private constructor(
          * Returns an immutable instance of [CalendarGetMarketHoursCalendarParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```java
+         * .date()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): CalendarGetMarketHoursCalendarParams =
             CalendarGetMarketHoursCalendarParams(
-                date,
+                checkRequired("date", date),
                 market,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -194,7 +202,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                date?.let { put("date", it) }
+                put("date", date)
                 market?.let { put("market", it.toString()) }
                 putAll(additionalQueryParams)
             }
