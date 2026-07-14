@@ -50,26 +50,16 @@ interface CalendarServiceAsync {
      * Retrieves comprehensive trading hours including pre-market, regular, and after-hours
      * sessions. Returns market status, session times, and next session schedules.
      */
-    fun getMarketHoursCalendar(): CompletableFuture<CalendarGetMarketHoursCalendarResponse> =
-        getMarketHoursCalendar(CalendarGetMarketHoursCalendarParams.none())
-
-    /** @see getMarketHoursCalendar */
     fun getMarketHoursCalendar(
-        params: CalendarGetMarketHoursCalendarParams = CalendarGetMarketHoursCalendarParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<CalendarGetMarketHoursCalendarResponse>
-
-    /** @see getMarketHoursCalendar */
-    fun getMarketHoursCalendar(
-        params: CalendarGetMarketHoursCalendarParams = CalendarGetMarketHoursCalendarParams.none()
+        params: CalendarGetMarketHoursCalendarParams
     ): CompletableFuture<CalendarGetMarketHoursCalendarResponse> =
         getMarketHoursCalendar(params, RequestOptions.none())
 
     /** @see getMarketHoursCalendar */
     fun getMarketHoursCalendar(
-        requestOptions: RequestOptions
-    ): CompletableFuture<CalendarGetMarketHoursCalendarResponse> =
-        getMarketHoursCalendar(CalendarGetMarketHoursCalendarParams.none(), requestOptions)
+        params: CalendarGetMarketHoursCalendarParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CalendarGetMarketHoursCalendarResponse>
 
     /**
      * A view of [CalendarServiceAsync] that provides access to raw HTTP responses for each method.
@@ -114,28 +104,15 @@ interface CalendarServiceAsync {
          * Returns a raw HTTP response for `get /v1/calendars/market-hours`, but is otherwise the
          * same as [CalendarServiceAsync.getMarketHoursCalendar].
          */
-        fun getMarketHoursCalendar():
-            CompletableFuture<HttpResponseFor<CalendarGetMarketHoursCalendarResponse>> =
-            getMarketHoursCalendar(CalendarGetMarketHoursCalendarParams.none())
-
-        /** @see getMarketHoursCalendar */
         fun getMarketHoursCalendar(
-            params: CalendarGetMarketHoursCalendarParams =
-                CalendarGetMarketHoursCalendarParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<CalendarGetMarketHoursCalendarResponse>>
-
-        /** @see getMarketHoursCalendar */
-        fun getMarketHoursCalendar(
-            params: CalendarGetMarketHoursCalendarParams =
-                CalendarGetMarketHoursCalendarParams.none()
+            params: CalendarGetMarketHoursCalendarParams
         ): CompletableFuture<HttpResponseFor<CalendarGetMarketHoursCalendarResponse>> =
             getMarketHoursCalendar(params, RequestOptions.none())
 
         /** @see getMarketHoursCalendar */
         fun getMarketHoursCalendar(
-            requestOptions: RequestOptions
-        ): CompletableFuture<HttpResponseFor<CalendarGetMarketHoursCalendarResponse>> =
-            getMarketHoursCalendar(CalendarGetMarketHoursCalendarParams.none(), requestOptions)
+            params: CalendarGetMarketHoursCalendarParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CalendarGetMarketHoursCalendarResponse>>
     }
 }
