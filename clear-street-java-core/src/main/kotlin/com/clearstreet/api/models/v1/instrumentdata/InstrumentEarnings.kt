@@ -26,6 +26,7 @@ private constructor(
     private val epsActual: JsonField<String>,
     private val epsEstimate: JsonField<String>,
     private val epsSurprisePercent: JsonField<String>,
+    private val reportTime: JsonField<ReportTime>,
     private val revenueActual: JsonField<String>,
     private val revenueEstimate: JsonField<String>,
     private val revenueSurprisePercent: JsonField<String>,
@@ -42,6 +43,9 @@ private constructor(
         @JsonProperty("eps_surprise_percent")
         @ExcludeMissing
         epsSurprisePercent: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("report_time")
+        @ExcludeMissing
+        reportTime: JsonField<ReportTime> = JsonMissing.of(),
         @JsonProperty("revenue_actual")
         @ExcludeMissing
         revenueActual: JsonField<String> = JsonMissing.of(),
@@ -56,6 +60,7 @@ private constructor(
         epsActual,
         epsEstimate,
         epsSurprisePercent,
+        reportTime,
         revenueActual,
         revenueEstimate,
         revenueSurprisePercent,
@@ -97,6 +102,15 @@ private constructor(
      */
     fun epsSurprisePercent(): Optional<String> =
         epsSurprisePercent.getOptional("eps_surprise_percent")
+
+    /**
+     * Report timing: before market open or after market close When a null/undefined value is
+     * observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun reportTime(): Optional<ReportTime> = reportTime.getOptional("report_time")
 
     /**
      * The actual total revenue for the period When a null/undefined value is observed, it indicates
@@ -160,6 +174,15 @@ private constructor(
     fun _epsSurprisePercent(): JsonField<String> = epsSurprisePercent
 
     /**
+     * Returns the raw JSON value of [reportTime].
+     *
+     * Unlike [reportTime], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("report_time")
+    @ExcludeMissing
+    fun _reportTime(): JsonField<ReportTime> = reportTime
+
+    /**
      * Returns the raw JSON value of [revenueActual].
      *
      * Unlike [revenueActual], this method doesn't throw if the JSON field has an unexpected type.
@@ -219,6 +242,7 @@ private constructor(
         private var epsActual: JsonField<String> = JsonMissing.of()
         private var epsEstimate: JsonField<String> = JsonMissing.of()
         private var epsSurprisePercent: JsonField<String> = JsonMissing.of()
+        private var reportTime: JsonField<ReportTime> = JsonMissing.of()
         private var revenueActual: JsonField<String> = JsonMissing.of()
         private var revenueEstimate: JsonField<String> = JsonMissing.of()
         private var revenueSurprisePercent: JsonField<String> = JsonMissing.of()
@@ -230,6 +254,7 @@ private constructor(
             epsActual = instrumentEarnings.epsActual
             epsEstimate = instrumentEarnings.epsEstimate
             epsSurprisePercent = instrumentEarnings.epsSurprisePercent
+            reportTime = instrumentEarnings.reportTime
             revenueActual = instrumentEarnings.revenueActual
             revenueEstimate = instrumentEarnings.revenueEstimate
             revenueSurprisePercent = instrumentEarnings.revenueSurprisePercent
@@ -306,6 +331,24 @@ private constructor(
         fun epsSurprisePercent(epsSurprisePercent: JsonField<String>) = apply {
             this.epsSurprisePercent = epsSurprisePercent
         }
+
+        /**
+         * Report timing: before market open or after market close When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
+        fun reportTime(reportTime: ReportTime?) = reportTime(JsonField.ofNullable(reportTime))
+
+        /** Alias for calling [Builder.reportTime] with `reportTime.orElse(null)`. */
+        fun reportTime(reportTime: Optional<ReportTime>) = reportTime(reportTime.getOrNull())
+
+        /**
+         * Sets [Builder.reportTime] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.reportTime] with a well-typed [ReportTime] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun reportTime(reportTime: JsonField<ReportTime>) = apply { this.reportTime = reportTime }
 
         /**
          * The actual total revenue for the period When a null/undefined value is observed, it
@@ -413,6 +456,7 @@ private constructor(
                 epsActual,
                 epsEstimate,
                 epsSurprisePercent,
+                reportTime,
                 revenueActual,
                 revenueEstimate,
                 revenueSurprisePercent,
@@ -439,6 +483,7 @@ private constructor(
         epsActual()
         epsEstimate()
         epsSurprisePercent()
+        reportTime().ifPresent { it.validate() }
         revenueActual()
         revenueEstimate()
         revenueSurprisePercent()
@@ -464,6 +509,7 @@ private constructor(
             (if (epsActual.asKnown().isPresent) 1 else 0) +
             (if (epsEstimate.asKnown().isPresent) 1 else 0) +
             (if (epsSurprisePercent.asKnown().isPresent) 1 else 0) +
+            (reportTime.asKnown().getOrNull()?.validity() ?: 0) +
             (if (revenueActual.asKnown().isPresent) 1 else 0) +
             (if (revenueEstimate.asKnown().isPresent) 1 else 0) +
             (if (revenueSurprisePercent.asKnown().isPresent) 1 else 0)
@@ -478,6 +524,7 @@ private constructor(
             epsActual == other.epsActual &&
             epsEstimate == other.epsEstimate &&
             epsSurprisePercent == other.epsSurprisePercent &&
+            reportTime == other.reportTime &&
             revenueActual == other.revenueActual &&
             revenueEstimate == other.revenueEstimate &&
             revenueSurprisePercent == other.revenueSurprisePercent &&
@@ -490,6 +537,7 @@ private constructor(
             epsActual,
             epsEstimate,
             epsSurprisePercent,
+            reportTime,
             revenueActual,
             revenueEstimate,
             revenueSurprisePercent,
@@ -500,5 +548,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentEarnings{date=$date, epsActual=$epsActual, epsEstimate=$epsEstimate, epsSurprisePercent=$epsSurprisePercent, revenueActual=$revenueActual, revenueEstimate=$revenueEstimate, revenueSurprisePercent=$revenueSurprisePercent, additionalProperties=$additionalProperties}"
+        "InstrumentEarnings{date=$date, epsActual=$epsActual, epsEstimate=$epsEstimate, epsSurprisePercent=$epsSurprisePercent, reportTime=$reportTime, revenueActual=$revenueActual, revenueEstimate=$revenueEstimate, revenueSurprisePercent=$revenueSurprisePercent, additionalProperties=$additionalProperties}"
 }
