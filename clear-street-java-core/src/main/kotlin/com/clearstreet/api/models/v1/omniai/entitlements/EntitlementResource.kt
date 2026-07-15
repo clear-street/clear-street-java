@@ -20,16 +20,17 @@ import kotlin.jvm.optionals.getOrNull
 class EntitlementResource
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val accountId: JsonField<Long>,
     private val agreementId: JsonField<String>,
     private val entitlementCode: JsonField<EntitlementCode>,
     private val entitlementId: JsonField<String>,
     private val grantedAt: JsonField<String>,
-    private val tradingAccountId: JsonField<Long>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
+        @JsonProperty("account_id") @ExcludeMissing accountId: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("agreement_id")
         @ExcludeMissing
         agreementId: JsonField<String> = JsonMissing.of(),
@@ -40,17 +41,13 @@ private constructor(
         @ExcludeMissing
         entitlementId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("granted_at") @ExcludeMissing grantedAt: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("trading_account_id")
-        @ExcludeMissing
-        tradingAccountId: JsonField<Long> = JsonMissing.of(),
-    ) : this(
-        agreementId,
-        entitlementCode,
-        entitlementId,
-        grantedAt,
-        tradingAccountId,
-        mutableMapOf(),
-    )
+    ) : this(accountId, agreementId, entitlementCode, entitlementId, grantedAt, mutableMapOf())
+
+    /**
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun accountId(): Long = accountId.getRequired("account_id")
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -79,10 +76,11 @@ private constructor(
     fun grantedAt(): String = grantedAt.getRequired("granted_at")
 
     /**
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * Returns the raw JSON value of [accountId].
+     *
+     * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun tradingAccountId(): Long = tradingAccountId.getRequired("trading_account_id")
+    @JsonProperty("account_id") @ExcludeMissing fun _accountId(): JsonField<Long> = accountId
 
     /**
      * Returns the raw JSON value of [agreementId].
@@ -118,16 +116,6 @@ private constructor(
      */
     @JsonProperty("granted_at") @ExcludeMissing fun _grantedAt(): JsonField<String> = grantedAt
 
-    /**
-     * Returns the raw JSON value of [tradingAccountId].
-     *
-     * Unlike [tradingAccountId], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("trading_account_id")
-    @ExcludeMissing
-    fun _tradingAccountId(): JsonField<Long> = tradingAccountId
-
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -147,11 +135,11 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .accountId()
          * .agreementId()
          * .entitlementCode()
          * .entitlementId()
          * .grantedAt()
-         * .tradingAccountId()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -160,22 +148,32 @@ private constructor(
     /** A builder for [EntitlementResource]. */
     class Builder internal constructor() {
 
+        private var accountId: JsonField<Long>? = null
         private var agreementId: JsonField<String>? = null
         private var entitlementCode: JsonField<EntitlementCode>? = null
         private var entitlementId: JsonField<String>? = null
         private var grantedAt: JsonField<String>? = null
-        private var tradingAccountId: JsonField<Long>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(entitlementResource: EntitlementResource) = apply {
+            accountId = entitlementResource.accountId
             agreementId = entitlementResource.agreementId
             entitlementCode = entitlementResource.entitlementCode
             entitlementId = entitlementResource.entitlementId
             grantedAt = entitlementResource.grantedAt
-            tradingAccountId = entitlementResource.tradingAccountId
             additionalProperties = entitlementResource.additionalProperties.toMutableMap()
         }
+
+        fun accountId(accountId: Long) = accountId(JsonField.of(accountId))
+
+        /**
+         * Sets [Builder.accountId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.accountId] with a well-typed [Long] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
 
         fun agreementId(agreementId: String) = agreementId(JsonField.of(agreementId))
 
@@ -227,20 +225,6 @@ private constructor(
          */
         fun grantedAt(grantedAt: JsonField<String>) = apply { this.grantedAt = grantedAt }
 
-        fun tradingAccountId(tradingAccountId: Long) =
-            tradingAccountId(JsonField.of(tradingAccountId))
-
-        /**
-         * Sets [Builder.tradingAccountId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.tradingAccountId] with a well-typed [Long] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun tradingAccountId(tradingAccountId: JsonField<Long>) = apply {
-            this.tradingAccountId = tradingAccountId
-        }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -267,22 +251,22 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .accountId()
          * .agreementId()
          * .entitlementCode()
          * .entitlementId()
          * .grantedAt()
-         * .tradingAccountId()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): EntitlementResource =
             EntitlementResource(
+                checkRequired("accountId", accountId),
                 checkRequired("agreementId", agreementId),
                 checkRequired("entitlementCode", entitlementCode),
                 checkRequired("entitlementId", entitlementId),
                 checkRequired("grantedAt", grantedAt),
-                checkRequired("tradingAccountId", tradingAccountId),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -302,11 +286,11 @@ private constructor(
             return@apply
         }
 
+        accountId()
         agreementId()
         entitlementCode().validate()
         entitlementId()
         grantedAt()
-        tradingAccountId()
         validated = true
     }
 
@@ -325,11 +309,11 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (if (agreementId.asKnown().isPresent) 1 else 0) +
+        (if (accountId.asKnown().isPresent) 1 else 0) +
+            (if (agreementId.asKnown().isPresent) 1 else 0) +
             (entitlementCode.asKnown().getOrNull()?.validity() ?: 0) +
             (if (entitlementId.asKnown().isPresent) 1 else 0) +
-            (if (grantedAt.asKnown().isPresent) 1 else 0) +
-            (if (tradingAccountId.asKnown().isPresent) 1 else 0)
+            (if (grantedAt.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -337,21 +321,21 @@ private constructor(
         }
 
         return other is EntitlementResource &&
+            accountId == other.accountId &&
             agreementId == other.agreementId &&
             entitlementCode == other.entitlementCode &&
             entitlementId == other.entitlementId &&
             grantedAt == other.grantedAt &&
-            tradingAccountId == other.tradingAccountId &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            accountId,
             agreementId,
             entitlementCode,
             entitlementId,
             grantedAt,
-            tradingAccountId,
             additionalProperties,
         )
     }
@@ -359,5 +343,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "EntitlementResource{agreementId=$agreementId, entitlementCode=$entitlementCode, entitlementId=$entitlementId, grantedAt=$grantedAt, tradingAccountId=$tradingAccountId, additionalProperties=$additionalProperties}"
+        "EntitlementResource{accountId=$accountId, agreementId=$agreementId, entitlementCode=$entitlementCode, entitlementId=$entitlementId, grantedAt=$grantedAt, additionalProperties=$additionalProperties}"
 }

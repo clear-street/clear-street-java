@@ -74,7 +74,7 @@ internal class EntitlementServiceTest {
 
         val response =
             entitlementService.getEntitlements(
-                EntitlementGetEntitlementsParams.builder().tradingAccountId(0L).build()
+                EntitlementGetEntitlementsParams.builder().accountId(0L).build()
             )
 
         response.validate()
