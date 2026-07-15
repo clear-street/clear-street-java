@@ -1,14 +1,14 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.clearstreet.api.models.v1.screener
+package com.clearstreet.api.models.v1.instrumentdata
 
 import com.clearstreet.api.core.Enum
 import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/** Reporting period for financial data fields. */
-class FieldPeriod @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+/** Earnings report timing: before market open or after market close */
+class ReportTime @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
     /**
      * Returns this class instance's raw value.
@@ -21,36 +21,32 @@ class FieldPeriod @JsonCreator private constructor(private val value: JsonField<
 
     companion object {
 
-        @JvmField val QUARTER = of("QUARTER")
+        @JvmField val BMO = of("BMO")
 
-        @JvmField val TRAILING_TWELVE_MONTHS = of("TRAILING_TWELVE_MONTHS")
+        @JvmField val AMC = of("AMC")
 
-        @JvmField val ANNUAL = of("ANNUAL")
-
-        @JvmStatic fun of(value: String) = FieldPeriod(JsonField.of(value))
+        @JvmStatic fun of(value: String) = ReportTime(JsonField.of(value))
     }
 
-    /** An enum containing [FieldPeriod]'s known values. */
+    /** An enum containing [ReportTime]'s known values. */
     enum class Known {
-        QUARTER,
-        TRAILING_TWELVE_MONTHS,
-        ANNUAL,
+        BMO,
+        AMC,
     }
 
     /**
-     * An enum containing [FieldPeriod]'s known values, as well as an [_UNKNOWN] member.
+     * An enum containing [ReportTime]'s known values, as well as an [_UNKNOWN] member.
      *
-     * An instance of [FieldPeriod] can contain an unknown value in a couple of cases:
+     * An instance of [ReportTime] can contain an unknown value in a couple of cases:
      * - It was deserialized from data that doesn't match any known member. For example, if the SDK
      *   is on an older version than the API, then the API may respond with new members that the SDK
      *   is unaware of.
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
-        QUARTER,
-        TRAILING_TWELVE_MONTHS,
-        ANNUAL,
-        /** An enum member indicating that [FieldPeriod] was instantiated with an unknown value. */
+        BMO,
+        AMC,
+        /** An enum member indicating that [ReportTime] was instantiated with an unknown value. */
         _UNKNOWN,
     }
 
@@ -63,9 +59,8 @@ class FieldPeriod @JsonCreator private constructor(private val value: JsonField<
      */
     fun value(): Value =
         when (this) {
-            QUARTER -> Value.QUARTER
-            TRAILING_TWELVE_MONTHS -> Value.TRAILING_TWELVE_MONTHS
-            ANNUAL -> Value.ANNUAL
+            BMO -> Value.BMO
+            AMC -> Value.AMC
             else -> Value._UNKNOWN
         }
 
@@ -80,10 +75,9 @@ class FieldPeriod @JsonCreator private constructor(private val value: JsonField<
      */
     fun known(): Known =
         when (this) {
-            QUARTER -> Known.QUARTER
-            TRAILING_TWELVE_MONTHS -> Known.TRAILING_TWELVE_MONTHS
-            ANNUAL -> Known.ANNUAL
-            else -> throw ClearStreetInvalidDataException("Unknown FieldPeriod: $value")
+            BMO -> Known.BMO
+            AMC -> Known.AMC
+            else -> throw ClearStreetInvalidDataException("Unknown ReportTime: $value")
         }
 
     /**
@@ -108,7 +102,7 @@ class FieldPeriod @JsonCreator private constructor(private val value: JsonField<
      * @throws ClearStreetInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): FieldPeriod = apply {
+    fun validate(): ReportTime = apply {
         if (validated) {
             return@apply
         }
@@ -137,7 +131,7 @@ class FieldPeriod @JsonCreator private constructor(private val value: JsonField<
             return true
         }
 
-        return other is FieldPeriod && value == other.value
+        return other is ReportTime && value == other.value
     }
 
     override fun hashCode() = value.hashCode()
