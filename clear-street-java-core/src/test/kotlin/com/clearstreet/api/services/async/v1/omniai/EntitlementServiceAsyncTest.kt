@@ -77,7 +77,7 @@ internal class EntitlementServiceAsyncTest {
 
         val responseFuture =
             entitlementServiceAsync.getEntitlements(
-                EntitlementGetEntitlementsParams.builder().tradingAccountId(0L).build()
+                EntitlementGetEntitlementsParams.builder().accountId(0L).build()
             )
 
         val response = responseFuture.get()
