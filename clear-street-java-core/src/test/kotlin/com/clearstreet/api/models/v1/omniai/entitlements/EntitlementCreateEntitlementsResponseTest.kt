@@ -40,11 +40,11 @@ internal class EntitlementCreateEntitlementsResponseTest {
                 )
                 .addData(
                     EntitlementResource.builder()
-                        .accountId(0L)
                         .agreementId("agreement_id")
                         .entitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                         .entitlementId("entitlement_id")
                         .grantedAt("granted_at")
+                        .tradingAccountId(0L)
                         .build()
                 )
                 .build()
@@ -75,11 +75,11 @@ internal class EntitlementCreateEntitlementsResponseTest {
         assertThat(entitlementCreateEntitlementsResponse.data())
             .containsExactly(
                 EntitlementResource.builder()
-                    .accountId(0L)
                     .agreementId("agreement_id")
                     .entitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                     .entitlementId("entitlement_id")
                     .grantedAt("granted_at")
+                    .tradingAccountId(0L)
                     .build()
             )
     }
@@ -112,11 +112,11 @@ internal class EntitlementCreateEntitlementsResponseTest {
                 )
                 .addData(
                     EntitlementResource.builder()
-                        .accountId(0L)
                         .agreementId("agreement_id")
                         .entitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                         .entitlementId("entitlement_id")
                         .grantedAt("granted_at")
+                        .tradingAccountId(0L)
                         .build()
                 )
                 .build()

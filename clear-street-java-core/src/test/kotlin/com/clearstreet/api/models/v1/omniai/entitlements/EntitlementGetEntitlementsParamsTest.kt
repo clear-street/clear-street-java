@@ -10,16 +10,17 @@ internal class EntitlementGetEntitlementsParamsTest {
 
     @Test
     fun create() {
-        EntitlementGetEntitlementsParams.builder().accountId(0L).build()
+        EntitlementGetEntitlementsParams.builder().tradingAccountId(0L).build()
     }
 
     @Test
     fun queryParams() {
-        val params = EntitlementGetEntitlementsParams.builder().accountId(0L).build()
+        val params = EntitlementGetEntitlementsParams.builder().tradingAccountId(0L).build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams).isEqualTo(QueryParams.builder().put("account_id", "0").build())
+        assertThat(queryParams)
+            .isEqualTo(QueryParams.builder().put("trading_account_id", "0").build())
     }
 
     @Test
