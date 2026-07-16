@@ -12,12 +12,12 @@ import kotlin.jvm.optionals.getOrNull
 /** List caller's active entitlement grants. */
 class EntitlementGetEntitlementsParams
 private constructor(
-    private val accountId: Long?,
+    private val tradingAccountId: Long?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
+    fun tradingAccountId(): Optional<Long> = Optional.ofNullable(tradingAccountId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -41,30 +41,33 @@ private constructor(
     /** A builder for [EntitlementGetEntitlementsParams]. */
     class Builder internal constructor() {
 
-        private var accountId: Long? = null
+        private var tradingAccountId: Long? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(entitlementGetEntitlementsParams: EntitlementGetEntitlementsParams) =
             apply {
-                accountId = entitlementGetEntitlementsParams.accountId
+                tradingAccountId = entitlementGetEntitlementsParams.tradingAccountId
                 additionalHeaders = entitlementGetEntitlementsParams.additionalHeaders.toBuilder()
                 additionalQueryParams =
                     entitlementGetEntitlementsParams.additionalQueryParams.toBuilder()
             }
 
-        fun accountId(accountId: Long?) = apply { this.accountId = accountId }
+        fun tradingAccountId(tradingAccountId: Long?) = apply {
+            this.tradingAccountId = tradingAccountId
+        }
 
         /**
-         * Alias for [Builder.accountId].
+         * Alias for [Builder.tradingAccountId].
          *
          * This unboxed primitive overload exists for backwards compatibility.
          */
-        fun accountId(accountId: Long) = accountId(accountId as Long?)
+        fun tradingAccountId(tradingAccountId: Long) = tradingAccountId(tradingAccountId as Long?)
 
-        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
-        fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
+        /** Alias for calling [Builder.tradingAccountId] with `tradingAccountId.orElse(null)`. */
+        fun tradingAccountId(tradingAccountId: Optional<Long>) =
+            tradingAccountId(tradingAccountId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -171,7 +174,7 @@ private constructor(
          */
         fun build(): EntitlementGetEntitlementsParams =
             EntitlementGetEntitlementsParams(
-                accountId,
+                tradingAccountId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -182,7 +185,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                accountId?.let { put("account_id", it.toString()) }
+                tradingAccountId?.let { put("trading_account_id", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -193,13 +196,14 @@ private constructor(
         }
 
         return other is EntitlementGetEntitlementsParams &&
-            accountId == other.accountId &&
+            tradingAccountId == other.tradingAccountId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int = Objects.hash(accountId, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int =
+        Objects.hash(tradingAccountId, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "EntitlementGetEntitlementsParams{accountId=$accountId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "EntitlementGetEntitlementsParams{tradingAccountId=$tradingAccountId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

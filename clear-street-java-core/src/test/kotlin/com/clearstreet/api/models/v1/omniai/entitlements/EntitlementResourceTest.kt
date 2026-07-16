@@ -14,19 +14,19 @@ internal class EntitlementResourceTest {
     fun create() {
         val entitlementResource =
             EntitlementResource.builder()
-                .accountId(0L)
                 .agreementId("agreement_id")
                 .entitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                 .entitlementId("entitlement_id")
                 .grantedAt("granted_at")
+                .tradingAccountId(0L)
                 .build()
 
-        assertThat(entitlementResource.accountId()).isEqualTo(0L)
         assertThat(entitlementResource.agreementId()).isEqualTo("agreement_id")
         assertThat(entitlementResource.entitlementCode())
             .isEqualTo(EntitlementCode.OMNI_ACCOUNT_DATA)
         assertThat(entitlementResource.entitlementId()).isEqualTo("entitlement_id")
         assertThat(entitlementResource.grantedAt()).isEqualTo("granted_at")
+        assertThat(entitlementResource.tradingAccountId()).isEqualTo(0L)
     }
 
     @Test
@@ -34,11 +34,11 @@ internal class EntitlementResourceTest {
         val jsonMapper = jsonMapper()
         val entitlementResource =
             EntitlementResource.builder()
-                .accountId(0L)
                 .agreementId("agreement_id")
                 .entitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                 .entitlementId("entitlement_id")
                 .grantedAt("granted_at")
+                .tradingAccountId(0L)
                 .build()
 
         val roundtrippedEntitlementResource =
