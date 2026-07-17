@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** Represents a single fill of an order for an account. */
@@ -22,39 +23,39 @@ class Execution
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
-    private val instrumentId: JsonField<String>,
     private val orderId: JsonField<String>,
     private val price: JsonField<String>,
     private val quantity: JsonField<String>,
     private val side: JsonField<Side>,
-    private val symbol: JsonField<String>,
     private val transactionTime: JsonField<OffsetDateTime>,
+    private val instrumentId: JsonField<String>,
+    private val symbol: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("instrument_id")
-        @ExcludeMissing
-        instrumentId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("order_id") @ExcludeMissing orderId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("price") @ExcludeMissing price: JsonField<String> = JsonMissing.of(),
         @JsonProperty("quantity") @ExcludeMissing quantity: JsonField<String> = JsonMissing.of(),
         @JsonProperty("side") @ExcludeMissing side: JsonField<Side> = JsonMissing.of(),
-        @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("transaction_time")
         @ExcludeMissing
         transactionTime: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("instrument_id")
+        @ExcludeMissing
+        instrumentId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
     ) : this(
         id,
-        instrumentId,
         orderId,
         price,
         quantity,
         side,
-        symbol,
         transactionTime,
+        instrumentId,
+        symbol,
         mutableMapOf(),
     )
 
@@ -65,14 +66,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun id(): String = id.getRequired("id")
-
-    /**
-     * Unique instrument identifier.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun instrumentId(): String = instrumentId.getRequired("instrument_id")
 
     /**
      * Identifier of the order this execution belongs to.
@@ -107,14 +100,6 @@ private constructor(
     fun side(): Side = side.getRequired("side")
 
     /**
-     * Trading symbol.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun symbol(): String = symbol.getRequired("symbol")
-
-    /**
      * Transaction timestamp in nanosecond precision (UTC).
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -123,20 +108,29 @@ private constructor(
     fun transactionTime(): OffsetDateTime = transactionTime.getRequired("transaction_time")
 
     /**
+     * Unique instrument identifier. `null` when this fill has no single resolvable instrument. When
+     * a null/undefined value is observed, it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun instrumentId(): Optional<String> = instrumentId.getOptional("instrument_id")
+
+    /**
+     * Trading symbol. `null` when this fill has no single resolvable instrument. When a
+     * null/undefined value is observed, it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun symbol(): Optional<String> = symbol.getOptional("symbol")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
-
-    /**
-     * Returns the raw JSON value of [instrumentId].
-     *
-     * Unlike [instrumentId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("instrument_id")
-    @ExcludeMissing
-    fun _instrumentId(): JsonField<String> = instrumentId
 
     /**
      * Returns the raw JSON value of [orderId].
@@ -167,13 +161,6 @@ private constructor(
     @JsonProperty("side") @ExcludeMissing fun _side(): JsonField<Side> = side
 
     /**
-     * Returns the raw JSON value of [symbol].
-     *
-     * Unlike [symbol], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("symbol") @ExcludeMissing fun _symbol(): JsonField<String> = symbol
-
-    /**
      * Returns the raw JSON value of [transactionTime].
      *
      * Unlike [transactionTime], this method doesn't throw if the JSON field has an unexpected type.
@@ -181,6 +168,22 @@ private constructor(
     @JsonProperty("transaction_time")
     @ExcludeMissing
     fun _transactionTime(): JsonField<OffsetDateTime> = transactionTime
+
+    /**
+     * Returns the raw JSON value of [instrumentId].
+     *
+     * Unlike [instrumentId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("instrument_id")
+    @ExcludeMissing
+    fun _instrumentId(): JsonField<String> = instrumentId
+
+    /**
+     * Returns the raw JSON value of [symbol].
+     *
+     * Unlike [symbol], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("symbol") @ExcludeMissing fun _symbol(): JsonField<String> = symbol
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -202,12 +205,10 @@ private constructor(
          * The following fields are required:
          * ```java
          * .id()
-         * .instrumentId()
          * .orderId()
          * .price()
          * .quantity()
          * .side()
-         * .symbol()
          * .transactionTime()
          * ```
          */
@@ -218,25 +219,25 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
-        private var instrumentId: JsonField<String>? = null
         private var orderId: JsonField<String>? = null
         private var price: JsonField<String>? = null
         private var quantity: JsonField<String>? = null
         private var side: JsonField<Side>? = null
-        private var symbol: JsonField<String>? = null
         private var transactionTime: JsonField<OffsetDateTime>? = null
+        private var instrumentId: JsonField<String> = JsonMissing.of()
+        private var symbol: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(execution: Execution) = apply {
             id = execution.id
-            instrumentId = execution.instrumentId
             orderId = execution.orderId
             price = execution.price
             quantity = execution.quantity
             side = execution.side
-            symbol = execution.symbol
             transactionTime = execution.transactionTime
+            instrumentId = execution.instrumentId
+            symbol = execution.symbol
             additionalProperties = execution.additionalProperties.toMutableMap()
         }
 
@@ -250,20 +251,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
-
-        /** Unique instrument identifier. */
-        fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
-
-        /**
-         * Sets [Builder.instrumentId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.instrumentId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun instrumentId(instrumentId: JsonField<String>) = apply {
-            this.instrumentId = instrumentId
-        }
 
         /** Identifier of the order this execution belongs to. */
         fun orderId(orderId: String) = orderId(JsonField.of(orderId))
@@ -309,17 +296,6 @@ private constructor(
          */
         fun side(side: JsonField<Side>) = apply { this.side = side }
 
-        /** Trading symbol. */
-        fun symbol(symbol: String) = symbol(JsonField.of(symbol))
-
-        /**
-         * Sets [Builder.symbol] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.symbol] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
-
         /** Transaction timestamp in nanosecond precision (UTC). */
         fun transactionTime(transactionTime: OffsetDateTime) =
             transactionTime(JsonField.of(transactionTime))
@@ -334,6 +310,43 @@ private constructor(
         fun transactionTime(transactionTime: JsonField<OffsetDateTime>) = apply {
             this.transactionTime = transactionTime
         }
+
+        /**
+         * Unique instrument identifier. `null` when this fill has no single resolvable instrument.
+         * When a null/undefined value is observed, it indicates it does not apply.
+         */
+        fun instrumentId(instrumentId: String?) = instrumentId(JsonField.ofNullable(instrumentId))
+
+        /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */
+        fun instrumentId(instrumentId: Optional<String>) = instrumentId(instrumentId.getOrNull())
+
+        /**
+         * Sets [Builder.instrumentId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.instrumentId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun instrumentId(instrumentId: JsonField<String>) = apply {
+            this.instrumentId = instrumentId
+        }
+
+        /**
+         * Trading symbol. `null` when this fill has no single resolvable instrument. When a
+         * null/undefined value is observed, it indicates it does not apply.
+         */
+        fun symbol(symbol: String?) = symbol(JsonField.ofNullable(symbol))
+
+        /** Alias for calling [Builder.symbol] with `symbol.orElse(null)`. */
+        fun symbol(symbol: Optional<String>) = symbol(symbol.getOrNull())
+
+        /**
+         * Sets [Builder.symbol] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.symbol] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -362,12 +375,10 @@ private constructor(
          * The following fields are required:
          * ```java
          * .id()
-         * .instrumentId()
          * .orderId()
          * .price()
          * .quantity()
          * .side()
-         * .symbol()
          * .transactionTime()
          * ```
          *
@@ -376,13 +387,13 @@ private constructor(
         fun build(): Execution =
             Execution(
                 checkRequired("id", id),
-                checkRequired("instrumentId", instrumentId),
                 checkRequired("orderId", orderId),
                 checkRequired("price", price),
                 checkRequired("quantity", quantity),
                 checkRequired("side", side),
-                checkRequired("symbol", symbol),
                 checkRequired("transactionTime", transactionTime),
+                instrumentId,
+                symbol,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -403,13 +414,13 @@ private constructor(
         }
 
         id()
-        instrumentId()
         orderId()
         price()
         quantity()
         side().validate()
-        symbol()
         transactionTime()
+        instrumentId()
+        symbol()
         validated = true
     }
 
@@ -429,13 +440,13 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (if (id.asKnown().isPresent) 1 else 0) +
-            (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (if (orderId.asKnown().isPresent) 1 else 0) +
             (if (price.asKnown().isPresent) 1 else 0) +
             (if (quantity.asKnown().isPresent) 1 else 0) +
             (side.asKnown().getOrNull()?.validity() ?: 0) +
-            (if (symbol.asKnown().isPresent) 1 else 0) +
-            (if (transactionTime.asKnown().isPresent) 1 else 0)
+            (if (transactionTime.asKnown().isPresent) 1 else 0) +
+            (if (instrumentId.asKnown().isPresent) 1 else 0) +
+            (if (symbol.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -444,26 +455,26 @@ private constructor(
 
         return other is Execution &&
             id == other.id &&
-            instrumentId == other.instrumentId &&
             orderId == other.orderId &&
             price == other.price &&
             quantity == other.quantity &&
             side == other.side &&
-            symbol == other.symbol &&
             transactionTime == other.transactionTime &&
+            instrumentId == other.instrumentId &&
+            symbol == other.symbol &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
         Objects.hash(
             id,
-            instrumentId,
             orderId,
             price,
             quantity,
             side,
-            symbol,
             transactionTime,
+            instrumentId,
+            symbol,
             additionalProperties,
         )
     }
@@ -471,5 +482,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Execution{id=$id, instrumentId=$instrumentId, orderId=$orderId, price=$price, quantity=$quantity, side=$side, symbol=$symbol, transactionTime=$transactionTime, additionalProperties=$additionalProperties}"
+        "Execution{id=$id, orderId=$orderId, price=$price, quantity=$quantity, side=$side, transactionTime=$transactionTime, instrumentId=$instrumentId, symbol=$symbol, additionalProperties=$additionalProperties}"
 }

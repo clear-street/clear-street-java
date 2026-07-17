@@ -35,14 +35,11 @@ private constructor(
     private val clientOrderId: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val filledQuantity: JsonField<String>,
-    private val instrumentId: JsonField<String>,
-    private val instrumentType: JsonField<SecurityType>,
     private val leavesQuantity: JsonField<String>,
     private val orderType: JsonField<OrderType>,
     private val quantity: JsonField<String>,
     private val side: JsonField<Side>,
     private val status: JsonField<OrderStatus>,
-    private val symbol: JsonField<String>,
     private val timeInForce: JsonField<TimeInForce>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val venue: JsonField<String>,
@@ -50,11 +47,14 @@ private constructor(
     private val details: JsonField<List<String>>,
     private val expiresAt: JsonField<OffsetDateTime>,
     private val extendedHours: JsonField<Boolean>,
+    private val instrumentId: JsonField<String>,
+    private val instrumentType: JsonField<SecurityType>,
     private val limitOffset: JsonField<String>,
     private val limitPrice: JsonField<String>,
     private val queueState: JsonField<QueueState>,
     private val releasesAt: JsonField<OffsetDateTime>,
     private val stopPrice: JsonField<String>,
+    private val symbol: JsonField<String>,
     private val trailingLimitPx: JsonField<String>,
     private val trailingOffset: JsonField<String>,
     private val trailingOffsetType: JsonField<TrailingOffsetType>,
@@ -78,12 +78,6 @@ private constructor(
         @JsonProperty("filled_quantity")
         @ExcludeMissing
         filledQuantity: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("instrument_id")
-        @ExcludeMissing
-        instrumentId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("instrument_type")
-        @ExcludeMissing
-        instrumentType: JsonField<SecurityType> = JsonMissing.of(),
         @JsonProperty("leaves_quantity")
         @ExcludeMissing
         leavesQuantity: JsonField<String> = JsonMissing.of(),
@@ -93,7 +87,6 @@ private constructor(
         @JsonProperty("quantity") @ExcludeMissing quantity: JsonField<String> = JsonMissing.of(),
         @JsonProperty("side") @ExcludeMissing side: JsonField<Side> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<OrderStatus> = JsonMissing.of(),
-        @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("time_in_force")
         @ExcludeMissing
         timeInForce: JsonField<TimeInForce> = JsonMissing.of(),
@@ -113,6 +106,12 @@ private constructor(
         @JsonProperty("extended_hours")
         @ExcludeMissing
         extendedHours: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("instrument_id")
+        @ExcludeMissing
+        instrumentId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("instrument_type")
+        @ExcludeMissing
+        instrumentType: JsonField<SecurityType> = JsonMissing.of(),
         @JsonProperty("limit_offset")
         @ExcludeMissing
         limitOffset: JsonField<String> = JsonMissing.of(),
@@ -126,6 +125,7 @@ private constructor(
         @ExcludeMissing
         releasesAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("trailing_limit_px")
         @ExcludeMissing
         trailingLimitPx: JsonField<String> = JsonMissing.of(),
@@ -153,14 +153,11 @@ private constructor(
         clientOrderId,
         createdAt,
         filledQuantity,
-        instrumentId,
-        instrumentType,
         leavesQuantity,
         orderType,
         quantity,
         side,
         status,
-        symbol,
         timeInForce,
         updatedAt,
         venue,
@@ -168,11 +165,14 @@ private constructor(
         details,
         expiresAt,
         extendedHours,
+        instrumentId,
+        instrumentType,
         limitOffset,
         limitPrice,
         queueState,
         releasesAt,
         stopPrice,
+        symbol,
         trailingLimitPx,
         trailingOffset,
         trailingOffsetType,
@@ -224,22 +224,6 @@ private constructor(
     fun filledQuantity(): String = filledQuantity.getRequired("filled_quantity")
 
     /**
-     * Instrument identifier for the traded instrument.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun instrumentId(): String = instrumentId.getRequired("instrument_id")
-
-    /**
-     * Type of security
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun instrumentType(): SecurityType = instrumentType.getRequired("instrument_type")
-
-    /**
      * Remaining unfilled quantity
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -278,14 +262,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun status(): OrderStatus = status.getRequired("status")
-
-    /**
-     * Trading symbol
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun symbol(): String = symbol.getRequired("symbol")
 
     /**
      * Time in force instruction
@@ -346,6 +322,25 @@ private constructor(
     fun extendedHours(): Optional<Boolean> = extendedHours.getOptional("extended_hours")
 
     /**
+     * Instrument identifier for the traded instrument. `null` when the order has no single
+     * resolvable instrument. When a null/undefined value is observed, it indicates it does not
+     * apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun instrumentId(): Optional<String> = instrumentId.getOptional("instrument_id")
+
+    /**
+     * Type of security. `null` when the order has no single resolvable instrument. When a
+     * null/undefined value is observed, it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun instrumentType(): Optional<SecurityType> = instrumentType.getOptional("instrument_type")
+
+    /**
      * Limit offset for trailing stop-limit orders (signed) When a null/undefined value is observed,
      * it indicates it does not apply.
      *
@@ -389,6 +384,15 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
+
+    /**
+     * Trading symbol. `null` when the order has no single resolvable instrument. When a
+     * null/undefined value is observed, it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun symbol(): Optional<String> = symbol.getOptional("symbol")
 
     /**
      * Current trailing limit price computed by the trailing strategy When a null/undefined value is
@@ -501,24 +505,6 @@ private constructor(
     fun _filledQuantity(): JsonField<String> = filledQuantity
 
     /**
-     * Returns the raw JSON value of [instrumentId].
-     *
-     * Unlike [instrumentId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("instrument_id")
-    @ExcludeMissing
-    fun _instrumentId(): JsonField<String> = instrumentId
-
-    /**
-     * Returns the raw JSON value of [instrumentType].
-     *
-     * Unlike [instrumentType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("instrument_type")
-    @ExcludeMissing
-    fun _instrumentType(): JsonField<SecurityType> = instrumentType
-
-    /**
      * Returns the raw JSON value of [leavesQuantity].
      *
      * Unlike [leavesQuantity], this method doesn't throw if the JSON field has an unexpected type.
@@ -554,13 +540,6 @@ private constructor(
      * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<OrderStatus> = status
-
-    /**
-     * Returns the raw JSON value of [symbol].
-     *
-     * Unlike [symbol], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("symbol") @ExcludeMissing fun _symbol(): JsonField<String> = symbol
 
     /**
      * Returns the raw JSON value of [timeInForce].
@@ -623,6 +602,24 @@ private constructor(
     fun _extendedHours(): JsonField<Boolean> = extendedHours
 
     /**
+     * Returns the raw JSON value of [instrumentId].
+     *
+     * Unlike [instrumentId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("instrument_id")
+    @ExcludeMissing
+    fun _instrumentId(): JsonField<String> = instrumentId
+
+    /**
+     * Returns the raw JSON value of [instrumentType].
+     *
+     * Unlike [instrumentType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("instrument_type")
+    @ExcludeMissing
+    fun _instrumentType(): JsonField<SecurityType> = instrumentType
+
+    /**
      * Returns the raw JSON value of [limitOffset].
      *
      * Unlike [limitOffset], this method doesn't throw if the JSON field has an unexpected type.
@@ -662,6 +659,13 @@ private constructor(
      * Unlike [stopPrice], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("stop_price") @ExcludeMissing fun _stopPrice(): JsonField<String> = stopPrice
+
+    /**
+     * Returns the raw JSON value of [symbol].
+     *
+     * Unlike [symbol], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("symbol") @ExcludeMissing fun _symbol(): JsonField<String> = symbol
 
     /**
      * Returns the raw JSON value of [trailingLimitPx].
@@ -754,14 +758,11 @@ private constructor(
          * .clientOrderId()
          * .createdAt()
          * .filledQuantity()
-         * .instrumentId()
-         * .instrumentType()
          * .leavesQuantity()
          * .orderType()
          * .quantity()
          * .side()
          * .status()
-         * .symbol()
          * .timeInForce()
          * .updatedAt()
          * .venue()
@@ -778,14 +779,11 @@ private constructor(
         private var clientOrderId: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var filledQuantity: JsonField<String>? = null
-        private var instrumentId: JsonField<String>? = null
-        private var instrumentType: JsonField<SecurityType>? = null
         private var leavesQuantity: JsonField<String>? = null
         private var orderType: JsonField<OrderType>? = null
         private var quantity: JsonField<String>? = null
         private var side: JsonField<Side>? = null
         private var status: JsonField<OrderStatus>? = null
-        private var symbol: JsonField<String>? = null
         private var timeInForce: JsonField<TimeInForce>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var venue: JsonField<String>? = null
@@ -793,11 +791,14 @@ private constructor(
         private var details: JsonField<MutableList<String>>? = null
         private var expiresAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var extendedHours: JsonField<Boolean> = JsonMissing.of()
+        private var instrumentId: JsonField<String> = JsonMissing.of()
+        private var instrumentType: JsonField<SecurityType> = JsonMissing.of()
         private var limitOffset: JsonField<String> = JsonMissing.of()
         private var limitPrice: JsonField<String> = JsonMissing.of()
         private var queueState: JsonField<QueueState> = JsonMissing.of()
         private var releasesAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
+        private var symbol: JsonField<String> = JsonMissing.of()
         private var trailingLimitPx: JsonField<String> = JsonMissing.of()
         private var trailingOffset: JsonField<String> = JsonMissing.of()
         private var trailingOffsetType: JsonField<TrailingOffsetType> = JsonMissing.of()
@@ -814,14 +815,11 @@ private constructor(
             clientOrderId = order.clientOrderId
             createdAt = order.createdAt
             filledQuantity = order.filledQuantity
-            instrumentId = order.instrumentId
-            instrumentType = order.instrumentType
             leavesQuantity = order.leavesQuantity
             orderType = order.orderType
             quantity = order.quantity
             side = order.side
             status = order.status
-            symbol = order.symbol
             timeInForce = order.timeInForce
             updatedAt = order.updatedAt
             venue = order.venue
@@ -829,11 +827,14 @@ private constructor(
             details = order.details.map { it.toMutableList() }
             expiresAt = order.expiresAt
             extendedHours = order.extendedHours
+            instrumentId = order.instrumentId
+            instrumentType = order.instrumentType
             limitOffset = order.limitOffset
             limitPrice = order.limitPrice
             queueState = order.queueState
             releasesAt = order.releasesAt
             stopPrice = order.stopPrice
+            symbol = order.symbol
             trailingLimitPx = order.trailingLimitPx
             trailingOffset = order.trailingOffset
             trailingOffsetType = order.trailingOffsetType
@@ -906,35 +907,6 @@ private constructor(
             this.filledQuantity = filledQuantity
         }
 
-        /** Instrument identifier for the traded instrument. */
-        fun instrumentId(instrumentId: String) = instrumentId(JsonField.of(instrumentId))
-
-        /**
-         * Sets [Builder.instrumentId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.instrumentId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun instrumentId(instrumentId: JsonField<String>) = apply {
-            this.instrumentId = instrumentId
-        }
-
-        /** Type of security */
-        fun instrumentType(instrumentType: SecurityType) =
-            instrumentType(JsonField.of(instrumentType))
-
-        /**
-         * Sets [Builder.instrumentType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.instrumentType] with a well-typed [SecurityType] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun instrumentType(instrumentType: JsonField<SecurityType>) = apply {
-            this.instrumentType = instrumentType
-        }
-
         /** Remaining unfilled quantity */
         fun leavesQuantity(leavesQuantity: String) = leavesQuantity(JsonField.of(leavesQuantity))
 
@@ -994,17 +966,6 @@ private constructor(
          * value.
          */
         fun status(status: JsonField<OrderStatus>) = apply { this.status = status }
-
-        /** Trading symbol */
-        fun symbol(symbol: String) = symbol(JsonField.of(symbol))
-
-        /**
-         * Sets [Builder.symbol] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.symbol] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
 
         /** Time in force instruction */
         fun timeInForce(timeInForce: TimeInForce) = timeInForce(JsonField.of(timeInForce))
@@ -1136,6 +1097,49 @@ private constructor(
         }
 
         /**
+         * Instrument identifier for the traded instrument. `null` when the order has no single
+         * resolvable instrument. When a null/undefined value is observed, it indicates it does not
+         * apply.
+         */
+        fun instrumentId(instrumentId: String?) = instrumentId(JsonField.ofNullable(instrumentId))
+
+        /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */
+        fun instrumentId(instrumentId: Optional<String>) = instrumentId(instrumentId.getOrNull())
+
+        /**
+         * Sets [Builder.instrumentId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.instrumentId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun instrumentId(instrumentId: JsonField<String>) = apply {
+            this.instrumentId = instrumentId
+        }
+
+        /**
+         * Type of security. `null` when the order has no single resolvable instrument. When a
+         * null/undefined value is observed, it indicates it does not apply.
+         */
+        fun instrumentType(instrumentType: SecurityType?) =
+            instrumentType(JsonField.ofNullable(instrumentType))
+
+        /** Alias for calling [Builder.instrumentType] with `instrumentType.orElse(null)`. */
+        fun instrumentType(instrumentType: Optional<SecurityType>) =
+            instrumentType(instrumentType.getOrNull())
+
+        /**
+         * Sets [Builder.instrumentType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.instrumentType] with a well-typed [SecurityType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun instrumentType(instrumentType: JsonField<SecurityType>) = apply {
+            this.instrumentType = instrumentType
+        }
+
+        /**
          * Limit offset for trailing stop-limit orders (signed) When a null/undefined value is
          * observed, it indicates it does not apply.
          */
@@ -1226,6 +1230,23 @@ private constructor(
          * value.
          */
         fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
+
+        /**
+         * Trading symbol. `null` when the order has no single resolvable instrument. When a
+         * null/undefined value is observed, it indicates it does not apply.
+         */
+        fun symbol(symbol: String?) = symbol(JsonField.ofNullable(symbol))
+
+        /** Alias for calling [Builder.symbol] with `symbol.orElse(null)`. */
+        fun symbol(symbol: Optional<String>) = symbol(symbol.getOrNull())
+
+        /**
+         * Sets [Builder.symbol] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.symbol] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
 
         /**
          * Current trailing limit price computed by the trailing strategy When a null/undefined
@@ -1423,14 +1444,11 @@ private constructor(
          * .clientOrderId()
          * .createdAt()
          * .filledQuantity()
-         * .instrumentId()
-         * .instrumentType()
          * .leavesQuantity()
          * .orderType()
          * .quantity()
          * .side()
          * .status()
-         * .symbol()
          * .timeInForce()
          * .updatedAt()
          * .venue()
@@ -1445,14 +1463,11 @@ private constructor(
                 checkRequired("clientOrderId", clientOrderId),
                 checkRequired("createdAt", createdAt),
                 checkRequired("filledQuantity", filledQuantity),
-                checkRequired("instrumentId", instrumentId),
-                checkRequired("instrumentType", instrumentType),
                 checkRequired("leavesQuantity", leavesQuantity),
                 checkRequired("orderType", orderType),
                 checkRequired("quantity", quantity),
                 checkRequired("side", side),
                 checkRequired("status", status),
-                checkRequired("symbol", symbol),
                 checkRequired("timeInForce", timeInForce),
                 checkRequired("updatedAt", updatedAt),
                 checkRequired("venue", venue),
@@ -1460,11 +1475,14 @@ private constructor(
                 (details ?: JsonMissing.of()).map { it.toImmutable() },
                 expiresAt,
                 extendedHours,
+                instrumentId,
+                instrumentType,
                 limitOffset,
                 limitPrice,
                 queueState,
                 releasesAt,
                 stopPrice,
+                symbol,
                 trailingLimitPx,
                 trailingOffset,
                 trailingOffsetType,
@@ -1496,14 +1514,11 @@ private constructor(
         clientOrderId()
         createdAt()
         filledQuantity()
-        instrumentId()
-        instrumentType().validate()
         leavesQuantity()
         orderType().validate()
         quantity()
         side().validate()
         status().validate()
-        symbol()
         timeInForce().validate()
         updatedAt()
         venue()
@@ -1511,11 +1526,14 @@ private constructor(
         details()
         expiresAt()
         extendedHours()
+        instrumentId()
+        instrumentType().ifPresent { it.validate() }
         limitOffset()
         limitPrice()
         queueState().ifPresent { it.validate() }
         releasesAt()
         stopPrice()
+        symbol()
         trailingLimitPx()
         trailingOffset()
         trailingOffsetType().ifPresent { it.validate() }
@@ -1546,14 +1564,11 @@ private constructor(
             (if (clientOrderId.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (filledQuantity.asKnown().isPresent) 1 else 0) +
-            (if (instrumentId.asKnown().isPresent) 1 else 0) +
-            (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (leavesQuantity.asKnown().isPresent) 1 else 0) +
             (orderType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (quantity.asKnown().isPresent) 1 else 0) +
             (side.asKnown().getOrNull()?.validity() ?: 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
-            (if (symbol.asKnown().isPresent) 1 else 0) +
             (timeInForce.asKnown().getOrNull()?.validity() ?: 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0) +
             (if (venue.asKnown().isPresent) 1 else 0) +
@@ -1561,11 +1576,14 @@ private constructor(
             (details.asKnown().getOrNull()?.size ?: 0) +
             (if (expiresAt.asKnown().isPresent) 1 else 0) +
             (if (extendedHours.asKnown().isPresent) 1 else 0) +
+            (if (instrumentId.asKnown().isPresent) 1 else 0) +
+            (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (limitOffset.asKnown().isPresent) 1 else 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
             (queueState.asKnown().getOrNull()?.validity() ?: 0) +
             (if (releasesAt.asKnown().isPresent) 1 else 0) +
             (if (stopPrice.asKnown().isPresent) 1 else 0) +
+            (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (trailingLimitPx.asKnown().isPresent) 1 else 0) +
             (if (trailingOffset.asKnown().isPresent) 1 else 0) +
             (trailingOffsetType.asKnown().getOrNull()?.validity() ?: 0) +
@@ -1585,14 +1603,11 @@ private constructor(
             clientOrderId == other.clientOrderId &&
             createdAt == other.createdAt &&
             filledQuantity == other.filledQuantity &&
-            instrumentId == other.instrumentId &&
-            instrumentType == other.instrumentType &&
             leavesQuantity == other.leavesQuantity &&
             orderType == other.orderType &&
             quantity == other.quantity &&
             side == other.side &&
             status == other.status &&
-            symbol == other.symbol &&
             timeInForce == other.timeInForce &&
             updatedAt == other.updatedAt &&
             venue == other.venue &&
@@ -1600,11 +1615,14 @@ private constructor(
             details == other.details &&
             expiresAt == other.expiresAt &&
             extendedHours == other.extendedHours &&
+            instrumentId == other.instrumentId &&
+            instrumentType == other.instrumentType &&
             limitOffset == other.limitOffset &&
             limitPrice == other.limitPrice &&
             queueState == other.queueState &&
             releasesAt == other.releasesAt &&
             stopPrice == other.stopPrice &&
+            symbol == other.symbol &&
             trailingLimitPx == other.trailingLimitPx &&
             trailingOffset == other.trailingOffset &&
             trailingOffsetType == other.trailingOffsetType &&
@@ -1622,14 +1640,11 @@ private constructor(
             clientOrderId,
             createdAt,
             filledQuantity,
-            instrumentId,
-            instrumentType,
             leavesQuantity,
             orderType,
             quantity,
             side,
             status,
-            symbol,
             timeInForce,
             updatedAt,
             venue,
@@ -1637,11 +1652,14 @@ private constructor(
             details,
             expiresAt,
             extendedHours,
+            instrumentId,
+            instrumentType,
             limitOffset,
             limitPrice,
             queueState,
             releasesAt,
             stopPrice,
+            symbol,
             trailingLimitPx,
             trailingOffset,
             trailingOffsetType,
@@ -1656,5 +1674,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, symbol=$symbol, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, instrumentType=$instrumentType, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
 }
