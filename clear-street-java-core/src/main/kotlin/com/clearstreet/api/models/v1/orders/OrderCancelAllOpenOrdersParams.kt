@@ -30,7 +30,7 @@ private constructor(
 
     fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
-    /** Comma-separated instrument identifiers */
+    /** Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols). */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
     /** Filter by instrument type (e.g., COMMON_STOCK, OPTION) */
@@ -101,7 +101,9 @@ private constructor(
         /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
         fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
-        /** Comma-separated instrument identifiers */
+        /**
+         * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
+         */
         fun instrumentIds(instrumentIds: List<String>?) = apply {
             this.instrumentIds = instrumentIds?.toMutableList()
         }
