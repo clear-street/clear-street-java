@@ -320,6 +320,8 @@ private constructor(
 
             @JvmField val COMMON_STOCK = of("COMMON_STOCK")
 
+            @JvmField val INDEX = of("INDEX")
+
             @JvmField val OPTION = of("OPTION")
 
             @JvmField val CASH = of("CASH")
@@ -330,6 +332,7 @@ private constructor(
         /** An enum containing [InstrumentType]'s known values. */
         enum class Known {
             COMMON_STOCK,
+            INDEX,
             OPTION,
             CASH,
         }
@@ -345,6 +348,7 @@ private constructor(
          */
         enum class Value {
             COMMON_STOCK,
+            INDEX,
             OPTION,
             CASH,
             /**
@@ -364,6 +368,7 @@ private constructor(
         fun value(): Value =
             when (this) {
                 COMMON_STOCK -> Value.COMMON_STOCK
+                INDEX -> Value.INDEX
                 OPTION -> Value.OPTION
                 CASH -> Value.CASH
                 else -> Value._UNKNOWN
@@ -381,6 +386,7 @@ private constructor(
         fun known(): Known =
             when (this) {
                 COMMON_STOCK -> Known.COMMON_STOCK
+                INDEX -> Known.INDEX
                 OPTION -> Known.OPTION
                 CASH -> Known.CASH
                 else -> throw ClearStreetInvalidDataException("Unknown InstrumentType: $value")
