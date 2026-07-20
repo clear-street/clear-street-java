@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.LocalDate
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -36,14 +35,12 @@ private constructor(
     private val symbol: JsonField<String>,
     private val venue: JsonField<String>,
     private val adv: JsonField<String>,
-    private val expiry: JsonField<LocalDate>,
     private val instrumentType: JsonField<SecurityType>,
     private val longMarginRate: JsonField<String>,
     private val name: JsonField<String>,
     private val notionalAdv: JsonField<String>,
     private val previousClose: JsonField<String>,
     private val shortMarginRate: JsonField<String>,
-    private val strikePrice: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -79,7 +76,6 @@ private constructor(
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("venue") @ExcludeMissing venue: JsonField<String> = JsonMissing.of(),
         @JsonProperty("adv") @ExcludeMissing adv: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("expiry") @ExcludeMissing expiry: JsonField<LocalDate> = JsonMissing.of(),
         @JsonProperty("instrument_type")
         @ExcludeMissing
         instrumentType: JsonField<SecurityType> = JsonMissing.of(),
@@ -96,9 +92,6 @@ private constructor(
         @JsonProperty("short_margin_rate")
         @ExcludeMissing
         shortMarginRate: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("strike_price")
-        @ExcludeMissing
-        strikePrice: JsonField<String> = JsonMissing.of(),
     ) : this(
         id,
         countryOfIssue,
@@ -114,14 +107,12 @@ private constructor(
         symbol,
         venue,
         adv,
-        expiry,
         instrumentType,
         longMarginRate,
         name,
         notionalAdv,
         previousClose,
         shortMarginRate,
-        strikePrice,
         mutableMapOf(),
     )
 
@@ -240,15 +231,6 @@ private constructor(
     fun adv(): Optional<String> = adv.getOptional("adv")
 
     /**
-     * Deprecated. Always null. When a null/undefined value is observed, it indicates it does not
-     * apply.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    @Deprecated("deprecated") fun expiry(): Optional<LocalDate> = expiry.getOptional("expiry")
-
-    /**
      * The type of security (e.g., Common Stock, ETF) When a null/undefined value is observed, it
      * indicates that there is no available data.
      *
@@ -301,16 +283,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun shortMarginRate(): Optional<String> = shortMarginRate.getOptional("short_margin_rate")
-
-    /**
-     * Deprecated. Always null. When a null/undefined value is observed, it indicates it does not
-     * apply.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    @Deprecated("deprecated")
-    fun strikePrice(): Optional<String> = strikePrice.getOptional("strike_price")
 
     /**
      * Returns the raw JSON value of [id].
@@ -428,16 +400,6 @@ private constructor(
     @JsonProperty("adv") @ExcludeMissing fun _adv(): JsonField<String> = adv
 
     /**
-     * Returns the raw JSON value of [expiry].
-     *
-     * Unlike [expiry], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @Deprecated("deprecated")
-    @JsonProperty("expiry")
-    @ExcludeMissing
-    fun _expiry(): JsonField<LocalDate> = expiry
-
-    /**
      * Returns the raw JSON value of [instrumentType].
      *
      * Unlike [instrumentType], this method doesn't throw if the JSON field has an unexpected type.
@@ -488,16 +450,6 @@ private constructor(
     @JsonProperty("short_margin_rate")
     @ExcludeMissing
     fun _shortMarginRate(): JsonField<String> = shortMarginRate
-
-    /**
-     * Returns the raw JSON value of [strikePrice].
-     *
-     * Unlike [strikePrice], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @Deprecated("deprecated")
-    @JsonProperty("strike_price")
-    @ExcludeMissing
-    fun _strikePrice(): JsonField<String> = strikePrice
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -553,14 +505,12 @@ private constructor(
         private var symbol: JsonField<String>? = null
         private var venue: JsonField<String>? = null
         private var adv: JsonField<String> = JsonMissing.of()
-        private var expiry: JsonField<LocalDate> = JsonMissing.of()
         private var instrumentType: JsonField<SecurityType> = JsonMissing.of()
         private var longMarginRate: JsonField<String> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
         private var notionalAdv: JsonField<String> = JsonMissing.of()
         private var previousClose: JsonField<String> = JsonMissing.of()
         private var shortMarginRate: JsonField<String> = JsonMissing.of()
-        private var strikePrice: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -579,14 +529,12 @@ private constructor(
             symbol = instrumentCore.symbol
             venue = instrumentCore.venue
             adv = instrumentCore.adv
-            expiry = instrumentCore.expiry
             instrumentType = instrumentCore.instrumentType
             longMarginRate = instrumentCore.longMarginRate
             name = instrumentCore.name
             notionalAdv = instrumentCore.notionalAdv
             previousClose = instrumentCore.previousClose
             shortMarginRate = instrumentCore.shortMarginRate
-            strikePrice = instrumentCore.strikePrice
             additionalProperties = instrumentCore.additionalProperties.toMutableMap()
         }
 
@@ -779,27 +727,6 @@ private constructor(
         fun adv(adv: JsonField<String>) = apply { this.adv = adv }
 
         /**
-         * Deprecated. Always null. When a null/undefined value is observed, it indicates it does
-         * not apply.
-         */
-        @Deprecated("deprecated")
-        fun expiry(expiry: LocalDate?) = expiry(JsonField.ofNullable(expiry))
-
-        /** Alias for calling [Builder.expiry] with `expiry.orElse(null)`. */
-        @Deprecated("deprecated")
-        fun expiry(expiry: Optional<LocalDate>) = expiry(expiry.getOrNull())
-
-        /**
-         * Sets [Builder.expiry] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.expiry] with a well-typed [LocalDate] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        @Deprecated("deprecated")
-        fun expiry(expiry: JsonField<LocalDate>) = apply { this.expiry = expiry }
-
-        /**
          * The type of security (e.g., Common Stock, ETF) When a null/undefined value is observed,
          * it indicates that there is no available data.
          */
@@ -922,27 +849,6 @@ private constructor(
             this.shortMarginRate = shortMarginRate
         }
 
-        /**
-         * Deprecated. Always null. When a null/undefined value is observed, it indicates it does
-         * not apply.
-         */
-        @Deprecated("deprecated")
-        fun strikePrice(strikePrice: String?) = strikePrice(JsonField.ofNullable(strikePrice))
-
-        /** Alias for calling [Builder.strikePrice] with `strikePrice.orElse(null)`. */
-        @Deprecated("deprecated")
-        fun strikePrice(strikePrice: Optional<String>) = strikePrice(strikePrice.getOrNull())
-
-        /**
-         * Sets [Builder.strikePrice] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.strikePrice] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        @Deprecated("deprecated")
-        fun strikePrice(strikePrice: JsonField<String>) = apply { this.strikePrice = strikePrice }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -1002,14 +908,12 @@ private constructor(
                 checkRequired("symbol", symbol),
                 checkRequired("venue", venue),
                 adv,
-                expiry,
                 instrumentType,
                 longMarginRate,
                 name,
                 notionalAdv,
                 previousClose,
                 shortMarginRate,
-                strikePrice,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -1043,14 +947,12 @@ private constructor(
         symbol()
         venue()
         adv()
-        expiry()
         instrumentType().ifPresent { it.validate() }
         longMarginRate()
         name()
         notionalAdv()
         previousClose()
         shortMarginRate()
-        strikePrice()
         validated = true
     }
 
@@ -1083,14 +985,12 @@ private constructor(
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (venue.asKnown().isPresent) 1 else 0) +
             (if (adv.asKnown().isPresent) 1 else 0) +
-            (if (expiry.asKnown().isPresent) 1 else 0) +
             (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (longMarginRate.asKnown().isPresent) 1 else 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
             (if (notionalAdv.asKnown().isPresent) 1 else 0) +
             (if (previousClose.asKnown().isPresent) 1 else 0) +
-            (if (shortMarginRate.asKnown().isPresent) 1 else 0) +
-            (if (strikePrice.asKnown().isPresent) 1 else 0)
+            (if (shortMarginRate.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -1112,14 +1012,12 @@ private constructor(
             symbol == other.symbol &&
             venue == other.venue &&
             adv == other.adv &&
-            expiry == other.expiry &&
             instrumentType == other.instrumentType &&
             longMarginRate == other.longMarginRate &&
             name == other.name &&
             notionalAdv == other.notionalAdv &&
             previousClose == other.previousClose &&
             shortMarginRate == other.shortMarginRate &&
-            strikePrice == other.strikePrice &&
             additionalProperties == other.additionalProperties
     }
 
@@ -1139,14 +1037,12 @@ private constructor(
             symbol,
             venue,
             adv,
-            expiry,
             instrumentType,
             longMarginRate,
             name,
             notionalAdv,
             previousClose,
             shortMarginRate,
-            strikePrice,
             additionalProperties,
         )
     }
@@ -1154,5 +1050,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, expiry=$expiry, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, strikePrice=$strikePrice, additionalProperties=$additionalProperties}"
+        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, additionalProperties=$additionalProperties}"
 }
