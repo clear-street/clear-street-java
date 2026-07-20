@@ -420,6 +420,10 @@ private constructor(
             fun prefillOrder(cancel: PrefillOrderAction.PrefillCancelOrderAction) =
                 prefillOrder(PrefillOrderAction.ofCancel(cancel))
 
+            /** Alias for calling [prefillOrder] with `PrefillOrderAction.ofModify(modify)`. */
+            fun prefillOrder(modify: PrefillOrderAction.PrefillModifyOrderAction) =
+                prefillOrder(PrefillOrderAction.ofModify(modify))
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)

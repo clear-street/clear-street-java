@@ -7,7 +7,7 @@ import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/** Strict time-in-force enum for order submission/replacement requests. */
+/** Strict time-in-force enum for order submission requests. */
 class RequestTimeInForce @JsonCreator private constructor(private val value: JsonField<String>) :
     Enum {
 
