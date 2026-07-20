@@ -46,6 +46,7 @@ class PrefillOrderAction
 private constructor(
     private val prefillNewOrderAction: PrefillNewOrderAction? = null,
     private val cancel: PrefillCancelOrderAction? = null,
+    private val modify: PrefillModifyOrderAction? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -56,9 +57,14 @@ private constructor(
     /** Cancel one or more existing orders. */
     fun cancel(): Optional<PrefillCancelOrderAction> = Optional.ofNullable(cancel)
 
+    /** Modify one or more existing orders. */
+    fun modify(): Optional<PrefillModifyOrderAction> = Optional.ofNullable(modify)
+
     fun isPrefillNewOrderAction(): Boolean = prefillNewOrderAction != null
 
     fun isCancel(): Boolean = cancel != null
+
+    fun isModify(): Boolean = modify != null
 
     /** Create one or more new orders. */
     fun asPrefillNewOrderAction(): PrefillNewOrderAction =
@@ -66,6 +72,9 @@ private constructor(
 
     /** Cancel one or more existing orders. */
     fun asCancel(): PrefillCancelOrderAction = cancel.getOrThrow("cancel")
+
+    /** Modify one or more existing orders. */
+    fun asModify(): PrefillModifyOrderAction = modify.getOrThrow("modify")
 
     fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
@@ -103,6 +112,7 @@ private constructor(
             prefillNewOrderAction != null ->
                 visitor.visitPrefillNewOrderAction(prefillNewOrderAction)
             cancel != null -> visitor.visitCancel(cancel)
+            modify != null -> visitor.visitModify(modify)
             else -> visitor.unknown(_json)
         }
 
@@ -132,6 +142,10 @@ private constructor(
                 override fun visitCancel(cancel: PrefillCancelOrderAction) {
                     cancel.validate()
                 }
+
+                override fun visitModify(modify: PrefillModifyOrderAction) {
+                    modify.validate()
+                }
             }
         )
         validated = true
@@ -160,6 +174,8 @@ private constructor(
 
                 override fun visitCancel(cancel: PrefillCancelOrderAction) = cancel.validity()
 
+                override fun visitModify(modify: PrefillModifyOrderAction) = modify.validity()
+
                 override fun unknown(json: JsonValue?) = 0
             }
         )
@@ -171,16 +187,18 @@ private constructor(
 
         return other is PrefillOrderAction &&
             prefillNewOrderAction == other.prefillNewOrderAction &&
-            cancel == other.cancel
+            cancel == other.cancel &&
+            modify == other.modify
     }
 
-    override fun hashCode(): Int = Objects.hash(prefillNewOrderAction, cancel)
+    override fun hashCode(): Int = Objects.hash(prefillNewOrderAction, cancel, modify)
 
     override fun toString(): String =
         when {
             prefillNewOrderAction != null ->
                 "PrefillOrderAction{prefillNewOrderAction=$prefillNewOrderAction}"
             cancel != null -> "PrefillOrderAction{cancel=$cancel}"
+            modify != null -> "PrefillOrderAction{modify=$modify}"
             _json != null -> "PrefillOrderAction{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid PrefillOrderAction")
         }
@@ -195,6 +213,10 @@ private constructor(
         /** Cancel one or more existing orders. */
         @JvmStatic
         fun ofCancel(cancel: PrefillCancelOrderAction) = PrefillOrderAction(cancel = cancel)
+
+        /** Modify one or more existing orders. */
+        @JvmStatic
+        fun ofModify(modify: PrefillModifyOrderAction) = PrefillOrderAction(modify = modify)
     }
 
     /**
@@ -208,6 +230,9 @@ private constructor(
 
         /** Cancel one or more existing orders. */
         fun visitCancel(cancel: PrefillCancelOrderAction): T
+
+        /** Modify one or more existing orders. */
+        fun visitModify(modify: PrefillModifyOrderAction): T
 
         /**
          * Maps an unknown variant of [PrefillOrderAction] to a value of type [T].
@@ -237,6 +262,9 @@ private constructor(
                         tryDeserialize(node, jacksonTypeRef<PrefillCancelOrderAction>())?.let {
                             PrefillOrderAction(cancel = it, _json = json)
                         },
+                        tryDeserialize(node, jacksonTypeRef<PrefillModifyOrderAction>())?.let {
+                            PrefillOrderAction(modify = it, _json = json)
+                        },
                     )
                     .filterNotNull()
                     .allMaxBy { it.validity() }
@@ -264,6 +292,7 @@ private constructor(
                 value.prefillNewOrderAction != null ->
                     generator.writeObject(value.prefillNewOrderAction)
                 value.cancel != null -> generator.writeObject(value.cancel)
+                value.modify != null -> generator.writeObject(value.modify)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid PrefillOrderAction")
             }
@@ -1002,5 +1031,372 @@ private constructor(
 
         override fun toString() =
             "PrefillCancelOrderAction{orders=$orders, actionType=$actionType, additionalProperties=$additionalProperties}"
+    }
+
+    /** Modify one or more existing orders. */
+    class PrefillModifyOrderAction
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val orders: JsonField<List<PrefillModifyOrderRequest>>,
+        private val actionType: JsonField<ActionType>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("orders")
+            @ExcludeMissing
+            orders: JsonField<List<PrefillModifyOrderRequest>> = JsonMissing.of(),
+            @JsonProperty("action_type")
+            @ExcludeMissing
+            actionType: JsonField<ActionType> = JsonMissing.of(),
+        ) : this(orders, actionType, mutableMapOf())
+
+        fun toPrefillModifyOrderAction(): PrefillModifyOrderAction =
+            PrefillModifyOrderAction.builder().orders(orders).build()
+
+        /**
+         * Modification targets and deltas needed to construct replace-order API requests.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun orders(): List<PrefillModifyOrderRequest> = orders.getRequired("orders")
+
+        /**
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun actionType(): ActionType = actionType.getRequired("action_type")
+
+        /**
+         * Returns the raw JSON value of [orders].
+         *
+         * Unlike [orders], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("orders")
+        @ExcludeMissing
+        fun _orders(): JsonField<List<PrefillModifyOrderRequest>> = orders
+
+        /**
+         * Returns the raw JSON value of [actionType].
+         *
+         * Unlike [actionType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("action_type")
+        @ExcludeMissing
+        fun _actionType(): JsonField<ActionType> = actionType
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [PrefillModifyOrderAction].
+             *
+             * The following fields are required:
+             * ```java
+             * .orders()
+             * .actionType()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [PrefillModifyOrderAction]. */
+        class Builder internal constructor() {
+
+            private var orders: JsonField<MutableList<PrefillModifyOrderRequest>>? = null
+            private var actionType: JsonField<ActionType>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(prefillModifyOrderAction: PrefillModifyOrderAction) = apply {
+                orders = prefillModifyOrderAction.orders.map { it.toMutableList() }
+                actionType = prefillModifyOrderAction.actionType
+                additionalProperties = prefillModifyOrderAction.additionalProperties.toMutableMap()
+            }
+
+            /** Modification targets and deltas needed to construct replace-order API requests. */
+            fun orders(orders: List<PrefillModifyOrderRequest>) = orders(JsonField.of(orders))
+
+            /**
+             * Sets [Builder.orders] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.orders] with a well-typed
+             * `List<PrefillModifyOrderRequest>` value instead. This method is primarily for setting
+             * the field to an undocumented or not yet supported value.
+             */
+            fun orders(orders: JsonField<List<PrefillModifyOrderRequest>>) = apply {
+                this.orders = orders.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [PrefillModifyOrderRequest] to [orders].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addOrder(order: PrefillModifyOrderRequest) = apply {
+                orders =
+                    (orders ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("orders", it).add(order)
+                    }
+            }
+
+            fun actionType(actionType: ActionType) = actionType(JsonField.of(actionType))
+
+            /**
+             * Sets [Builder.actionType] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.actionType] with a well-typed [ActionType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun actionType(actionType: JsonField<ActionType>) = apply {
+                this.actionType = actionType
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [PrefillModifyOrderAction].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .orders()
+             * .actionType()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): PrefillModifyOrderAction =
+                PrefillModifyOrderAction(
+                    checkRequired("orders", orders).map { it.toImmutable() },
+                    checkRequired("actionType", actionType),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws ClearStreetInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): PrefillModifyOrderAction = apply {
+            if (validated) {
+                return@apply
+            }
+
+            orders().forEach { it.validate() }
+            actionType().validate()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: ClearStreetInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (orders.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+                (actionType.asKnown().getOrNull()?.validity() ?: 0)
+
+        class ActionType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val MODIFY = of("MODIFY")
+
+                @JvmStatic fun of(value: String) = ActionType(JsonField.of(value))
+            }
+
+            /** An enum containing [ActionType]'s known values. */
+            enum class Known {
+                MODIFY
+            }
+
+            /**
+             * An enum containing [ActionType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [ActionType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                MODIFY,
+                /**
+                 * An enum member indicating that [ActionType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    MODIFY -> Value.MODIFY
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws ClearStreetInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    MODIFY -> Known.MODIFY
+                    else -> throw ClearStreetInvalidDataException("Unknown ActionType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws ClearStreetInvalidDataException if this class instance's value does not have
+             *   the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    ClearStreetInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws ClearStreetInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): ActionType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: ClearStreetInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is ActionType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is PrefillModifyOrderAction &&
+                orders == other.orders &&
+                actionType == other.actionType &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(orders, actionType, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "PrefillModifyOrderAction{orders=$orders, actionType=$actionType, additionalProperties=$additionalProperties}"
     }
 }

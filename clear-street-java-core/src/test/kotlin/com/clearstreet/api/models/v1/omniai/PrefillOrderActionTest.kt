@@ -50,6 +50,7 @@ internal class PrefillOrderActionTest {
 
         assertThat(prefillOrderAction.prefillNewOrderAction()).contains(prefillNewOrderAction)
         assertThat(prefillOrderAction.cancel()).isEmpty
+        assertThat(prefillOrderAction.modify()).isEmpty
     }
 
     @Test
@@ -106,6 +107,7 @@ internal class PrefillOrderActionTest {
 
         assertThat(prefillOrderAction.prefillNewOrderAction()).isEmpty
         assertThat(prefillOrderAction.cancel()).contains(cancel)
+        assertThat(prefillOrderAction.modify()).isEmpty
     }
 
     @Test
@@ -121,6 +123,57 @@ internal class PrefillOrderActionTest {
                             .build()
                     )
                     .actionType(PrefillOrderAction.PrefillCancelOrderAction.ActionType.CANCEL)
+                    .build()
+            )
+
+        val roundtrippedPrefillOrderAction =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(prefillOrderAction),
+                jacksonTypeRef<PrefillOrderAction>(),
+            )
+
+        assertThat(roundtrippedPrefillOrderAction).isEqualTo(prefillOrderAction)
+    }
+
+    @Test
+    fun ofModify() {
+        val modify =
+            PrefillOrderAction.PrefillModifyOrderAction.builder()
+                .addOrder(
+                    PrefillModifyOrderRequest.builder()
+                        .accountId(100019L)
+                        .limitPrice("178.00")
+                        .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")
+                        .quantity("1")
+                        .stopPrice("52.00")
+                        .build()
+                )
+                .actionType(PrefillOrderAction.PrefillModifyOrderAction.ActionType.MODIFY)
+                .build()
+
+        val prefillOrderAction = PrefillOrderAction.ofModify(modify)
+
+        assertThat(prefillOrderAction.prefillNewOrderAction()).isEmpty
+        assertThat(prefillOrderAction.cancel()).isEmpty
+        assertThat(prefillOrderAction.modify()).contains(modify)
+    }
+
+    @Test
+    fun ofModifyRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val prefillOrderAction =
+            PrefillOrderAction.ofModify(
+                PrefillOrderAction.PrefillModifyOrderAction.builder()
+                    .addOrder(
+                        PrefillModifyOrderRequest.builder()
+                            .accountId(100019L)
+                            .limitPrice("178.00")
+                            .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")
+                            .quantity("1")
+                            .stopPrice("52.00")
+                            .build()
+                    )
+                    .actionType(PrefillOrderAction.PrefillModifyOrderAction.ActionType.MODIFY)
                     .build()
             )
 

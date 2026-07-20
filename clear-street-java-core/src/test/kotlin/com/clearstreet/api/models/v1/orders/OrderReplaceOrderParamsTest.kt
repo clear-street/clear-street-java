@@ -12,16 +12,24 @@ internal class OrderReplaceOrderParamsTest {
         OrderReplaceOrderParams.builder()
             .accountId(0L)
             .orderId("order_id")
-            .limitPrice("49.00")
-            .quantity("1")
-            .stopPrice("52.00")
-            .timeInForce(RequestTimeInForce.DAY)
+            .replaceOrderRequest(
+                ReplaceOrderRequest.builder()
+                    .limitPrice("49.00")
+                    .quantity("1")
+                    .stopPrice("52.00")
+                    .build()
+            )
             .build()
     }
 
     @Test
     fun pathParams() {
-        val params = OrderReplaceOrderParams.builder().accountId(0L).orderId("order_id").build()
+        val params =
+            OrderReplaceOrderParams.builder()
+                .accountId(0L)
+                .orderId("order_id")
+                .replaceOrderRequest(ReplaceOrderRequest.builder().build())
+                .build()
 
         assertThat(params._pathParam(0)).isEqualTo("0")
         assertThat(params._pathParam(1)).isEqualTo("order_id")
@@ -35,24 +43,38 @@ internal class OrderReplaceOrderParamsTest {
             OrderReplaceOrderParams.builder()
                 .accountId(0L)
                 .orderId("order_id")
-                .limitPrice("49.00")
-                .quantity("1")
-                .stopPrice("52.00")
-                .timeInForce(RequestTimeInForce.DAY)
+                .replaceOrderRequest(
+                    ReplaceOrderRequest.builder()
+                        .limitPrice("49.00")
+                        .quantity("1")
+                        .stopPrice("52.00")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.limitPrice()).contains("49.00")
-        assertThat(body.quantity()).contains("1")
-        assertThat(body.stopPrice()).contains("52.00")
-        assertThat(body.timeInForce()).contains(RequestTimeInForce.DAY)
+        assertThat(body)
+            .isEqualTo(
+                ReplaceOrderRequest.builder()
+                    .limitPrice("49.00")
+                    .quantity("1")
+                    .stopPrice("52.00")
+                    .build()
+            )
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = OrderReplaceOrderParams.builder().accountId(0L).orderId("order_id").build()
+        val params =
+            OrderReplaceOrderParams.builder()
+                .accountId(0L)
+                .orderId("order_id")
+                .replaceOrderRequest(ReplaceOrderRequest.builder().build())
+                .build()
 
         val body = params._body()
+
+        assertThat(body).isEqualTo(ReplaceOrderRequest.builder().build())
     }
 }

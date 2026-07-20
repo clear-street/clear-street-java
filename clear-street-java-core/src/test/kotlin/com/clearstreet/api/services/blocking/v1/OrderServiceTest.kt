@@ -12,6 +12,7 @@ import com.clearstreet.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clearstreet.api.models.v1.orders.OrderGetOrdersParams
 import com.clearstreet.api.models.v1.orders.OrderReplaceOrderParams
 import com.clearstreet.api.models.v1.orders.OrderSubmitOrdersParams
+import com.clearstreet.api.models.v1.orders.ReplaceOrderRequest
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
@@ -147,10 +148,13 @@ internal class OrderServiceTest {
                 OrderReplaceOrderParams.builder()
                     .accountId(0L)
                     .orderId("order_id")
-                    .limitPrice("49.00")
-                    .quantity("1")
-                    .stopPrice("52.00")
-                    .timeInForce(RequestTimeInForce.DAY)
+                    .replaceOrderRequest(
+                        ReplaceOrderRequest.builder()
+                            .limitPrice("49.00")
+                            .quantity("1")
+                            .stopPrice("52.00")
+                            .build()
+                    )
                     .build()
             )
 
