@@ -9,7 +9,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Fetch account details by ID */
+/**
+ * Fetch account details by ID, including the mailing address, date of birth, phone number, and
+ * country of tax residency of the account-holder entity when on file.
+ */
 class AccountGetAccountByIdParams
 private constructor(
     private val accountId: Long?,

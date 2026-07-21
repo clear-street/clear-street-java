@@ -25,7 +25,7 @@ class AccountGetAccountByIdResponse
 private constructor(
     private val metadata: JsonField<ResponseMetadata>,
     private val error: JsonField<ApiError>,
-    private val data: JsonField<Account>,
+    private val data: JsonField<AccountWithPersonalDetails>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -35,7 +35,9 @@ private constructor(
         @ExcludeMissing
         metadata: JsonField<ResponseMetadata> = JsonMissing.of(),
         @JsonProperty("error") @ExcludeMissing error: JsonField<ApiError> = JsonMissing.of(),
-        @JsonProperty("data") @ExcludeMissing data: JsonField<Account> = JsonMissing.of(),
+        @JsonProperty("data")
+        @ExcludeMissing
+        data: JsonField<AccountWithPersonalDetails> = JsonMissing.of(),
     ) : this(metadata, error, data, mutableMapOf())
 
     fun toBaseResponse(): BaseResponse =
@@ -63,7 +65,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): Account = data.getRequired("data")
+    fun data(): AccountWithPersonalDetails = data.getRequired("data")
 
     /**
      * Returns the raw JSON value of [metadata].
@@ -86,7 +88,7 @@ private constructor(
      *
      * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<Account> = data
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<AccountWithPersonalDetails> = data
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -120,7 +122,7 @@ private constructor(
 
         private var metadata: JsonField<ResponseMetadata>? = null
         private var error: JsonField<ApiError> = JsonMissing.of()
-        private var data: JsonField<Account>? = null
+        private var data: JsonField<AccountWithPersonalDetails>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -158,15 +160,16 @@ private constructor(
         fun error(error: JsonField<ApiError>) = apply { this.error = error }
 
         /** Represents a trading account */
-        fun data(data: Account) = data(JsonField.of(data))
+        fun data(data: AccountWithPersonalDetails) = data(JsonField.of(data))
 
         /**
          * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed [Account] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.data] with a well-typed [AccountWithPersonalDetails]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
          */
-        fun data(data: JsonField<Account>) = apply { this.data = data }
+        fun data(data: JsonField<AccountWithPersonalDetails>) = apply { this.data = data }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
