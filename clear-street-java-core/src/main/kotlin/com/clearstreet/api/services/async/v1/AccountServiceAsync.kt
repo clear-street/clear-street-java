@@ -71,7 +71,10 @@ interface AccountServiceAsync {
     ): CompletableFuture<AccountGetAccountBalancesResponse> =
         getAccountBalances(accountId, AccountGetAccountBalancesParams.none(), requestOptions)
 
-    /** Fetch account details by ID */
+    /**
+     * Fetch account details by ID, including the mailing address, date of birth, phone number, and
+     * country of tax residency of the account-holder entity when on file.
+     */
     fun getAccountById(accountId: Long): CompletableFuture<AccountGetAccountByIdResponse> =
         getAccountById(accountId, AccountGetAccountByIdParams.none())
 
