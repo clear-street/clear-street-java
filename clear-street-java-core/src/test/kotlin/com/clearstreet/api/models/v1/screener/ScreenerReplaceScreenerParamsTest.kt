@@ -1,0 +1,231 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.clearstreet.api.models.v1.screener
+
+import com.clearstreet.api.models.v1.SortDirection
+import kotlin.jvm.optionals.getOrNull
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+
+internal class ScreenerReplaceScreenerParamsTest {
+
+    @Test
+    fun create() {
+        ScreenerReplaceScreenerParams.builder()
+            .screenerId("550e8400-e29b-41d4-a716-446655440000")
+            .addColumn(
+                FieldRef.builder()
+                    .name("market_cap")
+                    .lookback(FieldLookback.ONE_DAY)
+                    .period(FieldPeriod.QUARTER)
+                    .valueType(FieldType.DECIMAL)
+                    .build()
+            )
+            .addFilter(
+                SearchFilter.builder()
+                    .left(
+                        FieldRef.builder()
+                            .name("market_cap")
+                            .lookback(FieldLookback.ONE_DAY)
+                            .period(FieldPeriod.QUARTER)
+                            .valueType(FieldType.DECIMAL)
+                            .build()
+                    )
+                    .op(
+                        FilterOpSpec.builder()
+                            .name(FilterOperator.GREATER_OR_EQUAL)
+                            .addArg(OperatorArg.LEFT_INCLUSIVE)
+                            .build()
+                    )
+                    .addRight(
+                        FilterValue.builder()
+                            .value(1000000000.0)
+                            .variable(
+                                Variable.builder()
+                                    .name("today")
+                                    .lookback(FieldLookback.ONE_DAY)
+                                    .modifier(
+                                        Modifier.builder()
+                                            .addArg(30.0)
+                                            .addArg("DAY")
+                                            .name(ModifierOp.SUBTRACT)
+                                            .build()
+                                    )
+                                    .period(FieldPeriod.QUARTER)
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .build()
+            )
+            .name("name")
+            .addSort(
+                SortSpec.builder()
+                    .field(
+                        FieldRef.builder()
+                            .name("market_cap")
+                            .lookback(FieldLookback.ONE_DAY)
+                            .period(FieldPeriod.QUARTER)
+                            .valueType(FieldType.DECIMAL)
+                            .build()
+                    )
+                    .direction(SortDirection.DESC)
+                    .build()
+            )
+            .build()
+    }
+
+    @Test
+    fun pathParams() {
+        val params =
+            ScreenerReplaceScreenerParams.builder()
+                .screenerId("550e8400-e29b-41d4-a716-446655440000")
+                .build()
+
+        assertThat(params._pathParam(0)).isEqualTo("550e8400-e29b-41d4-a716-446655440000")
+        // out-of-bound path param
+        assertThat(params._pathParam(1)).isEqualTo("")
+    }
+
+    @Test
+    fun body() {
+        val params =
+            ScreenerReplaceScreenerParams.builder()
+                .screenerId("550e8400-e29b-41d4-a716-446655440000")
+                .addColumn(
+                    FieldRef.builder()
+                        .name("market_cap")
+                        .lookback(FieldLookback.ONE_DAY)
+                        .period(FieldPeriod.QUARTER)
+                        .valueType(FieldType.DECIMAL)
+                        .build()
+                )
+                .addFilter(
+                    SearchFilter.builder()
+                        .left(
+                            FieldRef.builder()
+                                .name("market_cap")
+                                .lookback(FieldLookback.ONE_DAY)
+                                .period(FieldPeriod.QUARTER)
+                                .valueType(FieldType.DECIMAL)
+                                .build()
+                        )
+                        .op(
+                            FilterOpSpec.builder()
+                                .name(FilterOperator.GREATER_OR_EQUAL)
+                                .addArg(OperatorArg.LEFT_INCLUSIVE)
+                                .build()
+                        )
+                        .addRight(
+                            FilterValue.builder()
+                                .value(1000000000.0)
+                                .variable(
+                                    Variable.builder()
+                                        .name("today")
+                                        .lookback(FieldLookback.ONE_DAY)
+                                        .modifier(
+                                            Modifier.builder()
+                                                .addArg(30.0)
+                                                .addArg("DAY")
+                                                .name(ModifierOp.SUBTRACT)
+                                                .build()
+                                        )
+                                        .period(FieldPeriod.QUARTER)
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+                .name("name")
+                .addSort(
+                    SortSpec.builder()
+                        .field(
+                            FieldRef.builder()
+                                .name("market_cap")
+                                .lookback(FieldLookback.ONE_DAY)
+                                .period(FieldPeriod.QUARTER)
+                                .valueType(FieldType.DECIMAL)
+                                .build()
+                        )
+                        .direction(SortDirection.DESC)
+                        .build()
+                )
+                .build()
+
+        val body = params._body()
+
+        assertThat(body.columns().getOrNull())
+            .containsExactly(
+                FieldRef.builder()
+                    .name("market_cap")
+                    .lookback(FieldLookback.ONE_DAY)
+                    .period(FieldPeriod.QUARTER)
+                    .valueType(FieldType.DECIMAL)
+                    .build()
+            )
+        assertThat(body.filters().getOrNull())
+            .containsExactly(
+                SearchFilter.builder()
+                    .left(
+                        FieldRef.builder()
+                            .name("market_cap")
+                            .lookback(FieldLookback.ONE_DAY)
+                            .period(FieldPeriod.QUARTER)
+                            .valueType(FieldType.DECIMAL)
+                            .build()
+                    )
+                    .op(
+                        FilterOpSpec.builder()
+                            .name(FilterOperator.GREATER_OR_EQUAL)
+                            .addArg(OperatorArg.LEFT_INCLUSIVE)
+                            .build()
+                    )
+                    .addRight(
+                        FilterValue.builder()
+                            .value(1000000000.0)
+                            .variable(
+                                Variable.builder()
+                                    .name("today")
+                                    .lookback(FieldLookback.ONE_DAY)
+                                    .modifier(
+                                        Modifier.builder()
+                                            .addArg(30.0)
+                                            .addArg("DAY")
+                                            .name(ModifierOp.SUBTRACT)
+                                            .build()
+                                    )
+                                    .period(FieldPeriod.QUARTER)
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .build()
+            )
+        assertThat(body.name()).contains("name")
+        assertThat(body.sorts().getOrNull())
+            .containsExactly(
+                SortSpec.builder()
+                    .field(
+                        FieldRef.builder()
+                            .name("market_cap")
+                            .lookback(FieldLookback.ONE_DAY)
+                            .period(FieldPeriod.QUARTER)
+                            .valueType(FieldType.DECIMAL)
+                            .build()
+                    )
+                    .direction(SortDirection.DESC)
+                    .build()
+            )
+    }
+
+    @Test
+    fun bodyWithoutOptionalFields() {
+        val params =
+            ScreenerReplaceScreenerParams.builder()
+                .screenerId("550e8400-e29b-41d4-a716-446655440000")
+                .build()
+
+        val body = params._body()
+    }
+}

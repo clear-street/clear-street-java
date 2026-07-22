@@ -1,0 +1,120 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.clearstreet.api.services.async.v1
+
+import com.clearstreet.api.TestServerExtension
+import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountBalancesParams
+import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams
+import com.clearstreet.api.models.v1.accounts.AccountGetPortfolioHistoryParams
+import com.clearstreet.api.models.v1.accounts.AccountPatchAccountByIdParams
+import com.clearstreet.api.models.v1.accounts.RiskSettings
+import java.time.LocalDate
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+
+@ExtendWith(TestServerExtension::class)
+internal class AccountServiceAsyncTest {
+
+    @Test
+    fun getAccountBalances() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val accountServiceAsync = client.v1().accounts()
+
+        val responseFuture =
+            accountServiceAsync.getAccountBalances(
+                AccountGetAccountBalancesParams.builder()
+                    .accountId(0L)
+                    .topMarginContributorsLimit(1)
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Test
+    fun getAccountById() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val accountServiceAsync = client.v1().accounts()
+
+        val responseFuture = accountServiceAsync.getAccountById(0L)
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Test
+    fun getAccounts() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val accountServiceAsync = client.v1().accounts()
+
+        val responseFuture =
+            accountServiceAsync.getAccounts(
+                AccountGetAccountsParams.builder()
+                    .accountId("account_id")
+                    .accountName("account_name")
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Test
+    fun getPortfolioHistory() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val accountServiceAsync = client.v1().accounts()
+
+        val responseFuture =
+            accountServiceAsync.getPortfolioHistory(
+                AccountGetPortfolioHistoryParams.builder()
+                    .accountId(0L)
+                    .startDate(LocalDate.parse("2019-12-27"))
+                    .endDate(LocalDate.parse("2019-12-27"))
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Test
+    fun patchAccountById() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val accountServiceAsync = client.v1().accounts()
+
+        val responseFuture =
+            accountServiceAsync.patchAccountById(
+                AccountPatchAccountByIdParams.builder()
+                    .accountId(0L)
+                    .risk(RiskSettings.builder().maxNotional("5000000.00").build())
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+}
