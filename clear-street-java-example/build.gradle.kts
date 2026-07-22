@@ -20,7 +20,7 @@ tasks.withType<JavaCompile>().configureEach {
 application {
     // Use `./gradlew :clear-street-java-example:run` to run `Main`
     // Use `./gradlew :clear-street-java-example:run -Pexample=Something` to run `SomethingExample`
-    mainClass = "com.clear_street.api.example.${
+    mainClass = "com.clearstreet.api.example.${
         if (project.hasProperty("example"))
             "${project.property("example")}Example"
         else
