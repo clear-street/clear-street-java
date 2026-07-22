@@ -1,0 +1,96 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.clearstreet.api.models.v1.instruments
+
+import com.clearstreet.api.core.jsonMapper
+import com.clearstreet.api.models.v1.SecurityType
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+
+internal class InstrumentCoreTest {
+
+    @Test
+    fun create() {
+        val instrumentCore =
+            InstrumentCore.builder()
+                .id("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
+                .countryOfIssue("US")
+                .currency("USD")
+                .easyToBorrow(true)
+                .isFractionable(false)
+                .isLiquidationOnly(false)
+                .isMarginable(true)
+                .isPtp(false)
+                .isShortProhibited(false)
+                .isThresholdSecurity(false)
+                .isTradable(true)
+                .symbol("AAPL")
+                .venue("XNMS")
+                .adv("75000000")
+                .instrumentType(SecurityType.COMMON_STOCK)
+                .longMarginRate("0.25")
+                .name("Apple Inc.")
+                .notionalAdv("15815250000")
+                .previousClose("210.87")
+                .shortMarginRate("0.25")
+                .build()
+
+        assertThat(instrumentCore.id()).isEqualTo("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
+        assertThat(instrumentCore.countryOfIssue()).isEqualTo("US")
+        assertThat(instrumentCore.currency()).isEqualTo("USD")
+        assertThat(instrumentCore.easyToBorrow()).isEqualTo(true)
+        assertThat(instrumentCore.isFractionable()).isEqualTo(false)
+        assertThat(instrumentCore.isLiquidationOnly()).isEqualTo(false)
+        assertThat(instrumentCore.isMarginable()).isEqualTo(true)
+        assertThat(instrumentCore.isPtp()).isEqualTo(false)
+        assertThat(instrumentCore.isShortProhibited()).isEqualTo(false)
+        assertThat(instrumentCore.isThresholdSecurity()).isEqualTo(false)
+        assertThat(instrumentCore.isTradable()).isEqualTo(true)
+        assertThat(instrumentCore.symbol()).isEqualTo("AAPL")
+        assertThat(instrumentCore.venue()).isEqualTo("XNMS")
+        assertThat(instrumentCore.adv()).contains("75000000")
+        assertThat(instrumentCore.instrumentType()).contains(SecurityType.COMMON_STOCK)
+        assertThat(instrumentCore.longMarginRate()).contains("0.25")
+        assertThat(instrumentCore.name()).contains("Apple Inc.")
+        assertThat(instrumentCore.notionalAdv()).contains("15815250000")
+        assertThat(instrumentCore.previousClose()).contains("210.87")
+        assertThat(instrumentCore.shortMarginRate()).contains("0.25")
+    }
+
+    @Test
+    fun roundtrip() {
+        val jsonMapper = jsonMapper()
+        val instrumentCore =
+            InstrumentCore.builder()
+                .id("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
+                .countryOfIssue("US")
+                .currency("USD")
+                .easyToBorrow(true)
+                .isFractionable(false)
+                .isLiquidationOnly(false)
+                .isMarginable(true)
+                .isPtp(false)
+                .isShortProhibited(false)
+                .isThresholdSecurity(false)
+                .isTradable(true)
+                .symbol("AAPL")
+                .venue("XNMS")
+                .adv("75000000")
+                .instrumentType(SecurityType.COMMON_STOCK)
+                .longMarginRate("0.25")
+                .name("Apple Inc.")
+                .notionalAdv("15815250000")
+                .previousClose("210.87")
+                .shortMarginRate("0.25")
+                .build()
+
+        val roundtrippedInstrumentCore =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(instrumentCore),
+                jacksonTypeRef<InstrumentCore>(),
+            )
+
+        assertThat(roundtrippedInstrumentCore).isEqualTo(instrumentCore)
+    }
+}
