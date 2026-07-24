@@ -2,9 +2,13 @@
 
 package com.clearstreet.api.models.v1.calendar
 
+import com.clearstreet.api.core.Enum
+import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.core.Params
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
+import com.clearstreet.api.errors.ClearStreetInvalidDataException
+import com.fasterxml.jackson.annotation.JsonCreator
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
@@ -16,7 +20,7 @@ import kotlin.jvm.optionals.getOrNull
 class CalendarGetMarketHoursCalendarParams
 private constructor(
     private val date: String?,
-    private val market: MarketType?,
+    private val market: Market?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -25,7 +29,7 @@ private constructor(
     fun date(): Optional<String> = Optional.ofNullable(date)
 
     /** Market type to query (us_equities, us_options). If omitted, returns all markets. */
-    fun market(): Optional<MarketType> = Optional.ofNullable(market)
+    fun market(): Optional<Market> = Optional.ofNullable(market)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -50,7 +54,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var date: String? = null
-        private var market: MarketType? = null
+        private var market: Market? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -72,10 +76,10 @@ private constructor(
         fun date(date: Optional<String>) = date(date.getOrNull())
 
         /** Market type to query (us_equities, us_options). If omitted, returns all markets. */
-        fun market(market: MarketType?) = apply { this.market = market }
+        fun market(market: Market?) = apply { this.market = market }
 
         /** Alias for calling [Builder.market] with `market.orElse(null)`. */
-        fun market(market: Optional<MarketType>) = market(market.getOrNull())
+        fun market(market: Optional<Market>) = market(market.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -199,6 +203,143 @@ private constructor(
                 putAll(additionalQueryParams)
             }
             .build()
+
+    /** Market type to query (us_equities, us_options). If omitted, returns all markets. */
+    class Market @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val US_EQUITIES = of("us_equities")
+
+            @JvmField val US_OPTIONS = of("us_options")
+
+            @JvmStatic fun of(value: String) = Market(JsonField.of(value))
+        }
+
+        /** An enum containing [Market]'s known values. */
+        enum class Known {
+            US_EQUITIES,
+            US_OPTIONS,
+        }
+
+        /**
+         * An enum containing [Market]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Market] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            US_EQUITIES,
+            US_OPTIONS,
+            /** An enum member indicating that [Market] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                US_EQUITIES -> Value.US_EQUITIES
+                US_OPTIONS -> Value.US_OPTIONS
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws ClearStreetInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                US_EQUITIES -> Known.US_EQUITIES
+                US_OPTIONS -> Known.US_OPTIONS
+                else -> throw ClearStreetInvalidDataException("Unknown Market: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws ClearStreetInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow {
+                ClearStreetInvalidDataException("Value is not a String")
+            }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws ClearStreetInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Market = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: ClearStreetInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Market && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

@@ -11,21 +11,17 @@ internal class PositionClosePositionParamsTest {
     fun create() {
         PositionClosePositionParams.builder()
             .accountId(0L)
-            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .instrumentId("x")
             .cancelOrders(false)
             .build()
     }
 
     @Test
     fun pathParams() {
-        val params =
-            PositionClosePositionParams.builder()
-                .accountId(0L)
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+        val params = PositionClosePositionParams.builder().accountId(0L).instrumentId("x").build()
 
         assertThat(params._pathParam(0)).isEqualTo("0")
-        assertThat(params._pathParam(1)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(params._pathParam(1)).isEqualTo("x")
         // out-of-bound path param
         assertThat(params._pathParam(2)).isEqualTo("")
     }
@@ -35,7 +31,7 @@ internal class PositionClosePositionParamsTest {
         val params =
             PositionClosePositionParams.builder()
                 .accountId(0L)
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .instrumentId("x")
                 .cancelOrders(false)
                 .build()
 
@@ -46,11 +42,7 @@ internal class PositionClosePositionParamsTest {
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params =
-            PositionClosePositionParams.builder()
-                .accountId(0L)
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+        val params = PositionClosePositionParams.builder().accountId(0L).instrumentId("x").build()
 
         val body = params._body()
     }

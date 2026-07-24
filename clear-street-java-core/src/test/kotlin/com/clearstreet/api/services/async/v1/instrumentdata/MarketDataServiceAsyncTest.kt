@@ -41,9 +41,7 @@ internal class MarketDataServiceAsyncTest {
 
         val responseFuture =
             marketDataServiceAsync.getSnapshots(
-                MarketDataGetSnapshotsParams.builder()
-                    .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .build()
+                MarketDataGetSnapshotsParams.builder().addInstrumentId("x").build()
             )
 
         val response = responseFuture.get()

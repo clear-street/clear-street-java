@@ -150,7 +150,8 @@ private constructor(
     fun extendedHours(): Optional<Boolean> = extendedHours.getOptional("extended_hours")
 
     /**
-     * Instrument identifier
+     * Instrument ID (UUID) or symbol (equity ticker or OSI option symbol). Either `symbol` or
+     * `instrument_id` must be provided.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -499,7 +500,10 @@ private constructor(
             this.extendedHours = extendedHours
         }
 
-        /** Instrument identifier */
+        /**
+         * Instrument ID (UUID) or symbol (equity ticker or OSI option symbol). Either `symbol` or
+         * `instrument_id` must be provided.
+         */
         fun instrumentId(instrumentId: String?) = instrumentId(JsonField.ofNullable(instrumentId))
 
         /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */

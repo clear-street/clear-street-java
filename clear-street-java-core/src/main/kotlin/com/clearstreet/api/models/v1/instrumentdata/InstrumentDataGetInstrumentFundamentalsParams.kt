@@ -17,7 +17,10 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** Instrument identifier */
+    /**
+     * Instrument identifier: either an instrument UUID or a symbol (symbol for equities, OSI for
+     * options). Non-UUID inputs are resolved server-side.
+     */
     fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
 
     /** Additional headers to send with the request. */
@@ -58,7 +61,10 @@ private constructor(
                 instrumentDataGetInstrumentFundamentalsParams.additionalQueryParams.toBuilder()
         }
 
-        /** Instrument identifier */
+        /**
+         * Instrument identifier: either an instrument UUID or a symbol (symbol for equities, OSI
+         * for options). Non-UUID inputs are resolved server-side.
+         */
         fun instrumentId(instrumentId: String?) = apply { this.instrumentId = instrumentId }
 
         /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */

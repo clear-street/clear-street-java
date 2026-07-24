@@ -12,7 +12,7 @@ internal class InstrumentGetInstrumentsParamsTest {
     fun create() {
         InstrumentGetInstrumentsParams.builder()
             .easyToBorrow(true)
-            .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .addInstrumentId("x")
             .instrumentType(InstrumentGetInstrumentsParams.InstrumentType.COMMON_STOCK)
             .isLiquidationOnly(true)
             .isMarginable(true)
@@ -29,7 +29,7 @@ internal class InstrumentGetInstrumentsParamsTest {
         val params =
             InstrumentGetInstrumentsParams.builder()
                 .easyToBorrow(true)
-                .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .addInstrumentId("x")
                 .instrumentType(InstrumentGetInstrumentsParams.InstrumentType.COMMON_STOCK)
                 .isLiquidationOnly(true)
                 .isMarginable(true)
@@ -46,10 +46,7 @@ internal class InstrumentGetInstrumentsParamsTest {
             .isEqualTo(
                 QueryParams.builder()
                     .put("easy_to_borrow", "true")
-                    .put(
-                        "instrument_ids",
-                        listOf("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e").joinToString(","),
-                    )
+                    .put("instrument_ids", listOf("x").joinToString(","))
                     .put("instrument_type", "COMMON_STOCK")
                     .put("is_liquidation_only", "true")
                     .put("is_marginable", "true")

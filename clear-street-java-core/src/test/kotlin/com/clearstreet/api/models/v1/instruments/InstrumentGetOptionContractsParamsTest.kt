@@ -12,12 +12,12 @@ internal class InstrumentGetOptionContractsParamsTest {
     @Test
     fun create() {
         InstrumentGetOptionContractsParams.builder()
-            .contractType(ContractType.CALL)
+            .contractType(InstrumentGetOptionContractsParams.ContractType.CALL)
             .expiry(LocalDate.parse("2019-12-27"))
             .pageSize(1L)
             .pageToken("U3RhaW5sZXNzIHJvY2tz")
             .underlier("underlier")
-            .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .underlyingInstrumentId("x")
             .build()
     }
 
@@ -25,12 +25,12 @@ internal class InstrumentGetOptionContractsParamsTest {
     fun queryParams() {
         val params =
             InstrumentGetOptionContractsParams.builder()
-                .contractType(ContractType.CALL)
+                .contractType(InstrumentGetOptionContractsParams.ContractType.CALL)
                 .expiry(LocalDate.parse("2019-12-27"))
                 .pageSize(1L)
                 .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .underlier("underlier")
-                .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .underlyingInstrumentId("x")
                 .build()
 
         val queryParams = params._queryParams()
@@ -43,7 +43,7 @@ internal class InstrumentGetOptionContractsParamsTest {
                     .put("page_size", "1")
                     .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
                     .put("underlier", "underlier")
-                    .put("underlying_instrument_id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .put("underlying_instrument_id", "x")
                     .build()
             )
     }

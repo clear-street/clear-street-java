@@ -12,7 +12,7 @@ internal class OrderCancelAllOpenOrdersParamsTest {
     fun create() {
         OrderCancelAllOpenOrdersParams.builder()
             .accountId(0L)
-            .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .addInstrumentId("x")
             .instrumentType(OrderCancelAllOpenOrdersParams.InstrumentType.COMMON_STOCK)
             .side(OrderCancelAllOpenOrdersParams.Side.BUY)
             .type(OrderCancelAllOpenOrdersParams.Type.MARKET)
@@ -33,7 +33,7 @@ internal class OrderCancelAllOpenOrdersParamsTest {
         val params =
             OrderCancelAllOpenOrdersParams.builder()
                 .accountId(0L)
-                .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .addInstrumentId("x")
                 .instrumentType(OrderCancelAllOpenOrdersParams.InstrumentType.COMMON_STOCK)
                 .side(OrderCancelAllOpenOrdersParams.Side.BUY)
                 .type(OrderCancelAllOpenOrdersParams.Type.MARKET)
@@ -44,10 +44,7 @@ internal class OrderCancelAllOpenOrdersParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put(
-                        "instrument_ids",
-                        listOf("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e").joinToString(","),
-                    )
+                    .put("instrument_ids", listOf("x").joinToString(","))
                     .put("instrument_type", "COMMON_STOCK")
                     .put("side", "BUY")
                     .put("type", "MARKET")

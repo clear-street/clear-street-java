@@ -5,7 +5,6 @@ package com.clearstreet.api.services.blocking.v1
 import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.models.v1.calendar.CalendarGetMarketHoursCalendarParams
-import com.clearstreet.api.models.v1.calendar.MarketType
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -39,7 +38,7 @@ internal class CalendarServiceTest {
             calendarService.getMarketHoursCalendar(
                 CalendarGetMarketHoursCalendarParams.builder()
                     .date("date")
-                    .market(MarketType.US_EQUITIES)
+                    .market(CalendarGetMarketHoursCalendarParams.Market.US_EQUITIES)
                     .build()
             )
 

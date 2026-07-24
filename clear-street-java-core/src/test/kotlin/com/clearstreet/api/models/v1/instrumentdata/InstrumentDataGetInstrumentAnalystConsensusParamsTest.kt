@@ -12,7 +12,7 @@ internal class InstrumentDataGetInstrumentAnalystConsensusParamsTest {
     @Test
     fun create() {
         InstrumentDataGetInstrumentAnalystConsensusParams.builder()
-            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .instrumentId("x")
             .from(LocalDate.parse("2019-12-27"))
             .to(LocalDate.parse("2019-12-27"))
             .build()
@@ -21,11 +21,9 @@ internal class InstrumentDataGetInstrumentAnalystConsensusParamsTest {
     @Test
     fun pathParams() {
         val params =
-            InstrumentDataGetInstrumentAnalystConsensusParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+            InstrumentDataGetInstrumentAnalystConsensusParams.builder().instrumentId("x").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(params._pathParam(0)).isEqualTo("x")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }
@@ -34,7 +32,7 @@ internal class InstrumentDataGetInstrumentAnalystConsensusParamsTest {
     fun queryParams() {
         val params =
             InstrumentDataGetInstrumentAnalystConsensusParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .instrumentId("x")
                 .from(LocalDate.parse("2019-12-27"))
                 .to(LocalDate.parse("2019-12-27"))
                 .build()
@@ -50,9 +48,7 @@ internal class InstrumentDataGetInstrumentAnalystConsensusParamsTest {
     @Test
     fun queryParamsWithoutOptionalFields() {
         val params =
-            InstrumentDataGetInstrumentAnalystConsensusParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+            InstrumentDataGetInstrumentAnalystConsensusParams.builder().instrumentId("x").build()
 
         val queryParams = params._queryParams()
 

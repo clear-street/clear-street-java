@@ -50,7 +50,7 @@ internal class PositionServiceTest {
             positionService.closePosition(
                 PositionClosePositionParams.builder()
                     .accountId(0L)
-                    .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .instrumentId("x")
                     .cancelOrders(false)
                     .build()
             )
@@ -88,7 +88,7 @@ internal class PositionServiceTest {
             positionService.getPositionInstructions(
                 PositionGetPositionInstructionsParams.builder()
                     .accountId(0L)
-                    .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .instrumentId("x")
                     .build()
             )
 

@@ -4,7 +4,6 @@ package com.clearstreet.api.services.async.v1
 
 import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
-import com.clearstreet.api.models.v1.instruments.ContractType
 import com.clearstreet.api.models.v1.instruments.InstrumentGetInstrumentByIdParams
 import com.clearstreet.api.models.v1.instruments.InstrumentGetInstrumentsParams
 import com.clearstreet.api.models.v1.instruments.InstrumentGetOptionContractsParams
@@ -28,7 +27,7 @@ internal class InstrumentServiceAsyncTest {
         val responseFuture =
             instrumentServiceAsync.getInstrumentById(
                 InstrumentGetInstrumentByIdParams.builder()
-                    .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .instrumentId("x")
                     .includeOptionsExpiryDates(true)
                     .build()
             )
@@ -50,7 +49,7 @@ internal class InstrumentServiceAsyncTest {
             instrumentServiceAsync.getInstruments(
                 InstrumentGetInstrumentsParams.builder()
                     .easyToBorrow(true)
-                    .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .addInstrumentId("x")
                     .instrumentType(InstrumentGetInstrumentsParams.InstrumentType.COMMON_STOCK)
                     .isLiquidationOnly(true)
                     .isMarginable(true)
@@ -78,12 +77,12 @@ internal class InstrumentServiceAsyncTest {
         val responseFuture =
             instrumentServiceAsync.getOptionContracts(
                 InstrumentGetOptionContractsParams.builder()
-                    .contractType(ContractType.CALL)
+                    .contractType(InstrumentGetOptionContractsParams.ContractType.CALL)
                     .expiry(LocalDate.parse("2019-12-27"))
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .underlier("underlier")
-                    .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .underlyingInstrumentId("x")
                     .build()
             )
 

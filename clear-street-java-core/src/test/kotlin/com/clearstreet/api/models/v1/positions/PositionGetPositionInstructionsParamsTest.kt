@@ -10,10 +10,7 @@ internal class PositionGetPositionInstructionsParamsTest {
 
     @Test
     fun create() {
-        PositionGetPositionInstructionsParams.builder()
-            .accountId(0L)
-            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-            .build()
+        PositionGetPositionInstructionsParams.builder().accountId(0L).instrumentId("x").build()
     }
 
     @Test
@@ -28,19 +25,11 @@ internal class PositionGetPositionInstructionsParamsTest {
     @Test
     fun queryParams() {
         val params =
-            PositionGetPositionInstructionsParams.builder()
-                .accountId(0L)
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+            PositionGetPositionInstructionsParams.builder().accountId(0L).instrumentId("x").build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams)
-            .isEqualTo(
-                QueryParams.builder()
-                    .put("instrument_id", "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .build()
-            )
+        assertThat(queryParams).isEqualTo(QueryParams.builder().put("instrument_id", "x").build())
     }
 
     @Test

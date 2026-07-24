@@ -32,7 +32,7 @@ internal class InstrumentDataServiceTest {
                 InstrumentDataGetAllInstrumentEventsParams.builder()
                     .addEventType(AllEventsEventType.EARNINGS)
                     .fromDate("from_date")
-                    .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .addInstrumentId("x")
                     .toDate("to_date")
                     .build()
             )
@@ -52,7 +52,7 @@ internal class InstrumentDataServiceTest {
         val response =
             instrumentDataService.getInstrumentAnalystConsensus(
                 InstrumentDataGetInstrumentAnalystConsensusParams.builder()
-                    .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .instrumentId("x")
                     .from(LocalDate.parse("2019-12-27"))
                     .to(LocalDate.parse("2019-12-27"))
                     .build()
@@ -73,7 +73,7 @@ internal class InstrumentDataServiceTest {
         val response =
             instrumentDataService.getInstrumentBalanceSheetStatements(
                 InstrumentDataGetInstrumentBalanceSheetStatementsParams.builder()
-                    .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .instrumentId("x")
                     .fromDate("from_date")
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
@@ -96,7 +96,7 @@ internal class InstrumentDataServiceTest {
         val response =
             instrumentDataService.getInstrumentCashFlowStatements(
                 InstrumentDataGetInstrumentCashFlowStatementsParams.builder()
-                    .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .instrumentId("x")
                     .fromDate("from_date")
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
@@ -119,7 +119,7 @@ internal class InstrumentDataServiceTest {
         val response =
             instrumentDataService.getInstrumentEvents(
                 InstrumentDataGetInstrumentEventsParams.builder()
-                    .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .instrumentId("x")
                     .fromDate("from_date")
                     .toDate("to_date")
                     .build()
@@ -137,8 +137,7 @@ internal class InstrumentDataServiceTest {
                 .build()
         val instrumentDataService = client.v1().instrumentData()
 
-        val response =
-            instrumentDataService.getInstrumentFundamentals("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        val response = instrumentDataService.getInstrumentFundamentals("x")
 
         response.validate()
     }
@@ -155,7 +154,7 @@ internal class InstrumentDataServiceTest {
         val response =
             instrumentDataService.getInstrumentIncomeStatements(
                 InstrumentDataGetInstrumentIncomeStatementsParams.builder()
-                    .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .instrumentId("x")
                     .fromDate("from_date")
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")

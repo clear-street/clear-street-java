@@ -13,7 +13,7 @@ internal class InstrumentDataGetAllInstrumentEventsParamsTest {
         InstrumentDataGetAllInstrumentEventsParams.builder()
             .addEventType(AllEventsEventType.EARNINGS)
             .fromDate("from_date")
-            .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .addInstrumentId("x")
             .toDate("to_date")
             .build()
     }
@@ -24,7 +24,7 @@ internal class InstrumentDataGetAllInstrumentEventsParamsTest {
             InstrumentDataGetAllInstrumentEventsParams.builder()
                 .addEventType(AllEventsEventType.EARNINGS)
                 .fromDate("from_date")
-                .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .addInstrumentId("x")
                 .toDate("to_date")
                 .build()
 
@@ -35,10 +35,7 @@ internal class InstrumentDataGetAllInstrumentEventsParamsTest {
                 QueryParams.builder()
                     .put("event_types", listOf("EARNINGS").joinToString(","))
                     .put("from_date", "from_date")
-                    .put(
-                        "instrument_ids",
-                        listOf("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e").joinToString(","),
-                    )
+                    .put("instrument_ids", listOf("x").joinToString(","))
                     .put("to_date", "to_date")
                     .build()
             )

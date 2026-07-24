@@ -10,28 +10,18 @@ internal class MarketDataGetSnapshotsParamsTest {
 
     @Test
     fun create() {
-        MarketDataGetSnapshotsParams.builder()
-            .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-            .build()
+        MarketDataGetSnapshotsParams.builder().addInstrumentId("x").build()
     }
 
     @Test
     fun queryParams() {
-        val params =
-            MarketDataGetSnapshotsParams.builder()
-                .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+        val params = MarketDataGetSnapshotsParams.builder().addInstrumentId("x").build()
 
         val queryParams = params._queryParams()
 
         assertThat(queryParams)
             .isEqualTo(
-                QueryParams.builder()
-                    .put(
-                        "instrument_ids",
-                        listOf("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e").joinToString(","),
-                    )
-                    .build()
+                QueryParams.builder().put("instrument_ids", listOf("x").joinToString(",")).build()
             )
     }
 

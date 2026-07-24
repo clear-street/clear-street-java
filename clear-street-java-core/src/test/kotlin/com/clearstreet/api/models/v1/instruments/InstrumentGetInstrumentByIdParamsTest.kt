@@ -11,19 +11,16 @@ internal class InstrumentGetInstrumentByIdParamsTest {
     @Test
     fun create() {
         InstrumentGetInstrumentByIdParams.builder()
-            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .instrumentId("x")
             .includeOptionsExpiryDates(true)
             .build()
     }
 
     @Test
     fun pathParams() {
-        val params =
-            InstrumentGetInstrumentByIdParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+        val params = InstrumentGetInstrumentByIdParams.builder().instrumentId("x").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(params._pathParam(0)).isEqualTo("x")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }
@@ -32,7 +29,7 @@ internal class InstrumentGetInstrumentByIdParamsTest {
     fun queryParams() {
         val params =
             InstrumentGetInstrumentByIdParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .instrumentId("x")
                 .includeOptionsExpiryDates(true)
                 .build()
 
@@ -44,10 +41,7 @@ internal class InstrumentGetInstrumentByIdParamsTest {
 
     @Test
     fun queryParamsWithoutOptionalFields() {
-        val params =
-            InstrumentGetInstrumentByIdParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+        val params = InstrumentGetInstrumentByIdParams.builder().instrumentId("x").build()
 
         val queryParams = params._queryParams()
 

@@ -11,7 +11,7 @@ internal class InstrumentDataGetInstrumentEventsParamsTest {
     @Test
     fun create() {
         InstrumentDataGetInstrumentEventsParams.builder()
-            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .instrumentId("x")
             .fromDate("from_date")
             .toDate("to_date")
             .build()
@@ -19,12 +19,9 @@ internal class InstrumentDataGetInstrumentEventsParamsTest {
 
     @Test
     fun pathParams() {
-        val params =
-            InstrumentDataGetInstrumentEventsParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+        val params = InstrumentDataGetInstrumentEventsParams.builder().instrumentId("x").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(params._pathParam(0)).isEqualTo("x")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }
@@ -33,7 +30,7 @@ internal class InstrumentDataGetInstrumentEventsParamsTest {
     fun queryParams() {
         val params =
             InstrumentDataGetInstrumentEventsParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .instrumentId("x")
                 .fromDate("from_date")
                 .toDate("to_date")
                 .build()
@@ -51,10 +48,7 @@ internal class InstrumentDataGetInstrumentEventsParamsTest {
 
     @Test
     fun queryParamsWithoutOptionalFields() {
-        val params =
-            InstrumentDataGetInstrumentEventsParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+        val params = InstrumentDataGetInstrumentEventsParams.builder().instrumentId("x").build()
 
         val queryParams = params._queryParams()
 

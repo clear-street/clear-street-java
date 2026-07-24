@@ -11,7 +11,7 @@ internal class InstrumentDataGetInstrumentIncomeStatementsParamsTest {
     @Test
     fun create() {
         InstrumentDataGetInstrumentIncomeStatementsParams.builder()
-            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .instrumentId("x")
             .fromDate("from_date")
             .pageSize(1L)
             .pageToken("U3RhaW5sZXNzIHJvY2tz")
@@ -22,11 +22,9 @@ internal class InstrumentDataGetInstrumentIncomeStatementsParamsTest {
     @Test
     fun pathParams() {
         val params =
-            InstrumentDataGetInstrumentIncomeStatementsParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+            InstrumentDataGetInstrumentIncomeStatementsParams.builder().instrumentId("x").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(params._pathParam(0)).isEqualTo("x")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }
@@ -35,7 +33,7 @@ internal class InstrumentDataGetInstrumentIncomeStatementsParamsTest {
     fun queryParams() {
         val params =
             InstrumentDataGetInstrumentIncomeStatementsParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .instrumentId("x")
                 .fromDate("from_date")
                 .pageSize(1L)
                 .pageToken("U3RhaW5sZXNzIHJvY2tz")
@@ -58,9 +56,7 @@ internal class InstrumentDataGetInstrumentIncomeStatementsParamsTest {
     @Test
     fun queryParamsWithoutOptionalFields() {
         val params =
-            InstrumentDataGetInstrumentIncomeStatementsParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+            InstrumentDataGetInstrumentIncomeStatementsParams.builder().instrumentId("x").build()
 
         val queryParams = params._queryParams()
 

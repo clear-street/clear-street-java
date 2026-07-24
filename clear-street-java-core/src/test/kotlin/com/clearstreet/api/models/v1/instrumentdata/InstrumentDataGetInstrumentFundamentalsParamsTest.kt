@@ -9,19 +9,15 @@ internal class InstrumentDataGetInstrumentFundamentalsParamsTest {
 
     @Test
     fun create() {
-        InstrumentDataGetInstrumentFundamentalsParams.builder()
-            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-            .build()
+        InstrumentDataGetInstrumentFundamentalsParams.builder().instrumentId("x").build()
     }
 
     @Test
     fun pathParams() {
         val params =
-            InstrumentDataGetInstrumentFundamentalsParams.builder()
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .build()
+            InstrumentDataGetInstrumentFundamentalsParams.builder().instrumentId("x").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(params._pathParam(0)).isEqualTo("x")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }

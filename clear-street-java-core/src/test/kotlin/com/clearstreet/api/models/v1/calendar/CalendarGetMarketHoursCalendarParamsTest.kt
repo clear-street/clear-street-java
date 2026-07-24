@@ -12,7 +12,7 @@ internal class CalendarGetMarketHoursCalendarParamsTest {
     fun create() {
         CalendarGetMarketHoursCalendarParams.builder()
             .date("date")
-            .market(MarketType.US_EQUITIES)
+            .market(CalendarGetMarketHoursCalendarParams.Market.US_EQUITIES)
             .build()
     }
 
@@ -21,7 +21,7 @@ internal class CalendarGetMarketHoursCalendarParamsTest {
         val params =
             CalendarGetMarketHoursCalendarParams.builder()
                 .date("date")
-                .market(MarketType.US_EQUITIES)
+                .market(CalendarGetMarketHoursCalendarParams.Market.US_EQUITIES)
                 .build()
 
         val queryParams = params._queryParams()

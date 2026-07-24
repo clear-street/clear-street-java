@@ -11,7 +11,7 @@ internal class WatchlistAddWatchlistItemParamsTest {
     fun create() {
         WatchlistAddWatchlistItemParams.builder()
             .watchlistId("550e8400-e29b-41d4-a716-446655440000")
-            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .instrumentId("x")
             .build()
     }
 
@@ -20,7 +20,7 @@ internal class WatchlistAddWatchlistItemParamsTest {
         val params =
             WatchlistAddWatchlistItemParams.builder()
                 .watchlistId("550e8400-e29b-41d4-a716-446655440000")
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .instrumentId("x")
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("550e8400-e29b-41d4-a716-446655440000")
@@ -33,11 +33,11 @@ internal class WatchlistAddWatchlistItemParamsTest {
         val params =
             WatchlistAddWatchlistItemParams.builder()
                 .watchlistId("550e8400-e29b-41d4-a716-446655440000")
-                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .instrumentId("x")
                 .build()
 
         val body = params._body()
 
-        assertThat(body.instrumentId()).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(body.instrumentId()).isEqualTo("x")
     }
 }
