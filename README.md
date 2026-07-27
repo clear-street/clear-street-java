@@ -3,7 +3,7 @@
 <!-- x-release-please-start-version -->
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.clearstreet.api/clear-street-java)](https://central.sonatype.com/artifact/com.clearstreet.api/clear-street-java/0.3.0)
-[![javadoc](https://javadoc.io/badge2/com.clearstreet.api/clear-street-java/0.3.0/javadoc.svg)](https://javadoc.io/doc/com.clearstreet.api/clear-street-java/0.2.0)
+[![javadoc](https://javadoc.io/badge2/com.clearstreet.api/clear-street-java/0.3.0/javadoc.svg)](https://javadoc.io/doc/com.clearstreet.api/clear-street-java/0.3.0)
 
 <!-- x-release-please-end -->
 
