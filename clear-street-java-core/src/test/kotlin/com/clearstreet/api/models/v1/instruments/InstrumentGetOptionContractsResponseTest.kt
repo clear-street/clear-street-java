@@ -8,6 +8,7 @@ import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -53,6 +54,8 @@ internal class InstrumentGetOptionContractsResponseTest {
                         .multiplier("100")
                         .strikePrice("150.00")
                         .symbol("AAPL  251219C00150000")
+                        .isSettleOnOpen(true)
+                        .lastTradeCutoff(OffsetDateTime.parse("2026-08-20T20:00:00Z"))
                         .openInterest(0L)
                         .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
@@ -98,6 +101,8 @@ internal class InstrumentGetOptionContractsResponseTest {
                     .multiplier("100")
                     .strikePrice("150.00")
                     .symbol("AAPL  251219C00150000")
+                    .isSettleOnOpen(true)
+                    .lastTradeCutoff(OffsetDateTime.parse("2026-08-20T20:00:00Z"))
                     .openInterest(0L)
                     .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
@@ -145,6 +150,8 @@ internal class InstrumentGetOptionContractsResponseTest {
                         .multiplier("100")
                         .strikePrice("150.00")
                         .symbol("AAPL  251219C00150000")
+                        .isSettleOnOpen(true)
+                        .lastTradeCutoff(OffsetDateTime.parse("2026-08-20T20:00:00Z"))
                         .openInterest(0L)
                         .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()

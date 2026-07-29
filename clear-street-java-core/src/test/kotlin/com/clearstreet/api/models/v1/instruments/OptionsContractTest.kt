@@ -5,6 +5,7 @@ package com.clearstreet.api.models.v1.instruments
 import com.clearstreet.api.core.jsonMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -27,6 +28,8 @@ internal class OptionsContractTest {
                 .multiplier("100")
                 .strikePrice("150.00")
                 .symbol("AAPL  251219C00150000")
+                .isSettleOnOpen(true)
+                .lastTradeCutoff(OffsetDateTime.parse("2026-08-20T20:00:00Z"))
                 .openInterest(0L)
                 .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
@@ -44,6 +47,9 @@ internal class OptionsContractTest {
         assertThat(optionsContract.multiplier()).isEqualTo("100")
         assertThat(optionsContract.strikePrice()).isEqualTo("150.00")
         assertThat(optionsContract.symbol()).isEqualTo("AAPL  251219C00150000")
+        assertThat(optionsContract.isSettleOnOpen()).contains(true)
+        assertThat(optionsContract.lastTradeCutoff())
+            .contains(OffsetDateTime.parse("2026-08-20T20:00:00Z"))
         assertThat(optionsContract.openInterest()).contains(0L)
         assertThat(optionsContract.underlyingInstrumentId())
             .contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
@@ -67,6 +73,8 @@ internal class OptionsContractTest {
                 .multiplier("100")
                 .strikePrice("150.00")
                 .symbol("AAPL  251219C00150000")
+                .isSettleOnOpen(true)
+                .lastTradeCutoff(OffsetDateTime.parse("2026-08-20T20:00:00Z"))
                 .openInterest(0L)
                 .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()

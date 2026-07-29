@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -35,6 +36,8 @@ private constructor(
     private val multiplier: JsonField<String>,
     private val strikePrice: JsonField<String>,
     private val symbol: JsonField<String>,
+    private val isSettleOnOpen: JsonField<Boolean>,
+    private val lastTradeCutoff: JsonField<OffsetDateTime>,
     private val openInterest: JsonField<Long>,
     private val underlyingInstrumentId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -71,6 +74,12 @@ private constructor(
         @ExcludeMissing
         strikePrice: JsonField<String> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("is_settle_on_open")
+        @ExcludeMissing
+        isSettleOnOpen: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("last_trade_cutoff")
+        @ExcludeMissing
+        lastTradeCutoff: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("open_interest")
         @ExcludeMissing
         openInterest: JsonField<Long> = JsonMissing.of(),
@@ -91,6 +100,8 @@ private constructor(
         multiplier,
         strikePrice,
         symbol,
+        isSettleOnOpen,
+        lastTradeCutoff,
         openInterest,
         underlyingInstrumentId,
         mutableMapOf(),
@@ -199,6 +210,25 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun symbol(): String = symbol.getRequired("symbol")
+
+    /**
+     * Whether the option settles on the opening price (AM settlement), if known When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun isSettleOnOpen(): Optional<Boolean> = isSettleOnOpen.getOptional("is_settle_on_open")
+
+    /**
+     * Last moment the option can trade (UTC), if known When a null/undefined value is observed, it
+     * indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun lastTradeCutoff(): Optional<OffsetDateTime> =
+        lastTradeCutoff.getOptional("last_trade_cutoff")
 
     /**
      * Open interest (number of outstanding contracts), if available When a null/undefined value is
@@ -324,6 +354,24 @@ private constructor(
     @JsonProperty("symbol") @ExcludeMissing fun _symbol(): JsonField<String> = symbol
 
     /**
+     * Returns the raw JSON value of [isSettleOnOpen].
+     *
+     * Unlike [isSettleOnOpen], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("is_settle_on_open")
+    @ExcludeMissing
+    fun _isSettleOnOpen(): JsonField<Boolean> = isSettleOnOpen
+
+    /**
+     * Returns the raw JSON value of [lastTradeCutoff].
+     *
+     * Unlike [lastTradeCutoff], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("last_trade_cutoff")
+    @ExcludeMissing
+    fun _lastTradeCutoff(): JsonField<OffsetDateTime> = lastTradeCutoff
+
+    /**
      * Returns the raw JSON value of [openInterest].
      *
      * Unlike [openInterest], this method doesn't throw if the JSON field has an unexpected type.
@@ -395,6 +443,8 @@ private constructor(
         private var multiplier: JsonField<String>? = null
         private var strikePrice: JsonField<String>? = null
         private var symbol: JsonField<String>? = null
+        private var isSettleOnOpen: JsonField<Boolean> = JsonMissing.of()
+        private var lastTradeCutoff: JsonField<OffsetDateTime> = JsonMissing.of()
         private var openInterest: JsonField<Long> = JsonMissing.of()
         private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -414,6 +464,8 @@ private constructor(
             multiplier = optionsContract.multiplier
             strikePrice = optionsContract.strikePrice
             symbol = optionsContract.symbol
+            isSettleOnOpen = optionsContract.isSettleOnOpen
+            lastTradeCutoff = optionsContract.lastTradeCutoff
             openInterest = optionsContract.openInterest
             underlyingInstrumentId = optionsContract.underlyingInstrumentId
             additionalProperties = optionsContract.additionalProperties.toMutableMap()
@@ -583,6 +635,57 @@ private constructor(
         fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
 
         /**
+         * Whether the option settles on the opening price (AM settlement), if known When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun isSettleOnOpen(isSettleOnOpen: Boolean?) =
+            isSettleOnOpen(JsonField.ofNullable(isSettleOnOpen))
+
+        /**
+         * Alias for [Builder.isSettleOnOpen].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun isSettleOnOpen(isSettleOnOpen: Boolean) = isSettleOnOpen(isSettleOnOpen as Boolean?)
+
+        /** Alias for calling [Builder.isSettleOnOpen] with `isSettleOnOpen.orElse(null)`. */
+        fun isSettleOnOpen(isSettleOnOpen: Optional<Boolean>) =
+            isSettleOnOpen(isSettleOnOpen.getOrNull())
+
+        /**
+         * Sets [Builder.isSettleOnOpen] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.isSettleOnOpen] with a well-typed [Boolean] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun isSettleOnOpen(isSettleOnOpen: JsonField<Boolean>) = apply {
+            this.isSettleOnOpen = isSettleOnOpen
+        }
+
+        /**
+         * Last moment the option can trade (UTC), if known When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
+        fun lastTradeCutoff(lastTradeCutoff: OffsetDateTime?) =
+            lastTradeCutoff(JsonField.ofNullable(lastTradeCutoff))
+
+        /** Alias for calling [Builder.lastTradeCutoff] with `lastTradeCutoff.orElse(null)`. */
+        fun lastTradeCutoff(lastTradeCutoff: Optional<OffsetDateTime>) =
+            lastTradeCutoff(lastTradeCutoff.getOrNull())
+
+        /**
+         * Sets [Builder.lastTradeCutoff] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.lastTradeCutoff] with a well-typed [OffsetDateTime]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun lastTradeCutoff(lastTradeCutoff: JsonField<OffsetDateTime>) = apply {
+            this.lastTradeCutoff = lastTradeCutoff
+        }
+
+        /**
          * Open interest (number of outstanding contracts), if available When a null/undefined value
          * is observed, it indicates that there is no available data.
          */
@@ -690,6 +793,8 @@ private constructor(
                 checkRequired("multiplier", multiplier),
                 checkRequired("strikePrice", strikePrice),
                 checkRequired("symbol", symbol),
+                isSettleOnOpen,
+                lastTradeCutoff,
                 openInterest,
                 underlyingInstrumentId,
                 additionalProperties.toMutableMap(),
@@ -724,6 +829,8 @@ private constructor(
         multiplier()
         strikePrice()
         symbol()
+        isSettleOnOpen()
+        lastTradeCutoff()
         openInterest()
         underlyingInstrumentId()
         validated = true
@@ -757,6 +864,8 @@ private constructor(
             (if (multiplier.asKnown().isPresent) 1 else 0) +
             (if (strikePrice.asKnown().isPresent) 1 else 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
+            (if (isSettleOnOpen.asKnown().isPresent) 1 else 0) +
+            (if (lastTradeCutoff.asKnown().isPresent) 1 else 0) +
             (if (openInterest.asKnown().isPresent) 1 else 0) +
             (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0)
 
@@ -779,6 +888,8 @@ private constructor(
             multiplier == other.multiplier &&
             strikePrice == other.strikePrice &&
             symbol == other.symbol &&
+            isSettleOnOpen == other.isSettleOnOpen &&
+            lastTradeCutoff == other.lastTradeCutoff &&
             openInterest == other.openInterest &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
             additionalProperties == other.additionalProperties
@@ -799,6 +910,8 @@ private constructor(
             multiplier,
             strikePrice,
             symbol,
+            isSettleOnOpen,
+            lastTradeCutoff,
             openInterest,
             underlyingInstrumentId,
             additionalProperties,
@@ -808,5 +921,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OptionsContract{id=$id, contractType=$contractType, currency=$currency, exchange=$exchange, exerciseStyle=$exerciseStyle, expiry=$expiry, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isTradable=$isTradable, listingType=$listingType, multiplier=$multiplier, strikePrice=$strikePrice, symbol=$symbol, openInterest=$openInterest, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
+        "OptionsContract{id=$id, contractType=$contractType, currency=$currency, exchange=$exchange, exerciseStyle=$exerciseStyle, expiry=$expiry, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isTradable=$isTradable, listingType=$listingType, multiplier=$multiplier, strikePrice=$strikePrice, symbol=$symbol, isSettleOnOpen=$isSettleOnOpen, lastTradeCutoff=$lastTradeCutoff, openInterest=$openInterest, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
 }
