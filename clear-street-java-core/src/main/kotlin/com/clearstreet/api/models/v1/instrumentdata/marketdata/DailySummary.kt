@@ -24,10 +24,11 @@ import kotlin.jvm.optionals.getOrNull
  * Returned by `GET /market-data/daily-summary`. Every field except `instrument_id` and
  * `not_applicable` is `Option`:
  * - Unresolvable `instrument_id` → all other fields `None` (including `symbol`).
- * - Resolvable `instrument_id` with no realtime cache entry → `symbol` populated, OHLV/`trade_date`
- *   `None`.
+ * - Resolvable `instrument_id` with no realtime cache entry → `symbol` populated,
+ *   OHLV/`trade_date`/`open_interest` `None`.
  * - `trade_date` reflects the session the OHLV represents (today during trading hours, the last
  *   trading date during weekends/holidays).
+ * - `open_interest` is populated for options only; `None` for equities and indices.
  * - `not_applicable` is a non-optional `bool`, always serialized: `true` for instrument types with
  *   no daily summary by definition (e.g. an index, whose OHLV/`trade_date` are `None`), `false`
  *   otherwise.
@@ -40,6 +41,7 @@ private constructor(
     private val low: JsonField<String>,
     private val notApplicable: JsonField<Boolean>,
     private val open: JsonField<String>,
+    private val openInterest: JsonField<Long>,
     private val symbol: JsonField<String>,
     private val tradeDate: JsonField<LocalDate>,
     private val volume: JsonField<Long>,
@@ -57,6 +59,9 @@ private constructor(
         @ExcludeMissing
         notApplicable: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("open") @ExcludeMissing open: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("open_interest")
+        @ExcludeMissing
+        openInterest: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("trade_date")
         @ExcludeMissing
@@ -68,6 +73,7 @@ private constructor(
         low,
         notApplicable,
         open,
+        openInterest,
         symbol,
         tradeDate,
         volume,
@@ -118,6 +124,16 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun open(): Optional<String> = open.getOptional("open")
+
+    /**
+     * Open interest (outstanding contracts). Populated for options only; `None` for equities and
+     * indices. When a null/undefined value is observed, it indicates that there is no available
+     * data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun openInterest(): Optional<Long> = openInterest.getOptional("open_interest")
 
     /**
      * Display symbol for the security. `None` for unresolvable IDs. When a null/undefined value is
@@ -186,6 +202,15 @@ private constructor(
     @JsonProperty("open") @ExcludeMissing fun _open(): JsonField<String> = open
 
     /**
+     * Returns the raw JSON value of [openInterest].
+     *
+     * Unlike [openInterest], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("open_interest")
+    @ExcludeMissing
+    fun _openInterest(): JsonField<Long> = openInterest
+
+    /**
      * Returns the raw JSON value of [symbol].
      *
      * Unlike [symbol], this method doesn't throw if the JSON field has an unexpected type.
@@ -239,6 +264,7 @@ private constructor(
         private var low: JsonField<String> = JsonMissing.of()
         private var notApplicable: JsonField<Boolean> = JsonMissing.of()
         private var open: JsonField<String> = JsonMissing.of()
+        private var openInterest: JsonField<Long> = JsonMissing.of()
         private var symbol: JsonField<String> = JsonMissing.of()
         private var tradeDate: JsonField<LocalDate> = JsonMissing.of()
         private var volume: JsonField<Long> = JsonMissing.of()
@@ -251,6 +277,7 @@ private constructor(
             low = dailySummary.low
             notApplicable = dailySummary.notApplicable
             open = dailySummary.open
+            openInterest = dailySummary.openInterest
             symbol = dailySummary.symbol
             tradeDate = dailySummary.tradeDate
             volume = dailySummary.volume
@@ -339,6 +366,32 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun open(open: JsonField<String>) = apply { this.open = open }
+
+        /**
+         * Open interest (outstanding contracts). Populated for options only; `None` for equities
+         * and indices. When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
+        fun openInterest(openInterest: Long?) = openInterest(JsonField.ofNullable(openInterest))
+
+        /**
+         * Alias for [Builder.openInterest].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun openInterest(openInterest: Long) = openInterest(openInterest as Long?)
+
+        /** Alias for calling [Builder.openInterest] with `openInterest.orElse(null)`. */
+        fun openInterest(openInterest: Optional<Long>) = openInterest(openInterest.getOrNull())
+
+        /**
+         * Sets [Builder.openInterest] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.openInterest] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun openInterest(openInterest: JsonField<Long>) = apply { this.openInterest = openInterest }
 
         /**
          * Display symbol for the security. `None` for unresolvable IDs. When a null/undefined value
@@ -437,6 +490,7 @@ private constructor(
                 low,
                 notApplicable,
                 open,
+                openInterest,
                 symbol,
                 tradeDate,
                 volume,
@@ -464,6 +518,7 @@ private constructor(
         low()
         notApplicable()
         open()
+        openInterest()
         symbol()
         tradeDate()
         volume()
@@ -490,6 +545,7 @@ private constructor(
             (if (low.asKnown().isPresent) 1 else 0) +
             (if (notApplicable.asKnown().isPresent) 1 else 0) +
             (if (open.asKnown().isPresent) 1 else 0) +
+            (if (openInterest.asKnown().isPresent) 1 else 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (tradeDate.asKnown().isPresent) 1 else 0) +
             (if (volume.asKnown().isPresent) 1 else 0)
@@ -505,6 +561,7 @@ private constructor(
             low == other.low &&
             notApplicable == other.notApplicable &&
             open == other.open &&
+            openInterest == other.openInterest &&
             symbol == other.symbol &&
             tradeDate == other.tradeDate &&
             volume == other.volume &&
@@ -518,6 +575,7 @@ private constructor(
             low,
             notApplicable,
             open,
+            openInterest,
             symbol,
             tradeDate,
             volume,
@@ -528,5 +586,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DailySummary{instrumentId=$instrumentId, high=$high, low=$low, notApplicable=$notApplicable, open=$open, symbol=$symbol, tradeDate=$tradeDate, volume=$volume, additionalProperties=$additionalProperties}"
+        "DailySummary{instrumentId=$instrumentId, high=$high, low=$low, notApplicable=$notApplicable, open=$open, openInterest=$openInterest, symbol=$symbol, tradeDate=$tradeDate, volume=$volume, additionalProperties=$additionalProperties}"
 }
