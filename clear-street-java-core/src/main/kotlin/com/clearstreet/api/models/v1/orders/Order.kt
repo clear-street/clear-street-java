@@ -288,8 +288,10 @@ private constructor(
     fun venue(): String = venue.getRequired("venue")
 
     /**
-     * Average fill price across all executions When a null/undefined value is observed, it
-     * indicates that there is no available data.
+     * Average fill price across all executions. For multileg orders this is the venue's
+     * strategy-level average when reported, else the signed net package price derived from the leg
+     * averages: net debit positive, net credit negative, zero possible. When a null/undefined value
+     * is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -1005,8 +1007,10 @@ private constructor(
         fun venue(venue: JsonField<String>) = apply { this.venue = venue }
 
         /**
-         * Average fill price across all executions When a null/undefined value is observed, it
-         * indicates that there is no available data.
+         * Average fill price across all executions. For multileg orders this is the venue's
+         * strategy-level average when reported, else the signed net package price derived from the
+         * leg averages: net debit positive, net credit negative, zero possible. When a
+         * null/undefined value is observed, it indicates that there is no available data.
          */
         fun averageFillPrice(averageFillPrice: String?) =
             averageFillPrice(JsonField.ofNullable(averageFillPrice))
