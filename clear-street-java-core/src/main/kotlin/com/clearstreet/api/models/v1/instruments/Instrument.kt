@@ -39,6 +39,7 @@ private constructor(
     private val symbol: JsonField<String>,
     private val venue: JsonField<String>,
     private val adv: JsonField<String>,
+    private val caxAdjustedPreviousClose: JsonField<String>,
     private val instrumentType: JsonField<SecurityType>,
     private val longMarginRate: JsonField<String>,
     private val name: JsonField<String>,
@@ -81,6 +82,9 @@ private constructor(
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("venue") @ExcludeMissing venue: JsonField<String> = JsonMissing.of(),
         @JsonProperty("adv") @ExcludeMissing adv: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("cax_adjusted_previous_close")
+        @ExcludeMissing
+        caxAdjustedPreviousClose: JsonField<String> = JsonMissing.of(),
         @JsonProperty("instrument_type")
         @ExcludeMissing
         instrumentType: JsonField<SecurityType> = JsonMissing.of(),
@@ -115,6 +119,7 @@ private constructor(
         symbol,
         venue,
         adv,
+        caxAdjustedPreviousClose,
         instrumentType,
         longMarginRate,
         name,
@@ -240,6 +245,17 @@ private constructor(
     fun adv(): Optional<String> = adv.getOptional("adv")
 
     /**
+     * Corporate-action-adjusted last close; present only when an adjustment exists for the
+     * previous_close date. When a null/undefined value is observed, it indicates that there is no
+     * available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun caxAdjustedPreviousClose(): Optional<String> =
+        caxAdjustedPreviousClose.getOptional("cax_adjusted_previous_close")
+
+    /**
      * The type of security (e.g., Common Stock, ETF) When a null/undefined value is observed, it
      * indicates that there is no available data.
      *
@@ -267,8 +283,9 @@ private constructor(
     fun name(): Optional<String> = name.getOptional("name")
 
     /**
-     * Notional average daily volume (ADV multiplied by previous close price). When a null/undefined
-     * value is observed, it indicates that there is no available data.
+     * Notional average daily volume (ADV multiplied by the cax-adjusted close when present, the raw
+     * previous close otherwise). When a null/undefined value is observed, it indicates that there
+     * is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -420,6 +437,16 @@ private constructor(
     @JsonProperty("adv") @ExcludeMissing fun _adv(): JsonField<String> = adv
 
     /**
+     * Returns the raw JSON value of [caxAdjustedPreviousClose].
+     *
+     * Unlike [caxAdjustedPreviousClose], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("cax_adjusted_previous_close")
+    @ExcludeMissing
+    fun _caxAdjustedPreviousClose(): JsonField<String> = caxAdjustedPreviousClose
+
+    /**
      * Returns the raw JSON value of [instrumentType].
      *
      * Unlike [instrumentType], this method doesn't throw if the JSON field has an unexpected type.
@@ -535,6 +562,7 @@ private constructor(
         private var symbol: JsonField<String>? = null
         private var venue: JsonField<String>? = null
         private var adv: JsonField<String> = JsonMissing.of()
+        private var caxAdjustedPreviousClose: JsonField<String> = JsonMissing.of()
         private var instrumentType: JsonField<SecurityType> = JsonMissing.of()
         private var longMarginRate: JsonField<String> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
@@ -560,6 +588,7 @@ private constructor(
             symbol = instrument.symbol
             venue = instrument.venue
             adv = instrument.adv
+            caxAdjustedPreviousClose = instrument.caxAdjustedPreviousClose
             instrumentType = instrument.instrumentType
             longMarginRate = instrument.longMarginRate
             name = instrument.name
@@ -759,6 +788,32 @@ private constructor(
         fun adv(adv: JsonField<String>) = apply { this.adv = adv }
 
         /**
+         * Corporate-action-adjusted last close; present only when an adjustment exists for the
+         * previous_close date. When a null/undefined value is observed, it indicates that there is
+         * no available data.
+         */
+        fun caxAdjustedPreviousClose(caxAdjustedPreviousClose: String?) =
+            caxAdjustedPreviousClose(JsonField.ofNullable(caxAdjustedPreviousClose))
+
+        /**
+         * Alias for calling [Builder.caxAdjustedPreviousClose] with
+         * `caxAdjustedPreviousClose.orElse(null)`.
+         */
+        fun caxAdjustedPreviousClose(caxAdjustedPreviousClose: Optional<String>) =
+            caxAdjustedPreviousClose(caxAdjustedPreviousClose.getOrNull())
+
+        /**
+         * Sets [Builder.caxAdjustedPreviousClose] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.caxAdjustedPreviousClose] with a well-typed [String]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun caxAdjustedPreviousClose(caxAdjustedPreviousClose: JsonField<String>) = apply {
+            this.caxAdjustedPreviousClose = caxAdjustedPreviousClose
+        }
+
+        /**
          * The type of security (e.g., Common Stock, ETF) When a null/undefined value is observed,
          * it indicates that there is no available data.
          */
@@ -820,8 +875,9 @@ private constructor(
         fun name(name: JsonField<String>) = apply { this.name = name }
 
         /**
-         * Notional average daily volume (ADV multiplied by previous close price). When a
-         * null/undefined value is observed, it indicates that there is no available data.
+         * Notional average daily volume (ADV multiplied by the cax-adjusted close when present, the
+         * raw previous close otherwise). When a null/undefined value is observed, it indicates that
+         * there is no available data.
          */
         fun notionalAdv(notionalAdv: String?) = notionalAdv(JsonField.ofNullable(notionalAdv))
 
@@ -977,6 +1033,7 @@ private constructor(
                 checkRequired("symbol", symbol),
                 checkRequired("venue", venue),
                 adv,
+                caxAdjustedPreviousClose,
                 instrumentType,
                 longMarginRate,
                 name,
@@ -1017,6 +1074,7 @@ private constructor(
         symbol()
         venue()
         adv()
+        caxAdjustedPreviousClose()
         instrumentType().ifPresent { it.validate() }
         longMarginRate()
         name()
@@ -1056,6 +1114,7 @@ private constructor(
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (venue.asKnown().isPresent) 1 else 0) +
             (if (adv.asKnown().isPresent) 1 else 0) +
+            (if (caxAdjustedPreviousClose.asKnown().isPresent) 1 else 0) +
             (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (longMarginRate.asKnown().isPresent) 1 else 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
@@ -1084,6 +1143,7 @@ private constructor(
             symbol == other.symbol &&
             venue == other.venue &&
             adv == other.adv &&
+            caxAdjustedPreviousClose == other.caxAdjustedPreviousClose &&
             instrumentType == other.instrumentType &&
             longMarginRate == other.longMarginRate &&
             name == other.name &&
@@ -1110,6 +1170,7 @@ private constructor(
             symbol,
             venue,
             adv,
+            caxAdjustedPreviousClose,
             instrumentType,
             longMarginRate,
             name,
@@ -1124,5 +1185,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Instrument{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, optionsExpiryDates=$optionsExpiryDates, previousClose=$previousClose, shortMarginRate=$shortMarginRate, additionalProperties=$additionalProperties}"
+        "Instrument{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, caxAdjustedPreviousClose=$caxAdjustedPreviousClose, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, optionsExpiryDates=$optionsExpiryDates, previousClose=$previousClose, shortMarginRate=$shortMarginRate, additionalProperties=$additionalProperties}"
 }
