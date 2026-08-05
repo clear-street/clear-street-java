@@ -20,7 +20,6 @@ internal class AccountBalancesTest {
                 .dailyChange("0.00")
                 .dailyPnl("1250.00")
                 .dailyRealizedPnl("700.00")
-                .dailyTotalPnl("1250.00")
                 .dailyUnrealizedPnl("550.00")
                 .equity("100000.00")
                 .longMarketValue("40000.00")
@@ -34,7 +33,6 @@ internal class AccountBalancesTest {
                         .longMarketValue("40000.00")
                         .shortMarketValue("10000.00")
                         .asof(LocalDate.parse("2023-09-27"))
-                        .dayTradeBuyingPower("200000.00")
                         .maintenanceMarginExcess("50000.00")
                         .maintenanceMarginRequirement("50000.00")
                         .tradeCash("70000.00")
@@ -47,7 +45,6 @@ internal class AccountBalancesTest {
                 .withdrawableCash("75000.00")
                 .marginDetails(
                     MarginDetails.builder()
-                        .dayTradeCount(2)
                         .initialMarginExcess("50000.00")
                         .initialMarginRequirement("50000.00")
                         .intradayDetails(
@@ -64,11 +61,8 @@ internal class AccountBalancesTest {
                                 .multiplier("2")
                                 .build()
                         )
-                        .patternDayTrader(false)
-                        .dayTradeBuyingPowerUsage("0.00")
                         .addTopContributor(
                             MarginTopContributor.builder()
-                                .dayTradeBuyingPowerUsage("5000.00")
                                 .initialMarginRequirement("25000.00")
                                 .maintenanceMarginRequirement("15000.00")
                                 .marketValue("50000.00")
@@ -90,7 +84,6 @@ internal class AccountBalancesTest {
         assertThat(accountBalances.dailyChange()).isEqualTo("0.00")
         assertThat(accountBalances.dailyPnl()).isEqualTo("1250.00")
         assertThat(accountBalances.dailyRealizedPnl()).isEqualTo("700.00")
-        assertThat(accountBalances.dailyTotalPnl()).isEqualTo("1250.00")
         assertThat(accountBalances.dailyUnrealizedPnl()).isEqualTo("550.00")
         assertThat(accountBalances.equity()).isEqualTo("100000.00")
         assertThat(accountBalances.longMarketValue()).isEqualTo("40000.00")
@@ -105,7 +98,6 @@ internal class AccountBalancesTest {
                     .longMarketValue("40000.00")
                     .shortMarketValue("10000.00")
                     .asof(LocalDate.parse("2023-09-27"))
-                    .dayTradeBuyingPower("200000.00")
                     .maintenanceMarginExcess("50000.00")
                     .maintenanceMarginRequirement("50000.00")
                     .tradeCash("70000.00")
@@ -119,7 +111,6 @@ internal class AccountBalancesTest {
         assertThat(accountBalances.marginDetails())
             .contains(
                 MarginDetails.builder()
-                    .dayTradeCount(2)
                     .initialMarginExcess("50000.00")
                     .initialMarginRequirement("50000.00")
                     .intradayDetails(
@@ -136,11 +127,8 @@ internal class AccountBalancesTest {
                             .multiplier("2")
                             .build()
                     )
-                    .patternDayTrader(false)
-                    .dayTradeBuyingPowerUsage("0.00")
                     .addTopContributor(
                         MarginTopContributor.builder()
-                            .dayTradeBuyingPowerUsage("5000.00")
                             .initialMarginRequirement("25000.00")
                             .maintenanceMarginRequirement("15000.00")
                             .marketValue("50000.00")
@@ -165,7 +153,6 @@ internal class AccountBalancesTest {
                 .dailyChange("0.00")
                 .dailyPnl("1250.00")
                 .dailyRealizedPnl("700.00")
-                .dailyTotalPnl("1250.00")
                 .dailyUnrealizedPnl("550.00")
                 .equity("100000.00")
                 .longMarketValue("40000.00")
@@ -179,7 +166,6 @@ internal class AccountBalancesTest {
                         .longMarketValue("40000.00")
                         .shortMarketValue("10000.00")
                         .asof(LocalDate.parse("2023-09-27"))
-                        .dayTradeBuyingPower("200000.00")
                         .maintenanceMarginExcess("50000.00")
                         .maintenanceMarginRequirement("50000.00")
                         .tradeCash("70000.00")
@@ -192,7 +178,6 @@ internal class AccountBalancesTest {
                 .withdrawableCash("75000.00")
                 .marginDetails(
                     MarginDetails.builder()
-                        .dayTradeCount(2)
                         .initialMarginExcess("50000.00")
                         .initialMarginRequirement("50000.00")
                         .intradayDetails(
@@ -209,11 +194,8 @@ internal class AccountBalancesTest {
                                 .multiplier("2")
                                 .build()
                         )
-                        .patternDayTrader(false)
-                        .dayTradeBuyingPowerUsage("0.00")
                         .addTopContributor(
                             MarginTopContributor.builder()
-                                .dayTradeBuyingPowerUsage("5000.00")
                                 .initialMarginRequirement("25000.00")
                                 .maintenanceMarginRequirement("15000.00")
                                 .marketValue("50000.00")

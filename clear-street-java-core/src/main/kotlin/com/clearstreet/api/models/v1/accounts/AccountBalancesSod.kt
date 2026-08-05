@@ -26,7 +26,6 @@ private constructor(
     private val longMarketValue: JsonField<String>,
     private val shortMarketValue: JsonField<String>,
     private val asof: JsonField<LocalDate>,
-    private val dayTradeBuyingPower: JsonField<String>,
     private val maintenanceMarginExcess: JsonField<String>,
     private val maintenanceMarginRequirement: JsonField<String>,
     private val tradeCash: JsonField<String>,
@@ -46,9 +45,6 @@ private constructor(
         @ExcludeMissing
         shortMarketValue: JsonField<String> = JsonMissing.of(),
         @JsonProperty("asof") @ExcludeMissing asof: JsonField<LocalDate> = JsonMissing.of(),
-        @JsonProperty("day_trade_buying_power")
-        @ExcludeMissing
-        dayTradeBuyingPower: JsonField<String> = JsonMissing.of(),
         @JsonProperty("maintenance_margin_excess")
         @ExcludeMissing
         maintenanceMarginExcess: JsonField<String> = JsonMissing.of(),
@@ -62,7 +58,6 @@ private constructor(
         longMarketValue,
         shortMarketValue,
         asof,
-        dayTradeBuyingPower,
         maintenanceMarginExcess,
         maintenanceMarginRequirement,
         tradeCash,
@@ -109,17 +104,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun asof(): Optional<LocalDate> = asof.getOptional("asof")
-
-    /**
-     * Start-of-day day-trade buying power. When a null/undefined value is observed, it indicates it
-     * does not apply.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    @Deprecated("deprecated")
-    fun dayTradeBuyingPower(): Optional<String> =
-        dayTradeBuyingPower.getOptional("day_trade_buying_power")
 
     /**
      * Start-of-day maintenance margin excess. When a null/undefined value is observed, it indicates
@@ -193,17 +177,6 @@ private constructor(
     @JsonProperty("asof") @ExcludeMissing fun _asof(): JsonField<LocalDate> = asof
 
     /**
-     * Returns the raw JSON value of [dayTradeBuyingPower].
-     *
-     * Unlike [dayTradeBuyingPower], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @Deprecated("deprecated")
-    @JsonProperty("day_trade_buying_power")
-    @ExcludeMissing
-    fun _dayTradeBuyingPower(): JsonField<String> = dayTradeBuyingPower
-
-    /**
      * Returns the raw JSON value of [maintenanceMarginExcess].
      *
      * Unlike [maintenanceMarginExcess], this method doesn't throw if the JSON field has an
@@ -266,7 +239,6 @@ private constructor(
         private var longMarketValue: JsonField<String>? = null
         private var shortMarketValue: JsonField<String>? = null
         private var asof: JsonField<LocalDate> = JsonMissing.of()
-        private var dayTradeBuyingPower: JsonField<String> = JsonMissing.of()
         private var maintenanceMarginExcess: JsonField<String> = JsonMissing.of()
         private var maintenanceMarginRequirement: JsonField<String> = JsonMissing.of()
         private var tradeCash: JsonField<String> = JsonMissing.of()
@@ -279,7 +251,6 @@ private constructor(
             longMarketValue = accountBalancesSod.longMarketValue
             shortMarketValue = accountBalancesSod.shortMarketValue
             asof = accountBalancesSod.asof
-            dayTradeBuyingPower = accountBalancesSod.dayTradeBuyingPower
             maintenanceMarginExcess = accountBalancesSod.maintenanceMarginExcess
             maintenanceMarginRequirement = accountBalancesSod.maintenanceMarginRequirement
             tradeCash = accountBalancesSod.tradeCash
@@ -355,33 +326,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun asof(asof: JsonField<LocalDate>) = apply { this.asof = asof }
-
-        /**
-         * Start-of-day day-trade buying power. When a null/undefined value is observed, it
-         * indicates it does not apply.
-         */
-        @Deprecated("deprecated")
-        fun dayTradeBuyingPower(dayTradeBuyingPower: String?) =
-            dayTradeBuyingPower(JsonField.ofNullable(dayTradeBuyingPower))
-
-        /**
-         * Alias for calling [Builder.dayTradeBuyingPower] with `dayTradeBuyingPower.orElse(null)`.
-         */
-        @Deprecated("deprecated")
-        fun dayTradeBuyingPower(dayTradeBuyingPower: Optional<String>) =
-            dayTradeBuyingPower(dayTradeBuyingPower.getOrNull())
-
-        /**
-         * Sets [Builder.dayTradeBuyingPower] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.dayTradeBuyingPower] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        @Deprecated("deprecated")
-        fun dayTradeBuyingPower(dayTradeBuyingPower: JsonField<String>) = apply {
-            this.dayTradeBuyingPower = dayTradeBuyingPower
-        }
 
         /**
          * Start-of-day maintenance margin excess. When a null/undefined value is observed, it
@@ -492,7 +436,6 @@ private constructor(
                 checkRequired("longMarketValue", longMarketValue),
                 checkRequired("shortMarketValue", shortMarketValue),
                 asof,
-                dayTradeBuyingPower,
                 maintenanceMarginExcess,
                 maintenanceMarginRequirement,
                 tradeCash,
@@ -520,7 +463,6 @@ private constructor(
         longMarketValue()
         shortMarketValue()
         asof()
-        dayTradeBuyingPower()
         maintenanceMarginExcess()
         maintenanceMarginRequirement()
         tradeCash()
@@ -547,7 +489,6 @@ private constructor(
             (if (longMarketValue.asKnown().isPresent) 1 else 0) +
             (if (shortMarketValue.asKnown().isPresent) 1 else 0) +
             (if (asof.asKnown().isPresent) 1 else 0) +
-            (if (dayTradeBuyingPower.asKnown().isPresent) 1 else 0) +
             (if (maintenanceMarginExcess.asKnown().isPresent) 1 else 0) +
             (if (maintenanceMarginRequirement.asKnown().isPresent) 1 else 0) +
             (if (tradeCash.asKnown().isPresent) 1 else 0)
@@ -563,7 +504,6 @@ private constructor(
             longMarketValue == other.longMarketValue &&
             shortMarketValue == other.shortMarketValue &&
             asof == other.asof &&
-            dayTradeBuyingPower == other.dayTradeBuyingPower &&
             maintenanceMarginExcess == other.maintenanceMarginExcess &&
             maintenanceMarginRequirement == other.maintenanceMarginRequirement &&
             tradeCash == other.tradeCash &&
@@ -577,7 +517,6 @@ private constructor(
             longMarketValue,
             shortMarketValue,
             asof,
-            dayTradeBuyingPower,
             maintenanceMarginExcess,
             maintenanceMarginRequirement,
             tradeCash,
@@ -588,5 +527,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AccountBalancesSod{buyingPower=$buyingPower, equity=$equity, longMarketValue=$longMarketValue, shortMarketValue=$shortMarketValue, asof=$asof, dayTradeBuyingPower=$dayTradeBuyingPower, maintenanceMarginExcess=$maintenanceMarginExcess, maintenanceMarginRequirement=$maintenanceMarginRequirement, tradeCash=$tradeCash, additionalProperties=$additionalProperties}"
+        "AccountBalancesSod{buyingPower=$buyingPower, equity=$equity, longMarketValue=$longMarketValue, shortMarketValue=$shortMarketValue, asof=$asof, maintenanceMarginExcess=$maintenanceMarginExcess, maintenanceMarginRequirement=$maintenanceMarginRequirement, tradeCash=$tradeCash, additionalProperties=$additionalProperties}"
 }

@@ -14,7 +14,6 @@ internal class MarginDetailsTest {
     fun create() {
         val marginDetails =
             MarginDetails.builder()
-                .dayTradeCount(0)
                 .initialMarginExcess("50000.00")
                 .initialMarginRequirement("50000.00")
                 .intradayDetails(
@@ -25,11 +24,8 @@ internal class MarginDetailsTest {
                 .overnightDetails(
                     MarginSessionDetails.builder().buyingPower("500000.00").multiplier("2").build()
                 )
-                .patternDayTrader(true)
-                .dayTradeBuyingPowerUsage("50000.00")
                 .addTopContributor(
                     MarginTopContributor.builder()
-                        .dayTradeBuyingPowerUsage("5000.00")
                         .initialMarginRequirement("25000.00")
                         .maintenanceMarginRequirement("15000.00")
                         .marketValue("50000.00")
@@ -39,7 +35,6 @@ internal class MarginDetailsTest {
                 .usage(MarginDetailsUsage.builder().total("100000.00").used("5000.00").build())
                 .build()
 
-        assertThat(marginDetails.dayTradeCount()).isEqualTo(0)
         assertThat(marginDetails.initialMarginExcess()).isEqualTo("50000.00")
         assertThat(marginDetails.initialMarginRequirement()).isEqualTo("50000.00")
         assertThat(marginDetails.intradayDetails())
@@ -52,12 +47,9 @@ internal class MarginDetailsTest {
             .isEqualTo(
                 MarginSessionDetails.builder().buyingPower("500000.00").multiplier("2").build()
             )
-        assertThat(marginDetails.patternDayTrader()).isEqualTo(true)
-        assertThat(marginDetails.dayTradeBuyingPowerUsage()).contains("50000.00")
         assertThat(marginDetails.topContributors().getOrNull())
             .containsExactly(
                 MarginTopContributor.builder()
-                    .dayTradeBuyingPowerUsage("5000.00")
                     .initialMarginRequirement("25000.00")
                     .maintenanceMarginRequirement("15000.00")
                     .marketValue("50000.00")
@@ -73,7 +65,6 @@ internal class MarginDetailsTest {
         val jsonMapper = jsonMapper()
         val marginDetails =
             MarginDetails.builder()
-                .dayTradeCount(0)
                 .initialMarginExcess("50000.00")
                 .initialMarginRequirement("50000.00")
                 .intradayDetails(
@@ -84,11 +75,8 @@ internal class MarginDetailsTest {
                 .overnightDetails(
                     MarginSessionDetails.builder().buyingPower("500000.00").multiplier("2").build()
                 )
-                .patternDayTrader(true)
-                .dayTradeBuyingPowerUsage("50000.00")
                 .addTopContributor(
                     MarginTopContributor.builder()
-                        .dayTradeBuyingPowerUsage("5000.00")
                         .initialMarginRequirement("25000.00")
                         .maintenanceMarginRequirement("15000.00")
                         .marketValue("50000.00")

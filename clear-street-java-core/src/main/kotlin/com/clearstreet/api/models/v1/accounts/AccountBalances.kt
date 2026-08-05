@@ -27,7 +27,6 @@ private constructor(
     private val dailyChange: JsonField<String>,
     private val dailyPnl: JsonField<String>,
     private val dailyRealizedPnl: JsonField<String>,
-    private val dailyTotalPnl: JsonField<String>,
     private val dailyUnrealizedPnl: JsonField<String>,
     private val equity: JsonField<String>,
     private val longMarketValue: JsonField<String>,
@@ -60,9 +59,6 @@ private constructor(
         @JsonProperty("daily_realized_pnl")
         @ExcludeMissing
         dailyRealizedPnl: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("daily_total_pnl")
-        @ExcludeMissing
-        dailyTotalPnl: JsonField<String> = JsonMissing.of(),
         @JsonProperty("daily_unrealized_pnl")
         @ExcludeMissing
         dailyUnrealizedPnl: JsonField<String> = JsonMissing.of(),
@@ -109,7 +105,6 @@ private constructor(
         dailyChange,
         dailyPnl,
         dailyRealizedPnl,
-        dailyTotalPnl,
         dailyUnrealizedPnl,
         equity,
         longMarketValue,
@@ -175,14 +170,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun dailyRealizedPnl(): String = dailyRealizedPnl.getRequired("daily_realized_pnl")
-
-    /**
-     * Total profit or loss since start of day.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun dailyTotalPnl(): String = dailyTotalPnl.getRequired("daily_total_pnl")
 
     /**
      * Total unrealized profit or loss across all positions relative to prior close.
@@ -357,15 +344,6 @@ private constructor(
     fun _dailyRealizedPnl(): JsonField<String> = dailyRealizedPnl
 
     /**
-     * Returns the raw JSON value of [dailyTotalPnl].
-     *
-     * Unlike [dailyTotalPnl], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("daily_total_pnl")
-    @ExcludeMissing
-    fun _dailyTotalPnl(): JsonField<String> = dailyTotalPnl
-
-    /**
      * Returns the raw JSON value of [dailyUnrealizedPnl].
      *
      * Unlike [dailyUnrealizedPnl], this method doesn't throw if the JSON field has an unexpected
@@ -522,7 +500,6 @@ private constructor(
          * .dailyChange()
          * .dailyPnl()
          * .dailyRealizedPnl()
-         * .dailyTotalPnl()
          * .dailyUnrealizedPnl()
          * .equity()
          * .longMarketValue()
@@ -549,7 +526,6 @@ private constructor(
         private var dailyChange: JsonField<String>? = null
         private var dailyPnl: JsonField<String>? = null
         private var dailyRealizedPnl: JsonField<String>? = null
-        private var dailyTotalPnl: JsonField<String>? = null
         private var dailyUnrealizedPnl: JsonField<String>? = null
         private var equity: JsonField<String>? = null
         private var longMarketValue: JsonField<String>? = null
@@ -575,7 +551,6 @@ private constructor(
             dailyChange = accountBalances.dailyChange
             dailyPnl = accountBalances.dailyPnl
             dailyRealizedPnl = accountBalances.dailyRealizedPnl
-            dailyTotalPnl = accountBalances.dailyTotalPnl
             dailyUnrealizedPnl = accountBalances.dailyUnrealizedPnl
             equity = accountBalances.equity
             longMarketValue = accountBalances.longMarketValue
@@ -664,20 +639,6 @@ private constructor(
          */
         fun dailyRealizedPnl(dailyRealizedPnl: JsonField<String>) = apply {
             this.dailyRealizedPnl = dailyRealizedPnl
-        }
-
-        /** Total profit or loss since start of day. */
-        fun dailyTotalPnl(dailyTotalPnl: String) = dailyTotalPnl(JsonField.of(dailyTotalPnl))
-
-        /**
-         * Sets [Builder.dailyTotalPnl] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.dailyTotalPnl] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun dailyTotalPnl(dailyTotalPnl: JsonField<String>) = apply {
-            this.dailyTotalPnl = dailyTotalPnl
         }
 
         /** Total unrealized profit or loss across all positions relative to prior close. */
@@ -937,7 +898,6 @@ private constructor(
          * .dailyChange()
          * .dailyPnl()
          * .dailyRealizedPnl()
-         * .dailyTotalPnl()
          * .dailyUnrealizedPnl()
          * .equity()
          * .longMarketValue()
@@ -962,7 +922,6 @@ private constructor(
                 checkRequired("dailyChange", dailyChange),
                 checkRequired("dailyPnl", dailyPnl),
                 checkRequired("dailyRealizedPnl", dailyRealizedPnl),
-                checkRequired("dailyTotalPnl", dailyTotalPnl),
                 checkRequired("dailyUnrealizedPnl", dailyUnrealizedPnl),
                 checkRequired("equity", equity),
                 checkRequired("longMarketValue", longMarketValue),
@@ -1003,7 +962,6 @@ private constructor(
         dailyChange()
         dailyPnl()
         dailyRealizedPnl()
-        dailyTotalPnl()
         dailyUnrealizedPnl()
         equity()
         longMarketValue()
@@ -1043,7 +1001,6 @@ private constructor(
             (if (dailyChange.asKnown().isPresent) 1 else 0) +
             (if (dailyPnl.asKnown().isPresent) 1 else 0) +
             (if (dailyRealizedPnl.asKnown().isPresent) 1 else 0) +
-            (if (dailyTotalPnl.asKnown().isPresent) 1 else 0) +
             (if (dailyUnrealizedPnl.asKnown().isPresent) 1 else 0) +
             (if (equity.asKnown().isPresent) 1 else 0) +
             (if (longMarketValue.asKnown().isPresent) 1 else 0) +
@@ -1072,7 +1029,6 @@ private constructor(
             dailyChange == other.dailyChange &&
             dailyPnl == other.dailyPnl &&
             dailyRealizedPnl == other.dailyRealizedPnl &&
-            dailyTotalPnl == other.dailyTotalPnl &&
             dailyUnrealizedPnl == other.dailyUnrealizedPnl &&
             equity == other.equity &&
             longMarketValue == other.longMarketValue &&
@@ -1099,7 +1055,6 @@ private constructor(
             dailyChange,
             dailyPnl,
             dailyRealizedPnl,
-            dailyTotalPnl,
             dailyUnrealizedPnl,
             equity,
             longMarketValue,
@@ -1122,5 +1077,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyChange=$dailyChange, dailyPnl=$dailyPnl, dailyRealizedPnl=$dailyRealizedPnl, dailyTotalPnl=$dailyTotalPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unrealizedPnl=$unrealizedPnl, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, shortMarketValue=$shortMarketValue, additionalProperties=$additionalProperties}"
+        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyChange=$dailyChange, dailyPnl=$dailyPnl, dailyRealizedPnl=$dailyRealizedPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unrealizedPnl=$unrealizedPnl, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, shortMarketValue=$shortMarketValue, additionalProperties=$additionalProperties}"
 }
