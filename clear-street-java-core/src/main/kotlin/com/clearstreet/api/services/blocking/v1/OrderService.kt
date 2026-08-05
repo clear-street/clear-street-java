@@ -133,7 +133,12 @@ interface OrderService {
     fun getExecutions(accountId: Long, requestOptions: RequestOptions): OrderGetExecutionsResponse =
         getExecutions(accountId, OrderGetExecutionsParams.none(), requestOptions)
 
-    /** Get Order By ID */
+    /**
+     * Fetch a single order. The `{order_id}` path parameter accepts either the order's `id` or its
+     * `client_order_id`. A `client_order_id` can only be used while the order is open; after that,
+     * use the `id` returned in every order response, or find the order with the list-orders
+     * endpoint's `order_ids` filter, which accepts both identifiers at any time.
+     */
     fun getOrderById(orderId: String, params: OrderGetOrderByIdParams): OrderGetOrderByIdResponse =
         getOrderById(orderId, params, RequestOptions.none())
 

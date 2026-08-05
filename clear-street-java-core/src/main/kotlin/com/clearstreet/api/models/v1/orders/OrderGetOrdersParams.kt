@@ -46,8 +46,8 @@ private constructor(
     fun instrumentType(): Optional<InstrumentType> = Optional.ofNullable(instrumentType)
 
     /**
-     * Comma-separated order IDs to filter by. When provided, only orders whose order ID is in this
-     * set are returned.
+     * Comma-separated list of order identifiers. Each value may be an order's `id` or its
+     * `client_order_id`; only orders matching one of the given identifiers are returned.
      */
     fun orderIds(): Optional<List<String>> = Optional.ofNullable(orderIds)
 
@@ -174,8 +174,8 @@ private constructor(
             instrumentType(instrumentType.getOrNull())
 
         /**
-         * Comma-separated order IDs to filter by. When provided, only orders whose order ID is in
-         * this set are returned.
+         * Comma-separated list of order identifiers. Each value may be an order's `id` or its
+         * `client_order_id`; only orders matching one of the given identifiers are returned.
          */
         fun orderIds(orderIds: List<String>?) = apply { this.orderIds = orderIds?.toMutableList() }
 
