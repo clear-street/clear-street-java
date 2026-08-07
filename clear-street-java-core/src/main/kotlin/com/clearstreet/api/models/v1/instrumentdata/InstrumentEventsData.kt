@@ -26,6 +26,7 @@ private constructor(
     private val dividends: JsonField<List<InstrumentDividendEvent>>,
     private val earnings: JsonField<List<InstrumentEarnings>>,
     private val instrumentId: JsonField<String>,
+    private val ipos: JsonField<List<InstrumentIpoEvent>>,
     private val splits: JsonField<List<InstrumentSplitEvent>>,
     private val reportingCurrency: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -42,13 +43,16 @@ private constructor(
         @JsonProperty("instrument_id")
         @ExcludeMissing
         instrumentId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("ipos")
+        @ExcludeMissing
+        ipos: JsonField<List<InstrumentIpoEvent>> = JsonMissing.of(),
         @JsonProperty("splits")
         @ExcludeMissing
         splits: JsonField<List<InstrumentSplitEvent>> = JsonMissing.of(),
         @JsonProperty("reporting_currency")
         @ExcludeMissing
         reportingCurrency: JsonField<String> = JsonMissing.of(),
-    ) : this(dividends, earnings, instrumentId, splits, reportingCurrency, mutableMapOf())
+    ) : this(dividends, earnings, instrumentId, ipos, splits, reportingCurrency, mutableMapOf())
 
     /**
      * Dividend distribution events
@@ -73,6 +77,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun instrumentId(): String = instrumentId.getRequired("instrument_id")
+
+    /**
+     * IPO events
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun ipos(): List<InstrumentIpoEvent> = ipos.getRequired("ipos")
 
     /**
      * Stock split events
@@ -119,6 +131,13 @@ private constructor(
     fun _instrumentId(): JsonField<String> = instrumentId
 
     /**
+     * Returns the raw JSON value of [ipos].
+     *
+     * Unlike [ipos], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("ipos") @ExcludeMissing fun _ipos(): JsonField<List<InstrumentIpoEvent>> = ipos
+
+    /**
      * Returns the raw JSON value of [splits].
      *
      * Unlike [splits], this method doesn't throw if the JSON field has an unexpected type.
@@ -159,6 +178,7 @@ private constructor(
          * .dividends()
          * .earnings()
          * .instrumentId()
+         * .ipos()
          * .splits()
          * ```
          */
@@ -171,6 +191,7 @@ private constructor(
         private var dividends: JsonField<MutableList<InstrumentDividendEvent>>? = null
         private var earnings: JsonField<MutableList<InstrumentEarnings>>? = null
         private var instrumentId: JsonField<String>? = null
+        private var ipos: JsonField<MutableList<InstrumentIpoEvent>>? = null
         private var splits: JsonField<MutableList<InstrumentSplitEvent>>? = null
         private var reportingCurrency: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -180,6 +201,7 @@ private constructor(
             dividends = instrumentEventsData.dividends.map { it.toMutableList() }
             earnings = instrumentEventsData.earnings.map { it.toMutableList() }
             instrumentId = instrumentEventsData.instrumentId
+            ipos = instrumentEventsData.ipos.map { it.toMutableList() }
             splits = instrumentEventsData.splits.map { it.toMutableList() }
             reportingCurrency = instrumentEventsData.reportingCurrency
             additionalProperties = instrumentEventsData.additionalProperties.toMutableMap()
@@ -249,6 +271,29 @@ private constructor(
          */
         fun instrumentId(instrumentId: JsonField<String>) = apply {
             this.instrumentId = instrumentId
+        }
+
+        /** IPO events */
+        fun ipos(ipos: List<InstrumentIpoEvent>) = ipos(JsonField.of(ipos))
+
+        /**
+         * Sets [Builder.ipos] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.ipos] with a well-typed `List<InstrumentIpoEvent>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun ipos(ipos: JsonField<List<InstrumentIpoEvent>>) = apply {
+            this.ipos = ipos.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [InstrumentIpoEvent] to [ipos].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addIpo(ipo: InstrumentIpoEvent) = apply {
+            ipos = (ipos ?: JsonField.of(mutableListOf())).also { checkKnown("ipos", it).add(ipo) }
         }
 
         /** Stock split events */
@@ -328,6 +373,7 @@ private constructor(
          * .dividends()
          * .earnings()
          * .instrumentId()
+         * .ipos()
          * .splits()
          * ```
          *
@@ -338,6 +384,7 @@ private constructor(
                 checkRequired("dividends", dividends).map { it.toImmutable() },
                 checkRequired("earnings", earnings).map { it.toImmutable() },
                 checkRequired("instrumentId", instrumentId),
+                checkRequired("ipos", ipos).map { it.toImmutable() },
                 checkRequired("splits", splits).map { it.toImmutable() },
                 reportingCurrency,
                 additionalProperties.toMutableMap(),
@@ -362,6 +409,7 @@ private constructor(
         dividends().forEach { it.validate() }
         earnings().forEach { it.validate() }
         instrumentId()
+        ipos().forEach { it.validate() }
         splits().forEach { it.validate() }
         reportingCurrency()
         validated = true
@@ -385,6 +433,7 @@ private constructor(
         (dividends.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (earnings.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
+            (ipos.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (splits.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (reportingCurrency.asKnown().isPresent) 1 else 0)
 
@@ -397,6 +446,7 @@ private constructor(
             dividends == other.dividends &&
             earnings == other.earnings &&
             instrumentId == other.instrumentId &&
+            ipos == other.ipos &&
             splits == other.splits &&
             reportingCurrency == other.reportingCurrency &&
             additionalProperties == other.additionalProperties
@@ -407,6 +457,7 @@ private constructor(
             dividends,
             earnings,
             instrumentId,
+            ipos,
             splits,
             reportingCurrency,
             additionalProperties,
@@ -416,5 +467,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentEventsData{dividends=$dividends, earnings=$earnings, instrumentId=$instrumentId, splits=$splits, reportingCurrency=$reportingCurrency, additionalProperties=$additionalProperties}"
+        "InstrumentEventsData{dividends=$dividends, earnings=$earnings, instrumentId=$instrumentId, ipos=$ipos, splits=$splits, reportingCurrency=$reportingCurrency, additionalProperties=$additionalProperties}"
 }

@@ -12,6 +12,7 @@ internal class InstrumentDataGetInstrumentEventsParamsTest {
     fun create() {
         InstrumentDataGetInstrumentEventsParams.builder()
             .instrumentId("x")
+            .addEventType(AllEventsEventType.EARNINGS)
             .fromDate("from_date")
             .toDate("to_date")
             .build()
@@ -31,6 +32,7 @@ internal class InstrumentDataGetInstrumentEventsParamsTest {
         val params =
             InstrumentDataGetInstrumentEventsParams.builder()
                 .instrumentId("x")
+                .addEventType(AllEventsEventType.EARNINGS)
                 .fromDate("from_date")
                 .toDate("to_date")
                 .build()
@@ -40,6 +42,7 @@ internal class InstrumentDataGetInstrumentEventsParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
+                    .put("event_types", listOf("EARNINGS").joinToString(","))
                     .put("from_date", "from_date")
                     .put("to_date", "to_date")
                     .build()

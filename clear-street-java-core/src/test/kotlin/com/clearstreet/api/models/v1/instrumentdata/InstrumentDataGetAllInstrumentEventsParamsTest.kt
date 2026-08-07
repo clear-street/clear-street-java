@@ -14,6 +14,8 @@ internal class InstrumentDataGetAllInstrumentEventsParamsTest {
             .addEventType(AllEventsEventType.EARNINGS)
             .fromDate("from_date")
             .addInstrumentId("x")
+            .pageSize(1L)
+            .pageToken("U3RhaW5sZXNzIHJvY2tz")
             .toDate("to_date")
             .build()
     }
@@ -25,6 +27,8 @@ internal class InstrumentDataGetAllInstrumentEventsParamsTest {
                 .addEventType(AllEventsEventType.EARNINGS)
                 .fromDate("from_date")
                 .addInstrumentId("x")
+                .pageSize(1L)
+                .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .toDate("to_date")
                 .build()
 
@@ -36,6 +40,8 @@ internal class InstrumentDataGetAllInstrumentEventsParamsTest {
                     .put("event_types", listOf("EARNINGS").joinToString(","))
                     .put("from_date", "from_date")
                     .put("instrument_ids", listOf("x").joinToString(","))
+                    .put("page_size", "1")
+                    .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
                     .put("to_date", "to_date")
                     .build()
             )

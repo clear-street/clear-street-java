@@ -46,12 +46,14 @@ interface InstrumentDataServiceAsync {
     fun news(): NewsServiceAsync
 
     /**
-     * List instrument events across all securities, grouped by date.
+     * List instrument events across all securities, grouped by date. Results are paginated via
+     * `page_size` / `page_token`; a date's events may span two pages.
      *
      * Date range defaults (anchored on the current trading day, or the next trading day if today is
      * a weekend or US market holiday):
-     * - Unfiltered (no `instrument_ids`): a single trading day (`from_date` = `to_date` = anchor);
-     *   the requested span is capped at 6 days.
+     * - Unfiltered (no `instrument_ids`): a single trading day (`from_date` = `to_date` = anchor).
+     *   If only one bound is given, the other defaults to 6 days from it; there is no maximum span
+     *   once both bounds are given.
      * - Filtered (with `instrument_ids`): a 30-day lookback ending on the anchor (`from_date` =
      *   anchor − 30 days, `to_date` = anchor).
      */
@@ -249,8 +251,8 @@ interface InstrumentDataServiceAsync {
         )
 
     /**
-     * Retrieves corporate events (dividends, splits, etc.) for an instrument, grouped by event
-     * type.
+     * Retrieves corporate events (earnings, dividends, splits, IPO) for an instrument, grouped by
+     * event type. Filter to specific types via `event_types`.
      *
      * Date range defaults:
      * - `from_date`: today - 365 days

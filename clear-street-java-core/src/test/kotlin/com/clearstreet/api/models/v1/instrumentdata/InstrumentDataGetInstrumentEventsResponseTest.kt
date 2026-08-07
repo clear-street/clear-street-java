@@ -8,6 +8,7 @@ import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -65,6 +66,18 @@ internal class InstrumentDataGetInstrumentEventsResponseTest {
                                 .build()
                         )
                         .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                        .addIpo(
+                            InstrumentIpoEvent.builder()
+                                .date(LocalDate.parse("2025-01-10"))
+                                .actions("Expected")
+                                .announcedAt(OffsetDateTime.parse("2025-01-05T14:30:00Z"))
+                                .company("Apple Inc.")
+                                .exchange("NASDAQ")
+                                .marketCap("2500000000")
+                                .priceRange("100.00 - 110.00")
+                                .shares("1000000")
+                                .build()
+                        )
                         .addSplit(
                             InstrumentSplitEvent.builder()
                                 .date(LocalDate.parse("2020-08-31"))
@@ -129,6 +142,18 @@ internal class InstrumentDataGetInstrumentEventsResponseTest {
                             .build()
                     )
                     .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                    .addIpo(
+                        InstrumentIpoEvent.builder()
+                            .date(LocalDate.parse("2025-01-10"))
+                            .actions("Expected")
+                            .announcedAt(OffsetDateTime.parse("2025-01-05T14:30:00Z"))
+                            .company("Apple Inc.")
+                            .exchange("NASDAQ")
+                            .marketCap("2500000000")
+                            .priceRange("100.00 - 110.00")
+                            .shares("1000000")
+                            .build()
+                    )
                     .addSplit(
                         InstrumentSplitEvent.builder()
                             .date(LocalDate.parse("2020-08-31"))
@@ -195,6 +220,18 @@ internal class InstrumentDataGetInstrumentEventsResponseTest {
                                 .build()
                         )
                         .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                        .addIpo(
+                            InstrumentIpoEvent.builder()
+                                .date(LocalDate.parse("2025-01-10"))
+                                .actions("Expected")
+                                .announcedAt(OffsetDateTime.parse("2025-01-05T14:30:00Z"))
+                                .company("Apple Inc.")
+                                .exchange("NASDAQ")
+                                .marketCap("2500000000")
+                                .priceRange("100.00 - 110.00")
+                                .shares("1000000")
+                                .build()
+                        )
                         .addSplit(
                             InstrumentSplitEvent.builder()
                                 .date(LocalDate.parse("2020-08-31"))

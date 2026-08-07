@@ -33,6 +33,8 @@ internal class InstrumentDataServiceTest {
                     .addEventType(AllEventsEventType.EARNINGS)
                     .fromDate("from_date")
                     .addInstrumentId("x")
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .toDate("to_date")
                     .build()
             )
@@ -120,6 +122,7 @@ internal class InstrumentDataServiceTest {
             instrumentDataService.getInstrumentEvents(
                 InstrumentDataGetInstrumentEventsParams.builder()
                     .instrumentId("x")
+                    .addEventType(AllEventsEventType.EARNINGS)
                     .fromDate("from_date")
                     .toDate("to_date")
                     .build()

@@ -33,6 +33,8 @@ internal class InstrumentDataServiceAsyncTest {
                     .addEventType(AllEventsEventType.EARNINGS)
                     .fromDate("from_date")
                     .addInstrumentId("x")
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .toDate("to_date")
                     .build()
             )
@@ -124,6 +126,7 @@ internal class InstrumentDataServiceAsyncTest {
             instrumentDataServiceAsync.getInstrumentEvents(
                 InstrumentDataGetInstrumentEventsParams.builder()
                     .instrumentId("x")
+                    .addEventType(AllEventsEventType.EARNINGS)
                     .fromDate("from_date")
                     .toDate("to_date")
                     .build()

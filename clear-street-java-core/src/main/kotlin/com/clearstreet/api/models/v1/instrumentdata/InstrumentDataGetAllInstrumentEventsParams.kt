@@ -11,12 +11,14 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * List instrument events across all securities, grouped by date.
+ * List instrument events across all securities, grouped by date. Results are paginated via
+ * `page_size` / `page_token`; a date's events may span two pages.
  *
  * Date range defaults (anchored on the current trading day, or the next trading day if today is a
  * weekend or US market holiday):
- * - Unfiltered (no `instrument_ids`): a single trading day (`from_date` = `to_date` = anchor); the
- *   requested span is capped at 6 days.
+ * - Unfiltered (no `instrument_ids`): a single trading day (`from_date` = `to_date` = anchor). If
+ *   only one bound is given, the other defaults to 6 days from it; there is no maximum span once
+ *   both bounds are given.
  * - Filtered (with `instrument_ids`): a 30-day lookback ending on the anchor (`from_date` = anchor
  *   − 30 days, `to_date` = anchor).
  */
@@ -25,6 +27,8 @@ private constructor(
     private val eventTypes: List<AllEventsEventType>?,
     private val fromDate: String?,
     private val instrumentIds: List<String>?,
+    private val pageSize: Long?,
+    private val pageToken: String?,
     private val toDate: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -41,6 +45,15 @@ private constructor(
      * option symbols). Example: `instrument_ids=550e8400-e29b-41d4-a716-446655440000,AAPL`.
      */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
+
+    /** The number of items to return per page. Only used when page_token is not provided. */
+    fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
+
+    /**
+     * Token for retrieving the next or previous page of results. Contains encoded pagination state;
+     * when provided, page_size is ignored.
+     */
+    fun pageToken(): Optional<String> = Optional.ofNullable(pageToken)
 
     /** The end date for the query range, inclusive (YYYY-MM-DD). */
     fun toDate(): Optional<String> = Optional.ofNullable(toDate)
@@ -70,6 +83,8 @@ private constructor(
         private var eventTypes: MutableList<AllEventsEventType>? = null
         private var fromDate: String? = null
         private var instrumentIds: MutableList<String>? = null
+        private var pageSize: Long? = null
+        private var pageToken: String? = null
         private var toDate: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -82,6 +97,8 @@ private constructor(
             fromDate = instrumentDataGetAllInstrumentEventsParams.fromDate
             instrumentIds =
                 instrumentDataGetAllInstrumentEventsParams.instrumentIds?.toMutableList()
+            pageSize = instrumentDataGetAllInstrumentEventsParams.pageSize
+            pageToken = instrumentDataGetAllInstrumentEventsParams.pageToken
             toDate = instrumentDataGetAllInstrumentEventsParams.toDate
             additionalHeaders =
                 instrumentDataGetAllInstrumentEventsParams.additionalHeaders.toBuilder()
@@ -133,6 +150,28 @@ private constructor(
         fun addInstrumentId(instrumentId: String) = apply {
             instrumentIds = (instrumentIds ?: mutableListOf()).apply { add(instrumentId) }
         }
+
+        /** The number of items to return per page. Only used when page_token is not provided. */
+        fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
+
+        /**
+         * Alias for [Builder.pageSize].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun pageSize(pageSize: Long) = pageSize(pageSize as Long?)
+
+        /** Alias for calling [Builder.pageSize] with `pageSize.orElse(null)`. */
+        fun pageSize(pageSize: Optional<Long>) = pageSize(pageSize.getOrNull())
+
+        /**
+         * Token for retrieving the next or previous page of results. Contains encoded pagination
+         * state; when provided, page_size is ignored.
+         */
+        fun pageToken(pageToken: String?) = apply { this.pageToken = pageToken }
+
+        /** Alias for calling [Builder.pageToken] with `pageToken.orElse(null)`. */
+        fun pageToken(pageToken: Optional<String>) = pageToken(pageToken.getOrNull())
 
         /** The end date for the query range, inclusive (YYYY-MM-DD). */
         fun toDate(toDate: String?) = apply { this.toDate = toDate }
@@ -248,6 +287,8 @@ private constructor(
                 eventTypes?.toImmutable(),
                 fromDate,
                 instrumentIds?.toImmutable(),
+                pageSize,
+                pageToken,
                 toDate,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -262,6 +303,8 @@ private constructor(
                 eventTypes?.let { put("event_types", it.joinToString(",") { it.toString() }) }
                 fromDate?.let { put("from_date", it) }
                 instrumentIds?.let { put("instrument_ids", it.joinToString(",")) }
+                pageSize?.let { put("page_size", it.toString()) }
+                pageToken?.let { put("page_token", it) }
                 toDate?.let { put("to_date", it) }
                 putAll(additionalQueryParams)
             }
@@ -276,6 +319,8 @@ private constructor(
             eventTypes == other.eventTypes &&
             fromDate == other.fromDate &&
             instrumentIds == other.instrumentIds &&
+            pageSize == other.pageSize &&
+            pageToken == other.pageToken &&
             toDate == other.toDate &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
@@ -286,11 +331,13 @@ private constructor(
             eventTypes,
             fromDate,
             instrumentIds,
+            pageSize,
+            pageToken,
             toDate,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "InstrumentDataGetAllInstrumentEventsParams{eventTypes=$eventTypes, fromDate=$fromDate, instrumentIds=$instrumentIds, toDate=$toDate, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentDataGetAllInstrumentEventsParams{eventTypes=$eventTypes, fromDate=$fromDate, instrumentIds=$instrumentIds, pageSize=$pageSize, pageToken=$pageToken, toDate=$toDate, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

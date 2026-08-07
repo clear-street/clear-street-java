@@ -5,12 +5,14 @@ package com.clearstreet.api.models.v1.instrumentdata
 import com.clearstreet.api.core.Params
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
+import com.clearstreet.api.core.toImmutable
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Retrieves corporate events (dividends, splits, etc.) for an instrument, grouped by event type.
+ * Retrieves corporate events (earnings, dividends, splits, IPO) for an instrument, grouped by event
+ * type. Filter to specific types via `event_types`.
  *
  * Date range defaults:
  * - `from_date`: today - 365 days
@@ -19,6 +21,7 @@ import kotlin.jvm.optionals.getOrNull
 class InstrumentDataGetInstrumentEventsParams
 private constructor(
     private val instrumentId: String?,
+    private val eventTypes: List<AllEventsEventType>?,
     private val fromDate: String?,
     private val toDate: String?,
     private val additionalHeaders: Headers,
@@ -30,6 +33,9 @@ private constructor(
      * options). Non-UUID inputs are resolved server-side.
      */
     fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
+
+    /** Filter by event type(s). Comma-delimited list. Example: `event_types=EARNINGS,IPO`. */
+    fun eventTypes(): Optional<List<AllEventsEventType>> = Optional.ofNullable(eventTypes)
 
     /** The start date for the query range, inclusive (YYYY-MM-DD). */
     fun fromDate(): Optional<String> = Optional.ofNullable(fromDate)
@@ -60,6 +66,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var instrumentId: String? = null
+        private var eventTypes: MutableList<AllEventsEventType>? = null
         private var fromDate: String? = null
         private var toDate: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -70,6 +77,7 @@ private constructor(
             instrumentDataGetInstrumentEventsParams: InstrumentDataGetInstrumentEventsParams
         ) = apply {
             instrumentId = instrumentDataGetInstrumentEventsParams.instrumentId
+            eventTypes = instrumentDataGetInstrumentEventsParams.eventTypes?.toMutableList()
             fromDate = instrumentDataGetInstrumentEventsParams.fromDate
             toDate = instrumentDataGetInstrumentEventsParams.toDate
             additionalHeaders =
@@ -86,6 +94,24 @@ private constructor(
 
         /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */
         fun instrumentId(instrumentId: Optional<String>) = instrumentId(instrumentId.getOrNull())
+
+        /** Filter by event type(s). Comma-delimited list. Example: `event_types=EARNINGS,IPO`. */
+        fun eventTypes(eventTypes: List<AllEventsEventType>?) = apply {
+            this.eventTypes = eventTypes?.toMutableList()
+        }
+
+        /** Alias for calling [Builder.eventTypes] with `eventTypes.orElse(null)`. */
+        fun eventTypes(eventTypes: Optional<List<AllEventsEventType>>) =
+            eventTypes(eventTypes.getOrNull())
+
+        /**
+         * Adds a single [AllEventsEventType] to [eventTypes].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addEventType(eventType: AllEventsEventType) = apply {
+            eventTypes = (eventTypes ?: mutableListOf()).apply { add(eventType) }
+        }
 
         /** The start date for the query range, inclusive (YYYY-MM-DD). */
         fun fromDate(fromDate: String?) = apply { this.fromDate = fromDate }
@@ -205,6 +231,7 @@ private constructor(
         fun build(): InstrumentDataGetInstrumentEventsParams =
             InstrumentDataGetInstrumentEventsParams(
                 instrumentId,
+                eventTypes?.toImmutable(),
                 fromDate,
                 toDate,
                 additionalHeaders.build(),
@@ -223,6 +250,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
+                eventTypes?.let { put("event_types", it.joinToString(",") { it.toString() }) }
                 fromDate?.let { put("from_date", it) }
                 toDate?.let { put("to_date", it) }
                 putAll(additionalQueryParams)
@@ -236,6 +264,7 @@ private constructor(
 
         return other is InstrumentDataGetInstrumentEventsParams &&
             instrumentId == other.instrumentId &&
+            eventTypes == other.eventTypes &&
             fromDate == other.fromDate &&
             toDate == other.toDate &&
             additionalHeaders == other.additionalHeaders &&
@@ -243,8 +272,15 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(instrumentId, fromDate, toDate, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            instrumentId,
+            eventTypes,
+            fromDate,
+            toDate,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "InstrumentDataGetInstrumentEventsParams{instrumentId=$instrumentId, fromDate=$fromDate, toDate=$toDate, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentDataGetInstrumentEventsParams{instrumentId=$instrumentId, eventTypes=$eventTypes, fromDate=$fromDate, toDate=$toDate, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
