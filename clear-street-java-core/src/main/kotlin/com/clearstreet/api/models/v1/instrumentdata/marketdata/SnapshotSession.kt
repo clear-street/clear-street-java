@@ -14,6 +14,8 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 /** Session-level pricing metrics for a market data snapshot. */
 class SnapshotSession
@@ -22,6 +24,7 @@ private constructor(
     private val change: JsonField<String>,
     private val changePercent: JsonField<String>,
     private val previousClose: JsonField<String>,
+    private val previousCloseUnadjusted: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -34,7 +37,10 @@ private constructor(
         @JsonProperty("previous_close")
         @ExcludeMissing
         previousClose: JsonField<String> = JsonMissing.of(),
-    ) : this(change, changePercent, previousClose, mutableMapOf())
+        @JsonProperty("previous_close_unadjusted")
+        @ExcludeMissing
+        previousCloseUnadjusted: JsonField<String> = JsonMissing.of(),
+    ) : this(change, changePercent, previousClose, previousCloseUnadjusted, mutableMapOf())
 
     /**
      * Absolute change from previous close to last trade.
@@ -53,12 +59,26 @@ private constructor(
     fun changePercent(): String = changePercent.getRequired("change_percent")
 
     /**
-     * Previous session close price.
+     * Previous session close price. Corporate-action-adjusted (stock dividends, cash dividends, and
+     * forward/reverse splits) when an adjustment exists for the close date; the raw close
+     * otherwise.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun previousClose(): String = previousClose.getRequired("previous_close")
+
+    /**
+     * Unadjusted (raw) previous session close. Present only when a corporate-action adjustment
+     * exists for the previous close date; when no adjustment exists, `previous_close` is the raw
+     * close and this field is omitted. When a null/undefined value is observed, it indicates that
+     * there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun previousCloseUnadjusted(): Optional<String> =
+        previousCloseUnadjusted.getOptional("previous_close_unadjusted")
 
     /**
      * Returns the raw JSON value of [change].
@@ -84,6 +104,16 @@ private constructor(
     @JsonProperty("previous_close")
     @ExcludeMissing
     fun _previousClose(): JsonField<String> = previousClose
+
+    /**
+     * Returns the raw JSON value of [previousCloseUnadjusted].
+     *
+     * Unlike [previousCloseUnadjusted], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("previous_close_unadjusted")
+    @ExcludeMissing
+    fun _previousCloseUnadjusted(): JsonField<String> = previousCloseUnadjusted
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -118,6 +148,7 @@ private constructor(
         private var change: JsonField<String>? = null
         private var changePercent: JsonField<String>? = null
         private var previousClose: JsonField<String>? = null
+        private var previousCloseUnadjusted: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -125,6 +156,7 @@ private constructor(
             change = snapshotSession.change
             changePercent = snapshotSession.changePercent
             previousClose = snapshotSession.previousClose
+            previousCloseUnadjusted = snapshotSession.previousCloseUnadjusted
             additionalProperties = snapshotSession.additionalProperties.toMutableMap()
         }
 
@@ -153,7 +185,11 @@ private constructor(
             this.changePercent = changePercent
         }
 
-        /** Previous session close price. */
+        /**
+         * Previous session close price. Corporate-action-adjusted (stock dividends, cash dividends,
+         * and forward/reverse splits) when an adjustment exists for the close date; the raw close
+         * otherwise.
+         */
         fun previousClose(previousClose: String) = previousClose(JsonField.of(previousClose))
 
         /**
@@ -165,6 +201,33 @@ private constructor(
          */
         fun previousClose(previousClose: JsonField<String>) = apply {
             this.previousClose = previousClose
+        }
+
+        /**
+         * Unadjusted (raw) previous session close. Present only when a corporate-action adjustment
+         * exists for the previous close date; when no adjustment exists, `previous_close` is the
+         * raw close and this field is omitted. When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
+        fun previousCloseUnadjusted(previousCloseUnadjusted: String?) =
+            previousCloseUnadjusted(JsonField.ofNullable(previousCloseUnadjusted))
+
+        /**
+         * Alias for calling [Builder.previousCloseUnadjusted] with
+         * `previousCloseUnadjusted.orElse(null)`.
+         */
+        fun previousCloseUnadjusted(previousCloseUnadjusted: Optional<String>) =
+            previousCloseUnadjusted(previousCloseUnadjusted.getOrNull())
+
+        /**
+         * Sets [Builder.previousCloseUnadjusted] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.previousCloseUnadjusted] with a well-typed [String]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun previousCloseUnadjusted(previousCloseUnadjusted: JsonField<String>) = apply {
+            this.previousCloseUnadjusted = previousCloseUnadjusted
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -205,6 +268,7 @@ private constructor(
                 checkRequired("change", change),
                 checkRequired("changePercent", changePercent),
                 checkRequired("previousClose", previousClose),
+                previousCloseUnadjusted,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -227,6 +291,7 @@ private constructor(
         change()
         changePercent()
         previousClose()
+        previousCloseUnadjusted()
         validated = true
     }
 
@@ -247,7 +312,8 @@ private constructor(
     internal fun validity(): Int =
         (if (change.asKnown().isPresent) 1 else 0) +
             (if (changePercent.asKnown().isPresent) 1 else 0) +
-            (if (previousClose.asKnown().isPresent) 1 else 0)
+            (if (previousClose.asKnown().isPresent) 1 else 0) +
+            (if (previousCloseUnadjusted.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -258,15 +324,22 @@ private constructor(
             change == other.change &&
             changePercent == other.changePercent &&
             previousClose == other.previousClose &&
+            previousCloseUnadjusted == other.previousCloseUnadjusted &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(change, changePercent, previousClose, additionalProperties)
+        Objects.hash(
+            change,
+            changePercent,
+            previousClose,
+            previousCloseUnadjusted,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SnapshotSession{change=$change, changePercent=$changePercent, previousClose=$previousClose, additionalProperties=$additionalProperties}"
+        "SnapshotSession{change=$change, changePercent=$changePercent, previousClose=$previousClose, previousCloseUnadjusted=$previousCloseUnadjusted, additionalProperties=$additionalProperties}"
 }

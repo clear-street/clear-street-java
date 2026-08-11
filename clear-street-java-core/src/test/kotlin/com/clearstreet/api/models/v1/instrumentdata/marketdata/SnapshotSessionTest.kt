@@ -16,11 +16,13 @@ internal class SnapshotSessionTest {
                 .change("change")
                 .changePercent("change_percent")
                 .previousClose("previous_close")
+                .previousCloseUnadjusted("previous_close_unadjusted")
                 .build()
 
         assertThat(snapshotSession.change()).isEqualTo("change")
         assertThat(snapshotSession.changePercent()).isEqualTo("change_percent")
         assertThat(snapshotSession.previousClose()).isEqualTo("previous_close")
+        assertThat(snapshotSession.previousCloseUnadjusted()).contains("previous_close_unadjusted")
     }
 
     @Test
@@ -31,6 +33,7 @@ internal class SnapshotSessionTest {
                 .change("change")
                 .changePercent("change_percent")
                 .previousClose("previous_close")
+                .previousCloseUnadjusted("previous_close_unadjusted")
                 .build()
 
         val roundtrippedSnapshotSession =
