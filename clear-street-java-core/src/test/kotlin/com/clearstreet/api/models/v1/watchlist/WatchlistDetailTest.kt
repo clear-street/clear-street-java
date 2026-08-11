@@ -5,6 +5,7 @@ package com.clearstreet.api.models.v1.watchlist
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.v1.SecurityType
 import com.clearstreet.api.models.v1.instruments.Instrument
+import com.clearstreet.api.models.v1.instruments.OptionExpiryDate
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -45,6 +46,13 @@ internal class WatchlistDetailTest {
                                 .longMarginRate("0.25")
                                 .name("Apple Inc.")
                                 .notionalAdv("15815250000")
+                                .addOptionsContractExpiryDate(
+                                    OptionExpiryDate.builder()
+                                        .date(LocalDate.parse("2026-06-19"))
+                                        .hasSettlesOnClose(true)
+                                        .hasSettlesOnOpen(false)
+                                        .build()
+                                )
                                 .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                                 .previousClose("210.87")
                                 .shortMarginRate("0.25")
@@ -85,6 +93,13 @@ internal class WatchlistDetailTest {
                             .longMarginRate("0.25")
                             .name("Apple Inc.")
                             .notionalAdv("15815250000")
+                            .addOptionsContractExpiryDate(
+                                OptionExpiryDate.builder()
+                                    .date(LocalDate.parse("2026-06-19"))
+                                    .hasSettlesOnClose(true)
+                                    .hasSettlesOnOpen(false)
+                                    .build()
+                            )
                             .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                             .previousClose("210.87")
                             .shortMarginRate("0.25")
@@ -128,6 +143,13 @@ internal class WatchlistDetailTest {
                                 .longMarginRate("0.25")
                                 .name("Apple Inc.")
                                 .notionalAdv("15815250000")
+                                .addOptionsContractExpiryDate(
+                                    OptionExpiryDate.builder()
+                                        .date(LocalDate.parse("2026-06-19"))
+                                        .hasSettlesOnClose(true)
+                                        .hasSettlesOnOpen(false)
+                                        .build()
+                                )
                                 .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                                 .previousClose("210.87")
                                 .shortMarginRate("0.25")

@@ -28,6 +28,7 @@ private constructor(
     private val contractIds: List<String>?,
     private val contractType: ContractType?,
     private val expiry: LocalDate?,
+    private val isSettleOnOpen: Boolean?,
     private val pageSize: Long?,
     private val pageToken: String?,
     private val underlier: String?,
@@ -48,6 +49,12 @@ private constructor(
 
     /** Filter to contracts expiring on this date (YYYY-MM-DD) */
     fun expiry(): Optional<LocalDate> = Optional.ofNullable(expiry)
+
+    /**
+     * Filter by settlement cycle: true for early-settling (AM, settle-on-open) contracts, false for
+     * normal (PM) contracts. Omit to return both.
+     */
+    fun isSettleOnOpen(): Optional<Boolean> = Optional.ofNullable(isSettleOnOpen)
 
     /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
@@ -89,6 +96,7 @@ private constructor(
         private var contractIds: MutableList<String>? = null
         private var contractType: ContractType? = null
         private var expiry: LocalDate? = null
+        private var isSettleOnOpen: Boolean? = null
         private var pageSize: Long? = null
         private var pageToken: String? = null
         private var underlier: String? = null
@@ -102,6 +110,7 @@ private constructor(
                 contractIds = instrumentGetOptionContractsParams.contractIds?.toMutableList()
                 contractType = instrumentGetOptionContractsParams.contractType
                 expiry = instrumentGetOptionContractsParams.expiry
+                isSettleOnOpen = instrumentGetOptionContractsParams.isSettleOnOpen
                 pageSize = instrumentGetOptionContractsParams.pageSize
                 pageToken = instrumentGetOptionContractsParams.pageToken
                 underlier = instrumentGetOptionContractsParams.underlier
@@ -144,6 +153,25 @@ private constructor(
 
         /** Alias for calling [Builder.expiry] with `expiry.orElse(null)`. */
         fun expiry(expiry: Optional<LocalDate>) = expiry(expiry.getOrNull())
+
+        /**
+         * Filter by settlement cycle: true for early-settling (AM, settle-on-open) contracts, false
+         * for normal (PM) contracts. Omit to return both.
+         */
+        fun isSettleOnOpen(isSettleOnOpen: Boolean?) = apply {
+            this.isSettleOnOpen = isSettleOnOpen
+        }
+
+        /**
+         * Alias for [Builder.isSettleOnOpen].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun isSettleOnOpen(isSettleOnOpen: Boolean) = isSettleOnOpen(isSettleOnOpen as Boolean?)
+
+        /** Alias for calling [Builder.isSettleOnOpen] with `isSettleOnOpen.orElse(null)`. */
+        fun isSettleOnOpen(isSettleOnOpen: Optional<Boolean>) =
+            isSettleOnOpen(isSettleOnOpen.getOrNull())
 
         /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
@@ -293,6 +321,7 @@ private constructor(
                 contractIds?.toImmutable(),
                 contractType,
                 expiry,
+                isSettleOnOpen,
                 pageSize,
                 pageToken,
                 underlier,
@@ -310,6 +339,7 @@ private constructor(
                 contractIds?.let { put("contract_ids", it.joinToString(",")) }
                 contractType?.let { put("contract_type", it.toString()) }
                 expiry?.let { put("expiry", it.toString()) }
+                isSettleOnOpen?.let { put("is_settle_on_open", it.toString()) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 underlier?.let { put("underlier", it) }
@@ -467,6 +497,7 @@ private constructor(
             contractIds == other.contractIds &&
             contractType == other.contractType &&
             expiry == other.expiry &&
+            isSettleOnOpen == other.isSettleOnOpen &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
             underlier == other.underlier &&
@@ -480,6 +511,7 @@ private constructor(
             contractIds,
             contractType,
             expiry,
+            isSettleOnOpen,
             pageSize,
             pageToken,
             underlier,
@@ -489,5 +521,5 @@ private constructor(
         )
 
     override fun toString() =
-        "InstrumentGetOptionContractsParams{contractIds=$contractIds, contractType=$contractType, expiry=$expiry, pageSize=$pageSize, pageToken=$pageToken, underlier=$underlier, underlyingInstrumentId=$underlyingInstrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentGetOptionContractsParams{contractIds=$contractIds, contractType=$contractType, expiry=$expiry, isSettleOnOpen=$isSettleOnOpen, pageSize=$pageSize, pageToken=$pageToken, underlier=$underlier, underlyingInstrumentId=$underlyingInstrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

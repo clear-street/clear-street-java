@@ -78,6 +78,7 @@ internal class InstrumentServiceTest {
                     .addContractId("x")
                     .contractType(InstrumentGetOptionContractsParams.ContractType.CALL)
                     .expiry(LocalDate.parse("2019-12-27"))
+                    .isSettleOnOpen(true)
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .underlier("underlier")
