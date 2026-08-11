@@ -12,6 +12,7 @@ internal class InstrumentGetOptionContractsParamsTest {
     @Test
     fun create() {
         InstrumentGetOptionContractsParams.builder()
+            .addContractId("x")
             .contractType(InstrumentGetOptionContractsParams.ContractType.CALL)
             .expiry(LocalDate.parse("2019-12-27"))
             .pageSize(1L)
@@ -25,6 +26,7 @@ internal class InstrumentGetOptionContractsParamsTest {
     fun queryParams() {
         val params =
             InstrumentGetOptionContractsParams.builder()
+                .addContractId("x")
                 .contractType(InstrumentGetOptionContractsParams.ContractType.CALL)
                 .expiry(LocalDate.parse("2019-12-27"))
                 .pageSize(1L)
@@ -38,6 +40,7 @@ internal class InstrumentGetOptionContractsParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
+                    .put("contract_ids", listOf("x").joinToString(","))
                     .put("contract_type", "CALL")
                     .put("expiry", "2019-12-27")
                     .put("page_size", "1")

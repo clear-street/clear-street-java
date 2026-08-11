@@ -7,6 +7,7 @@ import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.core.Params
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
+import com.clearstreet.api.core.toImmutable
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 import java.time.LocalDate
@@ -17,11 +18,14 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * List options contracts.
  *
- * Returns options contracts for a given underlier with options-specific metadata. Exactly one
- * underlier identifier must be provided.
+ * Returns options contracts with options-specific metadata. Exactly one identifier must be
+ * provided: `underlier`/`underlying_instrument_id` (list all contracts for that underlier) or
+ * `contract_ids` (look up specific contracts directly). `expiry`/`contract_type` apply as filters
+ * in either case.
  */
 class InstrumentGetOptionContractsParams
 private constructor(
+    private val contractIds: List<String>?,
     private val contractType: ContractType?,
     private val expiry: LocalDate?,
     private val pageSize: Long?,
@@ -31,6 +35,13 @@ private constructor(
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
+
+    /**
+     * Comma-separated contract instrument IDs (UUID) or OSI option symbols to look up directly,
+     * bypassing underlier expansion. Mutually exclusive with underlier/underlying_instrument_id; up
+     * to 100 values.
+     */
+    fun contractIds(): Optional<List<String>> = Optional.ofNullable(contractIds)
 
     /** Filter by contract type: CALL or PUT */
     fun contractType(): Optional<ContractType> = Optional.ofNullable(contractType)
@@ -75,6 +86,7 @@ private constructor(
     /** A builder for [InstrumentGetOptionContractsParams]. */
     class Builder internal constructor() {
 
+        private var contractIds: MutableList<String>? = null
         private var contractType: ContractType? = null
         private var expiry: LocalDate? = null
         private var pageSize: Long? = null
@@ -87,6 +99,7 @@ private constructor(
         @JvmSynthetic
         internal fun from(instrumentGetOptionContractsParams: InstrumentGetOptionContractsParams) =
             apply {
+                contractIds = instrumentGetOptionContractsParams.contractIds?.toMutableList()
                 contractType = instrumentGetOptionContractsParams.contractType
                 expiry = instrumentGetOptionContractsParams.expiry
                 pageSize = instrumentGetOptionContractsParams.pageSize
@@ -97,6 +110,27 @@ private constructor(
                 additionalQueryParams =
                     instrumentGetOptionContractsParams.additionalQueryParams.toBuilder()
             }
+
+        /**
+         * Comma-separated contract instrument IDs (UUID) or OSI option symbols to look up directly,
+         * bypassing underlier expansion. Mutually exclusive with
+         * underlier/underlying_instrument_id; up to 100 values.
+         */
+        fun contractIds(contractIds: List<String>?) = apply {
+            this.contractIds = contractIds?.toMutableList()
+        }
+
+        /** Alias for calling [Builder.contractIds] with `contractIds.orElse(null)`. */
+        fun contractIds(contractIds: Optional<List<String>>) = contractIds(contractIds.getOrNull())
+
+        /**
+         * Adds a single [String] to [contractIds].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addContractId(contractId: String) = apply {
+            contractIds = (contractIds ?: mutableListOf()).apply { add(contractId) }
+        }
 
         /** Filter by contract type: CALL or PUT */
         fun contractType(contractType: ContractType?) = apply { this.contractType = contractType }
@@ -256,6 +290,7 @@ private constructor(
          */
         fun build(): InstrumentGetOptionContractsParams =
             InstrumentGetOptionContractsParams(
+                contractIds?.toImmutable(),
                 contractType,
                 expiry,
                 pageSize,
@@ -272,6 +307,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
+                contractIds?.let { put("contract_ids", it.joinToString(",")) }
                 contractType?.let { put("contract_type", it.toString()) }
                 expiry?.let { put("expiry", it.toString()) }
                 pageSize?.let { put("page_size", it.toString()) }
@@ -428,6 +464,7 @@ private constructor(
         }
 
         return other is InstrumentGetOptionContractsParams &&
+            contractIds == other.contractIds &&
             contractType == other.contractType &&
             expiry == other.expiry &&
             pageSize == other.pageSize &&
@@ -440,6 +477,7 @@ private constructor(
 
     override fun hashCode(): Int =
         Objects.hash(
+            contractIds,
             contractType,
             expiry,
             pageSize,
@@ -451,5 +489,5 @@ private constructor(
         )
 
     override fun toString() =
-        "InstrumentGetOptionContractsParams{contractType=$contractType, expiry=$expiry, pageSize=$pageSize, pageToken=$pageToken, underlier=$underlier, underlyingInstrumentId=$underlyingInstrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentGetOptionContractsParams{contractIds=$contractIds, contractType=$contractType, expiry=$expiry, pageSize=$pageSize, pageToken=$pageToken, underlier=$underlier, underlyingInstrumentId=$underlyingInstrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

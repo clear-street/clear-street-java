@@ -77,6 +77,7 @@ internal class InstrumentServiceAsyncTest {
         val responseFuture =
             instrumentServiceAsync.getOptionContracts(
                 InstrumentGetOptionContractsParams.builder()
+                    .addContractId("x")
                     .contractType(InstrumentGetOptionContractsParams.ContractType.CALL)
                     .expiry(LocalDate.parse("2019-12-27"))
                     .pageSize(1L)

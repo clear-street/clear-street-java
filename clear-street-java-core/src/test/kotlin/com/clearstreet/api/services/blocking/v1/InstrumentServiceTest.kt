@@ -75,6 +75,7 @@ internal class InstrumentServiceTest {
         val response =
             instrumentService.getOptionContracts(
                 InstrumentGetOptionContractsParams.builder()
+                    .addContractId("x")
                     .contractType(InstrumentGetOptionContractsParams.ContractType.CALL)
                     .expiry(LocalDate.parse("2019-12-27"))
                     .pageSize(1L)

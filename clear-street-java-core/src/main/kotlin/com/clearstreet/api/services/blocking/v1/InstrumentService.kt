@@ -90,8 +90,10 @@ interface InstrumentService {
     /**
      * List options contracts.
      *
-     * Returns options contracts for a given underlier with options-specific metadata. Exactly one
-     * underlier identifier must be provided.
+     * Returns options contracts with options-specific metadata. Exactly one identifier must be
+     * provided: `underlier`/`underlying_instrument_id` (list all contracts for that underlier) or
+     * `contract_ids` (look up specific contracts directly). `expiry`/`contract_type` apply as
+     * filters in either case.
      */
     fun getOptionContracts(): InstrumentGetOptionContractsResponse =
         getOptionContracts(InstrumentGetOptionContractsParams.none())
