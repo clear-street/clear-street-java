@@ -21,9 +21,11 @@ private constructor(
     private val accountId: Long?,
     private val from: OffsetDateTime?,
     private val instrumentIds: List<String>?,
+    private val orderIds: List<String>?,
     private val pageSize: Long?,
     private val pageToken: String?,
     private val to: OffsetDateTime?,
+    private val underlyingInstrumentIds: List<String>?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -39,6 +41,12 @@ private constructor(
      */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
+    /**
+     * Comma-separated order IDs to filter by. When provided, only executions belonging to an order
+     * in this set are returned.
+     */
+    fun orderIds(): Optional<List<String>> = Optional.ofNullable(orderIds)
+
     /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
@@ -50,6 +58,13 @@ private constructor(
 
     /** The end date and time for the query range, inclusive (ISO 8601 format) */
     fun to(): Optional<OffsetDateTime> = Optional.ofNullable(to)
+
+    /**
+     * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
+     * Matches option fills whose resolved underlier is any of the given instruments.
+     */
+    fun underlyingInstrumentIds(): Optional<List<String>> =
+        Optional.ofNullable(underlyingInstrumentIds)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -73,9 +88,11 @@ private constructor(
         private var accountId: Long? = null
         private var from: OffsetDateTime? = null
         private var instrumentIds: MutableList<String>? = null
+        private var orderIds: MutableList<String>? = null
         private var pageSize: Long? = null
         private var pageToken: String? = null
         private var to: OffsetDateTime? = null
+        private var underlyingInstrumentIds: MutableList<String>? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -84,9 +101,12 @@ private constructor(
             accountId = orderGetExecutionsParams.accountId
             from = orderGetExecutionsParams.from
             instrumentIds = orderGetExecutionsParams.instrumentIds?.toMutableList()
+            orderIds = orderGetExecutionsParams.orderIds?.toMutableList()
             pageSize = orderGetExecutionsParams.pageSize
             pageToken = orderGetExecutionsParams.pageToken
             to = orderGetExecutionsParams.to
+            underlyingInstrumentIds =
+                orderGetExecutionsParams.underlyingInstrumentIds?.toMutableList()
             additionalHeaders = orderGetExecutionsParams.additionalHeaders.toBuilder()
             additionalQueryParams = orderGetExecutionsParams.additionalQueryParams.toBuilder()
         }
@@ -130,6 +150,24 @@ private constructor(
             instrumentIds = (instrumentIds ?: mutableListOf()).apply { add(instrumentId) }
         }
 
+        /**
+         * Comma-separated order IDs to filter by. When provided, only executions belonging to an
+         * order in this set are returned.
+         */
+        fun orderIds(orderIds: List<String>?) = apply { this.orderIds = orderIds?.toMutableList() }
+
+        /** Alias for calling [Builder.orderIds] with `orderIds.orElse(null)`. */
+        fun orderIds(orderIds: Optional<List<String>>) = orderIds(orderIds.getOrNull())
+
+        /**
+         * Adds a single [String] to [orderIds].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addOrderId(orderId: String) = apply {
+            orderIds = (orderIds ?: mutableListOf()).apply { add(orderId) }
+        }
+
         /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
@@ -157,6 +195,31 @@ private constructor(
 
         /** Alias for calling [Builder.to] with `to.orElse(null)`. */
         fun to(to: Optional<OffsetDateTime>) = to(to.getOrNull())
+
+        /**
+         * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
+         * Matches option fills whose resolved underlier is any of the given instruments.
+         */
+        fun underlyingInstrumentIds(underlyingInstrumentIds: List<String>?) = apply {
+            this.underlyingInstrumentIds = underlyingInstrumentIds?.toMutableList()
+        }
+
+        /**
+         * Alias for calling [Builder.underlyingInstrumentIds] with
+         * `underlyingInstrumentIds.orElse(null)`.
+         */
+        fun underlyingInstrumentIds(underlyingInstrumentIds: Optional<List<String>>) =
+            underlyingInstrumentIds(underlyingInstrumentIds.getOrNull())
+
+        /**
+         * Adds a single [String] to [underlyingInstrumentIds].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addUnderlyingInstrumentId(underlyingInstrumentId: String) = apply {
+            underlyingInstrumentIds =
+                (underlyingInstrumentIds ?: mutableListOf()).apply { add(underlyingInstrumentId) }
+        }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -266,9 +329,11 @@ private constructor(
                 accountId,
                 from,
                 instrumentIds?.toImmutable(),
+                orderIds?.toImmutable(),
                 pageSize,
                 pageToken,
                 to,
+                underlyingInstrumentIds?.toImmutable(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -287,9 +352,13 @@ private constructor(
             .apply {
                 from?.let { put("from", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 instrumentIds?.let { put("instrument_ids", it.joinToString(",")) }
+                orderIds?.let { put("order_ids", it.joinToString(",")) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 to?.let { put("to", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
+                underlyingInstrumentIds?.let {
+                    put("underlying_instrument_ids", it.joinToString(","))
+                }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -303,9 +372,11 @@ private constructor(
             accountId == other.accountId &&
             from == other.from &&
             instrumentIds == other.instrumentIds &&
+            orderIds == other.orderIds &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
             to == other.to &&
+            underlyingInstrumentIds == other.underlyingInstrumentIds &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -315,13 +386,15 @@ private constructor(
             accountId,
             from,
             instrumentIds,
+            orderIds,
             pageSize,
             pageToken,
             to,
+            underlyingInstrumentIds,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "OrderGetExecutionsParams{accountId=$accountId, from=$from, instrumentIds=$instrumentIds, pageSize=$pageSize, pageToken=$pageToken, to=$to, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "OrderGetExecutionsParams{accountId=$accountId, from=$from, instrumentIds=$instrumentIds, orderIds=$orderIds, pageSize=$pageSize, pageToken=$pageToken, to=$to, underlyingInstrumentIds=$underlyingInstrumentIds, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

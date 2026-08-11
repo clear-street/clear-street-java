@@ -15,9 +15,11 @@ internal class OrderGetExecutionsParamsTest {
             .accountId(0L)
             .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .addInstrumentId("x")
+            .addOrderId("string")
             .pageSize(1L)
             .pageToken("U3RhaW5sZXNzIHJvY2tz")
             .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+            .addUnderlyingInstrumentId("x")
             .build()
     }
 
@@ -37,9 +39,11 @@ internal class OrderGetExecutionsParamsTest {
                 .accountId(0L)
                 .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addInstrumentId("x")
+                .addOrderId("string")
                 .pageSize(1L)
                 .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                .addUnderlyingInstrumentId("x")
                 .build()
 
         val queryParams = params._queryParams()
@@ -49,9 +53,11 @@ internal class OrderGetExecutionsParamsTest {
                 QueryParams.builder()
                     .put("from", "2019-12-27T18:11:19.117Z")
                     .put("instrument_ids", listOf("x").joinToString(","))
+                    .put("order_ids", listOf("string").joinToString(","))
                     .put("page_size", "1")
                     .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
                     .put("to", "2019-12-27T18:11:19.117Z")
+                    .put("underlying_instrument_ids", listOf("x").joinToString(","))
                     .build()
             )
     }

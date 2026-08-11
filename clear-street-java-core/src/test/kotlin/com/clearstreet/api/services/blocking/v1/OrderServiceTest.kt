@@ -79,9 +79,11 @@ internal class OrderServiceTest {
                     .accountId(0L)
                     .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .addInstrumentId("x")
+                    .addOrderId("string")
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .addUnderlyingInstrumentId("x")
                     .build()
             )
 

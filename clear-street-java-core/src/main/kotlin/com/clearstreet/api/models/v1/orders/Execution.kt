@@ -30,6 +30,8 @@ private constructor(
     private val instrumentId: JsonField<String>,
     private val price: JsonField<String>,
     private val symbol: JsonField<String>,
+    private val underlyingInstrumentId: JsonField<String>,
+    private val venue: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -47,6 +49,10 @@ private constructor(
         instrumentId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("price") @ExcludeMissing price: JsonField<String> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("underlying_instrument_id")
+        @ExcludeMissing
+        underlyingInstrumentId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("venue") @ExcludeMissing venue: JsonField<String> = JsonMissing.of(),
     ) : this(
         id,
         orderId,
@@ -56,6 +62,8 @@ private constructor(
         instrumentId,
         price,
         symbol,
+        underlyingInstrumentId,
+        venue,
         mutableMapOf(),
     )
 
@@ -127,6 +135,27 @@ private constructor(
     fun symbol(): Optional<String> = symbol.getOptional("symbol")
 
     /**
+     * Underlying instrument identifier for a derivative fill. `null` for a non-derivative fill,
+     * when the underlier could not be resolved, or when a multileg fill's legs resolve to different
+     * underliers. When a null/undefined value is observed, it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun underlyingInstrumentId(): Optional<String> =
+        underlyingInstrumentId.getOptional("underlying_instrument_id")
+
+    /**
+     * Venue where this fill occurred, as reported by that venue. Distinct from an order's `venue`,
+     * which is the routing destination. Codes are not normalized, so the format varies by venue.
+     * When a null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun venue(): Optional<String> = venue.getOptional("venue")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -186,6 +215,23 @@ private constructor(
      */
     @JsonProperty("symbol") @ExcludeMissing fun _symbol(): JsonField<String> = symbol
 
+    /**
+     * Returns the raw JSON value of [underlyingInstrumentId].
+     *
+     * Unlike [underlyingInstrumentId], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("underlying_instrument_id")
+    @ExcludeMissing
+    fun _underlyingInstrumentId(): JsonField<String> = underlyingInstrumentId
+
+    /**
+     * Returns the raw JSON value of [venue].
+     *
+     * Unlike [venue], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("venue") @ExcludeMissing fun _venue(): JsonField<String> = venue
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -226,6 +272,8 @@ private constructor(
         private var instrumentId: JsonField<String> = JsonMissing.of()
         private var price: JsonField<String> = JsonMissing.of()
         private var symbol: JsonField<String> = JsonMissing.of()
+        private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
+        private var venue: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -238,6 +286,8 @@ private constructor(
             instrumentId = execution.instrumentId
             price = execution.price
             symbol = execution.symbol
+            underlyingInstrumentId = execution.underlyingInstrumentId
+            venue = execution.venue
             additionalProperties = execution.additionalProperties.toMutableMap()
         }
 
@@ -354,6 +404,52 @@ private constructor(
          */
         fun symbol(symbol: JsonField<String>) = apply { this.symbol = symbol }
 
+        /**
+         * Underlying instrument identifier for a derivative fill. `null` for a non-derivative fill,
+         * when the underlier could not be resolved, or when a multileg fill's legs resolve to
+         * different underliers. When a null/undefined value is observed, it indicates it does not
+         * apply.
+         */
+        fun underlyingInstrumentId(underlyingInstrumentId: String?) =
+            underlyingInstrumentId(JsonField.ofNullable(underlyingInstrumentId))
+
+        /**
+         * Alias for calling [Builder.underlyingInstrumentId] with
+         * `underlyingInstrumentId.orElse(null)`.
+         */
+        fun underlyingInstrumentId(underlyingInstrumentId: Optional<String>) =
+            underlyingInstrumentId(underlyingInstrumentId.getOrNull())
+
+        /**
+         * Sets [Builder.underlyingInstrumentId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.underlyingInstrumentId] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun underlyingInstrumentId(underlyingInstrumentId: JsonField<String>) = apply {
+            this.underlyingInstrumentId = underlyingInstrumentId
+        }
+
+        /**
+         * Venue where this fill occurred, as reported by that venue. Distinct from an order's
+         * `venue`, which is the routing destination. Codes are not normalized, so the format varies
+         * by venue. When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
+        fun venue(venue: String?) = venue(JsonField.ofNullable(venue))
+
+        /** Alias for calling [Builder.venue] with `venue.orElse(null)`. */
+        fun venue(venue: Optional<String>) = venue(venue.getOrNull())
+
+        /**
+         * Sets [Builder.venue] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.venue] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun venue(venue: JsonField<String>) = apply { this.venue = venue }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -399,6 +495,8 @@ private constructor(
                 instrumentId,
                 price,
                 symbol,
+                underlyingInstrumentId,
+                venue,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -426,6 +524,8 @@ private constructor(
         instrumentId()
         price()
         symbol()
+        underlyingInstrumentId()
+        venue()
         validated = true
     }
 
@@ -451,7 +551,9 @@ private constructor(
             (if (transactionTime.asKnown().isPresent) 1 else 0) +
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (if (price.asKnown().isPresent) 1 else 0) +
-            (if (symbol.asKnown().isPresent) 1 else 0)
+            (if (symbol.asKnown().isPresent) 1 else 0) +
+            (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0) +
+            (if (venue.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -467,6 +569,8 @@ private constructor(
             instrumentId == other.instrumentId &&
             price == other.price &&
             symbol == other.symbol &&
+            underlyingInstrumentId == other.underlyingInstrumentId &&
+            venue == other.venue &&
             additionalProperties == other.additionalProperties
     }
 
@@ -480,6 +584,8 @@ private constructor(
             instrumentId,
             price,
             symbol,
+            underlyingInstrumentId,
+            venue,
             additionalProperties,
         )
     }
@@ -487,5 +593,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Execution{id=$id, orderId=$orderId, quantity=$quantity, side=$side, transactionTime=$transactionTime, instrumentId=$instrumentId, price=$price, symbol=$symbol, additionalProperties=$additionalProperties}"
+        "Execution{id=$id, orderId=$orderId, quantity=$quantity, side=$side, transactionTime=$transactionTime, instrumentId=$instrumentId, price=$price, symbol=$symbol, underlyingInstrumentId=$underlyingInstrumentId, venue=$venue, additionalProperties=$additionalProperties}"
 }

@@ -22,6 +22,8 @@ internal class ExecutionTest {
                 .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
                 .price("150.25")
                 .symbol("AAPL")
+                .underlyingInstrumentId(null)
+                .venue("XNAS")
                 .build()
 
         assertThat(execution.id()).isEqualTo("019d216d-9857-7e23-ae01-edc07126c9e4")
@@ -33,6 +35,8 @@ internal class ExecutionTest {
         assertThat(execution.instrumentId()).contains("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
         assertThat(execution.price()).contains("150.25")
         assertThat(execution.symbol()).contains("AAPL")
+        assertThat(execution.underlyingInstrumentId()).isEmpty
+        assertThat(execution.venue()).contains("XNAS")
     }
 
     @Test
@@ -48,6 +52,8 @@ internal class ExecutionTest {
                 .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
                 .price("150.25")
                 .symbol("AAPL")
+                .underlyingInstrumentId(null)
+                .venue("XNAS")
                 .build()
 
         val roundtrippedExecution =
