@@ -5,6 +5,8 @@ package com.clearstreet.api.services.blocking
 import com.clearstreet.api.core.ClientOptions
 import com.clearstreet.api.services.blocking.v1.AccountService
 import com.clearstreet.api.services.blocking.v1.AccountServiceImpl
+import com.clearstreet.api.services.blocking.v1.AlertService
+import com.clearstreet.api.services.blocking.v1.AlertServiceImpl
 import com.clearstreet.api.services.blocking.v1.ApiVersionService
 import com.clearstreet.api.services.blocking.v1.ApiVersionServiceImpl
 import com.clearstreet.api.services.blocking.v1.CalendarService
@@ -33,6 +35,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     private val accounts: AccountService by lazy { AccountServiceImpl(clientOptions) }
 
+    private val alerts: AlertService by lazy { AlertServiceImpl(clientOptions) }
+
     private val apiVersion: ApiVersionService by lazy { ApiVersionServiceImpl(clientOptions) }
 
     private val calendar: CalendarService by lazy { CalendarServiceImpl(clientOptions) }
@@ -60,6 +64,12 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     /** Manage trading accounts, balances, and portfolio history. */
     override fun accounts(): AccountService = accounts
+
+    /**
+     * Create and manage alerts that watch market and portfolio conditions on an account and notify
+     * when they trigger.
+     */
+    override fun alerts(): AlertService = alerts
 
     /** Endpoints for API service metadata. */
     override fun apiVersion(): ApiVersionService = apiVersion
@@ -92,6 +102,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         private val accounts: AccountService.WithRawResponse by lazy {
             AccountServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val alerts: AlertService.WithRawResponse by lazy {
+            AlertServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val apiVersion: ApiVersionService.WithRawResponse by lazy {
@@ -139,6 +153,12 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         /** Manage trading accounts, balances, and portfolio history. */
         override fun accounts(): AccountService.WithRawResponse = accounts
+
+        /**
+         * Create and manage alerts that watch market and portfolio conditions on an account and
+         * notify when they trigger.
+         */
+        override fun alerts(): AlertService.WithRawResponse = alerts
 
         /** Endpoints for API service metadata. */
         override fun apiVersion(): ApiVersionService.WithRawResponse = apiVersion

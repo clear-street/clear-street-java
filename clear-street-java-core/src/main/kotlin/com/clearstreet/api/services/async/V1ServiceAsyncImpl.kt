@@ -5,6 +5,8 @@ package com.clearstreet.api.services.async
 import com.clearstreet.api.core.ClientOptions
 import com.clearstreet.api.services.async.v1.AccountServiceAsync
 import com.clearstreet.api.services.async.v1.AccountServiceAsyncImpl
+import com.clearstreet.api.services.async.v1.AlertServiceAsync
+import com.clearstreet.api.services.async.v1.AlertServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.ApiVersionServiceAsync
 import com.clearstreet.api.services.async.v1.ApiVersionServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.CalendarServiceAsync
@@ -33,6 +35,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     }
 
     private val accounts: AccountServiceAsync by lazy { AccountServiceAsyncImpl(clientOptions) }
+
+    private val alerts: AlertServiceAsync by lazy { AlertServiceAsyncImpl(clientOptions) }
 
     private val apiVersion: ApiVersionServiceAsync by lazy {
         ApiVersionServiceAsyncImpl(clientOptions)
@@ -68,6 +72,12 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     /** Manage trading accounts, balances, and portfolio history. */
     override fun accounts(): AccountServiceAsync = accounts
 
+    /**
+     * Create and manage alerts that watch market and portfolio conditions on an account and notify
+     * when they trigger.
+     */
+    override fun alerts(): AlertServiceAsync = alerts
+
     /** Endpoints for API service metadata. */
     override fun apiVersion(): ApiVersionServiceAsync = apiVersion
 
@@ -99,6 +109,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         private val accounts: AccountServiceAsync.WithRawResponse by lazy {
             AccountServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val alerts: AlertServiceAsync.WithRawResponse by lazy {
+            AlertServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val apiVersion: ApiVersionServiceAsync.WithRawResponse by lazy {
@@ -146,6 +160,12 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         /** Manage trading accounts, balances, and portfolio history. */
         override fun accounts(): AccountServiceAsync.WithRawResponse = accounts
+
+        /**
+         * Create and manage alerts that watch market and portfolio conditions on an account and
+         * notify when they trigger.
+         */
+        override fun alerts(): AlertServiceAsync.WithRawResponse = alerts
 
         /** Endpoints for API service metadata. */
         override fun apiVersion(): ApiVersionServiceAsync.WithRawResponse = apiVersion
