@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.4.0](https://github.com/clear-street/clear-street-java/compare/v0.3.0...v0.4.0) (2026-08-13)
+
+
+### Features
+
+* **api:** api update ([fadfbf0](https://github.com/clear-street/clear-street-java/commit/fadfbf0ce9907c72af674f94b3531dea92e98c61))
+* **api:** api update ([6ba7028](https://github.com/clear-street/clear-street-java/commit/6ba7028956dee52ed92dfdc810e69b9793a64f55))
+* **api:** api update ([df28e56](https://github.com/clear-street/clear-street-java/commit/df28e569c2030dfdd8c8b7699d4ed24d5c37f441))
+* **api:** api update ([8dbe0fa](https://github.com/clear-street/clear-street-java/commit/8dbe0fa99790fe60c7b6aafa5f5a3cffc3f33af1))
+* **api:** api update ([d71faf1](https://github.com/clear-street/clear-street-java/commit/d71faf1d484a5e1dc23d9f6ba2eb48cda3ac2a45))
+* **api:** api update ([84904af](https://github.com/clear-street/clear-street-java/commit/84904af2448f3371aaf1b1ec673f3c58fec33757))
+* **api:** api update ([587f7df](https://github.com/clear-street/clear-street-java/commit/587f7dfb8bc1b125586a8c534687cefa038dac44))
+* **api:** api update ([ffb6a45](https://github.com/clear-street/clear-street-java/commit/ffb6a45d3ce4b9b3083699b86c7a6336a3f14f2f))
+* **api:** api update ([9c4cef3](https://github.com/clear-street/clear-street-java/commit/9c4cef339a2ce3e9fa6865b63aecbf18191106a1))
+* **api:** api update ([f8f8064](https://github.com/clear-street/clear-street-java/commit/f8f80642a779919bd558b06fb7aba7308e8844c7))
+* **api:** api update ([04ae0bd](https://github.com/clear-street/clear-street-java/commit/04ae0bd09acf7a03e9bf7dd9adf033192c099bc3))
+* **api:** api update ([11dfe78](https://github.com/clear-street/clear-street-java/commit/11dfe7898883c82a28b2757fae4d9775996faf2e))
+* **api:** api update ([637accc](https://github.com/clear-street/clear-street-java/commit/637acccb8adf03e5b0172f1681398a47d9541561))
+* **api:** api update ([7e96d54](https://github.com/clear-street/clear-street-java/commit/7e96d543a657e4b159bf46189b55cbbd45d71868))
+* **api:** api update ([459c6c9](https://github.com/clear-street/clear-street-java/commit/459c6c92b941ef0d085927e2a4bd76be5a095e11))
+
+
+### Chores
+
+* Change versioning strategy to default and disable prerelease ([07d3a6c](https://github.com/clear-street/clear-street-java/commit/07d3a6c75e2e5ddb3d85b144862ce77bf1f5cc3d))
+
 ## [0.3.0](https://github.com/clear-street/clear-street-java/compare/v0.2.0...v0.3.0) (2026-07-27)
 
 
