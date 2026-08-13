@@ -4,7 +4,6 @@ package com.clearstreet.api.services.async
 
 import com.clearstreet.api.core.ClientOptions
 import com.clearstreet.api.services.async.v1.AccountServiceAsync
-import com.clearstreet.api.services.async.v1.AlertServiceAsync
 import com.clearstreet.api.services.async.v1.ApiVersionServiceAsync
 import com.clearstreet.api.services.async.v1.CalendarServiceAsync
 import com.clearstreet.api.services.async.v1.InstrumentDataServiceAsync
@@ -32,12 +31,6 @@ interface V1ServiceAsync {
 
     /** Manage trading accounts, balances, and portfolio history. */
     fun accounts(): AccountServiceAsync
-
-    /**
-     * Create and manage alerts that watch market and portfolio conditions on an account and notify
-     * when they trigger.
-     */
-    fun alerts(): AlertServiceAsync
 
     /** Endpoints for API service metadata. */
     fun apiVersion(): ApiVersionServiceAsync
@@ -77,12 +70,6 @@ interface V1ServiceAsync {
 
         /** Manage trading accounts, balances, and portfolio history. */
         fun accounts(): AccountServiceAsync.WithRawResponse
-
-        /**
-         * Create and manage alerts that watch market and portfolio conditions on an account and
-         * notify when they trigger.
-         */
-        fun alerts(): AlertServiceAsync.WithRawResponse
 
         /** Endpoints for API service metadata. */
         fun apiVersion(): ApiVersionServiceAsync.WithRawResponse

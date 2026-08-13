@@ -4,7 +4,6 @@ package com.clearstreet.api.services.blocking
 
 import com.clearstreet.api.core.ClientOptions
 import com.clearstreet.api.services.blocking.v1.AccountService
-import com.clearstreet.api.services.blocking.v1.AlertService
 import com.clearstreet.api.services.blocking.v1.ApiVersionService
 import com.clearstreet.api.services.blocking.v1.CalendarService
 import com.clearstreet.api.services.blocking.v1.InstrumentDataService
@@ -32,12 +31,6 @@ interface V1Service {
 
     /** Manage trading accounts, balances, and portfolio history. */
     fun accounts(): AccountService
-
-    /**
-     * Create and manage alerts that watch market and portfolio conditions on an account and notify
-     * when they trigger.
-     */
-    fun alerts(): AlertService
 
     /** Endpoints for API service metadata. */
     fun apiVersion(): ApiVersionService
@@ -77,12 +70,6 @@ interface V1Service {
 
         /** Manage trading accounts, balances, and portfolio history. */
         fun accounts(): AccountService.WithRawResponse
-
-        /**
-         * Create and manage alerts that watch market and portfolio conditions on an account and
-         * notify when they trigger.
-         */
-        fun alerts(): AlertService.WithRawResponse
 
         /** Endpoints for API service metadata. */
         fun apiVersion(): ApiVersionService.WithRawResponse
