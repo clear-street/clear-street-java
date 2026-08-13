@@ -36,12 +36,6 @@ class RequestTimeInForce @JsonCreator private constructor(private val value: Jso
 
         @JvmField val AT_THE_CLOSE = of("AT_THE_CLOSE")
 
-        @JvmField val GOOD_TILL_CROSSING = of("GOOD_TILL_CROSSING")
-
-        @JvmField val GOOD_THROUGH_CROSSING = of("GOOD_THROUGH_CROSSING")
-
-        @JvmField val AT_CROSSING = of("AT_CROSSING")
-
         @JvmStatic fun of(value: String) = RequestTimeInForce(JsonField.of(value))
     }
 
@@ -54,9 +48,6 @@ class RequestTimeInForce @JsonCreator private constructor(private val value: Jso
         GOOD_TILL_DATE,
         AT_THE_OPENING,
         AT_THE_CLOSE,
-        GOOD_TILL_CROSSING,
-        GOOD_THROUGH_CROSSING,
-        AT_CROSSING,
     }
 
     /**
@@ -76,9 +67,6 @@ class RequestTimeInForce @JsonCreator private constructor(private val value: Jso
         GOOD_TILL_DATE,
         AT_THE_OPENING,
         AT_THE_CLOSE,
-        GOOD_TILL_CROSSING,
-        GOOD_THROUGH_CROSSING,
-        AT_CROSSING,
         /**
          * An enum member indicating that [RequestTimeInForce] was instantiated with an unknown
          * value.
@@ -102,9 +90,6 @@ class RequestTimeInForce @JsonCreator private constructor(private val value: Jso
             GOOD_TILL_DATE -> Value.GOOD_TILL_DATE
             AT_THE_OPENING -> Value.AT_THE_OPENING
             AT_THE_CLOSE -> Value.AT_THE_CLOSE
-            GOOD_TILL_CROSSING -> Value.GOOD_TILL_CROSSING
-            GOOD_THROUGH_CROSSING -> Value.GOOD_THROUGH_CROSSING
-            AT_CROSSING -> Value.AT_CROSSING
             else -> Value._UNKNOWN
         }
 
@@ -126,9 +111,6 @@ class RequestTimeInForce @JsonCreator private constructor(private val value: Jso
             GOOD_TILL_DATE -> Known.GOOD_TILL_DATE
             AT_THE_OPENING -> Known.AT_THE_OPENING
             AT_THE_CLOSE -> Known.AT_THE_CLOSE
-            GOOD_TILL_CROSSING -> Known.GOOD_TILL_CROSSING
-            GOOD_THROUGH_CROSSING -> Known.GOOD_THROUGH_CROSSING
-            AT_CROSSING -> Known.AT_CROSSING
             else -> throw ClearStreetInvalidDataException("Unknown RequestTimeInForce: $value")
         }
 

@@ -13,14 +13,20 @@ internal class ReplaceOrderRequestTest {
     fun create() {
         val replaceOrderRequest =
             ReplaceOrderRequest.builder()
+                .limitOffset("0.50")
                 .limitPrice("49.00")
                 .quantity("1")
                 .stopPrice("52.00")
+                .trailingOffset("2.00")
+                .trailingOffsetType(TrailingOffsetType.PRICE)
                 .build()
 
+        assertThat(replaceOrderRequest.limitOffset()).contains("0.50")
         assertThat(replaceOrderRequest.limitPrice()).contains("49.00")
         assertThat(replaceOrderRequest.quantity()).contains("1")
         assertThat(replaceOrderRequest.stopPrice()).contains("52.00")
+        assertThat(replaceOrderRequest.trailingOffset()).contains("2.00")
+        assertThat(replaceOrderRequest.trailingOffsetType()).contains(TrailingOffsetType.PRICE)
     }
 
     @Test
@@ -28,9 +34,12 @@ internal class ReplaceOrderRequestTest {
         val jsonMapper = jsonMapper()
         val replaceOrderRequest =
             ReplaceOrderRequest.builder()
+                .limitOffset("0.50")
                 .limitPrice("49.00")
                 .quantity("1")
                 .stopPrice("52.00")
+                .trailingOffset("2.00")
+                .trailingOffsetType(TrailingOffsetType.PRICE)
                 .build()
 
         val roundtrippedReplaceOrderRequest =

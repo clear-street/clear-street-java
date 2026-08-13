@@ -14,9 +14,12 @@ internal class OrderReplaceOrderParamsTest {
             .orderId("order_id")
             .replaceOrderRequest(
                 ReplaceOrderRequest.builder()
+                    .limitOffset("0.50")
                     .limitPrice("49.00")
                     .quantity("1")
                     .stopPrice("52.00")
+                    .trailingOffset("2.00")
+                    .trailingOffsetType(TrailingOffsetType.PRICE)
                     .build()
             )
             .build()
@@ -45,9 +48,12 @@ internal class OrderReplaceOrderParamsTest {
                 .orderId("order_id")
                 .replaceOrderRequest(
                     ReplaceOrderRequest.builder()
+                        .limitOffset("0.50")
                         .limitPrice("49.00")
                         .quantity("1")
                         .stopPrice("52.00")
+                        .trailingOffset("2.00")
+                        .trailingOffsetType(TrailingOffsetType.PRICE)
                         .build()
                 )
                 .build()
@@ -57,9 +63,12 @@ internal class OrderReplaceOrderParamsTest {
         assertThat(body)
             .isEqualTo(
                 ReplaceOrderRequest.builder()
+                    .limitOffset("0.50")
                     .limitPrice("49.00")
                     .quantity("1")
                     .stopPrice("52.00")
+                    .trailingOffset("2.00")
+                    .trailingOffsetType(TrailingOffsetType.PRICE)
                     .build()
             )
     }

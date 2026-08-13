@@ -7,6 +7,7 @@ import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.core.JsonMissing
 import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
+import com.clearstreet.api.models.v1.orders.TrailingOffsetType
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -25,23 +26,45 @@ class PrefillModifyOrderRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val accountId: JsonField<Long>,
+    private val limitOffset: JsonField<String>,
     private val limitPrice: JsonField<String>,
     private val orderId: JsonField<String>,
     private val quantity: JsonField<String>,
     private val stopPrice: JsonField<String>,
+    private val trailingOffset: JsonField<String>,
+    private val trailingOffsetType: JsonField<TrailingOffsetType>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
         @JsonProperty("account_id") @ExcludeMissing accountId: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("limit_offset")
+        @ExcludeMissing
+        limitOffset: JsonField<String> = JsonMissing.of(),
         @JsonProperty("limit_price")
         @ExcludeMissing
         limitPrice: JsonField<String> = JsonMissing.of(),
         @JsonProperty("order_id") @ExcludeMissing orderId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("quantity") @ExcludeMissing quantity: JsonField<String> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
-    ) : this(accountId, limitPrice, orderId, quantity, stopPrice, mutableMapOf())
+        @JsonProperty("trailing_offset")
+        @ExcludeMissing
+        trailingOffset: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("trailing_offset_type")
+        @ExcludeMissing
+        trailingOffsetType: JsonField<TrailingOffsetType> = JsonMissing.of(),
+    ) : this(
+        accountId,
+        limitOffset,
+        limitPrice,
+        orderId,
+        quantity,
+        stopPrice,
+        trailingOffset,
+        trailingOffsetType,
+        mutableMapOf(),
+    )
 
     /**
      * Account ID that owns the order.
@@ -50,6 +73,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun accountId(): Optional<Long> = accountId.getOptional("account_id")
+
+    /**
+     * New limit offset for trailing stop-limit orders (signed)
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun limitOffset(): Optional<String> = limitOffset.getOptional("limit_offset")
 
     /**
      * New limit price for the order
@@ -84,11 +115,37 @@ private constructor(
     fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
 
     /**
+     * New trailing offset for trailing orders
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun trailingOffset(): Optional<String> = trailingOffset.getOptional("trailing_offset")
+
+    /**
+     * New trailing offset type (PRICE or BPS)
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun trailingOffsetType(): Optional<TrailingOffsetType> =
+        trailingOffsetType.getOptional("trailing_offset_type")
+
+    /**
      * Returns the raw JSON value of [accountId].
      *
      * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("account_id") @ExcludeMissing fun _accountId(): JsonField<Long> = accountId
+
+    /**
+     * Returns the raw JSON value of [limitOffset].
+     *
+     * Unlike [limitOffset], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("limit_offset")
+    @ExcludeMissing
+    fun _limitOffset(): JsonField<String> = limitOffset
 
     /**
      * Returns the raw JSON value of [limitPrice].
@@ -118,6 +175,25 @@ private constructor(
      */
     @JsonProperty("stop_price") @ExcludeMissing fun _stopPrice(): JsonField<String> = stopPrice
 
+    /**
+     * Returns the raw JSON value of [trailingOffset].
+     *
+     * Unlike [trailingOffset], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("trailing_offset")
+    @ExcludeMissing
+    fun _trailingOffset(): JsonField<String> = trailingOffset
+
+    /**
+     * Returns the raw JSON value of [trailingOffsetType].
+     *
+     * Unlike [trailingOffsetType], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("trailing_offset_type")
+    @ExcludeMissing
+    fun _trailingOffsetType(): JsonField<TrailingOffsetType> = trailingOffsetType
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -142,19 +218,25 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: JsonField<Long> = JsonMissing.of()
+        private var limitOffset: JsonField<String> = JsonMissing.of()
         private var limitPrice: JsonField<String> = JsonMissing.of()
         private var orderId: JsonField<String> = JsonMissing.of()
         private var quantity: JsonField<String> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
+        private var trailingOffset: JsonField<String> = JsonMissing.of()
+        private var trailingOffsetType: JsonField<TrailingOffsetType> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(prefillModifyOrderRequest: PrefillModifyOrderRequest) = apply {
             accountId = prefillModifyOrderRequest.accountId
+            limitOffset = prefillModifyOrderRequest.limitOffset
             limitPrice = prefillModifyOrderRequest.limitPrice
             orderId = prefillModifyOrderRequest.orderId
             quantity = prefillModifyOrderRequest.quantity
             stopPrice = prefillModifyOrderRequest.stopPrice
+            trailingOffset = prefillModifyOrderRequest.trailingOffset
+            trailingOffsetType = prefillModifyOrderRequest.trailingOffsetType
             additionalProperties = prefillModifyOrderRequest.additionalProperties.toMutableMap()
         }
 
@@ -168,6 +250,21 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
+
+        /** New limit offset for trailing stop-limit orders (signed) */
+        fun limitOffset(limitOffset: String?) = limitOffset(JsonField.ofNullable(limitOffset))
+
+        /** Alias for calling [Builder.limitOffset] with `limitOffset.orElse(null)`. */
+        fun limitOffset(limitOffset: Optional<String>) = limitOffset(limitOffset.getOrNull())
+
+        /**
+         * Sets [Builder.limitOffset] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.limitOffset] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun limitOffset(limitOffset: JsonField<String>) = apply { this.limitOffset = limitOffset }
 
         /** New limit price for the order */
         fun limitPrice(limitPrice: String?) = limitPrice(JsonField.ofNullable(limitPrice))
@@ -224,6 +321,46 @@ private constructor(
          */
         fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
 
+        /** New trailing offset for trailing orders */
+        fun trailingOffset(trailingOffset: String?) =
+            trailingOffset(JsonField.ofNullable(trailingOffset))
+
+        /** Alias for calling [Builder.trailingOffset] with `trailingOffset.orElse(null)`. */
+        fun trailingOffset(trailingOffset: Optional<String>) =
+            trailingOffset(trailingOffset.getOrNull())
+
+        /**
+         * Sets [Builder.trailingOffset] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.trailingOffset] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun trailingOffset(trailingOffset: JsonField<String>) = apply {
+            this.trailingOffset = trailingOffset
+        }
+
+        /** New trailing offset type (PRICE or BPS) */
+        fun trailingOffsetType(trailingOffsetType: TrailingOffsetType?) =
+            trailingOffsetType(JsonField.ofNullable(trailingOffsetType))
+
+        /**
+         * Alias for calling [Builder.trailingOffsetType] with `trailingOffsetType.orElse(null)`.
+         */
+        fun trailingOffsetType(trailingOffsetType: Optional<TrailingOffsetType>) =
+            trailingOffsetType(trailingOffsetType.getOrNull())
+
+        /**
+         * Sets [Builder.trailingOffsetType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.trailingOffsetType] with a well-typed
+         * [TrailingOffsetType] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun trailingOffsetType(trailingOffsetType: JsonField<TrailingOffsetType>) = apply {
+            this.trailingOffsetType = trailingOffsetType
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -251,10 +388,13 @@ private constructor(
         fun build(): PrefillModifyOrderRequest =
             PrefillModifyOrderRequest(
                 accountId,
+                limitOffset,
                 limitPrice,
                 orderId,
                 quantity,
                 stopPrice,
+                trailingOffset,
+                trailingOffsetType,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -275,10 +415,13 @@ private constructor(
         }
 
         accountId()
+        limitOffset()
         limitPrice()
         orderId()
         quantity()
         stopPrice()
+        trailingOffset()
+        trailingOffsetType().ifPresent { it.validate() }
         validated = true
     }
 
@@ -298,10 +441,13 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (if (accountId.asKnown().isPresent) 1 else 0) +
+            (if (limitOffset.asKnown().isPresent) 1 else 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
             (if (orderId.asKnown().isPresent) 1 else 0) +
             (if (quantity.asKnown().isPresent) 1 else 0) +
-            (if (stopPrice.asKnown().isPresent) 1 else 0)
+            (if (stopPrice.asKnown().isPresent) 1 else 0) +
+            (if (trailingOffset.asKnown().isPresent) 1 else 0) +
+            (trailingOffsetType.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -310,19 +456,32 @@ private constructor(
 
         return other is PrefillModifyOrderRequest &&
             accountId == other.accountId &&
+            limitOffset == other.limitOffset &&
             limitPrice == other.limitPrice &&
             orderId == other.orderId &&
             quantity == other.quantity &&
             stopPrice == other.stopPrice &&
+            trailingOffset == other.trailingOffset &&
+            trailingOffsetType == other.trailingOffsetType &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(accountId, limitPrice, orderId, quantity, stopPrice, additionalProperties)
+        Objects.hash(
+            accountId,
+            limitOffset,
+            limitPrice,
+            orderId,
+            quantity,
+            stopPrice,
+            trailingOffset,
+            trailingOffsetType,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PrefillModifyOrderRequest{accountId=$accountId, limitPrice=$limitPrice, orderId=$orderId, quantity=$quantity, stopPrice=$stopPrice, additionalProperties=$additionalProperties}"
+        "PrefillModifyOrderRequest{accountId=$accountId, limitOffset=$limitOffset, limitPrice=$limitPrice, orderId=$orderId, quantity=$quantity, stopPrice=$stopPrice, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
 }

@@ -35,12 +35,6 @@ class TimeInForce @JsonCreator private constructor(private val value: JsonField<
 
         @JvmField val AT_THE_CLOSE = of("AT_THE_CLOSE")
 
-        @JvmField val GOOD_TILL_CROSSING = of("GOOD_TILL_CROSSING")
-
-        @JvmField val GOOD_THROUGH_CROSSING = of("GOOD_THROUGH_CROSSING")
-
-        @JvmField val AT_CROSSING = of("AT_CROSSING")
-
         @JvmField val OTHER = of("OTHER")
 
         @JvmStatic fun of(value: String) = TimeInForce(JsonField.of(value))
@@ -55,9 +49,6 @@ class TimeInForce @JsonCreator private constructor(private val value: JsonField<
         GOOD_TILL_DATE,
         AT_THE_OPENING,
         AT_THE_CLOSE,
-        GOOD_TILL_CROSSING,
-        GOOD_THROUGH_CROSSING,
-        AT_CROSSING,
         OTHER,
     }
 
@@ -78,9 +69,6 @@ class TimeInForce @JsonCreator private constructor(private val value: JsonField<
         GOOD_TILL_DATE,
         AT_THE_OPENING,
         AT_THE_CLOSE,
-        GOOD_TILL_CROSSING,
-        GOOD_THROUGH_CROSSING,
-        AT_CROSSING,
         OTHER,
         /** An enum member indicating that [TimeInForce] was instantiated with an unknown value. */
         _UNKNOWN,
@@ -102,9 +90,6 @@ class TimeInForce @JsonCreator private constructor(private val value: JsonField<
             GOOD_TILL_DATE -> Value.GOOD_TILL_DATE
             AT_THE_OPENING -> Value.AT_THE_OPENING
             AT_THE_CLOSE -> Value.AT_THE_CLOSE
-            GOOD_TILL_CROSSING -> Value.GOOD_TILL_CROSSING
-            GOOD_THROUGH_CROSSING -> Value.GOOD_THROUGH_CROSSING
-            AT_CROSSING -> Value.AT_CROSSING
             OTHER -> Value.OTHER
             else -> Value._UNKNOWN
         }
@@ -127,9 +112,6 @@ class TimeInForce @JsonCreator private constructor(private val value: JsonField<
             GOOD_TILL_DATE -> Known.GOOD_TILL_DATE
             AT_THE_OPENING -> Known.AT_THE_OPENING
             AT_THE_CLOSE -> Known.AT_THE_CLOSE
-            GOOD_TILL_CROSSING -> Known.GOOD_TILL_CROSSING
-            GOOD_THROUGH_CROSSING -> Known.GOOD_THROUGH_CROSSING
-            AT_CROSSING -> Known.AT_CROSSING
             OTHER -> Known.OTHER
             else -> throw ClearStreetInvalidDataException("Unknown TimeInForce: $value")
         }
