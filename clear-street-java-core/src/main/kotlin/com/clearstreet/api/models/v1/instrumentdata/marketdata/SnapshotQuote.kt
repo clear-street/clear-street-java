@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -22,8 +23,12 @@ class SnapshotQuote
 private constructor(
     private val ask: JsonField<String>,
     private val askSize: JsonField<Int>,
+    private val askTimestamp: JsonField<OffsetDateTime>,
+    private val askVenue: JsonField<String>,
     private val bid: JsonField<String>,
     private val bidSize: JsonField<Int>,
+    private val bidTimestamp: JsonField<OffsetDateTime>,
+    private val bidVenue: JsonField<String>,
     private val midpoint: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -32,10 +37,29 @@ private constructor(
     private constructor(
         @JsonProperty("ask") @ExcludeMissing ask: JsonField<String> = JsonMissing.of(),
         @JsonProperty("ask_size") @ExcludeMissing askSize: JsonField<Int> = JsonMissing.of(),
+        @JsonProperty("ask_timestamp")
+        @ExcludeMissing
+        askTimestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("ask_venue") @ExcludeMissing askVenue: JsonField<String> = JsonMissing.of(),
         @JsonProperty("bid") @ExcludeMissing bid: JsonField<String> = JsonMissing.of(),
         @JsonProperty("bid_size") @ExcludeMissing bidSize: JsonField<Int> = JsonMissing.of(),
+        @JsonProperty("bid_timestamp")
+        @ExcludeMissing
+        bidTimestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("bid_venue") @ExcludeMissing bidVenue: JsonField<String> = JsonMissing.of(),
         @JsonProperty("midpoint") @ExcludeMissing midpoint: JsonField<String> = JsonMissing.of(),
-    ) : this(ask, askSize, bid, bidSize, midpoint, mutableMapOf())
+    ) : this(
+        ask,
+        askSize,
+        askTimestamp,
+        askVenue,
+        bid,
+        bidSize,
+        bidTimestamp,
+        bidVenue,
+        midpoint,
+        mutableMapOf(),
+    )
 
     /**
      * Current best ask. Absent when no ask is available (one-sided quote). When a null/undefined
@@ -56,6 +80,25 @@ private constructor(
     fun askSize(): Optional<Int> = askSize.getOptional("ask_size")
 
     /**
+     * Exchange timestamp of the best ask. Absent when the ask side carries no timestamp. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun askTimestamp(): Optional<OffsetDateTime> = askTimestamp.getOptional("ask_timestamp")
+
+    /**
+     * ISO 10383 Market Identifier Code (MIC) of the venue currently holding the national best offer
+     * (NBBO). Absent when the ask side carries no venue. When a null/undefined value is observed,
+     * it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun askVenue(): Optional<String> = askVenue.getOptional("ask_venue")
+
+    /**
      * Current best bid. Absent when no bid is available (one-sided quote). When a null/undefined
      * value is observed, it indicates that there is no available data.
      *
@@ -72,6 +115,25 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun bidSize(): Optional<Int> = bidSize.getOptional("bid_size")
+
+    /**
+     * Exchange timestamp of the best bid. Absent when the bid side carries no timestamp. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun bidTimestamp(): Optional<OffsetDateTime> = bidTimestamp.getOptional("bid_timestamp")
+
+    /**
+     * ISO 10383 Market Identifier Code (MIC) of the venue currently holding the national best bid
+     * (NBBO). Absent when the bid side carries no venue. When a null/undefined value is observed,
+     * it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun bidVenue(): Optional<String> = bidVenue.getOptional("bid_venue")
 
     /**
      * Midpoint of bid and ask. Absent when either side is missing. When a null/undefined value is
@@ -97,6 +159,22 @@ private constructor(
     @JsonProperty("ask_size") @ExcludeMissing fun _askSize(): JsonField<Int> = askSize
 
     /**
+     * Returns the raw JSON value of [askTimestamp].
+     *
+     * Unlike [askTimestamp], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("ask_timestamp")
+    @ExcludeMissing
+    fun _askTimestamp(): JsonField<OffsetDateTime> = askTimestamp
+
+    /**
+     * Returns the raw JSON value of [askVenue].
+     *
+     * Unlike [askVenue], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("ask_venue") @ExcludeMissing fun _askVenue(): JsonField<String> = askVenue
+
+    /**
      * Returns the raw JSON value of [bid].
      *
      * Unlike [bid], this method doesn't throw if the JSON field has an unexpected type.
@@ -109,6 +187,22 @@ private constructor(
      * Unlike [bidSize], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("bid_size") @ExcludeMissing fun _bidSize(): JsonField<Int> = bidSize
+
+    /**
+     * Returns the raw JSON value of [bidTimestamp].
+     *
+     * Unlike [bidTimestamp], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("bid_timestamp")
+    @ExcludeMissing
+    fun _bidTimestamp(): JsonField<OffsetDateTime> = bidTimestamp
+
+    /**
+     * Returns the raw JSON value of [bidVenue].
+     *
+     * Unlike [bidVenue], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("bid_venue") @ExcludeMissing fun _bidVenue(): JsonField<String> = bidVenue
 
     /**
      * Returns the raw JSON value of [midpoint].
@@ -140,8 +234,12 @@ private constructor(
 
         private var ask: JsonField<String> = JsonMissing.of()
         private var askSize: JsonField<Int> = JsonMissing.of()
+        private var askTimestamp: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var askVenue: JsonField<String> = JsonMissing.of()
         private var bid: JsonField<String> = JsonMissing.of()
         private var bidSize: JsonField<Int> = JsonMissing.of()
+        private var bidTimestamp: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var bidVenue: JsonField<String> = JsonMissing.of()
         private var midpoint: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -149,8 +247,12 @@ private constructor(
         internal fun from(snapshotQuote: SnapshotQuote) = apply {
             ask = snapshotQuote.ask
             askSize = snapshotQuote.askSize
+            askTimestamp = snapshotQuote.askTimestamp
+            askVenue = snapshotQuote.askVenue
             bid = snapshotQuote.bid
             bidSize = snapshotQuote.bidSize
+            bidTimestamp = snapshotQuote.bidTimestamp
+            bidVenue = snapshotQuote.bidVenue
             midpoint = snapshotQuote.midpoint
             additionalProperties = snapshotQuote.additionalProperties.toMutableMap()
         }
@@ -197,6 +299,46 @@ private constructor(
         fun askSize(askSize: JsonField<Int>) = apply { this.askSize = askSize }
 
         /**
+         * Exchange timestamp of the best ask. Absent when the ask side carries no timestamp. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun askTimestamp(askTimestamp: OffsetDateTime?) =
+            askTimestamp(JsonField.ofNullable(askTimestamp))
+
+        /** Alias for calling [Builder.askTimestamp] with `askTimestamp.orElse(null)`. */
+        fun askTimestamp(askTimestamp: Optional<OffsetDateTime>) =
+            askTimestamp(askTimestamp.getOrNull())
+
+        /**
+         * Sets [Builder.askTimestamp] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.askTimestamp] with a well-typed [OffsetDateTime] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun askTimestamp(askTimestamp: JsonField<OffsetDateTime>) = apply {
+            this.askTimestamp = askTimestamp
+        }
+
+        /**
+         * ISO 10383 Market Identifier Code (MIC) of the venue currently holding the national best
+         * offer (NBBO). Absent when the ask side carries no venue. When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
+        fun askVenue(askVenue: String?) = askVenue(JsonField.ofNullable(askVenue))
+
+        /** Alias for calling [Builder.askVenue] with `askVenue.orElse(null)`. */
+        fun askVenue(askVenue: Optional<String>) = askVenue(askVenue.getOrNull())
+
+        /**
+         * Sets [Builder.askVenue] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.askVenue] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun askVenue(askVenue: JsonField<String>) = apply { this.askVenue = askVenue }
+
+        /**
          * Current best bid. Absent when no bid is available (one-sided quote). When a
          * null/undefined value is observed, it indicates that there is no available data.
          */
@@ -236,6 +378,46 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun bidSize(bidSize: JsonField<Int>) = apply { this.bidSize = bidSize }
+
+        /**
+         * Exchange timestamp of the best bid. Absent when the bid side carries no timestamp. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun bidTimestamp(bidTimestamp: OffsetDateTime?) =
+            bidTimestamp(JsonField.ofNullable(bidTimestamp))
+
+        /** Alias for calling [Builder.bidTimestamp] with `bidTimestamp.orElse(null)`. */
+        fun bidTimestamp(bidTimestamp: Optional<OffsetDateTime>) =
+            bidTimestamp(bidTimestamp.getOrNull())
+
+        /**
+         * Sets [Builder.bidTimestamp] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.bidTimestamp] with a well-typed [OffsetDateTime] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun bidTimestamp(bidTimestamp: JsonField<OffsetDateTime>) = apply {
+            this.bidTimestamp = bidTimestamp
+        }
+
+        /**
+         * ISO 10383 Market Identifier Code (MIC) of the venue currently holding the national best
+         * bid (NBBO). Absent when the bid side carries no venue. When a null/undefined value is
+         * observed, it indicates that there is no available data.
+         */
+        fun bidVenue(bidVenue: String?) = bidVenue(JsonField.ofNullable(bidVenue))
+
+        /** Alias for calling [Builder.bidVenue] with `bidVenue.orElse(null)`. */
+        fun bidVenue(bidVenue: Optional<String>) = bidVenue(bidVenue.getOrNull())
+
+        /**
+         * Sets [Builder.bidVenue] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.bidVenue] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun bidVenue(bidVenue: JsonField<String>) = apply { this.bidVenue = bidVenue }
 
         /**
          * Midpoint of bid and ask. Absent when either side is missing. When a null/undefined value
@@ -279,7 +461,18 @@ private constructor(
          * Further updates to this [Builder] will not mutate the returned instance.
          */
         fun build(): SnapshotQuote =
-            SnapshotQuote(ask, askSize, bid, bidSize, midpoint, additionalProperties.toMutableMap())
+            SnapshotQuote(
+                ask,
+                askSize,
+                askTimestamp,
+                askVenue,
+                bid,
+                bidSize,
+                bidTimestamp,
+                bidVenue,
+                midpoint,
+                additionalProperties.toMutableMap(),
+            )
     }
 
     private var validated: Boolean = false
@@ -299,8 +492,12 @@ private constructor(
 
         ask()
         askSize()
+        askTimestamp()
+        askVenue()
         bid()
         bidSize()
+        bidTimestamp()
+        bidVenue()
         midpoint()
         validated = true
     }
@@ -322,8 +519,12 @@ private constructor(
     internal fun validity(): Int =
         (if (ask.asKnown().isPresent) 1 else 0) +
             (if (askSize.asKnown().isPresent) 1 else 0) +
+            (if (askTimestamp.asKnown().isPresent) 1 else 0) +
+            (if (askVenue.asKnown().isPresent) 1 else 0) +
             (if (bid.asKnown().isPresent) 1 else 0) +
             (if (bidSize.asKnown().isPresent) 1 else 0) +
+            (if (bidTimestamp.asKnown().isPresent) 1 else 0) +
+            (if (bidVenue.asKnown().isPresent) 1 else 0) +
             (if (midpoint.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
@@ -334,18 +535,33 @@ private constructor(
         return other is SnapshotQuote &&
             ask == other.ask &&
             askSize == other.askSize &&
+            askTimestamp == other.askTimestamp &&
+            askVenue == other.askVenue &&
             bid == other.bid &&
             bidSize == other.bidSize &&
+            bidTimestamp == other.bidTimestamp &&
+            bidVenue == other.bidVenue &&
             midpoint == other.midpoint &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(ask, askSize, bid, bidSize, midpoint, additionalProperties)
+        Objects.hash(
+            ask,
+            askSize,
+            askTimestamp,
+            askVenue,
+            bid,
+            bidSize,
+            bidTimestamp,
+            bidVenue,
+            midpoint,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SnapshotQuote{ask=$ask, askSize=$askSize, bid=$bid, bidSize=$bidSize, midpoint=$midpoint, additionalProperties=$additionalProperties}"
+        "SnapshotQuote{ask=$ask, askSize=$askSize, askTimestamp=$askTimestamp, askVenue=$askVenue, bid=$bid, bidSize=$bidSize, bidTimestamp=$bidTimestamp, bidVenue=$bidVenue, midpoint=$midpoint, additionalProperties=$additionalProperties}"
 }

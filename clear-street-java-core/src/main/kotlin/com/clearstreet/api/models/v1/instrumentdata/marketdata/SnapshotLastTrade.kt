@@ -12,8 +12,11 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * Last-trade fields for a market data snapshot.
@@ -26,6 +29,8 @@ class SnapshotLastTrade
 private constructor(
     private val price: JsonField<String>,
     private val size: JsonField<Int>,
+    private val timestamp: JsonField<OffsetDateTime>,
+    private val venue: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -33,7 +38,11 @@ private constructor(
     private constructor(
         @JsonProperty("price") @ExcludeMissing price: JsonField<String> = JsonMissing.of(),
         @JsonProperty("size") @ExcludeMissing size: JsonField<Int> = JsonMissing.of(),
-    ) : this(price, size, mutableMapOf())
+        @JsonProperty("timestamp")
+        @ExcludeMissing
+        timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("venue") @ExcludeMissing venue: JsonField<String> = JsonMissing.of(),
+    ) : this(price, size, timestamp, venue, mutableMapOf())
 
     /**
      * Most recent last-sale eligible trade price. For index instruments, the current index level.
@@ -53,6 +62,27 @@ private constructor(
     fun size(): Int = size.getRequired("size")
 
     /**
+     * Exchange timestamp of the most recent last-sale eligible trade. For index instruments, the
+     * time the index level was computed. Absent when the trade carries no timestamp. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun timestamp(): Optional<OffsetDateTime> = timestamp.getOptional("timestamp")
+
+    /**
+     * ISO 10383 Market Identifier Code (MIC) of the venue where the most recent last-sale eligible
+     * trade took place. Absent when the trade carries no venue; index levels are computed rather
+     * than traded and have no venue. When a null/undefined value is observed, it indicates that
+     * there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun venue(): Optional<String> = venue.getOptional("venue")
+
+    /**
      * Returns the raw JSON value of [price].
      *
      * Unlike [price], this method doesn't throw if the JSON field has an unexpected type.
@@ -65,6 +95,22 @@ private constructor(
      * Unlike [size], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("size") @ExcludeMissing fun _size(): JsonField<Int> = size
+
+    /**
+     * Returns the raw JSON value of [timestamp].
+     *
+     * Unlike [timestamp], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("timestamp")
+    @ExcludeMissing
+    fun _timestamp(): JsonField<OffsetDateTime> = timestamp
+
+    /**
+     * Returns the raw JSON value of [venue].
+     *
+     * Unlike [venue], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("venue") @ExcludeMissing fun _venue(): JsonField<String> = venue
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -97,12 +143,16 @@ private constructor(
 
         private var price: JsonField<String>? = null
         private var size: JsonField<Int>? = null
+        private var timestamp: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var venue: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(snapshotLastTrade: SnapshotLastTrade) = apply {
             price = snapshotLastTrade.price
             size = snapshotLastTrade.size
+            timestamp = snapshotLastTrade.timestamp
+            venue = snapshotLastTrade.venue
             additionalProperties = snapshotLastTrade.additionalProperties.toMutableMap()
         }
 
@@ -133,6 +183,44 @@ private constructor(
          * is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun size(size: JsonField<Int>) = apply { this.size = size }
+
+        /**
+         * Exchange timestamp of the most recent last-sale eligible trade. For index instruments,
+         * the time the index level was computed. Absent when the trade carries no timestamp. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun timestamp(timestamp: OffsetDateTime?) = timestamp(JsonField.ofNullable(timestamp))
+
+        /** Alias for calling [Builder.timestamp] with `timestamp.orElse(null)`. */
+        fun timestamp(timestamp: Optional<OffsetDateTime>) = timestamp(timestamp.getOrNull())
+
+        /**
+         * Sets [Builder.timestamp] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.timestamp] with a well-typed [OffsetDateTime] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun timestamp(timestamp: JsonField<OffsetDateTime>) = apply { this.timestamp = timestamp }
+
+        /**
+         * ISO 10383 Market Identifier Code (MIC) of the venue where the most recent last-sale
+         * eligible trade took place. Absent when the trade carries no venue; index levels are
+         * computed rather than traded and have no venue. When a null/undefined value is observed,
+         * it indicates that there is no available data.
+         */
+        fun venue(venue: String?) = venue(JsonField.ofNullable(venue))
+
+        /** Alias for calling [Builder.venue] with `venue.orElse(null)`. */
+        fun venue(venue: Optional<String>) = venue(venue.getOrNull())
+
+        /**
+         * Sets [Builder.venue] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.venue] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun venue(venue: JsonField<String>) = apply { this.venue = venue }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -170,6 +258,8 @@ private constructor(
             SnapshotLastTrade(
                 checkRequired("price", price),
                 checkRequired("size", size),
+                timestamp,
+                venue,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -191,6 +281,8 @@ private constructor(
 
         price()
         size()
+        timestamp()
+        venue()
         validated = true
     }
 
@@ -209,7 +301,10 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (if (price.asKnown().isPresent) 1 else 0) + (if (size.asKnown().isPresent) 1 else 0)
+        (if (price.asKnown().isPresent) 1 else 0) +
+            (if (size.asKnown().isPresent) 1 else 0) +
+            (if (timestamp.asKnown().isPresent) 1 else 0) +
+            (if (venue.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -219,13 +314,17 @@ private constructor(
         return other is SnapshotLastTrade &&
             price == other.price &&
             size == other.size &&
+            timestamp == other.timestamp &&
+            venue == other.venue &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(price, size, additionalProperties) }
+    private val hashCode: Int by lazy {
+        Objects.hash(price, size, timestamp, venue, additionalProperties)
+    }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SnapshotLastTrade{price=$price, size=$size, additionalProperties=$additionalProperties}"
+        "SnapshotLastTrade{price=$price, size=$size, timestamp=$timestamp, venue=$venue, additionalProperties=$additionalProperties}"
 }
