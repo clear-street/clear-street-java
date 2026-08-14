@@ -22,7 +22,7 @@ internal class ExecutionTest {
                 .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
                 .price("150.25")
                 .symbol("AAPL")
-                .underlyingInstrumentId(null)
+                .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .venue("XNAS")
                 .build()
 
@@ -35,7 +35,8 @@ internal class ExecutionTest {
         assertThat(execution.instrumentId()).contains("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
         assertThat(execution.price()).contains("150.25")
         assertThat(execution.symbol()).contains("AAPL")
-        assertThat(execution.underlyingInstrumentId()).isEmpty
+        assertThat(execution.underlyingInstrumentId())
+            .contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(execution.venue()).contains("XNAS")
     }
 
@@ -52,7 +53,7 @@ internal class ExecutionTest {
                 .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
                 .price("150.25")
                 .symbol("AAPL")
-                .underlyingInstrumentId(null)
+                .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .venue("XNAS")
                 .build()
 
