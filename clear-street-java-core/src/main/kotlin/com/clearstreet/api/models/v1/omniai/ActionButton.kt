@@ -23,6 +23,7 @@ class ActionButton
 private constructor(
     private val buttonId: JsonField<String>,
     private val label: JsonField<String>,
+    private val itemId: JsonField<String>,
     private val prompt: JsonField<PromptButtonAction>,
     private val structuredAction: JsonField<StructuredActionButtonAction>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -32,13 +33,14 @@ private constructor(
     private constructor(
         @JsonProperty("buttonId") @ExcludeMissing buttonId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("label") @ExcludeMissing label: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("itemId") @ExcludeMissing itemId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("prompt")
         @ExcludeMissing
         prompt: JsonField<PromptButtonAction> = JsonMissing.of(),
         @JsonProperty("structuredAction")
         @ExcludeMissing
         structuredAction: JsonField<StructuredActionButtonAction> = JsonMissing.of(),
-    ) : this(buttonId, label, prompt, structuredAction, mutableMapOf())
+    ) : this(buttonId, label, itemId, prompt, structuredAction, mutableMapOf())
 
     /**
      * Stable button identifier within the content part.
@@ -55,6 +57,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun label(): String = label.getRequired("label")
+
+    /**
+     * Interaction-tracking identity. Absent on messages created before tracking. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun itemId(): Optional<String> = itemId.getOptional("itemId")
 
     /**
      * Follow-up prompt to submit as the next user message. When a null/undefined value is observed,
@@ -88,6 +99,13 @@ private constructor(
      * Unlike [label], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("label") @ExcludeMissing fun _label(): JsonField<String> = label
+
+    /**
+     * Returns the raw JSON value of [itemId].
+     *
+     * Unlike [itemId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("itemId") @ExcludeMissing fun _itemId(): JsonField<String> = itemId
 
     /**
      * Returns the raw JSON value of [prompt].
@@ -137,6 +155,7 @@ private constructor(
 
         private var buttonId: JsonField<String>? = null
         private var label: JsonField<String>? = null
+        private var itemId: JsonField<String> = JsonMissing.of()
         private var prompt: JsonField<PromptButtonAction> = JsonMissing.of()
         private var structuredAction: JsonField<StructuredActionButtonAction> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -145,6 +164,7 @@ private constructor(
         internal fun from(actionButton: ActionButton) = apply {
             buttonId = actionButton.buttonId
             label = actionButton.label
+            itemId = actionButton.itemId
             prompt = actionButton.prompt
             structuredAction = actionButton.structuredAction
             additionalProperties = actionButton.additionalProperties.toMutableMap()
@@ -171,6 +191,23 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun label(label: JsonField<String>) = apply { this.label = label }
+
+        /**
+         * Interaction-tracking identity. Absent on messages created before tracking. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun itemId(itemId: String?) = itemId(JsonField.ofNullable(itemId))
+
+        /** Alias for calling [Builder.itemId] with `itemId.orElse(null)`. */
+        fun itemId(itemId: Optional<String>) = itemId(itemId.getOrNull())
+
+        /**
+         * Sets [Builder.itemId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.itemId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun itemId(itemId: JsonField<String>) = apply { this.itemId = itemId }
 
         /**
          * Follow-up prompt to submit as the next user message. When a null/undefined value is
@@ -248,6 +285,7 @@ private constructor(
             ActionButton(
                 checkRequired("buttonId", buttonId),
                 checkRequired("label", label),
+                itemId,
                 prompt,
                 structuredAction,
                 additionalProperties.toMutableMap(),
@@ -271,6 +309,7 @@ private constructor(
 
         buttonId()
         label()
+        itemId()
         prompt().ifPresent { it.validate() }
         structuredAction().ifPresent { it.validate() }
         validated = true
@@ -293,6 +332,7 @@ private constructor(
     internal fun validity(): Int =
         (if (buttonId.asKnown().isPresent) 1 else 0) +
             (if (label.asKnown().isPresent) 1 else 0) +
+            (if (itemId.asKnown().isPresent) 1 else 0) +
             (prompt.asKnown().getOrNull()?.validity() ?: 0) +
             (structuredAction.asKnown().getOrNull()?.validity() ?: 0)
 
@@ -304,17 +344,18 @@ private constructor(
         return other is ActionButton &&
             buttonId == other.buttonId &&
             label == other.label &&
+            itemId == other.itemId &&
             prompt == other.prompt &&
             structuredAction == other.structuredAction &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(buttonId, label, prompt, structuredAction, additionalProperties)
+        Objects.hash(buttonId, label, itemId, prompt, structuredAction, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ActionButton{buttonId=$buttonId, label=$label, prompt=$prompt, structuredAction=$structuredAction, additionalProperties=$additionalProperties}"
+        "ActionButton{buttonId=$buttonId, label=$label, itemId=$itemId, prompt=$prompt, structuredAction=$structuredAction, additionalProperties=$additionalProperties}"
 }

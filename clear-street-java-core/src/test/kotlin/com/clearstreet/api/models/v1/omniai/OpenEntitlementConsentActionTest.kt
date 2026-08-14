@@ -17,6 +17,7 @@ internal class OpenEntitlementConsentActionTest {
                 .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
                 .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                 .reason("Portfolio analysis requires Omni consent to access account data.")
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         assertThat(openEntitlementConsentAction.accountIds()).containsExactly(100019L)
@@ -26,6 +27,8 @@ internal class OpenEntitlementConsentActionTest {
             .containsExactly(EntitlementCode.OMNI_ACCOUNT_DATA)
         assertThat(openEntitlementConsentAction.reason())
             .isEqualTo("Portfolio analysis requires Omni consent to access account data.")
+        assertThat(openEntitlementConsentAction.itemId())
+            .contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
     }
 
     @Test
@@ -37,6 +40,7 @@ internal class OpenEntitlementConsentActionTest {
                 .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
                 .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                 .reason("Portfolio analysis requires Omni consent to access account data.")
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         val roundtrippedOpenEntitlementConsentAction =

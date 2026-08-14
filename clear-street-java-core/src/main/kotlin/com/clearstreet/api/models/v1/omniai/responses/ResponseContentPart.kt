@@ -1119,6 +1119,9 @@ private constructor(
     private constructor(
         private val action: JsonField<StructuredAction>,
         private val actionId: JsonField<String>,
+        private val clicked: JsonField<Boolean>,
+        private val clickedItemIds: JsonField<List<String>>,
+        private val itemId: JsonField<String>,
         private val type: JsonField<Type>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -1131,11 +1134,22 @@ private constructor(
             @JsonProperty("action_id")
             @ExcludeMissing
             actionId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("clicked") @ExcludeMissing clicked: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("clicked_item_ids")
+            @ExcludeMissing
+            clickedItemIds: JsonField<List<String>> = JsonMissing.of(),
+            @JsonProperty("item_id") @ExcludeMissing itemId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
-        ) : this(action, actionId, type, mutableMapOf())
+        ) : this(action, actionId, clicked, clickedItemIds, itemId, type, mutableMapOf())
 
         fun toContentPartStructuredActionPayload(): ContentPartStructuredActionPayload =
-            ContentPartStructuredActionPayload.builder().action(action).actionId(actionId).build()
+            ContentPartStructuredActionPayload.builder()
+                .action(action)
+                .actionId(actionId)
+                .clicked(clicked)
+                .clickedItemIds(clickedItemIds)
+                .itemId(itemId)
+                .build()
 
         /**
          * Structured actions that Omni AI can return to clients.
@@ -1153,6 +1167,32 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun actionId(): String = actionId.getRequired("action_id")
+
+        /**
+         * Whether the current user clicked this action.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun clicked(): Boolean = clicked.getRequired("clicked")
+
+        /**
+         * IDs of nested items clicked by the current user.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun clickedItemIds(): Optional<List<String>> =
+            clickedItemIds.getOptional("clicked_item_ids")
+
+        /**
+         * Interaction-tracking identity. Absent on messages created before tracking. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun itemId(): Optional<String> = itemId.getOptional("item_id")
 
         /**
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -1173,6 +1213,30 @@ private constructor(
          * Unlike [actionId], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("action_id") @ExcludeMissing fun _actionId(): JsonField<String> = actionId
+
+        /**
+         * Returns the raw JSON value of [clicked].
+         *
+         * Unlike [clicked], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("clicked") @ExcludeMissing fun _clicked(): JsonField<Boolean> = clicked
+
+        /**
+         * Returns the raw JSON value of [clickedItemIds].
+         *
+         * Unlike [clickedItemIds], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("clicked_item_ids")
+        @ExcludeMissing
+        fun _clickedItemIds(): JsonField<List<String>> = clickedItemIds
+
+        /**
+         * Returns the raw JSON value of [itemId].
+         *
+         * Unlike [itemId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("item_id") @ExcludeMissing fun _itemId(): JsonField<String> = itemId
 
         /**
          * Returns the raw JSON value of [type].
@@ -1203,6 +1267,7 @@ private constructor(
              * ```java
              * .action()
              * .actionId()
+             * .clicked()
              * .type()
              * ```
              */
@@ -1214,6 +1279,9 @@ private constructor(
 
             private var action: JsonField<StructuredAction>? = null
             private var actionId: JsonField<String>? = null
+            private var clicked: JsonField<Boolean>? = null
+            private var clickedItemIds: JsonField<MutableList<String>>? = null
+            private var itemId: JsonField<String> = JsonMissing.of()
             private var type: JsonField<Type>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -1221,6 +1289,10 @@ private constructor(
             internal fun from(contentPartStructuredAction: ContentPartStructuredAction) = apply {
                 action = contentPartStructuredAction.action
                 actionId = contentPartStructuredAction.actionId
+                clicked = contentPartStructuredAction.clicked
+                clickedItemIds =
+                    contentPartStructuredAction.clickedItemIds.map { it.toMutableList() }
+                itemId = contentPartStructuredAction.itemId
                 type = contentPartStructuredAction.type
                 additionalProperties =
                     contentPartStructuredAction.additionalProperties.toMutableMap()
@@ -1273,6 +1345,63 @@ private constructor(
              */
             fun actionId(actionId: JsonField<String>) = apply { this.actionId = actionId }
 
+            /** Whether the current user clicked this action. */
+            fun clicked(clicked: Boolean) = clicked(JsonField.of(clicked))
+
+            /**
+             * Sets [Builder.clicked] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.clicked] with a well-typed [Boolean] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun clicked(clicked: JsonField<Boolean>) = apply { this.clicked = clicked }
+
+            /** IDs of nested items clicked by the current user. */
+            fun clickedItemIds(clickedItemIds: List<String>) =
+                clickedItemIds(JsonField.of(clickedItemIds))
+
+            /**
+             * Sets [Builder.clickedItemIds] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.clickedItemIds] with a well-typed `List<String>`
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun clickedItemIds(clickedItemIds: JsonField<List<String>>) = apply {
+                this.clickedItemIds = clickedItemIds.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [String] to [clickedItemIds].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addClickedItemId(clickedItemId: String) = apply {
+                clickedItemIds =
+                    (clickedItemIds ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("clickedItemIds", it).add(clickedItemId)
+                    }
+            }
+
+            /**
+             * Interaction-tracking identity. Absent on messages created before tracking. When a
+             * null/undefined value is observed, it indicates that there is no available data.
+             */
+            fun itemId(itemId: String?) = itemId(JsonField.ofNullable(itemId))
+
+            /** Alias for calling [Builder.itemId] with `itemId.orElse(null)`. */
+            fun itemId(itemId: Optional<String>) = itemId(itemId.getOrNull())
+
+            /**
+             * Sets [Builder.itemId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.itemId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun itemId(itemId: JsonField<String>) = apply { this.itemId = itemId }
+
             fun type(type: Type) = type(JsonField.of(type))
 
             /**
@@ -1312,6 +1441,7 @@ private constructor(
              * ```java
              * .action()
              * .actionId()
+             * .clicked()
              * .type()
              * ```
              *
@@ -1321,6 +1451,9 @@ private constructor(
                 ContentPartStructuredAction(
                     checkRequired("action", action),
                     checkRequired("actionId", actionId),
+                    checkRequired("clicked", clicked),
+                    (clickedItemIds ?: JsonMissing.of()).map { it.toImmutable() },
+                    itemId,
                     checkRequired("type", type),
                     additionalProperties.toMutableMap(),
                 )
@@ -1344,6 +1477,9 @@ private constructor(
 
             action().validate()
             actionId()
+            clicked()
+            clickedItemIds()
+            itemId()
             type().validate()
             validated = true
         }
@@ -1366,6 +1502,9 @@ private constructor(
         internal fun validity(): Int =
             (action.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (actionId.asKnown().isPresent) 1 else 0) +
+                (if (clicked.asKnown().isPresent) 1 else 0) +
+                (clickedItemIds.asKnown().getOrNull()?.size ?: 0) +
+                (if (itemId.asKnown().isPresent) 1 else 0) +
                 (type.asKnown().getOrNull()?.validity() ?: 0)
 
         class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -1507,18 +1646,29 @@ private constructor(
             return other is ContentPartStructuredAction &&
                 action == other.action &&
                 actionId == other.actionId &&
+                clicked == other.clicked &&
+                clickedItemIds == other.clickedItemIds &&
+                itemId == other.itemId &&
                 type == other.type &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(action, actionId, type, additionalProperties)
+            Objects.hash(
+                action,
+                actionId,
+                clicked,
+                clickedItemIds,
+                itemId,
+                type,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "ContentPartStructuredAction{action=$action, actionId=$actionId, type=$type, additionalProperties=$additionalProperties}"
+            "ContentPartStructuredAction{action=$action, actionId=$actionId, clicked=$clicked, clickedItemIds=$clickedItemIds, itemId=$itemId, type=$type, additionalProperties=$additionalProperties}"
     }
 
     /** Chart payload content part. */

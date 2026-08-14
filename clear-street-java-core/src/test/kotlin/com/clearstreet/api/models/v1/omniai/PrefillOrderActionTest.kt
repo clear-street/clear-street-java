@@ -5,8 +5,6 @@ package com.clearstreet.api.models.v1.omniai
 import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
-import com.clearstreet.api.models.v1.orders.CancelOrderRequest
-import com.clearstreet.api.models.v1.orders.NewOrderRequest
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
@@ -26,7 +24,7 @@ internal class PrefillOrderActionTest {
         val prefillNewOrderAction =
             PrefillOrderAction.PrefillNewOrderAction.builder()
                 .addOrder(
-                    NewOrderRequest.builder()
+                    PrefillNewOrderRequest.builder()
                         .orderType(RequestOrderType.LIMIT)
                         .quantity("100")
                         .side(Side.BUY)
@@ -35,6 +33,7 @@ internal class PrefillOrderActionTest {
                         .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                         .extendedHours(true)
                         .instrumentId("x")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .limitOffset("0.50")
                         .limitPrice("150.00")
                         .stopPrice("52.00")
@@ -60,7 +59,7 @@ internal class PrefillOrderActionTest {
             PrefillOrderAction.ofPrefillNewOrderAction(
                 PrefillOrderAction.PrefillNewOrderAction.builder()
                     .addOrder(
-                        NewOrderRequest.builder()
+                        PrefillNewOrderRequest.builder()
                             .orderType(RequestOrderType.LIMIT)
                             .quantity("100")
                             .side(Side.BUY)
@@ -69,6 +68,7 @@ internal class PrefillOrderActionTest {
                             .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                             .extendedHours(true)
                             .instrumentId("x")
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .limitOffset("0.50")
                             .limitPrice("150.00")
                             .stopPrice("52.00")
@@ -95,9 +95,10 @@ internal class PrefillOrderActionTest {
         val cancel =
             PrefillOrderAction.PrefillCancelOrderAction.builder()
                 .addOrder(
-                    CancelOrderRequest.builder()
+                    PrefillCancelOrderRequest.builder()
                         .accountId(100019L)
                         .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .actionType(PrefillOrderAction.PrefillCancelOrderAction.ActionType.CANCEL)
@@ -117,9 +118,10 @@ internal class PrefillOrderActionTest {
             PrefillOrderAction.ofCancel(
                 PrefillOrderAction.PrefillCancelOrderAction.builder()
                     .addOrder(
-                        CancelOrderRequest.builder()
+                        PrefillCancelOrderRequest.builder()
                             .accountId(100019L)
                             .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .build()
                     )
                     .actionType(PrefillOrderAction.PrefillCancelOrderAction.ActionType.CANCEL)
@@ -142,6 +144,7 @@ internal class PrefillOrderActionTest {
                 .addOrder(
                     PrefillModifyOrderRequest.builder()
                         .accountId(100019L)
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .limitOffset("0.50")
                         .limitPrice("178.00")
                         .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")
@@ -170,6 +173,7 @@ internal class PrefillOrderActionTest {
                     .addOrder(
                         PrefillModifyOrderRequest.builder()
                             .accountId(100019L)
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .limitOffset("0.50")
                             .limitPrice("178.00")
                             .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")

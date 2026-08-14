@@ -17,6 +17,7 @@ internal class PrefillModifyOrderActionTest {
                 .addOrder(
                     PrefillModifyOrderRequest.builder()
                         .accountId(100019L)
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .limitOffset("0.50")
                         .limitPrice("178.00")
                         .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")
@@ -32,6 +33,7 @@ internal class PrefillModifyOrderActionTest {
             .containsExactly(
                 PrefillModifyOrderRequest.builder()
                     .accountId(100019L)
+                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .limitOffset("0.50")
                     .limitPrice("178.00")
                     .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")
@@ -51,6 +53,7 @@ internal class PrefillModifyOrderActionTest {
                 .addOrder(
                     PrefillModifyOrderRequest.builder()
                         .accountId(100019L)
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .limitOffset("0.50")
                         .limitPrice("178.00")
                         .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")

@@ -3,7 +3,6 @@
 package com.clearstreet.api.models.v1.omniai
 
 import com.clearstreet.api.core.jsonMapper
-import com.clearstreet.api.models.v1.orders.CancelOrderRequest
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -15,18 +14,20 @@ internal class PrefillCancelOrderActionTest {
         val prefillCancelOrderAction =
             PrefillCancelOrderAction.builder()
                 .addOrder(
-                    CancelOrderRequest.builder()
+                    PrefillCancelOrderRequest.builder()
                         .accountId(100019L)
                         .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
 
         assertThat(prefillCancelOrderAction.orders())
             .containsExactly(
-                CancelOrderRequest.builder()
+                PrefillCancelOrderRequest.builder()
                     .accountId(100019L)
                     .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")
+                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
     }
@@ -37,9 +38,10 @@ internal class PrefillCancelOrderActionTest {
         val prefillCancelOrderAction =
             PrefillCancelOrderAction.builder()
                 .addOrder(
-                    CancelOrderRequest.builder()
+                    PrefillCancelOrderRequest.builder()
                         .accountId(100019L)
                         .orderId("019dfd73-8b49-7d21-8d62-a736fc4199d2")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()

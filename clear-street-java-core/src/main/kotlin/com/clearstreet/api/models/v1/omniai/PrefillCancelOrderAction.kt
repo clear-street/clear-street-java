@@ -10,7 +10,6 @@ import com.clearstreet.api.core.checkKnown
 import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.toImmutable
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
-import com.clearstreet.api.models.v1.orders.CancelOrderRequest
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -23,7 +22,7 @@ import kotlin.jvm.optionals.getOrNull
 class PrefillCancelOrderAction
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val orders: JsonField<List<CancelOrderRequest>>,
+    private val orders: JsonField<List<PrefillCancelOrderRequest>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -31,7 +30,7 @@ private constructor(
     private constructor(
         @JsonProperty("orders")
         @ExcludeMissing
-        orders: JsonField<List<CancelOrderRequest>> = JsonMissing.of()
+        orders: JsonField<List<PrefillCancelOrderRequest>> = JsonMissing.of()
     ) : this(orders, mutableMapOf())
 
     /**
@@ -40,7 +39,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun orders(): List<CancelOrderRequest> = orders.getRequired("orders")
+    fun orders(): List<PrefillCancelOrderRequest> = orders.getRequired("orders")
 
     /**
      * Returns the raw JSON value of [orders].
@@ -49,7 +48,7 @@ private constructor(
      */
     @JsonProperty("orders")
     @ExcludeMissing
-    fun _orders(): JsonField<List<CancelOrderRequest>> = orders
+    fun _orders(): JsonField<List<PrefillCancelOrderRequest>> = orders
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -79,7 +78,7 @@ private constructor(
     /** A builder for [PrefillCancelOrderAction]. */
     class Builder internal constructor() {
 
-        private var orders: JsonField<MutableList<CancelOrderRequest>>? = null
+        private var orders: JsonField<MutableList<PrefillCancelOrderRequest>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -89,25 +88,25 @@ private constructor(
         }
 
         /** Orders to cancel using the same identifiers required by the cancel-order API. */
-        fun orders(orders: List<CancelOrderRequest>) = orders(JsonField.of(orders))
+        fun orders(orders: List<PrefillCancelOrderRequest>) = orders(JsonField.of(orders))
 
         /**
          * Sets [Builder.orders] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.orders] with a well-typed `List<CancelOrderRequest>`
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.orders] with a well-typed
+         * `List<PrefillCancelOrderRequest>` value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
          */
-        fun orders(orders: JsonField<List<CancelOrderRequest>>) = apply {
+        fun orders(orders: JsonField<List<PrefillCancelOrderRequest>>) = apply {
             this.orders = orders.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [CancelOrderRequest] to [orders].
+         * Adds a single [PrefillCancelOrderRequest] to [orders].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addOrder(order: CancelOrderRequest) = apply {
+        fun addOrder(order: PrefillCancelOrderRequest) = apply {
             orders =
                 (orders ?: JsonField.of(mutableListOf())).also {
                     checkKnown("orders", it).add(order)

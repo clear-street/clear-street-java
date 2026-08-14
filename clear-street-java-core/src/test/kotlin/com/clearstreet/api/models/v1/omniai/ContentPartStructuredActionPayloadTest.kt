@@ -3,13 +3,13 @@
 package com.clearstreet.api.models.v1.omniai
 
 import com.clearstreet.api.core.jsonMapper
-import com.clearstreet.api.models.v1.orders.NewOrderRequest
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
 import com.clearstreet.api.models.v1.orders.TrailingOffsetType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -24,7 +24,7 @@ internal class ContentPartStructuredActionPayloadTest {
                         .prefillOrder(
                             PrefillOrderAction.PrefillNewOrderAction.builder()
                                 .addOrder(
-                                    NewOrderRequest.builder()
+                                    PrefillNewOrderRequest.builder()
                                         .orderType(RequestOrderType.LIMIT)
                                         .quantity("100")
                                         .side(Side.BUY)
@@ -35,6 +35,7 @@ internal class ContentPartStructuredActionPayloadTest {
                                         )
                                         .extendedHours(true)
                                         .instrumentId("x")
+                                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                         .limitOffset("0.50")
                                         .limitPrice("150.00")
                                         .stopPrice("52.00")
@@ -49,6 +50,9 @@ internal class ContentPartStructuredActionPayloadTest {
                         .build()
                 )
                 .actionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .clicked(true)
+                .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         assertThat(contentPartStructuredActionPayload.action())
@@ -58,7 +62,7 @@ internal class ContentPartStructuredActionPayloadTest {
                         .prefillOrder(
                             PrefillOrderAction.PrefillNewOrderAction.builder()
                                 .addOrder(
-                                    NewOrderRequest.builder()
+                                    PrefillNewOrderRequest.builder()
                                         .orderType(RequestOrderType.LIMIT)
                                         .quantity("100")
                                         .side(Side.BUY)
@@ -69,6 +73,7 @@ internal class ContentPartStructuredActionPayloadTest {
                                         )
                                         .extendedHours(true)
                                         .instrumentId("x")
+                                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                         .limitOffset("0.50")
                                         .limitPrice("150.00")
                                         .stopPrice("52.00")
@@ -85,6 +90,11 @@ internal class ContentPartStructuredActionPayloadTest {
             )
         assertThat(contentPartStructuredActionPayload.actionId())
             .isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(contentPartStructuredActionPayload.clicked()).isEqualTo(true)
+        assertThat(contentPartStructuredActionPayload.clickedItemIds().getOrNull())
+            .containsExactly("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(contentPartStructuredActionPayload.itemId())
+            .contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
     }
 
     @Test
@@ -97,7 +107,7 @@ internal class ContentPartStructuredActionPayloadTest {
                         .prefillOrder(
                             PrefillOrderAction.PrefillNewOrderAction.builder()
                                 .addOrder(
-                                    NewOrderRequest.builder()
+                                    PrefillNewOrderRequest.builder()
                                         .orderType(RequestOrderType.LIMIT)
                                         .quantity("100")
                                         .side(Side.BUY)
@@ -108,6 +118,7 @@ internal class ContentPartStructuredActionPayloadTest {
                                         )
                                         .extendedHours(true)
                                         .instrumentId("x")
+                                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                         .limitOffset("0.50")
                                         .limitPrice("150.00")
                                         .stopPrice("52.00")
@@ -122,6 +133,9 @@ internal class ContentPartStructuredActionPayloadTest {
                         .build()
                 )
                 .actionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .clicked(true)
+                .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         val roundtrippedContentPartStructuredActionPayload =

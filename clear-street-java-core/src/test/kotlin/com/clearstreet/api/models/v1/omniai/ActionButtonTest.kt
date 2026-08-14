@@ -15,6 +15,7 @@ internal class ActionButtonTest {
             ActionButton.builder()
                 .buttonId("buttonId")
                 .label("label")
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .prompt(PromptButtonAction.builder().prompt("prompt").build())
                 .structuredAction(
                     StructuredActionButtonAction.builder()
@@ -25,6 +26,7 @@ internal class ActionButtonTest {
 
         assertThat(actionButton.buttonId()).isEqualTo("buttonId")
         assertThat(actionButton.label()).isEqualTo("label")
+        assertThat(actionButton.itemId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(actionButton.prompt())
             .contains(PromptButtonAction.builder().prompt("prompt").build())
         assertThat(actionButton.structuredAction())
@@ -42,6 +44,7 @@ internal class ActionButtonTest {
             ActionButton.builder()
                 .buttonId("buttonId")
                 .label("label")
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .prompt(PromptButtonAction.builder().prompt("prompt").build())
                 .structuredAction(
                     StructuredActionButtonAction.builder()

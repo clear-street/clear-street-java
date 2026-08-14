@@ -15,10 +15,12 @@ internal class ChartPayloadTest {
         val chartPayload =
             ChartPayload.builder()
                 .chartId("chart_revenue_growth")
+                .clicked(true)
                 .addActionButton(
                     ActionButton.builder()
                         .buttonId("btn_compare_aapl_spy")
                         .label("Compare AAPL vs SPY")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .prompt(
                             PromptButtonAction.builder()
                                 .prompt("Compare AAPL vs SPY over 1 year")
@@ -42,14 +44,17 @@ internal class ChartPayloadTest {
                         )
                         .build()
                 )
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         assertThat(chartPayload.chartId()).isEqualTo("chart_revenue_growth")
+        assertThat(chartPayload.clicked()).isEqualTo(true)
         assertThat(chartPayload.actionButtons().getOrNull())
             .containsExactly(
                 ActionButton.builder()
                     .buttonId("btn_compare_aapl_spy")
                     .label("Compare AAPL vs SPY")
+                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .prompt(
                         PromptButtonAction.builder()
                             .prompt("Compare AAPL vs SPY over 1 year")
@@ -74,6 +79,7 @@ internal class ChartPayloadTest {
                     )
                     .build()
             )
+        assertThat(chartPayload.itemId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
     }
 
     @Test
@@ -82,10 +88,12 @@ internal class ChartPayloadTest {
         val chartPayload =
             ChartPayload.builder()
                 .chartId("chart_revenue_growth")
+                .clicked(true)
                 .addActionButton(
                     ActionButton.builder()
                         .buttonId("btn_compare_aapl_spy")
                         .label("Compare AAPL vs SPY")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .prompt(
                             PromptButtonAction.builder()
                                 .prompt("Compare AAPL vs SPY over 1 year")
@@ -109,6 +117,7 @@ internal class ChartPayloadTest {
                         )
                         .build()
                 )
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         val roundtrippedChartPayload =

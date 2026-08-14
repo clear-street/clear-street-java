@@ -26,6 +26,7 @@ class OpenScreenerAction
 private constructor(
     private val filters: JsonField<List<ScreenerFilter>>,
     private val columns: JsonField<List<String>>,
+    private val itemId: JsonField<String>,
     private val pageSize: JsonField<Int>,
     private val sortBy: JsonField<String>,
     private val sortDirection: JsonField<String>,
@@ -40,12 +41,13 @@ private constructor(
         @JsonProperty("columns")
         @ExcludeMissing
         columns: JsonField<List<String>> = JsonMissing.of(),
+        @JsonProperty("item_id") @ExcludeMissing itemId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("page_size") @ExcludeMissing pageSize: JsonField<Int> = JsonMissing.of(),
         @JsonProperty("sort_by") @ExcludeMissing sortBy: JsonField<String> = JsonMissing.of(),
         @JsonProperty("sort_direction")
         @ExcludeMissing
         sortDirection: JsonField<String> = JsonMissing.of(),
-    ) : this(filters, columns, pageSize, sortBy, sortDirection, mutableMapOf())
+    ) : this(filters, columns, itemId, pageSize, sortBy, sortDirection, mutableMapOf())
 
     /**
      * Filter criteria for the screener
@@ -63,6 +65,15 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun columns(): Optional<List<String>> = columns.getOptional("columns")
+
+    /**
+     * Interaction-tracking identity. Absent on messages created before tracking. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun itemId(): Optional<String> = itemId.getOptional("item_id")
 
     /**
      * Optional page size. When a null/undefined value is observed, it indicates it does not apply.
@@ -105,6 +116,13 @@ private constructor(
      * Unlike [columns], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("columns") @ExcludeMissing fun _columns(): JsonField<List<String>> = columns
+
+    /**
+     * Returns the raw JSON value of [itemId].
+     *
+     * Unlike [itemId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("item_id") @ExcludeMissing fun _itemId(): JsonField<String> = itemId
 
     /**
      * Returns the raw JSON value of [pageSize].
@@ -159,6 +177,7 @@ private constructor(
 
         private var filters: JsonField<MutableList<ScreenerFilter>>? = null
         private var columns: JsonField<MutableList<String>>? = null
+        private var itemId: JsonField<String> = JsonMissing.of()
         private var pageSize: JsonField<Int> = JsonMissing.of()
         private var sortBy: JsonField<String> = JsonMissing.of()
         private var sortDirection: JsonField<String> = JsonMissing.of()
@@ -168,6 +187,7 @@ private constructor(
         internal fun from(openScreenerAction: OpenScreenerAction) = apply {
             filters = openScreenerAction.filters.map { it.toMutableList() }
             columns = openScreenerAction.columns.map { it.toMutableList() }
+            itemId = openScreenerAction.itemId
             pageSize = openScreenerAction.pageSize
             sortBy = openScreenerAction.sortBy
             sortDirection = openScreenerAction.sortDirection
@@ -231,6 +251,23 @@ private constructor(
                     checkKnown("columns", it).add(column)
                 }
         }
+
+        /**
+         * Interaction-tracking identity. Absent on messages created before tracking. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun itemId(itemId: String?) = itemId(JsonField.ofNullable(itemId))
+
+        /** Alias for calling [Builder.itemId] with `itemId.orElse(null)`. */
+        fun itemId(itemId: Optional<String>) = itemId(itemId.getOrNull())
+
+        /**
+         * Sets [Builder.itemId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.itemId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun itemId(itemId: JsonField<String>) = apply { this.itemId = itemId }
 
         /**
          * Optional page size. When a null/undefined value is observed, it indicates it does not
@@ -330,6 +367,7 @@ private constructor(
             OpenScreenerAction(
                 checkRequired("filters", filters).map { it.toImmutable() },
                 (columns ?: JsonMissing.of()).map { it.toImmutable() },
+                itemId,
                 pageSize,
                 sortBy,
                 sortDirection,
@@ -354,6 +392,7 @@ private constructor(
 
         filters().forEach { it.validate() }
         columns()
+        itemId()
         pageSize()
         sortBy()
         sortDirection()
@@ -377,6 +416,7 @@ private constructor(
     internal fun validity(): Int =
         (filters.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (columns.asKnown().getOrNull()?.size ?: 0) +
+            (if (itemId.asKnown().isPresent) 1 else 0) +
             (if (pageSize.asKnown().isPresent) 1 else 0) +
             (if (sortBy.asKnown().isPresent) 1 else 0) +
             (if (sortDirection.asKnown().isPresent) 1 else 0)
@@ -389,6 +429,7 @@ private constructor(
         return other is OpenScreenerAction &&
             filters == other.filters &&
             columns == other.columns &&
+            itemId == other.itemId &&
             pageSize == other.pageSize &&
             sortBy == other.sortBy &&
             sortDirection == other.sortDirection &&
@@ -396,11 +437,19 @@ private constructor(
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(filters, columns, pageSize, sortBy, sortDirection, additionalProperties)
+        Objects.hash(
+            filters,
+            columns,
+            itemId,
+            pageSize,
+            sortBy,
+            sortDirection,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OpenScreenerAction{filters=$filters, columns=$columns, pageSize=$pageSize, sortBy=$sortBy, sortDirection=$sortDirection, additionalProperties=$additionalProperties}"
+        "OpenScreenerAction{filters=$filters, columns=$columns, itemId=$itemId, pageSize=$pageSize, sortBy=$sortBy, sortDirection=$sortDirection, additionalProperties=$additionalProperties}"
 }

@@ -10,12 +10,12 @@ import com.clearstreet.api.models.v1.omniai.ChartPayload
 import com.clearstreet.api.models.v1.omniai.ChartPoint
 import com.clearstreet.api.models.v1.omniai.ChartSeries
 import com.clearstreet.api.models.v1.omniai.DataChart
+import com.clearstreet.api.models.v1.omniai.PrefillNewOrderRequest
 import com.clearstreet.api.models.v1.omniai.PrefillOrderAction
 import com.clearstreet.api.models.v1.omniai.PromptButtonAction
 import com.clearstreet.api.models.v1.omniai.StructuredAction
 import com.clearstreet.api.models.v1.omniai.StructuredActionButtonAction
 import com.clearstreet.api.models.v1.omniai.SuggestedActionsPayload
-import com.clearstreet.api.models.v1.orders.NewOrderRequest
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
@@ -76,7 +76,7 @@ internal class MessageContentPartTest {
                         .prefillOrder(
                             PrefillOrderAction.PrefillNewOrderAction.builder()
                                 .addOrder(
-                                    NewOrderRequest.builder()
+                                    PrefillNewOrderRequest.builder()
                                         .orderType(RequestOrderType.LIMIT)
                                         .quantity("100")
                                         .side(Side.BUY)
@@ -87,6 +87,7 @@ internal class MessageContentPartTest {
                                         )
                                         .extendedHours(true)
                                         .instrumentId("x")
+                                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                         .limitOffset("0.50")
                                         .limitPrice("150.00")
                                         .stopPrice("52.00")
@@ -101,6 +102,9 @@ internal class MessageContentPartTest {
                         .build()
                 )
                 .actionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .clicked(true)
+                .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .type(MessageContentPart.ContentPartStructuredAction.Type.STRUCTURED_ACTION)
                 .build()
 
@@ -126,7 +130,7 @@ internal class MessageContentPartTest {
                             .prefillOrder(
                                 PrefillOrderAction.PrefillNewOrderAction.builder()
                                     .addOrder(
-                                        NewOrderRequest.builder()
+                                        PrefillNewOrderRequest.builder()
                                             .orderType(RequestOrderType.LIMIT)
                                             .quantity("100")
                                             .side(Side.BUY)
@@ -139,6 +143,7 @@ internal class MessageContentPartTest {
                                             )
                                             .extendedHours(true)
                                             .instrumentId("x")
+                                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                             .limitOffset("0.50")
                                             .limitPrice("150.00")
                                             .stopPrice("52.00")
@@ -155,6 +160,9 @@ internal class MessageContentPartTest {
                             .build()
                     )
                     .actionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .clicked(true)
+                    .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .type(MessageContentPart.ContentPartStructuredAction.Type.STRUCTURED_ACTION)
                     .build()
             )
@@ -175,10 +183,12 @@ internal class MessageContentPartTest {
                 .payload(
                     ChartPayload.builder()
                         .chartId("chart_revenue_growth")
+                        .clicked(true)
                         .addActionButton(
                             ActionButton.builder()
                                 .buttonId("btn_compare_aapl_spy")
                                 .label("Compare AAPL vs SPY")
+                                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .prompt(
                                     PromptButtonAction.builder()
                                         .prompt("Compare AAPL vs SPY over 1 year")
@@ -202,6 +212,7 @@ internal class MessageContentPartTest {
                                 )
                                 .build()
                         )
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .type(MessageContentPart.ContentPartChart.Type.CHART)
@@ -225,10 +236,12 @@ internal class MessageContentPartTest {
                     .payload(
                         ChartPayload.builder()
                             .chartId("chart_revenue_growth")
+                            .clicked(true)
                             .addActionButton(
                                 ActionButton.builder()
                                     .buttonId("btn_compare_aapl_spy")
                                     .label("Compare AAPL vs SPY")
+                                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                     .prompt(
                                         PromptButtonAction.builder()
                                             .prompt("Compare AAPL vs SPY over 1 year")
@@ -252,6 +265,7 @@ internal class MessageContentPartTest {
                                     )
                                     .build()
                             )
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .build()
                     )
                     .type(MessageContentPart.ContentPartChart.Type.CHART)
@@ -277,6 +291,7 @@ internal class MessageContentPartTest {
                             ActionButton.builder()
                                 .buttonId("btn_show_aapl_1y")
                                 .label("Show AAPL over 1 year")
+                                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .prompt(
                                     PromptButtonAction.builder()
                                         .prompt("Show AAPL over the last year")
@@ -293,6 +308,7 @@ internal class MessageContentPartTest {
                             ActionButton.builder()
                                 .buttonId("btn_compare_aapl_spy")
                                 .label("Compare AAPL vs SPY")
+                                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .prompt(
                                     PromptButtonAction.builder()
                                         .prompt("Compare AAPL vs SPY over 1 year")
@@ -305,6 +321,7 @@ internal class MessageContentPartTest {
                                 )
                                 .build()
                         )
+                        .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .type(MessageContentPart.ContentPartSuggestedActions.Type.SUGGESTED_ACTIONS)
@@ -333,6 +350,7 @@ internal class MessageContentPartTest {
                                 ActionButton.builder()
                                     .buttonId("btn_show_aapl_1y")
                                     .label("Show AAPL over 1 year")
+                                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                     .prompt(
                                         PromptButtonAction.builder()
                                             .prompt("Show AAPL over the last year")
@@ -349,6 +367,7 @@ internal class MessageContentPartTest {
                                 ActionButton.builder()
                                     .buttonId("btn_compare_aapl_spy")
                                     .label("Compare AAPL vs SPY")
+                                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                     .prompt(
                                         PromptButtonAction.builder()
                                             .prompt("Compare AAPL vs SPY over 1 year")
@@ -361,6 +380,7 @@ internal class MessageContentPartTest {
                                     )
                                     .build()
                             )
+                            .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .build()
                     )
                     .type(MessageContentPart.ContentPartSuggestedActions.Type.SUGGESTED_ACTIONS)

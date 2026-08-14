@@ -23,6 +23,7 @@ class OpenChartAction
 private constructor(
     private val symbol: JsonField<String>,
     private val extras: JsonValue,
+    private val itemId: JsonField<String>,
     private val timeframe: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -31,8 +32,9 @@ private constructor(
     private constructor(
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("extras") @ExcludeMissing extras: JsonValue = JsonMissing.of(),
+        @JsonProperty("item_id") @ExcludeMissing itemId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("timeframe") @ExcludeMissing timeframe: JsonField<String> = JsonMissing.of(),
-    ) : this(symbol, extras, timeframe, mutableMapOf())
+    ) : this(symbol, extras, itemId, timeframe, mutableMapOf())
 
     /**
      * Trading symbol to chart
@@ -54,6 +56,15 @@ private constructor(
     @JsonProperty("extras") @ExcludeMissing fun _extras(): JsonValue = extras
 
     /**
+     * Interaction-tracking identity. Absent on messages created before tracking. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun itemId(): Optional<String> = itemId.getOptional("item_id")
+
+    /**
      * Chart timeframe (e.g., "1D", "1W", "1M", "3M", "1Y", "5Y") When a null/undefined value is
      * observed, it indicates it does not apply.
      *
@@ -68,6 +79,13 @@ private constructor(
      * Unlike [symbol], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("symbol") @ExcludeMissing fun _symbol(): JsonField<String> = symbol
+
+    /**
+     * Returns the raw JSON value of [itemId].
+     *
+     * Unlike [itemId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("item_id") @ExcludeMissing fun _itemId(): JsonField<String> = itemId
 
     /**
      * Returns the raw JSON value of [timeframe].
@@ -106,6 +124,7 @@ private constructor(
 
         private var symbol: JsonField<String>? = null
         private var extras: JsonValue = JsonMissing.of()
+        private var itemId: JsonField<String> = JsonMissing.of()
         private var timeframe: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -113,6 +132,7 @@ private constructor(
         internal fun from(openChartAction: OpenChartAction) = apply {
             symbol = openChartAction.symbol
             extras = openChartAction.extras
+            itemId = openChartAction.itemId
             timeframe = openChartAction.timeframe
             additionalProperties = openChartAction.additionalProperties.toMutableMap()
         }
@@ -133,6 +153,23 @@ private constructor(
          * is observed, it indicates it does not apply.
          */
         fun extras(extras: JsonValue) = apply { this.extras = extras }
+
+        /**
+         * Interaction-tracking identity. Absent on messages created before tracking. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun itemId(itemId: String?) = itemId(JsonField.ofNullable(itemId))
+
+        /** Alias for calling [Builder.itemId] with `itemId.orElse(null)`. */
+        fun itemId(itemId: Optional<String>) = itemId(itemId.getOrNull())
+
+        /**
+         * Sets [Builder.itemId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.itemId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun itemId(itemId: JsonField<String>) = apply { this.itemId = itemId }
 
         /**
          * Chart timeframe (e.g., "1D", "1W", "1M", "3M", "1Y", "5Y") When a null/undefined value is
@@ -187,6 +224,7 @@ private constructor(
             OpenChartAction(
                 checkRequired("symbol", symbol),
                 extras,
+                itemId,
                 timeframe,
                 additionalProperties.toMutableMap(),
             )
@@ -208,6 +246,7 @@ private constructor(
         }
 
         symbol()
+        itemId()
         timeframe()
         validated = true
     }
@@ -227,7 +266,9 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (if (symbol.asKnown().isPresent) 1 else 0) + (if (timeframe.asKnown().isPresent) 1 else 0)
+        (if (symbol.asKnown().isPresent) 1 else 0) +
+            (if (itemId.asKnown().isPresent) 1 else 0) +
+            (if (timeframe.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -237,16 +278,17 @@ private constructor(
         return other is OpenChartAction &&
             symbol == other.symbol &&
             extras == other.extras &&
+            itemId == other.itemId &&
             timeframe == other.timeframe &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(symbol, extras, timeframe, additionalProperties)
+        Objects.hash(symbol, extras, itemId, timeframe, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OpenChartAction{symbol=$symbol, extras=$extras, timeframe=$timeframe, additionalProperties=$additionalProperties}"
+        "OpenChartAction{symbol=$symbol, extras=$extras, itemId=$itemId, timeframe=$timeframe, additionalProperties=$additionalProperties}"
 }

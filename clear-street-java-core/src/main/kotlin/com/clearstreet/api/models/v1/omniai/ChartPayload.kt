@@ -24,21 +24,25 @@ class ChartPayload
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val chartId: JsonField<String>,
+    private val clicked: JsonField<Boolean>,
     private val actionButtons: JsonField<List<ActionButton>>,
     private val dataChart: JsonField<DataChart>,
+    private val itemId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
         @JsonProperty("chartId") @ExcludeMissing chartId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("clicked") @ExcludeMissing clicked: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("actionButtons")
         @ExcludeMissing
         actionButtons: JsonField<List<ActionButton>> = JsonMissing.of(),
         @JsonProperty("dataChart")
         @ExcludeMissing
         dataChart: JsonField<DataChart> = JsonMissing.of(),
-    ) : this(chartId, actionButtons, dataChart, mutableMapOf())
+        @JsonProperty("itemId") @ExcludeMissing itemId: JsonField<String> = JsonMissing.of(),
+    ) : this(chartId, clicked, actionButtons, dataChart, itemId, mutableMapOf())
 
     /**
      * Stable chart identifier scoped to the content part.
@@ -47,6 +51,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun chartId(): String = chartId.getRequired("chartId")
+
+    /**
+     * Whether the current user clicked this chart.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun clicked(): Boolean = clicked.getRequired("clicked")
 
     /**
      * Buttons associated with this chart.
@@ -66,11 +78,27 @@ private constructor(
     fun dataChart(): Optional<DataChart> = dataChart.getOptional("dataChart")
 
     /**
+     * Interaction-tracking identity. Absent on messages created before tracking. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun itemId(): Optional<String> = itemId.getOptional("itemId")
+
+    /**
      * Returns the raw JSON value of [chartId].
      *
      * Unlike [chartId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("chartId") @ExcludeMissing fun _chartId(): JsonField<String> = chartId
+
+    /**
+     * Returns the raw JSON value of [clicked].
+     *
+     * Unlike [clicked], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("clicked") @ExcludeMissing fun _clicked(): JsonField<Boolean> = clicked
 
     /**
      * Returns the raw JSON value of [actionButtons].
@@ -87,6 +115,13 @@ private constructor(
      * Unlike [dataChart], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("dataChart") @ExcludeMissing fun _dataChart(): JsonField<DataChart> = dataChart
+
+    /**
+     * Returns the raw JSON value of [itemId].
+     *
+     * Unlike [itemId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("itemId") @ExcludeMissing fun _itemId(): JsonField<String> = itemId
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -108,6 +143,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .chartId()
+         * .clicked()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -117,15 +153,19 @@ private constructor(
     class Builder internal constructor() {
 
         private var chartId: JsonField<String>? = null
+        private var clicked: JsonField<Boolean>? = null
         private var actionButtons: JsonField<MutableList<ActionButton>>? = null
         private var dataChart: JsonField<DataChart> = JsonMissing.of()
+        private var itemId: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(chartPayload: ChartPayload) = apply {
             chartId = chartPayload.chartId
+            clicked = chartPayload.clicked
             actionButtons = chartPayload.actionButtons.map { it.toMutableList() }
             dataChart = chartPayload.dataChart
+            itemId = chartPayload.itemId
             additionalProperties = chartPayload.additionalProperties.toMutableMap()
         }
 
@@ -139,6 +179,17 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun chartId(chartId: JsonField<String>) = apply { this.chartId = chartId }
+
+        /** Whether the current user clicked this chart. */
+        fun clicked(clicked: Boolean) = clicked(JsonField.of(clicked))
+
+        /**
+         * Sets [Builder.clicked] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.clicked] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun clicked(clicked: JsonField<Boolean>) = apply { this.clicked = clicked }
 
         /** Buttons associated with this chart. */
         fun actionButtons(actionButtons: List<ActionButton>) =
@@ -185,6 +236,23 @@ private constructor(
          */
         fun dataChart(dataChart: JsonField<DataChart>) = apply { this.dataChart = dataChart }
 
+        /**
+         * Interaction-tracking identity. Absent on messages created before tracking. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun itemId(itemId: String?) = itemId(JsonField.ofNullable(itemId))
+
+        /** Alias for calling [Builder.itemId] with `itemId.orElse(null)`. */
+        fun itemId(itemId: Optional<String>) = itemId(itemId.getOrNull())
+
+        /**
+         * Sets [Builder.itemId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.itemId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun itemId(itemId: JsonField<String>) = apply { this.itemId = itemId }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -212,6 +280,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .chartId()
+         * .clicked()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -219,8 +288,10 @@ private constructor(
         fun build(): ChartPayload =
             ChartPayload(
                 checkRequired("chartId", chartId),
+                checkRequired("clicked", clicked),
                 (actionButtons ?: JsonMissing.of()).map { it.toImmutable() },
                 dataChart,
+                itemId,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -241,8 +312,10 @@ private constructor(
         }
 
         chartId()
+        clicked()
         actionButtons().ifPresent { it.forEach { it.validate() } }
         dataChart().ifPresent { it.validate() }
+        itemId()
         validated = true
     }
 
@@ -262,8 +335,10 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (if (chartId.asKnown().isPresent) 1 else 0) +
+            (if (clicked.asKnown().isPresent) 1 else 0) +
             (actionButtons.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-            (dataChart.asKnown().getOrNull()?.validity() ?: 0)
+            (dataChart.asKnown().getOrNull()?.validity() ?: 0) +
+            (if (itemId.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -272,17 +347,19 @@ private constructor(
 
         return other is ChartPayload &&
             chartId == other.chartId &&
+            clicked == other.clicked &&
             actionButtons == other.actionButtons &&
             dataChart == other.dataChart &&
+            itemId == other.itemId &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(chartId, actionButtons, dataChart, additionalProperties)
+        Objects.hash(chartId, clicked, actionButtons, dataChart, itemId, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ChartPayload{chartId=$chartId, actionButtons=$actionButtons, dataChart=$dataChart, additionalProperties=$additionalProperties}"
+        "ChartPayload{chartId=$chartId, clicked=$clicked, actionButtons=$actionButtons, dataChart=$dataChart, itemId=$itemId, additionalProperties=$additionalProperties}"
 }

@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /** Action to open entitlement consent flow for one or more accounts. */
@@ -26,6 +27,7 @@ private constructor(
     private val agreementKey: JsonField<EntitlementAgreementKey>,
     private val entitlementCodes: JsonField<List<EntitlementCode>>,
     private val reason: JsonField<String>,
+    private val itemId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -41,7 +43,8 @@ private constructor(
         @ExcludeMissing
         entitlementCodes: JsonField<List<EntitlementCode>> = JsonMissing.of(),
         @JsonProperty("reason") @ExcludeMissing reason: JsonField<String> = JsonMissing.of(),
-    ) : this(accountIds, agreementKey, entitlementCodes, reason, mutableMapOf())
+        @JsonProperty("item_id") @ExcludeMissing itemId: JsonField<String> = JsonMissing.of(),
+    ) : this(accountIds, agreementKey, entitlementCodes, reason, itemId, mutableMapOf())
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -69,6 +72,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun reason(): String = reason.getRequired("reason")
+
+    /**
+     * Interaction-tracking identity. Absent on messages created before tracking. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun itemId(): Optional<String> = itemId.getOptional("item_id")
 
     /**
      * Returns the raw JSON value of [accountIds].
@@ -105,6 +117,13 @@ private constructor(
      */
     @JsonProperty("reason") @ExcludeMissing fun _reason(): JsonField<String> = reason
 
+    /**
+     * Returns the raw JSON value of [itemId].
+     *
+     * Unlike [itemId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("item_id") @ExcludeMissing fun _itemId(): JsonField<String> = itemId
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -140,6 +159,7 @@ private constructor(
         private var agreementKey: JsonField<EntitlementAgreementKey>? = null
         private var entitlementCodes: JsonField<MutableList<EntitlementCode>>? = null
         private var reason: JsonField<String>? = null
+        private var itemId: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -149,6 +169,7 @@ private constructor(
             entitlementCodes =
                 openEntitlementConsentAction.entitlementCodes.map { it.toMutableList() }
             reason = openEntitlementConsentAction.reason
+            itemId = openEntitlementConsentAction.itemId
             additionalProperties = openEntitlementConsentAction.additionalProperties.toMutableMap()
         }
 
@@ -228,6 +249,23 @@ private constructor(
          */
         fun reason(reason: JsonField<String>) = apply { this.reason = reason }
 
+        /**
+         * Interaction-tracking identity. Absent on messages created before tracking. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun itemId(itemId: String?) = itemId(JsonField.ofNullable(itemId))
+
+        /** Alias for calling [Builder.itemId] with `itemId.orElse(null)`. */
+        fun itemId(itemId: Optional<String>) = itemId(itemId.getOrNull())
+
+        /**
+         * Sets [Builder.itemId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.itemId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun itemId(itemId: JsonField<String>) = apply { this.itemId = itemId }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -268,6 +306,7 @@ private constructor(
                 checkRequired("agreementKey", agreementKey),
                 checkRequired("entitlementCodes", entitlementCodes).map { it.toImmutable() },
                 checkRequired("reason", reason),
+                itemId,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -291,6 +330,7 @@ private constructor(
         agreementKey().validate()
         entitlementCodes().forEach { it.validate() }
         reason()
+        itemId()
         validated = true
     }
 
@@ -312,7 +352,8 @@ private constructor(
         (accountIds.asKnown().getOrNull()?.size ?: 0) +
             (agreementKey.asKnown().getOrNull()?.validity() ?: 0) +
             (entitlementCodes.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-            (if (reason.asKnown().isPresent) 1 else 0)
+            (if (reason.asKnown().isPresent) 1 else 0) +
+            (if (itemId.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -324,15 +365,23 @@ private constructor(
             agreementKey == other.agreementKey &&
             entitlementCodes == other.entitlementCodes &&
             reason == other.reason &&
+            itemId == other.itemId &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(accountIds, agreementKey, entitlementCodes, reason, additionalProperties)
+        Objects.hash(
+            accountIds,
+            agreementKey,
+            entitlementCodes,
+            reason,
+            itemId,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OpenEntitlementConsentAction{accountIds=$accountIds, agreementKey=$agreementKey, entitlementCodes=$entitlementCodes, reason=$reason, additionalProperties=$additionalProperties}"
+        "OpenEntitlementConsentAction{accountIds=$accountIds, agreementKey=$agreementKey, entitlementCodes=$entitlementCodes, reason=$reason, itemId=$itemId, additionalProperties=$additionalProperties}"
 }

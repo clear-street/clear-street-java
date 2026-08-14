@@ -15,6 +15,7 @@ internal class PrefillModifyOrderRequestTest {
         val prefillModifyOrderRequest =
             PrefillModifyOrderRequest.builder()
                 .accountId(0L)
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .limitOffset("0.50")
                 .limitPrice("49.00")
                 .orderId("order_id")
@@ -25,6 +26,8 @@ internal class PrefillModifyOrderRequestTest {
                 .build()
 
         assertThat(prefillModifyOrderRequest.accountId()).contains(0L)
+        assertThat(prefillModifyOrderRequest.itemId())
+            .contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(prefillModifyOrderRequest.limitOffset()).contains("0.50")
         assertThat(prefillModifyOrderRequest.limitPrice()).contains("49.00")
         assertThat(prefillModifyOrderRequest.orderId()).contains("order_id")
@@ -41,6 +44,7 @@ internal class PrefillModifyOrderRequestTest {
         val prefillModifyOrderRequest =
             PrefillModifyOrderRequest.builder()
                 .accountId(0L)
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .limitOffset("0.50")
                 .limitPrice("49.00")
                 .orderId("order_id")

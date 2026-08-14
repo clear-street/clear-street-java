@@ -26,6 +26,7 @@ class PrefillModifyOrderRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val accountId: JsonField<Long>,
+    private val itemId: JsonField<String>,
     private val limitOffset: JsonField<String>,
     private val limitPrice: JsonField<String>,
     private val orderId: JsonField<String>,
@@ -39,6 +40,7 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("account_id") @ExcludeMissing accountId: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("item_id") @ExcludeMissing itemId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("limit_offset")
         @ExcludeMissing
         limitOffset: JsonField<String> = JsonMissing.of(),
@@ -56,6 +58,7 @@ private constructor(
         trailingOffsetType: JsonField<TrailingOffsetType> = JsonMissing.of(),
     ) : this(
         accountId,
+        itemId,
         limitOffset,
         limitPrice,
         orderId,
@@ -73,6 +76,15 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun accountId(): Optional<Long> = accountId.getOptional("account_id")
+
+    /**
+     * Interaction-tracking identity. Absent on messages created before tracking. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun itemId(): Optional<String> = itemId.getOptional("item_id")
 
     /**
      * New limit offset for trailing stop-limit orders (signed)
@@ -137,6 +149,13 @@ private constructor(
      * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("account_id") @ExcludeMissing fun _accountId(): JsonField<Long> = accountId
+
+    /**
+     * Returns the raw JSON value of [itemId].
+     *
+     * Unlike [itemId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("item_id") @ExcludeMissing fun _itemId(): JsonField<String> = itemId
 
     /**
      * Returns the raw JSON value of [limitOffset].
@@ -218,6 +237,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: JsonField<Long> = JsonMissing.of()
+        private var itemId: JsonField<String> = JsonMissing.of()
         private var limitOffset: JsonField<String> = JsonMissing.of()
         private var limitPrice: JsonField<String> = JsonMissing.of()
         private var orderId: JsonField<String> = JsonMissing.of()
@@ -230,6 +250,7 @@ private constructor(
         @JvmSynthetic
         internal fun from(prefillModifyOrderRequest: PrefillModifyOrderRequest) = apply {
             accountId = prefillModifyOrderRequest.accountId
+            itemId = prefillModifyOrderRequest.itemId
             limitOffset = prefillModifyOrderRequest.limitOffset
             limitPrice = prefillModifyOrderRequest.limitPrice
             orderId = prefillModifyOrderRequest.orderId
@@ -250,6 +271,23 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
+
+        /**
+         * Interaction-tracking identity. Absent on messages created before tracking. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun itemId(itemId: String?) = itemId(JsonField.ofNullable(itemId))
+
+        /** Alias for calling [Builder.itemId] with `itemId.orElse(null)`. */
+        fun itemId(itemId: Optional<String>) = itemId(itemId.getOrNull())
+
+        /**
+         * Sets [Builder.itemId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.itemId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun itemId(itemId: JsonField<String>) = apply { this.itemId = itemId }
 
         /** New limit offset for trailing stop-limit orders (signed) */
         fun limitOffset(limitOffset: String?) = limitOffset(JsonField.ofNullable(limitOffset))
@@ -388,6 +426,7 @@ private constructor(
         fun build(): PrefillModifyOrderRequest =
             PrefillModifyOrderRequest(
                 accountId,
+                itemId,
                 limitOffset,
                 limitPrice,
                 orderId,
@@ -415,6 +454,7 @@ private constructor(
         }
 
         accountId()
+        itemId()
         limitOffset()
         limitPrice()
         orderId()
@@ -441,6 +481,7 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (if (accountId.asKnown().isPresent) 1 else 0) +
+            (if (itemId.asKnown().isPresent) 1 else 0) +
             (if (limitOffset.asKnown().isPresent) 1 else 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
             (if (orderId.asKnown().isPresent) 1 else 0) +
@@ -456,6 +497,7 @@ private constructor(
 
         return other is PrefillModifyOrderRequest &&
             accountId == other.accountId &&
+            itemId == other.itemId &&
             limitOffset == other.limitOffset &&
             limitPrice == other.limitPrice &&
             orderId == other.orderId &&
@@ -469,6 +511,7 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             accountId,
+            itemId,
             limitOffset,
             limitPrice,
             orderId,
@@ -483,5 +526,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PrefillModifyOrderRequest{accountId=$accountId, limitOffset=$limitOffset, limitPrice=$limitPrice, orderId=$orderId, quantity=$quantity, stopPrice=$stopPrice, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
+        "PrefillModifyOrderRequest{accountId=$accountId, itemId=$itemId, limitOffset=$limitOffset, limitPrice=$limitPrice, orderId=$orderId, quantity=$quantity, stopPrice=$stopPrice, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
 }

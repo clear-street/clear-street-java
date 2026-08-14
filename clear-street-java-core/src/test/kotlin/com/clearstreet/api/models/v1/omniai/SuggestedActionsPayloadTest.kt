@@ -18,6 +18,7 @@ internal class SuggestedActionsPayloadTest {
                     ActionButton.builder()
                         .buttonId("btn_show_aapl_1y")
                         .label("Show AAPL over 1 year")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .prompt(
                             PromptButtonAction.builder()
                                 .prompt("Show AAPL over the last year")
@@ -34,6 +35,7 @@ internal class SuggestedActionsPayloadTest {
                     ActionButton.builder()
                         .buttonId("btn_compare_aapl_spy")
                         .label("Compare AAPL vs SPY")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .prompt(
                             PromptButtonAction.builder()
                                 .prompt("Compare AAPL vs SPY over 1 year")
@@ -46,6 +48,7 @@ internal class SuggestedActionsPayloadTest {
                         )
                         .build()
                 )
+                .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         assertThat(suggestedActionsPayload.actionButtons().getOrNull())
@@ -53,6 +56,7 @@ internal class SuggestedActionsPayloadTest {
                 ActionButton.builder()
                     .buttonId("btn_show_aapl_1y")
                     .label("Show AAPL over 1 year")
+                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .prompt(
                         PromptButtonAction.builder().prompt("Show AAPL over the last year").build()
                     )
@@ -65,6 +69,7 @@ internal class SuggestedActionsPayloadTest {
                 ActionButton.builder()
                     .buttonId("btn_compare_aapl_spy")
                     .label("Compare AAPL vs SPY")
+                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .prompt(
                         PromptButtonAction.builder()
                             .prompt("Compare AAPL vs SPY over 1 year")
@@ -77,6 +82,8 @@ internal class SuggestedActionsPayloadTest {
                     )
                     .build(),
             )
+        assertThat(suggestedActionsPayload.clickedItemIds().getOrNull())
+            .containsExactly("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
     }
 
     @Test
@@ -88,6 +95,7 @@ internal class SuggestedActionsPayloadTest {
                     ActionButton.builder()
                         .buttonId("btn_show_aapl_1y")
                         .label("Show AAPL over 1 year")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .prompt(
                             PromptButtonAction.builder()
                                 .prompt("Show AAPL over the last year")
@@ -104,6 +112,7 @@ internal class SuggestedActionsPayloadTest {
                     ActionButton.builder()
                         .buttonId("btn_compare_aapl_spy")
                         .label("Compare AAPL vs SPY")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .prompt(
                             PromptButtonAction.builder()
                                 .prompt("Compare AAPL vs SPY over 1 year")
@@ -116,6 +125,7 @@ internal class SuggestedActionsPayloadTest {
                         )
                         .build()
                 )
+                .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         val roundtrippedSuggestedActionsPayload =

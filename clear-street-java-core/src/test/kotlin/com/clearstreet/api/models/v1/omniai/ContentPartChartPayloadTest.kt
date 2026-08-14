@@ -16,10 +16,12 @@ internal class ContentPartChartPayloadTest {
                 .payload(
                     ChartPayload.builder()
                         .chartId("chart_revenue_growth")
+                        .clicked(true)
                         .addActionButton(
                             ActionButton.builder()
                                 .buttonId("btn_compare_aapl_spy")
                                 .label("Compare AAPL vs SPY")
+                                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .prompt(
                                     PromptButtonAction.builder()
                                         .prompt("Compare AAPL vs SPY over 1 year")
@@ -43,6 +45,7 @@ internal class ContentPartChartPayloadTest {
                                 )
                                 .build()
                         )
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
@@ -51,10 +54,12 @@ internal class ContentPartChartPayloadTest {
             .isEqualTo(
                 ChartPayload.builder()
                     .chartId("chart_revenue_growth")
+                    .clicked(true)
                     .addActionButton(
                         ActionButton.builder()
                             .buttonId("btn_compare_aapl_spy")
                             .label("Compare AAPL vs SPY")
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .prompt(
                                 PromptButtonAction.builder()
                                     .prompt("Compare AAPL vs SPY over 1 year")
@@ -78,6 +83,7 @@ internal class ContentPartChartPayloadTest {
                             )
                             .build()
                     )
+                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
     }
@@ -90,10 +96,12 @@ internal class ContentPartChartPayloadTest {
                 .payload(
                     ChartPayload.builder()
                         .chartId("chart_revenue_growth")
+                        .clicked(true)
                         .addActionButton(
                             ActionButton.builder()
                                 .buttonId("btn_compare_aapl_spy")
                                 .label("Compare AAPL vs SPY")
+                                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .prompt(
                                     PromptButtonAction.builder()
                                         .prompt("Compare AAPL vs SPY over 1 year")
@@ -117,6 +125,7 @@ internal class ContentPartChartPayloadTest {
                                 )
                                 .build()
                         )
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()

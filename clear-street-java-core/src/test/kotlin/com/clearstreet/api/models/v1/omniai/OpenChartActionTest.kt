@@ -16,11 +16,13 @@ internal class OpenChartActionTest {
             OpenChartAction.builder()
                 .symbol("AAPL")
                 .extras(JsonValue.from(mapOf<String, Any>()))
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .timeframe("1M")
                 .build()
 
         assertThat(openChartAction.symbol()).isEqualTo("AAPL")
         assertThat(openChartAction._extras()).isEqualTo(JsonValue.from(mapOf<String, Any>()))
+        assertThat(openChartAction.itemId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(openChartAction.timeframe()).contains("1M")
     }
 
@@ -31,6 +33,7 @@ internal class OpenChartActionTest {
             OpenChartAction.builder()
                 .symbol("AAPL")
                 .extras(JsonValue.from(mapOf<String, Any>()))
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .timeframe("1M")
                 .build()
 

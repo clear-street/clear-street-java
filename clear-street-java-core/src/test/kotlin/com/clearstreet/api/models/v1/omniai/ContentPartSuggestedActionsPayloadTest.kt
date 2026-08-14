@@ -19,6 +19,7 @@ internal class ContentPartSuggestedActionsPayloadTest {
                             ActionButton.builder()
                                 .buttonId("btn_show_aapl_1y")
                                 .label("Show AAPL over 1 year")
+                                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .prompt(
                                     PromptButtonAction.builder()
                                         .prompt("Show AAPL over the last year")
@@ -35,6 +36,7 @@ internal class ContentPartSuggestedActionsPayloadTest {
                             ActionButton.builder()
                                 .buttonId("btn_compare_aapl_spy")
                                 .label("Compare AAPL vs SPY")
+                                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .prompt(
                                     PromptButtonAction.builder()
                                         .prompt("Compare AAPL vs SPY over 1 year")
@@ -47,6 +49,7 @@ internal class ContentPartSuggestedActionsPayloadTest {
                                 )
                                 .build()
                         )
+                        .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
@@ -58,6 +61,7 @@ internal class ContentPartSuggestedActionsPayloadTest {
                         ActionButton.builder()
                             .buttonId("btn_show_aapl_1y")
                             .label("Show AAPL over 1 year")
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .prompt(
                                 PromptButtonAction.builder()
                                     .prompt("Show AAPL over the last year")
@@ -74,6 +78,7 @@ internal class ContentPartSuggestedActionsPayloadTest {
                         ActionButton.builder()
                             .buttonId("btn_compare_aapl_spy")
                             .label("Compare AAPL vs SPY")
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .prompt(
                                 PromptButtonAction.builder()
                                     .prompt("Compare AAPL vs SPY over 1 year")
@@ -86,6 +91,7 @@ internal class ContentPartSuggestedActionsPayloadTest {
                             )
                             .build()
                     )
+                    .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
     }
@@ -101,6 +107,7 @@ internal class ContentPartSuggestedActionsPayloadTest {
                             ActionButton.builder()
                                 .buttonId("btn_show_aapl_1y")
                                 .label("Show AAPL over 1 year")
+                                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .prompt(
                                     PromptButtonAction.builder()
                                         .prompt("Show AAPL over the last year")
@@ -117,6 +124,7 @@ internal class ContentPartSuggestedActionsPayloadTest {
                             ActionButton.builder()
                                 .buttonId("btn_compare_aapl_spy")
                                 .label("Compare AAPL vs SPY")
+                                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .prompt(
                                     PromptButtonAction.builder()
                                         .prompt("Compare AAPL vs SPY over 1 year")
@@ -129,6 +137,7 @@ internal class ContentPartSuggestedActionsPayloadTest {
                                 )
                                 .build()
                         )
+                        .addClickedItemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()

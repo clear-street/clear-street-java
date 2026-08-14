@@ -5,7 +5,6 @@ package com.clearstreet.api.models.v1.omniai
 import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
-import com.clearstreet.api.models.v1.orders.NewOrderRequest
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
@@ -28,7 +27,7 @@ internal class StructuredActionTest {
                 .prefillOrder(
                     PrefillOrderAction.PrefillNewOrderAction.builder()
                         .addOrder(
-                            NewOrderRequest.builder()
+                            PrefillNewOrderRequest.builder()
                                 .orderType(RequestOrderType.LIMIT)
                                 .quantity("100")
                                 .side(Side.BUY)
@@ -37,6 +36,7 @@ internal class StructuredActionTest {
                                 .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                                 .extendedHours(true)
                                 .instrumentId("x")
+                                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                 .limitOffset("0.50")
                                 .limitPrice("150.00")
                                 .stopPrice("52.00")
@@ -67,7 +67,7 @@ internal class StructuredActionTest {
                     .prefillOrder(
                         PrefillOrderAction.PrefillNewOrderAction.builder()
                             .addOrder(
-                                NewOrderRequest.builder()
+                                PrefillNewOrderRequest.builder()
                                     .orderType(RequestOrderType.LIMIT)
                                     .quantity("100")
                                     .side(Side.BUY)
@@ -78,6 +78,7 @@ internal class StructuredActionTest {
                                     )
                                     .extendedHours(true)
                                     .instrumentId("x")
+                                    .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                                     .limitOffset("0.50")
                                     .limitPrice("150.00")
                                     .stopPrice("52.00")
@@ -109,6 +110,7 @@ internal class StructuredActionTest {
                     OpenChartAction.builder()
                         .symbol("AAPL")
                         .extras(JsonValue.from(mapOf<String, Any>()))
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .timeframe("1M")
                         .build()
                 )
@@ -132,6 +134,7 @@ internal class StructuredActionTest {
                         OpenChartAction.builder()
                             .symbol("AAPL")
                             .extras(JsonValue.from(mapOf<String, Any>()))
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .timeframe("1M")
                             .build()
                     )
@@ -168,6 +171,7 @@ internal class StructuredActionTest {
                                 .build()
                         )
                         .addColumn("string")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .pageSize(0)
                         .sortBy("sort_by")
                         .sortDirection("sort_direction")
@@ -206,6 +210,7 @@ internal class StructuredActionTest {
                                     .build()
                             )
                             .addColumn("string")
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .pageSize(0)
                             .sortBy("sort_by")
                             .sortDirection("sort_direction")
@@ -233,6 +238,7 @@ internal class StructuredActionTest {
                         .agreementKey(EntitlementAgreementKey.OMNI_ACCOUNT_DATA_ACCESS)
                         .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
                         .reason("Portfolio analysis requires Omni consent to access account data.")
+                        .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
@@ -259,6 +265,7 @@ internal class StructuredActionTest {
                             .reason(
                                 "Portfolio analysis requires Omni consent to access account data."
                             )
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .build()
                     )
                     .build()

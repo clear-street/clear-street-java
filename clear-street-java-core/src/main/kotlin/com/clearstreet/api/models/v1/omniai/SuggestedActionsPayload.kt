@@ -23,6 +23,7 @@ class SuggestedActionsPayload
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val actionButtons: JsonField<List<ActionButton>>,
+    private val clickedItemIds: JsonField<List<String>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -30,8 +31,11 @@ private constructor(
     private constructor(
         @JsonProperty("actionButtons")
         @ExcludeMissing
-        actionButtons: JsonField<List<ActionButton>> = JsonMissing.of()
-    ) : this(actionButtons, mutableMapOf())
+        actionButtons: JsonField<List<ActionButton>> = JsonMissing.of(),
+        @JsonProperty("clickedItemIds")
+        @ExcludeMissing
+        clickedItemIds: JsonField<List<String>> = JsonMissing.of(),
+    ) : this(actionButtons, clickedItemIds, mutableMapOf())
 
     /**
      * Ordered message-level buttons.
@@ -42,6 +46,14 @@ private constructor(
     fun actionButtons(): Optional<List<ActionButton>> = actionButtons.getOptional("actionButtons")
 
     /**
+     * IDs of buttons clicked by the current user.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun clickedItemIds(): Optional<List<String>> = clickedItemIds.getOptional("clickedItemIds")
+
+    /**
      * Returns the raw JSON value of [actionButtons].
      *
      * Unlike [actionButtons], this method doesn't throw if the JSON field has an unexpected type.
@@ -49,6 +61,15 @@ private constructor(
     @JsonProperty("actionButtons")
     @ExcludeMissing
     fun _actionButtons(): JsonField<List<ActionButton>> = actionButtons
+
+    /**
+     * Returns the raw JSON value of [clickedItemIds].
+     *
+     * Unlike [clickedItemIds], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("clickedItemIds")
+    @ExcludeMissing
+    fun _clickedItemIds(): JsonField<List<String>> = clickedItemIds
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -72,11 +93,13 @@ private constructor(
     class Builder internal constructor() {
 
         private var actionButtons: JsonField<MutableList<ActionButton>>? = null
+        private var clickedItemIds: JsonField<MutableList<String>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(suggestedActionsPayload: SuggestedActionsPayload) = apply {
             actionButtons = suggestedActionsPayload.actionButtons.map { it.toMutableList() }
+            clickedItemIds = suggestedActionsPayload.clickedItemIds.map { it.toMutableList() }
             additionalProperties = suggestedActionsPayload.additionalProperties.toMutableMap()
         }
 
@@ -107,6 +130,33 @@ private constructor(
                 }
         }
 
+        /** IDs of buttons clicked by the current user. */
+        fun clickedItemIds(clickedItemIds: List<String>) =
+            clickedItemIds(JsonField.of(clickedItemIds))
+
+        /**
+         * Sets [Builder.clickedItemIds] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.clickedItemIds] with a well-typed `List<String>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun clickedItemIds(clickedItemIds: JsonField<List<String>>) = apply {
+            this.clickedItemIds = clickedItemIds.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [String] to [clickedItemIds].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addClickedItemId(clickedItemId: String) = apply {
+            clickedItemIds =
+                (clickedItemIds ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("clickedItemIds", it).add(clickedItemId)
+                }
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -134,6 +184,7 @@ private constructor(
         fun build(): SuggestedActionsPayload =
             SuggestedActionsPayload(
                 (actionButtons ?: JsonMissing.of()).map { it.toImmutable() },
+                (clickedItemIds ?: JsonMissing.of()).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
     }
@@ -154,6 +205,7 @@ private constructor(
         }
 
         actionButtons().ifPresent { it.forEach { it.validate() } }
+        clickedItemIds()
         validated = true
     }
 
@@ -172,7 +224,8 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (actionButtons.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+        (actionButtons.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+            (clickedItemIds.asKnown().getOrNull()?.size ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -181,13 +234,16 @@ private constructor(
 
         return other is SuggestedActionsPayload &&
             actionButtons == other.actionButtons &&
+            clickedItemIds == other.clickedItemIds &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(actionButtons, additionalProperties) }
+    private val hashCode: Int by lazy {
+        Objects.hash(actionButtons, clickedItemIds, additionalProperties)
+    }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SuggestedActionsPayload{actionButtons=$actionButtons, additionalProperties=$additionalProperties}"
+        "SuggestedActionsPayload{actionButtons=$actionButtons, clickedItemIds=$clickedItemIds, additionalProperties=$additionalProperties}"
 }

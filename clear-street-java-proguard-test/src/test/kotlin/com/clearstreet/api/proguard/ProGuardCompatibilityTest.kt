@@ -8,8 +8,8 @@ import com.clearstreet.api.models.v1.accounts.Account
 import com.clearstreet.api.models.v1.accounts.AccountStatus
 import com.clearstreet.api.models.v1.accounts.AccountSubtype
 import com.clearstreet.api.models.v1.accounts.AccountType
+import com.clearstreet.api.models.v1.omniai.PrefillNewOrderRequest
 import com.clearstreet.api.models.v1.omniai.PrefillOrderAction
-import com.clearstreet.api.models.v1.orders.NewOrderRequest
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
@@ -93,7 +93,7 @@ internal class ProGuardCompatibilityTest {
             PrefillOrderAction.ofPrefillNewOrderAction(
                 PrefillOrderAction.PrefillNewOrderAction.builder()
                     .addOrder(
-                        NewOrderRequest.builder()
+                        PrefillNewOrderRequest.builder()
                             .orderType(RequestOrderType.LIMIT)
                             .quantity("100")
                             .side(Side.BUY)
@@ -102,6 +102,7 @@ internal class ProGuardCompatibilityTest {
                             .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                             .extendedHours(true)
                             .instrumentId("x")
+                            .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .limitOffset("0.50")
                             .limitPrice("150.00")
                             .stopPrice("52.00")

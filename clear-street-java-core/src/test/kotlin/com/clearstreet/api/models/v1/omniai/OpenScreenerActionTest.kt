@@ -31,6 +31,7 @@ internal class OpenScreenerActionTest {
                         .build()
                 )
                 .addColumn("string")
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .pageSize(0)
                 .sortBy("sort_by")
                 .sortDirection("sort_direction")
@@ -50,6 +51,7 @@ internal class OpenScreenerActionTest {
                     .build(),
             )
         assertThat(openScreenerAction.columns().getOrNull()).containsExactly("string")
+        assertThat(openScreenerAction.itemId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(openScreenerAction.pageSize()).contains(0)
         assertThat(openScreenerAction.sortBy()).contains("sort_by")
         assertThat(openScreenerAction.sortDirection()).contains("sort_direction")
@@ -75,6 +77,7 @@ internal class OpenScreenerActionTest {
                         .build()
                 )
                 .addColumn("string")
+                .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .pageSize(0)
                 .sortBy("sort_by")
                 .sortDirection("sort_direction")
