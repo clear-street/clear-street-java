@@ -72,7 +72,7 @@ private constructor(
     )
 
     /**
-     * Initial margin excess for trade-date balances.
+     * The difference between equity and the initial margin requirement.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -80,7 +80,7 @@ private constructor(
     fun initialMarginExcess(): String = initialMarginExcess.getRequired("initial_margin_excess")
 
     /**
-     * Initial margin requirement for trade-date balances.
+     * The amount of equity required to open new positions.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -97,7 +97,7 @@ private constructor(
     fun intradayDetails(): MarginSessionDetails = intradayDetails.getRequired("intraday_details")
 
     /**
-     * Maintenance margin excess for trade-date balances.
+     * The difference between equity and the maintenance margin requirement.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -106,7 +106,7 @@ private constructor(
         maintenanceMarginExcess.getRequired("maintenance_margin_excess")
 
     /**
-     * Maintenance margin requirement for trade-date balances.
+     * The amount of equity required to maintain current positions.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -271,7 +271,7 @@ private constructor(
             additionalProperties = marginDetails.additionalProperties.toMutableMap()
         }
 
-        /** Initial margin excess for trade-date balances. */
+        /** The difference between equity and the initial margin requirement. */
         fun initialMarginExcess(initialMarginExcess: String) =
             initialMarginExcess(JsonField.of(initialMarginExcess))
 
@@ -286,7 +286,7 @@ private constructor(
             this.initialMarginExcess = initialMarginExcess
         }
 
-        /** Initial margin requirement for trade-date balances. */
+        /** The amount of equity required to open new positions. */
         fun initialMarginRequirement(initialMarginRequirement: String) =
             initialMarginRequirement(JsonField.of(initialMarginRequirement))
 
@@ -316,7 +316,7 @@ private constructor(
             this.intradayDetails = intradayDetails
         }
 
-        /** Maintenance margin excess for trade-date balances. */
+        /** The difference between equity and the maintenance margin requirement. */
         fun maintenanceMarginExcess(maintenanceMarginExcess: String) =
             maintenanceMarginExcess(JsonField.of(maintenanceMarginExcess))
 
@@ -331,7 +331,7 @@ private constructor(
             this.maintenanceMarginExcess = maintenanceMarginExcess
         }
 
-        /** Maintenance margin requirement for trade-date balances. */
+        /** The amount of equity required to maintain current positions. */
         fun maintenanceMarginRequirement(maintenanceMarginRequirement: String) =
             maintenanceMarginRequirement(JsonField.of(maintenanceMarginRequirement))
 

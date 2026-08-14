@@ -34,7 +34,9 @@ private constructor(
     ) : this(buyingPower, multiplier, mutableMapOf())
 
     /**
-     * Maximum buying power available in the account during the session.
+     * Maximum buying power available in the account during the session: base buying power plus the
+     * open order adjustment, where base buying power is maintenance margin excess times the
+     * multiplier for intraday and initial margin excess times the multiplier for overnight.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -42,7 +44,8 @@ private constructor(
     fun buyingPower(): String = buyingPower.getRequired("buying_power")
 
     /**
-     * Effective multiplier for margin calculations during the session.
+     * Margin multiplier for the session: 4 during intraday sessions (pre-market, regular, and
+     * after-hours) and 2 during the overnight session.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -104,7 +107,11 @@ private constructor(
             additionalProperties = marginSessionDetails.additionalProperties.toMutableMap()
         }
 
-        /** Maximum buying power available in the account during the session. */
+        /**
+         * Maximum buying power available in the account during the session: base buying power plus
+         * the open order adjustment, where base buying power is maintenance margin excess times the
+         * multiplier for intraday and initial margin excess times the multiplier for overnight.
+         */
         fun buyingPower(buyingPower: String) = buyingPower(JsonField.of(buyingPower))
 
         /**
@@ -116,7 +123,10 @@ private constructor(
          */
         fun buyingPower(buyingPower: JsonField<String>) = apply { this.buyingPower = buyingPower }
 
-        /** Effective multiplier for margin calculations during the session. */
+        /**
+         * Margin multiplier for the session: 4 during intraday sessions (pre-market, regular, and
+         * after-hours) and 2 during the overnight session.
+         */
         fun multiplier(multiplier: String?) = multiplier(JsonField.ofNullable(multiplier))
 
         /** Alias for calling [Builder.multiplier] with `multiplier.orElse(null)`. */

@@ -132,7 +132,9 @@ private constructor(
     fun accountId(): Long = accountId.getRequired("account_id")
 
     /**
-     * The total buying power available in the account.
+     * The total buying power available in the account: base buying power plus the open order
+     * adjustment, where base buying power is maintenance margin excess times the multiplier for
+     * intraday and initial margin excess times the multiplier for overnight.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -180,7 +182,8 @@ private constructor(
     fun dailyUnrealizedPnl(): String = dailyUnrealizedPnl.getRequired("daily_unrealized_pnl")
 
     /**
-     * The total equity in the account.
+     * The total equity in the account: cash plus long market value plus short market value, where
+     * short market value is negative.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -204,7 +207,8 @@ private constructor(
     fun marginType(): MarginType = marginType.getRequired("margin_type")
 
     /**
-     * Signed buying-power correction from open orders.
+     * Buying power correction from open orders, computed as projected buying power minus actual
+     * buying power. A negative value means open orders are consuming buying power.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -277,8 +281,9 @@ private constructor(
     fun marginDetails(): Optional<MarginDetails> = marginDetails.getOptional("margin_details")
 
     /**
-     * Applied multiplier for margin calculations. When a null/undefined value is observed, it
-     * indicates it does not apply.
+     * Margin multiplier: 4 during intraday sessions (pre-market, regular, and after-hours) and 2
+     * during the overnight session. When a null/undefined value is observed, it indicates it does
+     * not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -580,7 +585,11 @@ private constructor(
          */
         fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
 
-        /** The total buying power available in the account. */
+        /**
+         * The total buying power available in the account: base buying power plus the open order
+         * adjustment, where base buying power is maintenance margin excess times the multiplier for
+         * intraday and initial margin excess times the multiplier for overnight.
+         */
         fun buyingPower(buyingPower: String) = buyingPower(JsonField.of(buyingPower))
 
         /**
@@ -656,7 +665,10 @@ private constructor(
             this.dailyUnrealizedPnl = dailyUnrealizedPnl
         }
 
-        /** The total equity in the account. */
+        /**
+         * The total equity in the account: cash plus long market value plus short market value,
+         * where short market value is negative.
+         */
         fun equity(equity: String) = equity(JsonField.of(equity))
 
         /**
@@ -694,7 +706,10 @@ private constructor(
          */
         fun marginType(marginType: JsonField<MarginType>) = apply { this.marginType = marginType }
 
-        /** Signed buying-power correction from open orders. */
+        /**
+         * Buying power correction from open orders, computed as projected buying power minus actual
+         * buying power. A negative value means open orders are consuming buying power.
+         */
         fun openOrderAdjustment(openOrderAdjustment: String) =
             openOrderAdjustment(JsonField.of(openOrderAdjustment))
 
@@ -827,8 +842,9 @@ private constructor(
         }
 
         /**
-         * Applied multiplier for margin calculations. When a null/undefined value is observed, it
-         * indicates it does not apply.
+         * Margin multiplier: 4 during intraday sessions (pre-market, regular, and after-hours) and
+         * 2 during the overnight session. When a null/undefined value is observed, it indicates it
+         * does not apply.
          */
         fun multiplier(multiplier: String?) = multiplier(JsonField.ofNullable(multiplier))
 

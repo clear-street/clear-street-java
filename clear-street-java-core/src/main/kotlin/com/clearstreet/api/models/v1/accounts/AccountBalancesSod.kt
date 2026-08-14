@@ -106,8 +106,8 @@ private constructor(
     fun asof(): Optional<LocalDate> = asof.getOptional("asof")
 
     /**
-     * Start-of-day maintenance margin excess. When a null/undefined value is observed, it indicates
-     * it does not apply.
+     * Start-of-day maintenance margin excess: the difference between equity and the maintenance
+     * margin requirement. When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -116,8 +116,8 @@ private constructor(
         maintenanceMarginExcess.getOptional("maintenance_margin_excess")
 
     /**
-     * Start-of-day maintenance margin requirement. When a null/undefined value is observed, it
-     * indicates it does not apply.
+     * Start-of-day maintenance margin requirement: the amount of equity required to maintain
+     * current positions. When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -328,8 +328,9 @@ private constructor(
         fun asof(asof: JsonField<LocalDate>) = apply { this.asof = asof }
 
         /**
-         * Start-of-day maintenance margin excess. When a null/undefined value is observed, it
-         * indicates it does not apply.
+         * Start-of-day maintenance margin excess: the difference between equity and the maintenance
+         * margin requirement. When a null/undefined value is observed, it indicates it does not
+         * apply.
          */
         fun maintenanceMarginExcess(maintenanceMarginExcess: String?) =
             maintenanceMarginExcess(JsonField.ofNullable(maintenanceMarginExcess))
@@ -353,8 +354,9 @@ private constructor(
         }
 
         /**
-         * Start-of-day maintenance margin requirement. When a null/undefined value is observed, it
-         * indicates it does not apply.
+         * Start-of-day maintenance margin requirement: the amount of equity required to maintain
+         * current positions. When a null/undefined value is observed, it indicates it does not
+         * apply.
          */
         fun maintenanceMarginRequirement(maintenanceMarginRequirement: String?) =
             maintenanceMarginRequirement(JsonField.ofNullable(maintenanceMarginRequirement))

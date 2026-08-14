@@ -19,6 +19,8 @@ import com.clearstreet.api.services.blocking.v1.OrderService
 import com.clearstreet.api.services.blocking.v1.OrderServiceImpl
 import com.clearstreet.api.services.blocking.v1.PositionService
 import com.clearstreet.api.services.blocking.v1.PositionServiceImpl
+import com.clearstreet.api.services.blocking.v1.PrivateMarketService
+import com.clearstreet.api.services.blocking.v1.PrivateMarketServiceImpl
 import com.clearstreet.api.services.blocking.v1.ScreenerService
 import com.clearstreet.api.services.blocking.v1.ScreenerServiceImpl
 import com.clearstreet.api.services.blocking.v1.WatchlistService
@@ -48,6 +50,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     private val orders: OrderService by lazy { OrderServiceImpl(clientOptions) }
 
     private val positions: PositionService by lazy { PositionServiceImpl(clientOptions) }
+
+    private val privateMarkets: PrivateMarketService by lazy {
+        PrivateMarketServiceImpl(clientOptions)
+    }
 
     private val screener: ScreenerService by lazy { ScreenerServiceImpl(clientOptions) }
 
@@ -80,6 +86,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     /** View positions and manage position instructions. */
     override fun positions(): PositionService = positions
+
+    override fun privateMarkets(): PrivateMarketService = privateMarkets
 
     /** Search instruments and manage saved screeners. */
     override fun screener(): ScreenerService = screener
@@ -122,6 +130,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
             PositionServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val privateMarkets: PrivateMarketService.WithRawResponse by lazy {
+            PrivateMarketServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val screener: ScreenerService.WithRawResponse by lazy {
             ScreenerServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -159,6 +171,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         /** View positions and manage position instructions. */
         override fun positions(): PositionService.WithRawResponse = positions
+
+        override fun privateMarkets(): PrivateMarketService.WithRawResponse = privateMarkets
 
         /** Search instruments and manage saved screeners. */
         override fun screener(): ScreenerService.WithRawResponse = screener
