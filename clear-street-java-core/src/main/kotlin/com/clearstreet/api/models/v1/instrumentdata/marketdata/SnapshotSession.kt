@@ -61,7 +61,7 @@ private constructor(
     /**
      * Previous session close price. Corporate-action-adjusted (stock dividends, cash dividends, and
      * forward/reverse splits) when an adjustment exists for the close date; the raw close
-     * otherwise.
+     * otherwise. An adjustment can carry the price beyond 2 decimal places.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -188,7 +188,7 @@ private constructor(
         /**
          * Previous session close price. Corporate-action-adjusted (stock dividends, cash dividends,
          * and forward/reverse splits) when an adjustment exists for the close date; the raw close
-         * otherwise.
+         * otherwise. An adjustment can carry the price beyond 2 decimal places.
          */
         fun previousClose(previousClose: String) = previousClose(JsonField.of(previousClose))
 
