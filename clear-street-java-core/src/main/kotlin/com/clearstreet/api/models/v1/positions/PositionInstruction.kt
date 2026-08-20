@@ -24,7 +24,7 @@ class PositionInstruction
 private constructor(
     private val id: JsonField<String>,
     private val accountId: JsonField<Long>,
-    private val instructionId: JsonField<String>,
+    private val clientInstructionId: JsonField<String>,
     private val instructionType: JsonField<PositionInstructionType>,
     private val instrumentId: JsonField<String>,
     private val quantity: JsonField<String>,
@@ -41,9 +41,9 @@ private constructor(
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("account_id") @ExcludeMissing accountId: JsonField<Long> = JsonMissing.of(),
-        @JsonProperty("instruction_id")
+        @JsonProperty("client_instruction_id")
         @ExcludeMissing
-        instructionId: JsonField<String> = JsonMissing.of(),
+        clientInstructionId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("instruction_type")
         @ExcludeMissing
         instructionType: JsonField<PositionInstructionType> = JsonMissing.of(),
@@ -70,7 +70,7 @@ private constructor(
     ) : this(
         id,
         accountId,
-        instructionId,
+        clientInstructionId,
         instructionType,
         instrumentId,
         quantity,
@@ -106,7 +106,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun instructionId(): String = instructionId.getRequired("instruction_id")
+    fun clientInstructionId(): String = clientInstructionId.getRequired("client_instruction_id")
 
     /**
      * The action this instruction requests.
@@ -202,13 +202,14 @@ private constructor(
     @JsonProperty("account_id") @ExcludeMissing fun _accountId(): JsonField<Long> = accountId
 
     /**
-     * Returns the raw JSON value of [instructionId].
+     * Returns the raw JSON value of [clientInstructionId].
      *
-     * Unlike [instructionId], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [clientInstructionId], this method doesn't throw if the JSON field has an unexpected
+     * type.
      */
-    @JsonProperty("instruction_id")
+    @JsonProperty("client_instruction_id")
     @ExcludeMissing
-    fun _instructionId(): JsonField<String> = instructionId
+    fun _clientInstructionId(): JsonField<String> = clientInstructionId
 
     /**
      * Returns the raw JSON value of [instructionType].
@@ -309,7 +310,7 @@ private constructor(
          * ```java
          * .id()
          * .accountId()
-         * .instructionId()
+         * .clientInstructionId()
          * .instructionType()
          * .instrumentId()
          * .quantity()
@@ -325,7 +326,7 @@ private constructor(
 
         private var id: JsonField<String>? = null
         private var accountId: JsonField<Long>? = null
-        private var instructionId: JsonField<String>? = null
+        private var clientInstructionId: JsonField<String>? = null
         private var instructionType: JsonField<PositionInstructionType>? = null
         private var instrumentId: JsonField<String>? = null
         private var quantity: JsonField<String>? = null
@@ -341,7 +342,7 @@ private constructor(
         internal fun from(positionInstruction: PositionInstruction) = apply {
             id = positionInstruction.id
             accountId = positionInstruction.accountId
-            instructionId = positionInstruction.instructionId
+            clientInstructionId = positionInstruction.clientInstructionId
             instructionType = positionInstruction.instructionType
             instrumentId = positionInstruction.instrumentId
             quantity = positionInstruction.quantity
@@ -380,17 +381,18 @@ private constructor(
          * Caller-supplied idempotency key echoed from the submit request; the server-assigned
          * fallback when none was supplied.
          */
-        fun instructionId(instructionId: String) = instructionId(JsonField.of(instructionId))
+        fun clientInstructionId(clientInstructionId: String) =
+            clientInstructionId(JsonField.of(clientInstructionId))
 
         /**
-         * Sets [Builder.instructionId] to an arbitrary JSON value.
+         * Sets [Builder.clientInstructionId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.instructionId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.clientInstructionId] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun instructionId(instructionId: JsonField<String>) = apply {
-            this.instructionId = instructionId
+        fun clientInstructionId(clientInstructionId: JsonField<String>) = apply {
+            this.clientInstructionId = clientInstructionId
         }
 
         /** The action this instruction requests. */
@@ -567,7 +569,7 @@ private constructor(
          * ```java
          * .id()
          * .accountId()
-         * .instructionId()
+         * .clientInstructionId()
          * .instructionType()
          * .instrumentId()
          * .quantity()
@@ -581,7 +583,7 @@ private constructor(
             PositionInstruction(
                 checkRequired("id", id),
                 checkRequired("accountId", accountId),
-                checkRequired("instructionId", instructionId),
+                checkRequired("clientInstructionId", clientInstructionId),
                 checkRequired("instructionType", instructionType),
                 checkRequired("instrumentId", instrumentId),
                 checkRequired("quantity", quantity),
@@ -612,7 +614,7 @@ private constructor(
 
         id()
         accountId()
-        instructionId()
+        clientInstructionId()
         instructionType().validate()
         instrumentId()
         quantity()
@@ -642,7 +644,7 @@ private constructor(
     internal fun validity(): Int =
         (if (id.asKnown().isPresent) 1 else 0) +
             (if (accountId.asKnown().isPresent) 1 else 0) +
-            (if (instructionId.asKnown().isPresent) 1 else 0) +
+            (if (clientInstructionId.asKnown().isPresent) 1 else 0) +
             (instructionType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (if (quantity.asKnown().isPresent) 1 else 0) +
@@ -661,7 +663,7 @@ private constructor(
         return other is PositionInstruction &&
             id == other.id &&
             accountId == other.accountId &&
-            instructionId == other.instructionId &&
+            clientInstructionId == other.clientInstructionId &&
             instructionType == other.instructionType &&
             instrumentId == other.instrumentId &&
             quantity == other.quantity &&
@@ -678,7 +680,7 @@ private constructor(
         Objects.hash(
             id,
             accountId,
-            instructionId,
+            clientInstructionId,
             instructionType,
             instrumentId,
             quantity,
@@ -695,5 +697,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PositionInstruction{id=$id, accountId=$accountId, instructionId=$instructionId, instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, status=$status, symbol=$symbol, acceptedQuantity=$acceptedQuantity, createdAt=$createdAt, rejectionReason=$rejectionReason, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "PositionInstruction{id=$id, accountId=$accountId, clientInstructionId=$clientInstructionId, instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, status=$status, symbol=$symbol, acceptedQuantity=$acceptedQuantity, createdAt=$createdAt, rejectionReason=$rejectionReason, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

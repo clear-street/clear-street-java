@@ -137,7 +137,7 @@ internal class PositionServiceTest {
                             .instructionType(PositionInstructionType.EXERCISE)
                             .instrumentId("0195f6d0-a1b2-7c3d-8e4f-5a6b7c8d9e02")
                             .quantity("1")
-                            .instructionId("ui-20260424-001")
+                            .clientInstructionId("ui-20260424-001")
                             .build()
                     )
                     .build()

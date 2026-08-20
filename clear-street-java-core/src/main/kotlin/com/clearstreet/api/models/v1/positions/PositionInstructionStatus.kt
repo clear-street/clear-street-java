@@ -13,8 +13,8 @@ import com.fasterxml.jackson.annotation.JsonCreator
  * - `ACCEPTED`: terminal — accepted by the clearing venue.
  * - `REJECTED`: terminal rejection; `rejection_reason` carries the detail. Covers both
  *   venue-reported rejections and rejections raised before the instruction reached the clearing
- *   venue (e.g. duplicate `instruction_id`, `DO_NOT_EXERCISE` / `CONTRARY_EXERCISE` submitted on a
- *   non-expiry day, insufficient position, or an instrument that does not resolve).
+ *   venue (e.g. duplicate `client_instruction_id`, `DO_NOT_EXERCISE` / `CONTRARY_EXERCISE`
+ *   submitted on a non-expiry day, insufficient position, or an instrument that does not resolve).
  * - `CANCEL_REQUESTED`: cancel accepted; final cancel state pending.
  * - `CANCELLED`: terminal — cancel completed.
  * - `CANCEL_FAILED`: cancel could not be completed; operator attention required. `rejection_reason`

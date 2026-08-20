@@ -32,8 +32,8 @@ import kotlin.jvm.optionals.getOrNull
  * - **All rows rejected** → `4xx`/`5xx`. The HTTP status reflects the aggregate cause: `409` when
  *   every row was a duplicate, `400` for validation failures like DNE/CEA on a non-expiry day,
  *   `503` if the clearing service is unavailable. `data` still contains every row carrying `status
- *   = REJECTED` and `rejection_reason` so callers can attribute failures by `instruction_id`; the
- *   top-level `error` summarizes the batch.
+ *   = REJECTED` and `rejection_reason` so callers can attribute failures by
+ *   `client_instruction_id`; the top-level `error` summarizes the batch.
  */
 class PositionSubmitPositionInstructionsParams
 private constructor(
@@ -257,7 +257,7 @@ private constructor(
         private val instructionType: JsonField<PositionInstructionType>,
         private val instrumentId: JsonField<String>,
         private val quantity: JsonField<String>,
-        private val instructionId: JsonField<String>,
+        private val clientInstructionId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -272,10 +272,10 @@ private constructor(
             @JsonProperty("quantity")
             @ExcludeMissing
             quantity: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("instruction_id")
+            @JsonProperty("client_instruction_id")
             @ExcludeMissing
-            instructionId: JsonField<String> = JsonMissing.of(),
-        ) : this(instructionType, instrumentId, quantity, instructionId, mutableMapOf())
+            clientInstructionId: JsonField<String> = JsonMissing.of(),
+        ) : this(instructionType, instrumentId, quantity, clientInstructionId, mutableMapOf())
 
         /**
          * The action to take.
@@ -309,7 +309,8 @@ private constructor(
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun instructionId(): Optional<String> = instructionId.getOptional("instruction_id")
+        fun clientInstructionId(): Optional<String> =
+            clientInstructionId.getOptional("client_instruction_id")
 
         /**
          * Returns the raw JSON value of [instructionType].
@@ -339,14 +340,14 @@ private constructor(
         @JsonProperty("quantity") @ExcludeMissing fun _quantity(): JsonField<String> = quantity
 
         /**
-         * Returns the raw JSON value of [instructionId].
+         * Returns the raw JSON value of [clientInstructionId].
          *
-         * Unlike [instructionId], this method doesn't throw if the JSON field has an unexpected
-         * type.
+         * Unlike [clientInstructionId], this method doesn't throw if the JSON field has an
+         * unexpected type.
          */
-        @JsonProperty("instruction_id")
+        @JsonProperty("client_instruction_id")
         @ExcludeMissing
-        fun _instructionId(): JsonField<String> = instructionId
+        fun _clientInstructionId(): JsonField<String> = clientInstructionId
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -381,7 +382,7 @@ private constructor(
             private var instructionType: JsonField<PositionInstructionType>? = null
             private var instrumentId: JsonField<String>? = null
             private var quantity: JsonField<String>? = null
-            private var instructionId: JsonField<String> = JsonMissing.of()
+            private var clientInstructionId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -389,7 +390,7 @@ private constructor(
                 instructionType = instruction.instructionType
                 instrumentId = instruction.instrumentId
                 quantity = instruction.quantity
-                instructionId = instruction.instructionId
+                clientInstructionId = instruction.clientInstructionId
                 additionalProperties = instruction.additionalProperties.toMutableMap()
             }
 
@@ -438,22 +439,25 @@ private constructor(
              * Caller-supplied idempotency key. Echoed on the response. The server generates a
              * unique id when omitted.
              */
-            fun instructionId(instructionId: String?) =
-                instructionId(JsonField.ofNullable(instructionId))
-
-            /** Alias for calling [Builder.instructionId] with `instructionId.orElse(null)`. */
-            fun instructionId(instructionId: Optional<String>) =
-                instructionId(instructionId.getOrNull())
+            fun clientInstructionId(clientInstructionId: String?) =
+                clientInstructionId(JsonField.ofNullable(clientInstructionId))
 
             /**
-             * Sets [Builder.instructionId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.instructionId] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * Alias for calling [Builder.clientInstructionId] with
+             * `clientInstructionId.orElse(null)`.
              */
-            fun instructionId(instructionId: JsonField<String>) = apply {
-                this.instructionId = instructionId
+            fun clientInstructionId(clientInstructionId: Optional<String>) =
+                clientInstructionId(clientInstructionId.getOrNull())
+
+            /**
+             * Sets [Builder.clientInstructionId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.clientInstructionId] with a well-typed [String]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun clientInstructionId(clientInstructionId: JsonField<String>) = apply {
+                this.clientInstructionId = clientInstructionId
             }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -494,7 +498,7 @@ private constructor(
                     checkRequired("instructionType", instructionType),
                     checkRequired("instrumentId", instrumentId),
                     checkRequired("quantity", quantity),
-                    instructionId,
+                    clientInstructionId,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -518,7 +522,7 @@ private constructor(
             instructionType().validate()
             instrumentId()
             quantity()
-            instructionId()
+            clientInstructionId()
             validated = true
         }
 
@@ -541,7 +545,7 @@ private constructor(
             (instructionType.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (instrumentId.asKnown().isPresent) 1 else 0) +
                 (if (quantity.asKnown().isPresent) 1 else 0) +
-                (if (instructionId.asKnown().isPresent) 1 else 0)
+                (if (clientInstructionId.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -552,7 +556,7 @@ private constructor(
                 instructionType == other.instructionType &&
                 instrumentId == other.instrumentId &&
                 quantity == other.quantity &&
-                instructionId == other.instructionId &&
+                clientInstructionId == other.clientInstructionId &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -561,7 +565,7 @@ private constructor(
                 instructionType,
                 instrumentId,
                 quantity,
-                instructionId,
+                clientInstructionId,
                 additionalProperties,
             )
         }
@@ -569,7 +573,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Instruction{instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, instructionId=$instructionId, additionalProperties=$additionalProperties}"
+            "Instruction{instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, clientInstructionId=$clientInstructionId, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
