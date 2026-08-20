@@ -22,6 +22,8 @@ import com.clearstreet.api.models.v1.screener.ScreenerCreateScreenerResponse
 import com.clearstreet.api.models.v1.screener.ScreenerDeleteScreenerParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerByIdParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerByIdResponse
+import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogParams
+import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogResponse
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersResponse
 import com.clearstreet.api.models.v1.screener.ScreenerReplaceScreenerParams
@@ -65,6 +67,13 @@ class ScreenerServiceImpl internal constructor(private val clientOptions: Client
     ): ScreenerGetScreenerByIdResponse =
         // get /v1/saved-screeners/{screener_id}
         withRawResponse().getScreenerById(params, requestOptions).parse()
+
+    override fun getScreenerCatalog(
+        params: ScreenerGetScreenerCatalogParams,
+        requestOptions: RequestOptions,
+    ): ScreenerGetScreenerCatalogResponse =
+        // get /v1/screener/catalog
+        withRawResponse().getScreenerCatalog(params, requestOptions).parse()
 
     override fun getScreeners(
         params: ScreenerGetScreenersParams,
@@ -174,6 +183,33 @@ class ScreenerServiceImpl internal constructor(private val clientOptions: Client
             return errorHandler.handle(response).parseable {
                 response
                     .use { getScreenerByIdHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val getScreenerCatalogHandler: Handler<ScreenerGetScreenerCatalogResponse> =
+            jsonHandler<ScreenerGetScreenerCatalogResponse>(clientOptions.jsonMapper)
+
+        override fun getScreenerCatalog(
+            params: ScreenerGetScreenerCatalogParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<ScreenerGetScreenerCatalogResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "screener", "catalog")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getScreenerCatalogHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

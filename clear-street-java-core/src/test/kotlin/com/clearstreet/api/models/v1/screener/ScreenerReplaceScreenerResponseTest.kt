@@ -81,6 +81,7 @@ internal class ScreenerReplaceScreenerResponseTest {
                                 .build()
                         )
                         .name("name")
+                        .shared(true)
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .addColumn(
                             FieldRef.builder()
@@ -173,6 +174,7 @@ internal class ScreenerReplaceScreenerResponseTest {
                             .build()
                     )
                     .name("name")
+                    .shared(true)
                     .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .addColumn(
                         FieldRef.builder()
@@ -267,6 +269,7 @@ internal class ScreenerReplaceScreenerResponseTest {
                                 .build()
                         )
                         .name("name")
+                        .shared(true)
                         .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .addColumn(
                             FieldRef.builder()

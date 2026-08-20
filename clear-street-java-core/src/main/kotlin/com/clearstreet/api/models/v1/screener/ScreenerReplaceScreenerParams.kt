@@ -62,6 +62,15 @@ private constructor(
     fun name(): Optional<String> = body.name()
 
     /**
+     * Whether any user may fetch this screener by id. Omit to leave the existing value unchanged
+     * (defaults to `false` when creating).
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun shared(): Optional<Boolean> = body.shared()
+
+    /**
      * Multi-field sort specifications
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -89,6 +98,13 @@ private constructor(
      * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _name(): JsonField<String> = body._name()
+
+    /**
+     * Returns the raw JSON value of [shared].
+     *
+     * Unlike [shared], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _shared(): JsonField<Boolean> = body._shared()
 
     /**
      * Returns the raw JSON value of [sorts].
@@ -147,7 +163,9 @@ private constructor(
          * - [columns]
          * - [filters]
          * - [name]
+         * - [shared]
          * - [sorts]
+         * - etc.
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -208,6 +226,30 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun name(name: JsonField<String>) = apply { body.name(name) }
+
+        /**
+         * Whether any user may fetch this screener by id. Omit to leave the existing value
+         * unchanged (defaults to `false` when creating).
+         */
+        fun shared(shared: Boolean?) = apply { body.shared(shared) }
+
+        /**
+         * Alias for [Builder.shared].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun shared(shared: Boolean) = shared(shared as Boolean?)
+
+        /** Alias for calling [Builder.shared] with `shared.orElse(null)`. */
+        fun shared(shared: Optional<Boolean>) = shared(shared.getOrNull())
+
+        /**
+         * Sets [Builder.shared] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.shared] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun shared(shared: JsonField<Boolean>) = apply { body.shared(shared) }
 
         /** Multi-field sort specifications */
         fun sorts(sorts: List<SortSpec>?) = apply { body.sorts(sorts) }
@@ -381,6 +423,7 @@ private constructor(
         private val columns: JsonField<List<FieldRef>>,
         private val filters: JsonField<List<SearchFilter>>,
         private val name: JsonField<String>,
+        private val shared: JsonField<Boolean>,
         private val sorts: JsonField<List<SortSpec>>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -394,10 +437,11 @@ private constructor(
             @ExcludeMissing
             filters: JsonField<List<SearchFilter>> = JsonMissing.of(),
             @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("shared") @ExcludeMissing shared: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("sorts")
             @ExcludeMissing
             sorts: JsonField<List<SortSpec>> = JsonMissing.of(),
-        ) : this(columns, filters, name, sorts, mutableMapOf())
+        ) : this(columns, filters, name, shared, sorts, mutableMapOf())
 
         /**
          * Structured field references to include when running this screener
@@ -422,6 +466,15 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun name(): Optional<String> = name.getOptional("name")
+
+        /**
+         * Whether any user may fetch this screener by id. Omit to leave the existing value
+         * unchanged (defaults to `false` when creating).
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun shared(): Optional<Boolean> = shared.getOptional("shared")
 
         /**
          * Multi-field sort specifications
@@ -455,6 +508,13 @@ private constructor(
         @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
 
         /**
+         * Returns the raw JSON value of [shared].
+         *
+         * Unlike [shared], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("shared") @ExcludeMissing fun _shared(): JsonField<Boolean> = shared
+
+        /**
          * Returns the raw JSON value of [sorts].
          *
          * Unlike [sorts], this method doesn't throw if the JSON field has an unexpected type.
@@ -485,6 +545,7 @@ private constructor(
             private var columns: JsonField<MutableList<FieldRef>>? = null
             private var filters: JsonField<MutableList<SearchFilter>>? = null
             private var name: JsonField<String> = JsonMissing.of()
+            private var shared: JsonField<Boolean> = JsonMissing.of()
             private var sorts: JsonField<MutableList<SortSpec>>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -493,6 +554,7 @@ private constructor(
                 columns = body.columns.map { it.toMutableList() }
                 filters = body.filters.map { it.toMutableList() }
                 name = body.name
+                shared = body.shared
                 sorts = body.sorts.map { it.toMutableList() }
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
@@ -570,6 +632,31 @@ private constructor(
              */
             fun name(name: JsonField<String>) = apply { this.name = name }
 
+            /**
+             * Whether any user may fetch this screener by id. Omit to leave the existing value
+             * unchanged (defaults to `false` when creating).
+             */
+            fun shared(shared: Boolean?) = shared(JsonField.ofNullable(shared))
+
+            /**
+             * Alias for [Builder.shared].
+             *
+             * This unboxed primitive overload exists for backwards compatibility.
+             */
+            fun shared(shared: Boolean) = shared(shared as Boolean?)
+
+            /** Alias for calling [Builder.shared] with `shared.orElse(null)`. */
+            fun shared(shared: Optional<Boolean>) = shared(shared.getOrNull())
+
+            /**
+             * Sets [Builder.shared] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.shared] with a well-typed [Boolean] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun shared(shared: JsonField<Boolean>) = apply { this.shared = shared }
+
             /** Multi-field sort specifications */
             fun sorts(sorts: List<SortSpec>?) = sorts(JsonField.ofNullable(sorts))
 
@@ -628,6 +715,7 @@ private constructor(
                     (columns ?: JsonMissing.of()).map { it.toImmutable() },
                     (filters ?: JsonMissing.of()).map { it.toImmutable() },
                     name,
+                    shared,
                     (sorts ?: JsonMissing.of()).map { it.toImmutable() },
                     additionalProperties.toMutableMap(),
                 )
@@ -652,6 +740,7 @@ private constructor(
             columns().ifPresent { it.forEach { it.validate() } }
             filters().ifPresent { it.forEach { it.validate() } }
             name()
+            shared()
             sorts().ifPresent { it.forEach { it.validate() } }
             validated = true
         }
@@ -675,6 +764,7 @@ private constructor(
             (columns.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (filters.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (name.asKnown().isPresent) 1 else 0) +
+                (if (shared.asKnown().isPresent) 1 else 0) +
                 (sorts.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
         override fun equals(other: Any?): Boolean {
@@ -686,18 +776,19 @@ private constructor(
                 columns == other.columns &&
                 filters == other.filters &&
                 name == other.name &&
+                shared == other.shared &&
                 sorts == other.sorts &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(columns, filters, name, sorts, additionalProperties)
+            Objects.hash(columns, filters, name, shared, sorts, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{columns=$columns, filters=$filters, name=$name, sorts=$sorts, additionalProperties=$additionalProperties}"
+            "Body{columns=$columns, filters=$filters, name=$name, shared=$shared, sorts=$sorts, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

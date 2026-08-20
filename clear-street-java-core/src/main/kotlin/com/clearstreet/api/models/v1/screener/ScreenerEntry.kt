@@ -28,6 +28,7 @@ private constructor(
     private val createdAt: JsonField<OffsetDateTime>,
     private val filters: JsonField<List<SearchFilter>>,
     private val name: JsonField<String>,
+    private val shared: JsonField<Boolean>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val columns: JsonField<List<FieldRef>>,
     private val sorts: JsonField<List<SortSpec>>,
@@ -44,6 +45,7 @@ private constructor(
         @ExcludeMissing
         filters: JsonField<List<SearchFilter>> = JsonMissing.of(),
         @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("shared") @ExcludeMissing shared: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("updated_at")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -51,7 +53,7 @@ private constructor(
         @ExcludeMissing
         columns: JsonField<List<FieldRef>> = JsonMissing.of(),
         @JsonProperty("sorts") @ExcludeMissing sorts: JsonField<List<SortSpec>> = JsonMissing.of(),
-    ) : this(id, createdAt, filters, name, updatedAt, columns, sorts, mutableMapOf())
+    ) : this(id, createdAt, filters, name, shared, updatedAt, columns, sorts, mutableMapOf())
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -76,6 +78,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun name(): String = name.getRequired("name")
+
+    /**
+     * Whether any user may fetch this screener by id.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun shared(): Boolean = shared.getRequired("shared")
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -128,6 +138,13 @@ private constructor(
     @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
 
     /**
+     * Returns the raw JSON value of [shared].
+     *
+     * Unlike [shared], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("shared") @ExcludeMissing fun _shared(): JsonField<Boolean> = shared
+
+    /**
      * Returns the raw JSON value of [updatedAt].
      *
      * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -173,6 +190,7 @@ private constructor(
          * .createdAt()
          * .filters()
          * .name()
+         * .shared()
          * .updatedAt()
          * ```
          */
@@ -186,6 +204,7 @@ private constructor(
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var filters: JsonField<MutableList<SearchFilter>>? = null
         private var name: JsonField<String>? = null
+        private var shared: JsonField<Boolean>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var columns: JsonField<MutableList<FieldRef>>? = null
         private var sorts: JsonField<MutableList<SortSpec>>? = null
@@ -197,6 +216,7 @@ private constructor(
             createdAt = screenerEntry.createdAt
             filters = screenerEntry.filters.map { it.toMutableList() }
             name = screenerEntry.name
+            shared = screenerEntry.shared
             updatedAt = screenerEntry.updatedAt
             columns = screenerEntry.columns.map { it.toMutableList() }
             sorts = screenerEntry.sorts.map { it.toMutableList() }
@@ -258,6 +278,17 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun name(name: JsonField<String>) = apply { this.name = name }
+
+        /** Whether any user may fetch this screener by id. */
+        fun shared(shared: Boolean) = shared(JsonField.of(shared))
+
+        /**
+         * Sets [Builder.shared] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.shared] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun shared(shared: JsonField<Boolean>) = apply { this.shared = shared }
 
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
 
@@ -355,6 +386,7 @@ private constructor(
          * .createdAt()
          * .filters()
          * .name()
+         * .shared()
          * .updatedAt()
          * ```
          *
@@ -366,6 +398,7 @@ private constructor(
                 checkRequired("createdAt", createdAt),
                 checkRequired("filters", filters).map { it.toImmutable() },
                 checkRequired("name", name),
+                checkRequired("shared", shared),
                 checkRequired("updatedAt", updatedAt),
                 (columns ?: JsonMissing.of()).map { it.toImmutable() },
                 (sorts ?: JsonMissing.of()).map { it.toImmutable() },
@@ -392,6 +425,7 @@ private constructor(
         createdAt()
         filters().forEach { it.validate() }
         name()
+        shared()
         updatedAt()
         columns().ifPresent { it.forEach { it.validate() } }
         sorts().ifPresent { it.forEach { it.validate() } }
@@ -417,6 +451,7 @@ private constructor(
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (filters.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
+            (if (shared.asKnown().isPresent) 1 else 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0) +
             (columns.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (sorts.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
@@ -431,6 +466,7 @@ private constructor(
             createdAt == other.createdAt &&
             filters == other.filters &&
             name == other.name &&
+            shared == other.shared &&
             updatedAt == other.updatedAt &&
             columns == other.columns &&
             sorts == other.sorts &&
@@ -438,11 +474,21 @@ private constructor(
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(id, createdAt, filters, name, updatedAt, columns, sorts, additionalProperties)
+        Objects.hash(
+            id,
+            createdAt,
+            filters,
+            name,
+            shared,
+            updatedAt,
+            columns,
+            sorts,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ScreenerEntry{id=$id, createdAt=$createdAt, filters=$filters, name=$name, updatedAt=$updatedAt, columns=$columns, sorts=$sorts, additionalProperties=$additionalProperties}"
+        "ScreenerEntry{id=$id, createdAt=$createdAt, filters=$filters, name=$name, shared=$shared, updatedAt=$updatedAt, columns=$columns, sorts=$sorts, additionalProperties=$additionalProperties}"
 }

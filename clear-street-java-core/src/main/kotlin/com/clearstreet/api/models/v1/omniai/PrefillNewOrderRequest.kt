@@ -9,6 +9,7 @@ import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.clearstreet.api.models.v1.orders.RequestOrderType
+import com.clearstreet.api.models.v1.orders.RequestPositionEffect
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
 import com.clearstreet.api.models.v1.orders.TrailingOffsetType
@@ -37,6 +38,7 @@ private constructor(
     private val itemId: JsonField<String>,
     private val limitOffset: JsonField<String>,
     private val limitPrice: JsonField<String>,
+    private val positionIntent: JsonField<RequestPositionEffect>,
     private val stopPrice: JsonField<String>,
     private val symbol: JsonField<String>,
     private val trailingOffset: JsonField<String>,
@@ -71,6 +73,9 @@ private constructor(
         @JsonProperty("limit_price")
         @ExcludeMissing
         limitPrice: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("position_intent")
+        @ExcludeMissing
+        positionIntent: JsonField<RequestPositionEffect> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("trailing_offset")
@@ -91,6 +96,7 @@ private constructor(
         itemId,
         limitOffset,
         limitPrice,
+        positionIntent,
         stopPrice,
         symbol,
         trailingOffset,
@@ -189,6 +195,16 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun limitPrice(): Optional<String> = limitPrice.getOptional("limit_price")
+
+    /**
+     * Optional open/close intent for this order. When omitted, the platform determines the position
+     * effect.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun positionIntent(): Optional<RequestPositionEffect> =
+        positionIntent.getOptional("position_intent")
 
     /**
      * Stop price (required for STOP and STOP_LIMIT orders)
@@ -314,6 +330,15 @@ private constructor(
     @JsonProperty("limit_price") @ExcludeMissing fun _limitPrice(): JsonField<String> = limitPrice
 
     /**
+     * Returns the raw JSON value of [positionIntent].
+     *
+     * Unlike [positionIntent], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("position_intent")
+    @ExcludeMissing
+    fun _positionIntent(): JsonField<RequestPositionEffect> = positionIntent
+
+    /**
      * Returns the raw JSON value of [stopPrice].
      *
      * Unlike [stopPrice], this method doesn't throw if the JSON field has an unexpected type.
@@ -388,6 +413,7 @@ private constructor(
         private var itemId: JsonField<String> = JsonMissing.of()
         private var limitOffset: JsonField<String> = JsonMissing.of()
         private var limitPrice: JsonField<String> = JsonMissing.of()
+        private var positionIntent: JsonField<RequestPositionEffect> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
         private var symbol: JsonField<String> = JsonMissing.of()
         private var trailingOffset: JsonField<String> = JsonMissing.of()
@@ -407,6 +433,7 @@ private constructor(
             itemId = prefillNewOrderRequest.itemId
             limitOffset = prefillNewOrderRequest.limitOffset
             limitPrice = prefillNewOrderRequest.limitPrice
+            positionIntent = prefillNewOrderRequest.positionIntent
             stopPrice = prefillNewOrderRequest.stopPrice
             symbol = prefillNewOrderRequest.symbol
             trailingOffset = prefillNewOrderRequest.trailingOffset
@@ -592,6 +619,28 @@ private constructor(
          */
         fun limitPrice(limitPrice: JsonField<String>) = apply { this.limitPrice = limitPrice }
 
+        /**
+         * Optional open/close intent for this order. When omitted, the platform determines the
+         * position effect.
+         */
+        fun positionIntent(positionIntent: RequestPositionEffect?) =
+            positionIntent(JsonField.ofNullable(positionIntent))
+
+        /** Alias for calling [Builder.positionIntent] with `positionIntent.orElse(null)`. */
+        fun positionIntent(positionIntent: Optional<RequestPositionEffect>) =
+            positionIntent(positionIntent.getOrNull())
+
+        /**
+         * Sets [Builder.positionIntent] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.positionIntent] with a well-typed
+         * [RequestPositionEffect] value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
+         */
+        fun positionIntent(positionIntent: JsonField<RequestPositionEffect>) = apply {
+            this.positionIntent = positionIntent
+        }
+
         /** Stop price (required for STOP and STOP_LIMIT orders) */
         fun stopPrice(stopPrice: String?) = stopPrice(JsonField.ofNullable(stopPrice))
 
@@ -712,6 +761,7 @@ private constructor(
                 itemId,
                 limitOffset,
                 limitPrice,
+                positionIntent,
                 stopPrice,
                 symbol,
                 trailingOffset,
@@ -746,6 +796,7 @@ private constructor(
         itemId()
         limitOffset()
         limitPrice()
+        positionIntent().ifPresent { it.validate() }
         stopPrice()
         symbol()
         trailingOffset()
@@ -779,6 +830,7 @@ private constructor(
             (if (itemId.asKnown().isPresent) 1 else 0) +
             (if (limitOffset.asKnown().isPresent) 1 else 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
+            (positionIntent.asKnown().getOrNull()?.validity() ?: 0) +
             (if (stopPrice.asKnown().isPresent) 1 else 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (trailingOffset.asKnown().isPresent) 1 else 0) +
@@ -801,6 +853,7 @@ private constructor(
             itemId == other.itemId &&
             limitOffset == other.limitOffset &&
             limitPrice == other.limitPrice &&
+            positionIntent == other.positionIntent &&
             stopPrice == other.stopPrice &&
             symbol == other.symbol &&
             trailingOffset == other.trailingOffset &&
@@ -821,6 +874,7 @@ private constructor(
             itemId,
             limitOffset,
             limitPrice,
+            positionIntent,
             stopPrice,
             symbol,
             trailingOffset,
@@ -832,5 +886,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PrefillNewOrderRequest{orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, itemId=$itemId, limitOffset=$limitOffset, limitPrice=$limitPrice, stopPrice=$stopPrice, symbol=$symbol, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
+        "PrefillNewOrderRequest{orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, itemId=$itemId, limitOffset=$limitOffset, limitPrice=$limitPrice, positionIntent=$positionIntent, stopPrice=$stopPrice, symbol=$symbol, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
 }

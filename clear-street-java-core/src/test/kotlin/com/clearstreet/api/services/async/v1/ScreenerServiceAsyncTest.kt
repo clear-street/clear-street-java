@@ -85,6 +85,7 @@ internal class ScreenerServiceAsyncTest {
                             .build()
                     )
                     .name("name")
+                    .shared(true)
                     .addSort(
                         SortSpec.builder()
                             .field(
@@ -130,6 +131,21 @@ internal class ScreenerServiceAsyncTest {
 
         val responseFuture =
             screenerServiceAsync.getScreenerById("550e8400-e29b-41d4-a716-446655440000")
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Test
+    fun getScreenerCatalog() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val screenerServiceAsync = client.v1().screener()
+
+        val responseFuture = screenerServiceAsync.getScreenerCatalog()
 
         val response = responseFuture.get()
         response.validate()
@@ -209,6 +225,7 @@ internal class ScreenerServiceAsyncTest {
                             .build()
                     )
                     .name("name")
+                    .shared(true)
                     .addSort(
                         SortSpec.builder()
                             .field(

@@ -248,7 +248,7 @@ private constructor(
     fun quantity(): String = quantity.getRequired("quantity")
 
     /**
-     * Side of the order (BUY, SELL, SELL_SHORT)
+     * Side of the order (BUY or SELL)
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -946,7 +946,7 @@ private constructor(
          */
         fun quantity(quantity: JsonField<String>) = apply { this.quantity = quantity }
 
-        /** Side of the order (BUY, SELL, SELL_SHORT) */
+        /** Side of the order (BUY or SELL) */
         fun side(side: Side) = side(JsonField.of(side))
 
         /**

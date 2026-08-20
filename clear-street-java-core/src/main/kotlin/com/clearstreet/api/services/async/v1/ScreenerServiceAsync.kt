@@ -11,6 +11,8 @@ import com.clearstreet.api.models.v1.screener.ScreenerCreateScreenerResponse
 import com.clearstreet.api.models.v1.screener.ScreenerDeleteScreenerParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerByIdParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerByIdResponse
+import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogParams
+import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogResponse
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersResponse
 import com.clearstreet.api.models.v1.screener.ScreenerReplaceScreenerParams
@@ -143,6 +145,35 @@ interface ScreenerServiceAsync {
         getScreenerById(screenerId, ScreenerGetScreenerByIdParams.none(), requestOptions)
 
     /**
+     * Returns the complete screener field catalog: the field `kinds`, the per-field data, the enum
+     * universes, the request-side `rules`, the built-in variables and modifiers, and the `POST
+     * /screener` default response fields.
+     *
+     * `POST /screener` field references are validated against this catalog; its `rules` object
+     * documents how to compose a valid request.
+     */
+    fun getScreenerCatalog(): CompletableFuture<ScreenerGetScreenerCatalogResponse> =
+        getScreenerCatalog(ScreenerGetScreenerCatalogParams.none())
+
+    /** @see getScreenerCatalog */
+    fun getScreenerCatalog(
+        params: ScreenerGetScreenerCatalogParams = ScreenerGetScreenerCatalogParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ScreenerGetScreenerCatalogResponse>
+
+    /** @see getScreenerCatalog */
+    fun getScreenerCatalog(
+        params: ScreenerGetScreenerCatalogParams = ScreenerGetScreenerCatalogParams.none()
+    ): CompletableFuture<ScreenerGetScreenerCatalogResponse> =
+        getScreenerCatalog(params, RequestOptions.none())
+
+    /** @see getScreenerCatalog */
+    fun getScreenerCatalog(
+        requestOptions: RequestOptions
+    ): CompletableFuture<ScreenerGetScreenerCatalogResponse> =
+        getScreenerCatalog(ScreenerGetScreenerCatalogParams.none(), requestOptions)
+
+    /**
      * List saved screener configurations.
      *
      * Returns all screener configurations for the authenticated user.
@@ -213,12 +244,17 @@ interface ScreenerServiceAsync {
     /**
      * Search instruments using structured filters.
      *
-     * Returns a columnar response where each row is an array of column objects. Each column
-     * contains a human-readable name, a field reference, an optional type hint (e.g. `CURR_USD`,
-     * `PERCENT`), and the value.
+     * Compose a request with `filters`, plus optional `sorts`, `columns`, and
+     * `page_size`/`page_token` for pagination. Each filter pairs a field reference (`left`) with an
+     * operator (`op`, e.g. `GREATER_OR_EQUAL`, `BETWEEN`) and comparison values (`right`), which
+     * can be literals or date variables such as `today` with a modifier. Field names, periods, and
+     * lookbacks come from the screener field catalog. `sorts` order results; `columns` selects
+     * which fields appear in each row (the default field set when omitted).
      *
-     * Use `columns` to select which columns appear in each row. When omitted, the default field set
-     * is returned.
+     * The response is a paginated, columnar list of matching instruments. Each row is an array of
+     * column objects, each with a display `name`, the `field` reference, an optional value `type`
+     * hint (e.g. `CURR_USD`, `PERCENT`), and the `value`. An `instrument_id` column is always
+     * prepended. Metadata carries `total_items`, `total_pages`, and `next_page_token` for paging.
      *
      * Due to the volatility of screener responses we recommend reconciling page results since
      * results can shuffle between calls.
@@ -364,6 +400,32 @@ interface ScreenerServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<ScreenerGetScreenerByIdResponse>> =
             getScreenerById(screenerId, ScreenerGetScreenerByIdParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /v1/screener/catalog`, but is otherwise the same as
+         * [ScreenerServiceAsync.getScreenerCatalog].
+         */
+        fun getScreenerCatalog():
+            CompletableFuture<HttpResponseFor<ScreenerGetScreenerCatalogResponse>> =
+            getScreenerCatalog(ScreenerGetScreenerCatalogParams.none())
+
+        /** @see getScreenerCatalog */
+        fun getScreenerCatalog(
+            params: ScreenerGetScreenerCatalogParams = ScreenerGetScreenerCatalogParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ScreenerGetScreenerCatalogResponse>>
+
+        /** @see getScreenerCatalog */
+        fun getScreenerCatalog(
+            params: ScreenerGetScreenerCatalogParams = ScreenerGetScreenerCatalogParams.none()
+        ): CompletableFuture<HttpResponseFor<ScreenerGetScreenerCatalogResponse>> =
+            getScreenerCatalog(params, RequestOptions.none())
+
+        /** @see getScreenerCatalog */
+        fun getScreenerCatalog(
+            requestOptions: RequestOptions
+        ): CompletableFuture<HttpResponseFor<ScreenerGetScreenerCatalogResponse>> =
+            getScreenerCatalog(ScreenerGetScreenerCatalogParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/saved-screeners`, but is otherwise the same as

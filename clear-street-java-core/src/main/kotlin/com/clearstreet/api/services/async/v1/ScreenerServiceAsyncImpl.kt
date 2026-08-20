@@ -22,6 +22,8 @@ import com.clearstreet.api.models.v1.screener.ScreenerCreateScreenerResponse
 import com.clearstreet.api.models.v1.screener.ScreenerDeleteScreenerParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerByIdParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerByIdResponse
+import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogParams
+import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogResponse
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersResponse
 import com.clearstreet.api.models.v1.screener.ScreenerReplaceScreenerParams
@@ -65,6 +67,13 @@ class ScreenerServiceAsyncImpl internal constructor(private val clientOptions: C
     ): CompletableFuture<ScreenerGetScreenerByIdResponse> =
         // get /v1/saved-screeners/{screener_id}
         withRawResponse().getScreenerById(params, requestOptions).thenApply { it.parse() }
+
+    override fun getScreenerCatalog(
+        params: ScreenerGetScreenerCatalogParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<ScreenerGetScreenerCatalogResponse> =
+        // get /v1/screener/catalog
+        withRawResponse().getScreenerCatalog(params, requestOptions).thenApply { it.parse() }
 
     override fun getScreeners(
         params: ScreenerGetScreenersParams,
@@ -182,6 +191,36 @@ class ScreenerServiceAsyncImpl internal constructor(private val clientOptions: C
                     errorHandler.handle(response).parseable {
                         response
                             .use { getScreenerByIdHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val getScreenerCatalogHandler: Handler<ScreenerGetScreenerCatalogResponse> =
+            jsonHandler<ScreenerGetScreenerCatalogResponse>(clientOptions.jsonMapper)
+
+        override fun getScreenerCatalog(
+            params: ScreenerGetScreenerCatalogParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<ScreenerGetScreenerCatalogResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "screener", "catalog")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { getScreenerCatalogHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

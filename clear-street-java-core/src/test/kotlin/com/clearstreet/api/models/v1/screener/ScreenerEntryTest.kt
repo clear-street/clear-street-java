@@ -56,6 +56,7 @@ internal class ScreenerEntryTest {
                         .build()
                 )
                 .name("name")
+                .shared(true)
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addColumn(
                     FieldRef.builder()
@@ -122,6 +123,7 @@ internal class ScreenerEntryTest {
                     .build()
             )
         assertThat(screenerEntry.name()).isEqualTo("name")
+        assertThat(screenerEntry.shared()).isEqualTo(true)
         assertThat(screenerEntry.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(screenerEntry.columns().getOrNull())
@@ -194,6 +196,7 @@ internal class ScreenerEntryTest {
                         .build()
                 )
                 .name("name")
+                .shared(true)
                 .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addColumn(
                     FieldRef.builder()

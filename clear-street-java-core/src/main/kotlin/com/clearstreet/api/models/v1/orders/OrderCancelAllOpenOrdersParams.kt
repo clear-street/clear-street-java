@@ -474,10 +474,6 @@ private constructor(
 
             @JvmField val SELL = of("SELL")
 
-            @JvmField val SELL_SHORT = of("SELL_SHORT")
-
-            @JvmField val OTHER = of("OTHER")
-
             @JvmStatic fun of(value: String) = Side(JsonField.of(value))
         }
 
@@ -485,8 +481,6 @@ private constructor(
         enum class Known {
             BUY,
             SELL,
-            SELL_SHORT,
-            OTHER,
         }
 
         /**
@@ -501,8 +495,6 @@ private constructor(
         enum class Value {
             BUY,
             SELL,
-            SELL_SHORT,
-            OTHER,
             /** An enum member indicating that [Side] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -518,8 +510,6 @@ private constructor(
             when (this) {
                 BUY -> Value.BUY
                 SELL -> Value.SELL
-                SELL_SHORT -> Value.SELL_SHORT
-                OTHER -> Value.OTHER
                 else -> Value._UNKNOWN
             }
 
@@ -536,8 +526,6 @@ private constructor(
             when (this) {
                 BUY -> Known.BUY
                 SELL -> Known.SELL
-                SELL_SHORT -> Known.SELL_SHORT
-                OTHER -> Known.OTHER
                 else -> throw ClearStreetInvalidDataException("Unknown Side: $value")
             }
 

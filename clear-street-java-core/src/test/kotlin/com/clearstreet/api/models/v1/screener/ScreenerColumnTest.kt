@@ -22,7 +22,7 @@ internal class ScreenerColumnTest {
                         .build()
                 )
                 .name("Market Cap")
-                .value(2890000000000.0)
+                .value("2890000000000")
                 .type("CURR_USD")
                 .build()
 
@@ -36,7 +36,7 @@ internal class ScreenerColumnTest {
                     .build()
             )
         assertThat(screenerColumn.name()).isEqualTo("Market Cap")
-        assertThat(screenerColumn.value()).contains(ScreenerColumn.Value.ofNumber(2890000000000.0))
+        assertThat(screenerColumn.value()).contains(ScreenerColumn.Value.ofString("2890000000000"))
         assertThat(screenerColumn.type()).contains("CURR_USD")
     }
 
@@ -54,7 +54,7 @@ internal class ScreenerColumnTest {
                         .build()
                 )
                 .name("Market Cap")
-                .value(2890000000000.0)
+                .value("2890000000000")
                 .type("CURR_USD")
                 .build()
 

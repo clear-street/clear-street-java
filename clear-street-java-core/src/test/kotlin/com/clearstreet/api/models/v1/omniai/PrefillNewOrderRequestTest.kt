@@ -4,6 +4,7 @@ package com.clearstreet.api.models.v1.omniai
 
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.v1.orders.RequestOrderType
+import com.clearstreet.api.models.v1.orders.RequestPositionEffect
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
 import com.clearstreet.api.models.v1.orders.TrailingOffsetType
@@ -29,6 +30,7 @@ internal class PrefillNewOrderRequestTest {
                 .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .limitOffset("0.50")
                 .limitPrice("48.00")
+                .positionIntent(RequestPositionEffect.OPEN)
                 .stopPrice("52.00")
                 .symbol("TSLA")
                 .trailingOffset("2.00")
@@ -47,6 +49,7 @@ internal class PrefillNewOrderRequestTest {
         assertThat(prefillNewOrderRequest.itemId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(prefillNewOrderRequest.limitOffset()).contains("0.50")
         assertThat(prefillNewOrderRequest.limitPrice()).contains("48.00")
+        assertThat(prefillNewOrderRequest.positionIntent()).contains(RequestPositionEffect.OPEN)
         assertThat(prefillNewOrderRequest.stopPrice()).contains("52.00")
         assertThat(prefillNewOrderRequest.symbol()).contains("TSLA")
         assertThat(prefillNewOrderRequest.trailingOffset()).contains("2.00")
@@ -69,6 +72,7 @@ internal class PrefillNewOrderRequestTest {
                 .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .limitOffset("0.50")
                 .limitPrice("48.00")
+                .positionIntent(RequestPositionEffect.OPEN)
                 .stopPrice("52.00")
                 .symbol("TSLA")
                 .trailingOffset("2.00")

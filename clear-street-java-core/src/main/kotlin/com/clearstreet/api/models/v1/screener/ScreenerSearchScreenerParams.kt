@@ -24,12 +24,17 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Search instruments using structured filters.
  *
- * Returns a columnar response where each row is an array of column objects. Each column contains a
- * human-readable name, a field reference, an optional type hint (e.g. `CURR_USD`, `PERCENT`), and
- * the value.
+ * Compose a request with `filters`, plus optional `sorts`, `columns`, and `page_size`/`page_token`
+ * for pagination. Each filter pairs a field reference (`left`) with an operator (`op`, e.g.
+ * `GREATER_OR_EQUAL`, `BETWEEN`) and comparison values (`right`), which can be literals or date
+ * variables such as `today` with a modifier. Field names, periods, and lookbacks come from the
+ * screener field catalog. `sorts` order results; `columns` selects which fields appear in each row
+ * (the default field set when omitted).
  *
- * Use `columns` to select which columns appear in each row. When omitted, the default field set is
- * returned.
+ * The response is a paginated, columnar list of matching instruments. Each row is an array of
+ * column objects, each with a display `name`, the `field` reference, an optional value `type` hint
+ * (e.g. `CURR_USD`, `PERCENT`), and the `value`. An `instrument_id` column is always prepended.
+ * Metadata carries `total_items`, `total_pages`, and `next_page_token` for paging.
  *
  * Due to the volatility of screener responses we recommend reconciling page results since results
  * can shuffle between calls.

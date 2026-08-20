@@ -58,6 +58,7 @@ internal class ScreenerCreateScreenerParamsTest {
                     .build()
             )
             .name("name")
+            .shared(true)
             .addSort(
                 SortSpec.builder()
                     .field(
@@ -124,6 +125,7 @@ internal class ScreenerCreateScreenerParamsTest {
                         .build()
                 )
                 .name("name")
+                .shared(true)
                 .addSort(
                     SortSpec.builder()
                         .field(
@@ -189,6 +191,7 @@ internal class ScreenerCreateScreenerParamsTest {
                     .build()
             )
         assertThat(body.name()).contains("name")
+        assertThat(body.shared()).contains(true)
         assertThat(body.sorts().getOrNull())
             .containsExactly(
                 SortSpec.builder()

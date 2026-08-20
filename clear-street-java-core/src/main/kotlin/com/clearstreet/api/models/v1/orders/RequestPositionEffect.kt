@@ -7,8 +7,12 @@ import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/** Side of the order (BUY or SELL). */
-class Side @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+/**
+ * Position effect for a multileg strategy leg: client-attested open/close intent. Required on every
+ * leg of a multileg order submission.
+ */
+class RequestPositionEffect @JsonCreator private constructor(private val value: JsonField<String>) :
+    Enum {
 
     /**
      * Returns this class instance's raw value.
@@ -21,32 +25,35 @@ class Side @JsonCreator private constructor(private val value: JsonField<String>
 
     companion object {
 
-        @JvmField val BUY = of("BUY")
+        @JvmField val OPEN = of("OPEN")
 
-        @JvmField val SELL = of("SELL")
+        @JvmField val CLOSE = of("CLOSE")
 
-        @JvmStatic fun of(value: String) = Side(JsonField.of(value))
+        @JvmStatic fun of(value: String) = RequestPositionEffect(JsonField.of(value))
     }
 
-    /** An enum containing [Side]'s known values. */
+    /** An enum containing [RequestPositionEffect]'s known values. */
     enum class Known {
-        BUY,
-        SELL,
+        OPEN,
+        CLOSE,
     }
 
     /**
-     * An enum containing [Side]'s known values, as well as an [_UNKNOWN] member.
+     * An enum containing [RequestPositionEffect]'s known values, as well as an [_UNKNOWN] member.
      *
-     * An instance of [Side] can contain an unknown value in a couple of cases:
+     * An instance of [RequestPositionEffect] can contain an unknown value in a couple of cases:
      * - It was deserialized from data that doesn't match any known member. For example, if the SDK
      *   is on an older version than the API, then the API may respond with new members that the SDK
      *   is unaware of.
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
-        BUY,
-        SELL,
-        /** An enum member indicating that [Side] was instantiated with an unknown value. */
+        OPEN,
+        CLOSE,
+        /**
+         * An enum member indicating that [RequestPositionEffect] was instantiated with an unknown
+         * value.
+         */
         _UNKNOWN,
     }
 
@@ -59,8 +66,8 @@ class Side @JsonCreator private constructor(private val value: JsonField<String>
      */
     fun value(): Value =
         when (this) {
-            BUY -> Value.BUY
-            SELL -> Value.SELL
+            OPEN -> Value.OPEN
+            CLOSE -> Value.CLOSE
             else -> Value._UNKNOWN
         }
 
@@ -75,9 +82,9 @@ class Side @JsonCreator private constructor(private val value: JsonField<String>
      */
     fun known(): Known =
         when (this) {
-            BUY -> Known.BUY
-            SELL -> Known.SELL
-            else -> throw ClearStreetInvalidDataException("Unknown Side: $value")
+            OPEN -> Known.OPEN
+            CLOSE -> Known.CLOSE
+            else -> throw ClearStreetInvalidDataException("Unknown RequestPositionEffect: $value")
         }
 
     /**
@@ -102,7 +109,7 @@ class Side @JsonCreator private constructor(private val value: JsonField<String>
      * @throws ClearStreetInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): Side = apply {
+    fun validate(): RequestPositionEffect = apply {
         if (validated) {
             return@apply
         }
@@ -131,7 +138,7 @@ class Side @JsonCreator private constructor(private val value: JsonField<String>
             return true
         }
 
-        return other is Side && value == other.value
+        return other is RequestPositionEffect && value == other.value
     }
 
     override fun hashCode() = value.hashCode()
