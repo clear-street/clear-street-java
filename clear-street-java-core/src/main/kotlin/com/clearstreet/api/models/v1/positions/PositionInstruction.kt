@@ -33,6 +33,7 @@ private constructor(
     private val acceptedQuantity: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val rejectionReason: JsonField<String>,
+    private val underlyingInstrumentId: JsonField<String>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -64,6 +65,9 @@ private constructor(
         @JsonProperty("rejection_reason")
         @ExcludeMissing
         rejectionReason: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("underlying_instrument_id")
+        @ExcludeMissing
+        underlyingInstrumentId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("updated_at")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -79,6 +83,7 @@ private constructor(
         acceptedQuantity,
         createdAt,
         rejectionReason,
+        underlyingInstrumentId,
         updatedAt,
         mutableMapOf(),
     )
@@ -177,6 +182,16 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun rejectionReason(): Optional<String> = rejectionReason.getOptional("rejection_reason")
+
+    /**
+     * Identifier of the underlying instrument, when available. When a null/undefined value is
+     * observed, it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun underlyingInstrumentId(): Optional<String> =
+        underlyingInstrumentId.getOptional("underlying_instrument_id")
 
     /**
      * When the instruction's lifecycle state last changed. When a null/undefined value is observed,
@@ -281,6 +296,16 @@ private constructor(
     fun _rejectionReason(): JsonField<String> = rejectionReason
 
     /**
+     * Returns the raw JSON value of [underlyingInstrumentId].
+     *
+     * Unlike [underlyingInstrumentId], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("underlying_instrument_id")
+    @ExcludeMissing
+    fun _underlyingInstrumentId(): JsonField<String> = underlyingInstrumentId
+
+    /**
      * Returns the raw JSON value of [updatedAt].
      *
      * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -335,6 +360,7 @@ private constructor(
         private var acceptedQuantity: JsonField<String> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var rejectionReason: JsonField<String> = JsonMissing.of()
+        private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -351,6 +377,7 @@ private constructor(
             acceptedQuantity = positionInstruction.acceptedQuantity
             createdAt = positionInstruction.createdAt
             rejectionReason = positionInstruction.rejectionReason
+            underlyingInstrumentId = positionInstruction.underlyingInstrumentId
             updatedAt = positionInstruction.updatedAt
             additionalProperties = positionInstruction.additionalProperties.toMutableMap()
         }
@@ -524,6 +551,31 @@ private constructor(
         }
 
         /**
+         * Identifier of the underlying instrument, when available. When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
+        fun underlyingInstrumentId(underlyingInstrumentId: String?) =
+            underlyingInstrumentId(JsonField.ofNullable(underlyingInstrumentId))
+
+        /**
+         * Alias for calling [Builder.underlyingInstrumentId] with
+         * `underlyingInstrumentId.orElse(null)`.
+         */
+        fun underlyingInstrumentId(underlyingInstrumentId: Optional<String>) =
+            underlyingInstrumentId(underlyingInstrumentId.getOrNull())
+
+        /**
+         * Sets [Builder.underlyingInstrumentId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.underlyingInstrumentId] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun underlyingInstrumentId(underlyingInstrumentId: JsonField<String>) = apply {
+            this.underlyingInstrumentId = underlyingInstrumentId
+        }
+
+        /**
          * When the instruction's lifecycle state last changed. When a null/undefined value is
          * observed, it indicates that there is no available data.
          */
@@ -592,6 +644,7 @@ private constructor(
                 acceptedQuantity,
                 createdAt,
                 rejectionReason,
+                underlyingInstrumentId,
                 updatedAt,
                 additionalProperties.toMutableMap(),
             )
@@ -623,6 +676,7 @@ private constructor(
         acceptedQuantity()
         createdAt()
         rejectionReason()
+        underlyingInstrumentId()
         updatedAt()
         validated = true
     }
@@ -653,6 +707,7 @@ private constructor(
             (if (acceptedQuantity.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
             (if (rejectionReason.asKnown().isPresent) 1 else 0) +
+            (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
@@ -672,6 +727,7 @@ private constructor(
             acceptedQuantity == other.acceptedQuantity &&
             createdAt == other.createdAt &&
             rejectionReason == other.rejectionReason &&
+            underlyingInstrumentId == other.underlyingInstrumentId &&
             updatedAt == other.updatedAt &&
             additionalProperties == other.additionalProperties
     }
@@ -689,6 +745,7 @@ private constructor(
             acceptedQuantity,
             createdAt,
             rejectionReason,
+            underlyingInstrumentId,
             updatedAt,
             additionalProperties,
         )
@@ -697,5 +754,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PositionInstruction{id=$id, accountId=$accountId, clientInstructionId=$clientInstructionId, instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, status=$status, symbol=$symbol, acceptedQuantity=$acceptedQuantity, createdAt=$createdAt, rejectionReason=$rejectionReason, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "PositionInstruction{id=$id, accountId=$accountId, clientInstructionId=$clientInstructionId, instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, status=$status, symbol=$symbol, acceptedQuantity=$acceptedQuantity, createdAt=$createdAt, rejectionReason=$rejectionReason, underlyingInstrumentId=$underlyingInstrumentId, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

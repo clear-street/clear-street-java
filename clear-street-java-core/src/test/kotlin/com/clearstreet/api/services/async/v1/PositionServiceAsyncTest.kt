@@ -92,6 +92,7 @@ internal class PositionServiceAsyncTest {
                 PositionGetPositionInstructionsParams.builder()
                     .accountId(0L)
                     .instrumentId("x")
+                    .underlyingInstrumentId("x")
                     .build()
             )
 

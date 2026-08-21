@@ -25,6 +25,7 @@ internal class PositionInstructionTest {
                 .acceptedQuantity(null)
                 .createdAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
                 .rejectionReason(null)
+                .underlyingInstrumentId("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
                 .updatedAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
                 .build()
 
@@ -42,6 +43,8 @@ internal class PositionInstructionTest {
         assertThat(positionInstruction.createdAt())
             .contains(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
         assertThat(positionInstruction.rejectionReason()).isEmpty
+        assertThat(positionInstruction.underlyingInstrumentId())
+            .contains("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
         assertThat(positionInstruction.updatedAt())
             .contains(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
     }
@@ -62,6 +65,7 @@ internal class PositionInstructionTest {
                 .acceptedQuantity(null)
                 .createdAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
                 .rejectionReason(null)
+                .underlyingInstrumentId("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
                 .updatedAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
                 .build()
 

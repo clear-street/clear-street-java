@@ -22,6 +22,7 @@ class PositionGetPositionInstructionsParams
 private constructor(
     private val accountId: Long?,
     private val instrumentId: String?,
+    private val underlyingInstrumentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -33,6 +34,13 @@ private constructor(
      * option symbol).
      */
     fun instrumentId(): Optional<String> = Optional.ofNullable(instrumentId)
+
+    /**
+     * Limit results to instructions whose contract has this underlier. Instrument ID (UUID) or
+     * symbol (equity ticker or OSI option symbol). Combined with `instrument_id` as a logical AND
+     * when both are supplied.
+     */
+    fun underlyingInstrumentId(): Optional<String> = Optional.ofNullable(underlyingInstrumentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -58,6 +66,7 @@ private constructor(
 
         private var accountId: Long? = null
         private var instrumentId: String? = null
+        private var underlyingInstrumentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -67,6 +76,7 @@ private constructor(
         ) = apply {
             accountId = positionGetPositionInstructionsParams.accountId
             instrumentId = positionGetPositionInstructionsParams.instrumentId
+            underlyingInstrumentId = positionGetPositionInstructionsParams.underlyingInstrumentId
             additionalHeaders = positionGetPositionInstructionsParams.additionalHeaders.toBuilder()
             additionalQueryParams =
                 positionGetPositionInstructionsParams.additionalQueryParams.toBuilder()
@@ -92,6 +102,22 @@ private constructor(
 
         /** Alias for calling [Builder.instrumentId] with `instrumentId.orElse(null)`. */
         fun instrumentId(instrumentId: Optional<String>) = instrumentId(instrumentId.getOrNull())
+
+        /**
+         * Limit results to instructions whose contract has this underlier. Instrument ID (UUID) or
+         * symbol (equity ticker or OSI option symbol). Combined with `instrument_id` as a logical
+         * AND when both are supplied.
+         */
+        fun underlyingInstrumentId(underlyingInstrumentId: String?) = apply {
+            this.underlyingInstrumentId = underlyingInstrumentId
+        }
+
+        /**
+         * Alias for calling [Builder.underlyingInstrumentId] with
+         * `underlyingInstrumentId.orElse(null)`.
+         */
+        fun underlyingInstrumentId(underlyingInstrumentId: Optional<String>) =
+            underlyingInstrumentId(underlyingInstrumentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -200,6 +226,7 @@ private constructor(
             PositionGetPositionInstructionsParams(
                 accountId,
                 instrumentId,
+                underlyingInstrumentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -217,6 +244,7 @@ private constructor(
         QueryParams.builder()
             .apply {
                 instrumentId?.let { put("instrument_id", it) }
+                underlyingInstrumentId?.let { put("underlying_instrument_id", it) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -229,13 +257,20 @@ private constructor(
         return other is PositionGetPositionInstructionsParams &&
             accountId == other.accountId &&
             instrumentId == other.instrumentId &&
+            underlyingInstrumentId == other.underlyingInstrumentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(accountId, instrumentId, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            accountId,
+            instrumentId,
+            underlyingInstrumentId,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "PositionGetPositionInstructionsParams{accountId=$accountId, instrumentId=$instrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "PositionGetPositionInstructionsParams{accountId=$accountId, instrumentId=$instrumentId, underlyingInstrumentId=$underlyingInstrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
