@@ -20,14 +20,22 @@ import com.clearstreet.api.core.prepare
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketCreateIoiParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketCreateIoiResponse
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketDeleteIoiParams
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetCompanyByIdParams
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetCompanyByIdResponse
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetIoisParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetIoisResponse
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetSpvByIdParams
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetSpvByIdResponse
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketUpdateIoiParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketUpdateIoiResponse
+import com.clearstreet.api.services.blocking.v1.privatemarkets.CompanyService
+import com.clearstreet.api.services.blocking.v1.privatemarkets.CompanyServiceImpl
 import com.clearstreet.api.services.blocking.v1.privatemarkets.IoisService
 import com.clearstreet.api.services.blocking.v1.privatemarkets.IoisServiceImpl
 import com.clearstreet.api.services.blocking.v1.privatemarkets.OfferingService
 import com.clearstreet.api.services.blocking.v1.privatemarkets.OfferingServiceImpl
+import com.clearstreet.api.services.blocking.v1.privatemarkets.SpvService
+import com.clearstreet.api.services.blocking.v1.privatemarkets.SpvServiceImpl
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -42,14 +50,20 @@ class PrivateMarketServiceImpl internal constructor(private val clientOptions: C
         WithRawResponseImpl(clientOptions)
     }
 
+    private val companies: CompanyService by lazy { CompanyServiceImpl(clientOptions) }
+
     private val iois: IoisService by lazy { IoisServiceImpl(clientOptions) }
 
     private val offerings: OfferingService by lazy { OfferingServiceImpl(clientOptions) }
+
+    private val spvs: SpvService by lazy { SpvServiceImpl(clientOptions) }
 
     override fun withRawResponse(): PrivateMarketService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): PrivateMarketService =
         PrivateMarketServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
+
+    override fun companies(): CompanyService = companies
 
     override fun iois(): IoisService = iois
 
@@ -58,6 +72,8 @@ class PrivateMarketServiceImpl internal constructor(private val clientOptions: C
      * holder to hold an accreditation attestation.
      */
     override fun offerings(): OfferingService = offerings
+
+    override fun spvs(): SpvService = spvs
 
     override fun createIoi(
         params: PrivateMarketCreateIoiParams,
@@ -71,12 +87,26 @@ class PrivateMarketServiceImpl internal constructor(private val clientOptions: C
         withRawResponse().deleteIoi(params, requestOptions)
     }
 
+    override fun getCompanyById(
+        params: PrivateMarketGetCompanyByIdParams,
+        requestOptions: RequestOptions,
+    ): PrivateMarketGetCompanyByIdResponse =
+        // get /v1/private-markets/companies/{company_id}
+        withRawResponse().getCompanyById(params, requestOptions).parse()
+
     override fun getIois(
         params: PrivateMarketGetIoisParams,
         requestOptions: RequestOptions,
     ): PrivateMarketGetIoisResponse =
         // get /v1/private-markets/iois
         withRawResponse().getIois(params, requestOptions).parse()
+
+    override fun getSpvById(
+        params: PrivateMarketGetSpvByIdParams,
+        requestOptions: RequestOptions,
+    ): PrivateMarketGetSpvByIdResponse =
+        // get /v1/private-markets/spvs/{spv_id}
+        withRawResponse().getSpvById(params, requestOptions).parse()
 
     override fun updateIoi(
         params: PrivateMarketUpdateIoiParams,
@@ -91,12 +121,20 @@ class PrivateMarketServiceImpl internal constructor(private val clientOptions: C
         private val errorHandler: Handler<HttpResponse> =
             errorHandler(errorBodyHandler(clientOptions.jsonMapper))
 
+        private val companies: CompanyService.WithRawResponse by lazy {
+            CompanyServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val iois: IoisService.WithRawResponse by lazy {
             IoisServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val offerings: OfferingService.WithRawResponse by lazy {
             OfferingServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val spvs: SpvService.WithRawResponse by lazy {
+            SpvServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -106,6 +144,8 @@ class PrivateMarketServiceImpl internal constructor(private val clientOptions: C
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
 
+        override fun companies(): CompanyService.WithRawResponse = companies
+
         override fun iois(): IoisService.WithRawResponse = iois
 
         /**
@@ -113,6 +153,8 @@ class PrivateMarketServiceImpl internal constructor(private val clientOptions: C
          * holder to hold an accreditation attestation.
          */
         override fun offerings(): OfferingService.WithRawResponse = offerings
+
+        override fun spvs(): SpvService.WithRawResponse = spvs
 
         private val createIoiHandler: Handler<PrivateMarketCreateIoiResponse> =
             jsonHandler<PrivateMarketCreateIoiResponse>(clientOptions.jsonMapper)
@@ -166,6 +208,36 @@ class PrivateMarketServiceImpl internal constructor(private val clientOptions: C
             }
         }
 
+        private val getCompanyByIdHandler: Handler<PrivateMarketGetCompanyByIdResponse> =
+            jsonHandler<PrivateMarketGetCompanyByIdResponse>(clientOptions.jsonMapper)
+
+        override fun getCompanyById(
+            params: PrivateMarketGetCompanyByIdParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<PrivateMarketGetCompanyByIdResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("companyId", params.companyId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "private-markets", "companies", params._pathParam(0))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getCompanyByIdHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
         private val getIoisHandler: Handler<PrivateMarketGetIoisResponse> =
             jsonHandler<PrivateMarketGetIoisResponse>(clientOptions.jsonMapper)
 
@@ -185,6 +257,36 @@ class PrivateMarketServiceImpl internal constructor(private val clientOptions: C
             return errorHandler.handle(response).parseable {
                 response
                     .use { getIoisHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val getSpvByIdHandler: Handler<PrivateMarketGetSpvByIdResponse> =
+            jsonHandler<PrivateMarketGetSpvByIdResponse>(clientOptions.jsonMapper)
+
+        override fun getSpvById(
+            params: PrivateMarketGetSpvByIdParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<PrivateMarketGetSpvByIdResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("spvId", params.spvId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "private-markets", "spvs", params._pathParam(0))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getSpvByIdHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

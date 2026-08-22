@@ -6,7 +6,9 @@ import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketCreateIoiParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketDeleteIoiParams
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetCompanyByIdParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetIoisParams
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetSpvByIdParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketUpdateIoiParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -64,6 +66,27 @@ internal class PrivateMarketServiceAsyncTest {
     }
 
     @Test
+    fun getCompanyById() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val privateMarketServiceAsync = client.v1().privateMarkets()
+
+        val responseFuture =
+            privateMarketServiceAsync.getCompanyById(
+                PrivateMarketGetCompanyByIdParams.builder()
+                    .companyId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .accountId(0L)
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Test
     fun getIois() {
         val client =
             ClearStreetOkHttpClientAsync.builder()
@@ -75,6 +98,27 @@ internal class PrivateMarketServiceAsyncTest {
         val responseFuture =
             privateMarketServiceAsync.getIois(
                 PrivateMarketGetIoisParams.builder().accountId(0L).build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Test
+    fun getSpvById() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val privateMarketServiceAsync = client.v1().privateMarkets()
+
+        val responseFuture =
+            privateMarketServiceAsync.getSpvById(
+                PrivateMarketGetSpvByIdParams.builder()
+                    .spvId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .accountId(0L)
+                    .build()
             )
 
         val response = responseFuture.get()

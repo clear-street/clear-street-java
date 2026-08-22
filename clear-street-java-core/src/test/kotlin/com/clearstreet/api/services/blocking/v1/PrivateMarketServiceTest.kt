@@ -6,7 +6,9 @@ import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketCreateIoiParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketDeleteIoiParams
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetCompanyByIdParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetIoisParams
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetSpvByIdParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketUpdateIoiParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -60,6 +62,26 @@ internal class PrivateMarketServiceTest {
     }
 
     @Test
+    fun getCompanyById() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val privateMarketService = client.v1().privateMarkets()
+
+        val response =
+            privateMarketService.getCompanyById(
+                PrivateMarketGetCompanyByIdParams.builder()
+                    .companyId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .accountId(0L)
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Test
     fun getIois() {
         val client =
             ClearStreetOkHttpClient.builder()
@@ -70,6 +92,26 @@ internal class PrivateMarketServiceTest {
 
         val response =
             privateMarketService.getIois(PrivateMarketGetIoisParams.builder().accountId(0L).build())
+
+        response.validate()
+    }
+
+    @Test
+    fun getSpvById() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val privateMarketService = client.v1().privateMarkets()
+
+        val response =
+            privateMarketService.getSpvById(
+                PrivateMarketGetSpvByIdParams.builder()
+                    .spvId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .accountId(0L)
+                    .build()
+            )
 
         response.validate()
     }

@@ -9,12 +9,18 @@ import com.clearstreet.api.core.http.HttpResponseFor
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketCreateIoiParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketCreateIoiResponse
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketDeleteIoiParams
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetCompanyByIdParams
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetCompanyByIdResponse
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetIoisParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetIoisResponse
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetSpvByIdParams
+import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketGetSpvByIdResponse
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketUpdateIoiParams
 import com.clearstreet.api.models.v1.privatemarkets.PrivateMarketUpdateIoiResponse
+import com.clearstreet.api.services.async.v1.privatemarkets.CompanyServiceAsync
 import com.clearstreet.api.services.async.v1.privatemarkets.IoisServiceAsync
 import com.clearstreet.api.services.async.v1.privatemarkets.OfferingServiceAsync
+import com.clearstreet.api.services.async.v1.privatemarkets.SpvServiceAsync
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -36,6 +42,8 @@ interface PrivateMarketServiceAsync {
      */
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): PrivateMarketServiceAsync
 
+    fun companies(): CompanyServiceAsync
+
     fun iois(): IoisServiceAsync
 
     /**
@@ -43,6 +51,8 @@ interface PrivateMarketServiceAsync {
      * holder to hold an accreditation attestation.
      */
     fun offerings(): OfferingServiceAsync
+
+    fun spvs(): SpvServiceAsync
 
     /** Create an IOI for a visible upcoming offering. */
     fun createIoi(
@@ -76,6 +86,37 @@ interface PrivateMarketServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<Void?>
 
+    /**
+     * Fetch one published private-market company with its complete versioned profile. Requires the
+     * account holder to have attested. Returns `404` when the company does not exist or is not yet
+     * published.
+     */
+    fun getCompanyById(
+        companyId: String,
+        params: PrivateMarketGetCompanyByIdParams,
+    ): CompletableFuture<PrivateMarketGetCompanyByIdResponse> =
+        getCompanyById(companyId, params, RequestOptions.none())
+
+    /** @see getCompanyById */
+    fun getCompanyById(
+        companyId: String,
+        params: PrivateMarketGetCompanyByIdParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<PrivateMarketGetCompanyByIdResponse> =
+        getCompanyById(params.toBuilder().companyId(companyId).build(), requestOptions)
+
+    /** @see getCompanyById */
+    fun getCompanyById(
+        params: PrivateMarketGetCompanyByIdParams
+    ): CompletableFuture<PrivateMarketGetCompanyByIdResponse> =
+        getCompanyById(params, RequestOptions.none())
+
+    /** @see getCompanyById */
+    fun getCompanyById(
+        params: PrivateMarketGetCompanyByIdParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<PrivateMarketGetCompanyByIdResponse>
+
     /** List every live IOI for the caller's account-holder entity. */
     fun getIois(
         params: PrivateMarketGetIoisParams
@@ -86,6 +127,37 @@ interface PrivateMarketServiceAsync {
         params: PrivateMarketGetIoisParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<PrivateMarketGetIoisResponse>
+
+    /**
+     * Fetch one private-market SPV's complete economics and fee schedule. Requires the account
+     * holder to have attested. Returns `404` unless the SPV is `OPEN` and attached to a currently
+     * visible `ACTIVE` offering.
+     */
+    fun getSpvById(
+        spvId: String,
+        params: PrivateMarketGetSpvByIdParams,
+    ): CompletableFuture<PrivateMarketGetSpvByIdResponse> =
+        getSpvById(spvId, params, RequestOptions.none())
+
+    /** @see getSpvById */
+    fun getSpvById(
+        spvId: String,
+        params: PrivateMarketGetSpvByIdParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<PrivateMarketGetSpvByIdResponse> =
+        getSpvById(params.toBuilder().spvId(spvId).build(), requestOptions)
+
+    /** @see getSpvById */
+    fun getSpvById(
+        params: PrivateMarketGetSpvByIdParams
+    ): CompletableFuture<PrivateMarketGetSpvByIdResponse> =
+        getSpvById(params, RequestOptions.none())
+
+    /** @see getSpvById */
+    fun getSpvById(
+        params: PrivateMarketGetSpvByIdParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<PrivateMarketGetSpvByIdResponse>
 
     /** Update an IOI's notional, accepting the current NDA revision when required. */
     fun updateIoi(
@@ -128,6 +200,8 @@ interface PrivateMarketServiceAsync {
             modifier: Consumer<ClientOptions.Builder>
         ): PrivateMarketServiceAsync.WithRawResponse
 
+        fun companies(): CompanyServiceAsync.WithRawResponse
+
         fun iois(): IoisServiceAsync.WithRawResponse
 
         /**
@@ -135,6 +209,8 @@ interface PrivateMarketServiceAsync {
          * holder to hold an accreditation attestation.
          */
         fun offerings(): OfferingServiceAsync.WithRawResponse
+
+        fun spvs(): SpvServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /v1/private-markets/iois`, but is otherwise the
@@ -179,6 +255,36 @@ interface PrivateMarketServiceAsync {
         ): CompletableFuture<HttpResponse>
 
         /**
+         * Returns a raw HTTP response for `get /v1/private-markets/companies/{company_id}`, but is
+         * otherwise the same as [PrivateMarketServiceAsync.getCompanyById].
+         */
+        fun getCompanyById(
+            companyId: String,
+            params: PrivateMarketGetCompanyByIdParams,
+        ): CompletableFuture<HttpResponseFor<PrivateMarketGetCompanyByIdResponse>> =
+            getCompanyById(companyId, params, RequestOptions.none())
+
+        /** @see getCompanyById */
+        fun getCompanyById(
+            companyId: String,
+            params: PrivateMarketGetCompanyByIdParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<PrivateMarketGetCompanyByIdResponse>> =
+            getCompanyById(params.toBuilder().companyId(companyId).build(), requestOptions)
+
+        /** @see getCompanyById */
+        fun getCompanyById(
+            params: PrivateMarketGetCompanyByIdParams
+        ): CompletableFuture<HttpResponseFor<PrivateMarketGetCompanyByIdResponse>> =
+            getCompanyById(params, RequestOptions.none())
+
+        /** @see getCompanyById */
+        fun getCompanyById(
+            params: PrivateMarketGetCompanyByIdParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<PrivateMarketGetCompanyByIdResponse>>
+
+        /**
          * Returns a raw HTTP response for `get /v1/private-markets/iois`, but is otherwise the same
          * as [PrivateMarketServiceAsync.getIois].
          */
@@ -192,6 +298,36 @@ interface PrivateMarketServiceAsync {
             params: PrivateMarketGetIoisParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<PrivateMarketGetIoisResponse>>
+
+        /**
+         * Returns a raw HTTP response for `get /v1/private-markets/spvs/{spv_id}`, but is otherwise
+         * the same as [PrivateMarketServiceAsync.getSpvById].
+         */
+        fun getSpvById(
+            spvId: String,
+            params: PrivateMarketGetSpvByIdParams,
+        ): CompletableFuture<HttpResponseFor<PrivateMarketGetSpvByIdResponse>> =
+            getSpvById(spvId, params, RequestOptions.none())
+
+        /** @see getSpvById */
+        fun getSpvById(
+            spvId: String,
+            params: PrivateMarketGetSpvByIdParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<PrivateMarketGetSpvByIdResponse>> =
+            getSpvById(params.toBuilder().spvId(spvId).build(), requestOptions)
+
+        /** @see getSpvById */
+        fun getSpvById(
+            params: PrivateMarketGetSpvByIdParams
+        ): CompletableFuture<HttpResponseFor<PrivateMarketGetSpvByIdResponse>> =
+            getSpvById(params, RequestOptions.none())
+
+        /** @see getSpvById */
+        fun getSpvById(
+            params: PrivateMarketGetSpvByIdParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<PrivateMarketGetSpvByIdResponse>>
 
         /**
          * Returns a raw HTTP response for `patch /v1/private-markets/iois/{ioi_id}`, but is
