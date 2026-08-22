@@ -53,6 +53,10 @@ interface V1ServiceAsync {
     /** View positions and manage position instructions. */
     fun positions(): PositionServiceAsync
 
+    /**
+     * Browse private-market offerings and their indicative terms. Access requires the account
+     * holder to hold an accreditation attestation.
+     */
     fun privateMarkets(): PrivateMarketServiceAsync
 
     /** Search instruments and manage saved screeners. */
@@ -94,6 +98,10 @@ interface V1ServiceAsync {
         /** View positions and manage position instructions. */
         fun positions(): PositionServiceAsync.WithRawResponse
 
+        /**
+         * Browse private-market offerings and their indicative terms. Access requires the account
+         * holder to hold an accreditation attestation.
+         */
         fun privateMarkets(): PrivateMarketServiceAsync.WithRawResponse
 
         /** Search instruments and manage saved screeners. */

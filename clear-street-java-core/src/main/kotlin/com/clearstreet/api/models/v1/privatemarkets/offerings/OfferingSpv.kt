@@ -29,6 +29,7 @@ private constructor(
     private val status: JsonField<SpvStatus>,
     private val custodianName: JsonField<String>,
     private val managerName: JsonField<String>,
+    private val ndaAgreement: JsonField<NdaAgreementResource>,
     private val shareClass: JsonField<String>,
     private val structureDescription: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -45,6 +46,9 @@ private constructor(
         @JsonProperty("manager_name")
         @ExcludeMissing
         managerName: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("nda_agreement")
+        @ExcludeMissing
+        ndaAgreement: JsonField<NdaAgreementResource> = JsonMissing.of(),
         @JsonProperty("share_class")
         @ExcludeMissing
         shareClass: JsonField<String> = JsonMissing.of(),
@@ -57,6 +61,7 @@ private constructor(
         status,
         custodianName,
         managerName,
+        ndaAgreement,
         shareClass,
         structureDescription,
         mutableMapOf(),
@@ -101,6 +106,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun managerName(): Optional<String> = managerName.getOptional("manager_name")
+
+    /**
+     * Current NDA agreement. Absent when this SPV does not require one.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun ndaAgreement(): Optional<NdaAgreementResource> = ndaAgreement.getOptional("nda_agreement")
 
     /**
      * Underlying share class, when specified.
@@ -159,6 +172,15 @@ private constructor(
     fun _managerName(): JsonField<String> = managerName
 
     /**
+     * Returns the raw JSON value of [ndaAgreement].
+     *
+     * Unlike [ndaAgreement], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("nda_agreement")
+    @ExcludeMissing
+    fun _ndaAgreement(): JsonField<NdaAgreementResource> = ndaAgreement
+
+    /**
      * Returns the raw JSON value of [shareClass].
      *
      * Unlike [shareClass], this method doesn't throw if the JSON field has an unexpected type.
@@ -210,6 +232,7 @@ private constructor(
         private var status: JsonField<SpvStatus>? = null
         private var custodianName: JsonField<String> = JsonMissing.of()
         private var managerName: JsonField<String> = JsonMissing.of()
+        private var ndaAgreement: JsonField<NdaAgreementResource> = JsonMissing.of()
         private var shareClass: JsonField<String> = JsonMissing.of()
         private var structureDescription: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -221,6 +244,7 @@ private constructor(
             status = offeringSpv.status
             custodianName = offeringSpv.custodianName
             managerName = offeringSpv.managerName
+            ndaAgreement = offeringSpv.ndaAgreement
             shareClass = offeringSpv.shareClass
             structureDescription = offeringSpv.structureDescription
             additionalProperties = offeringSpv.additionalProperties.toMutableMap()
@@ -293,6 +317,25 @@ private constructor(
          * value.
          */
         fun managerName(managerName: JsonField<String>) = apply { this.managerName = managerName }
+
+        /** Current NDA agreement. Absent when this SPV does not require one. */
+        fun ndaAgreement(ndaAgreement: NdaAgreementResource?) =
+            ndaAgreement(JsonField.ofNullable(ndaAgreement))
+
+        /** Alias for calling [Builder.ndaAgreement] with `ndaAgreement.orElse(null)`. */
+        fun ndaAgreement(ndaAgreement: Optional<NdaAgreementResource>) =
+            ndaAgreement(ndaAgreement.getOrNull())
+
+        /**
+         * Sets [Builder.ndaAgreement] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.ndaAgreement] with a well-typed [NdaAgreementResource]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun ndaAgreement(ndaAgreement: JsonField<NdaAgreementResource>) = apply {
+            this.ndaAgreement = ndaAgreement
+        }
 
         /** Underlying share class, when specified. */
         fun shareClass(shareClass: String?) = shareClass(JsonField.ofNullable(shareClass))
@@ -371,6 +414,7 @@ private constructor(
                 checkRequired("status", status),
                 custodianName,
                 managerName,
+                ndaAgreement,
                 shareClass,
                 structureDescription,
                 additionalProperties.toMutableMap(),
@@ -397,6 +441,7 @@ private constructor(
         status().validate()
         custodianName()
         managerName()
+        ndaAgreement().ifPresent { it.validate() }
         shareClass()
         structureDescription()
         validated = true
@@ -422,6 +467,7 @@ private constructor(
             (status.asKnown().getOrNull()?.validity() ?: 0) +
             (if (custodianName.asKnown().isPresent) 1 else 0) +
             (if (managerName.asKnown().isPresent) 1 else 0) +
+            (ndaAgreement.asKnown().getOrNull()?.validity() ?: 0) +
             (if (shareClass.asKnown().isPresent) 1 else 0) +
             (if (structureDescription.asKnown().isPresent) 1 else 0)
 
@@ -436,6 +482,7 @@ private constructor(
             status == other.status &&
             custodianName == other.custodianName &&
             managerName == other.managerName &&
+            ndaAgreement == other.ndaAgreement &&
             shareClass == other.shareClass &&
             structureDescription == other.structureDescription &&
             additionalProperties == other.additionalProperties
@@ -448,6 +495,7 @@ private constructor(
             status,
             custodianName,
             managerName,
+            ndaAgreement,
             shareClass,
             structureDescription,
             additionalProperties,
@@ -457,5 +505,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OfferingSpv{id=$id, name=$name, status=$status, custodianName=$custodianName, managerName=$managerName, shareClass=$shareClass, structureDescription=$structureDescription, additionalProperties=$additionalProperties}"
+        "OfferingSpv{id=$id, name=$name, status=$status, custodianName=$custodianName, managerName=$managerName, ndaAgreement=$ndaAgreement, shareClass=$shareClass, structureDescription=$structureDescription, additionalProperties=$additionalProperties}"
 }

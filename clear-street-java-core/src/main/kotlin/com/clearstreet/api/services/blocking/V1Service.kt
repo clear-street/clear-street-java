@@ -53,6 +53,10 @@ interface V1Service {
     /** View positions and manage position instructions. */
     fun positions(): PositionService
 
+    /**
+     * Browse private-market offerings and their indicative terms. Access requires the account
+     * holder to hold an accreditation attestation.
+     */
     fun privateMarkets(): PrivateMarketService
 
     /** Search instruments and manage saved screeners. */
@@ -94,6 +98,10 @@ interface V1Service {
         /** View positions and manage position instructions. */
         fun positions(): PositionService.WithRawResponse
 
+        /**
+         * Browse private-market offerings and their indicative terms. Access requires the account
+         * holder to hold an accreditation attestation.
+         */
         fun privateMarkets(): PrivateMarketService.WithRawResponse
 
         /** Search instruments and manage saved screeners. */

@@ -94,6 +94,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     /** View positions and manage position instructions. */
     override fun positions(): PositionServiceAsync = positions
 
+    /**
+     * Browse private-market offerings and their indicative terms. Access requires the account
+     * holder to hold an accreditation attestation.
+     */
     override fun privateMarkets(): PrivateMarketServiceAsync = privateMarkets
 
     /** Search instruments and manage saved screeners. */
@@ -179,6 +183,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         /** View positions and manage position instructions. */
         override fun positions(): PositionServiceAsync.WithRawResponse = positions
 
+        /**
+         * Browse private-market offerings and their indicative terms. Access requires the account
+         * holder to hold an accreditation attestation.
+         */
         override fun privateMarkets(): PrivateMarketServiceAsync.WithRawResponse = privateMarkets
 
         /** Search instruments and manage saved screeners. */

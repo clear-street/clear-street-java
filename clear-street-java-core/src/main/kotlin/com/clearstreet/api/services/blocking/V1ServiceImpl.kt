@@ -87,6 +87,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     /** View positions and manage position instructions. */
     override fun positions(): PositionService = positions
 
+    /**
+     * Browse private-market offerings and their indicative terms. Access requires the account
+     * holder to hold an accreditation attestation.
+     */
     override fun privateMarkets(): PrivateMarketService = privateMarkets
 
     /** Search instruments and manage saved screeners. */
@@ -172,6 +176,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
         /** View positions and manage position instructions. */
         override fun positions(): PositionService.WithRawResponse = positions
 
+        /**
+         * Browse private-market offerings and their indicative terms. Access requires the account
+         * holder to hold an accreditation attestation.
+         */
         override fun privateMarkets(): PrivateMarketService.WithRawResponse = privateMarkets
 
         /** Search instruments and manage saved screeners. */
