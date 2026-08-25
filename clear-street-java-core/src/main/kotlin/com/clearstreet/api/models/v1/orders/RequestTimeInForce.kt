@@ -32,9 +32,9 @@ class RequestTimeInForce @JsonCreator private constructor(private val value: Jso
 
         @JvmField val GOOD_TILL_DATE = of("GOOD_TILL_DATE")
 
-        @JvmField val AT_THE_OPENING = of("AT_THE_OPENING")
+        @JvmField val AT_OPEN = of("AT_OPEN")
 
-        @JvmField val AT_THE_CLOSE = of("AT_THE_CLOSE")
+        @JvmField val AT_CLOSE = of("AT_CLOSE")
 
         @JvmStatic fun of(value: String) = RequestTimeInForce(JsonField.of(value))
     }
@@ -46,8 +46,8 @@ class RequestTimeInForce @JsonCreator private constructor(private val value: Jso
         IMMEDIATE_OR_CANCEL,
         FILL_OR_KILL,
         GOOD_TILL_DATE,
-        AT_THE_OPENING,
-        AT_THE_CLOSE,
+        AT_OPEN,
+        AT_CLOSE,
     }
 
     /**
@@ -65,8 +65,8 @@ class RequestTimeInForce @JsonCreator private constructor(private val value: Jso
         IMMEDIATE_OR_CANCEL,
         FILL_OR_KILL,
         GOOD_TILL_DATE,
-        AT_THE_OPENING,
-        AT_THE_CLOSE,
+        AT_OPEN,
+        AT_CLOSE,
         /**
          * An enum member indicating that [RequestTimeInForce] was instantiated with an unknown
          * value.
@@ -88,8 +88,8 @@ class RequestTimeInForce @JsonCreator private constructor(private val value: Jso
             IMMEDIATE_OR_CANCEL -> Value.IMMEDIATE_OR_CANCEL
             FILL_OR_KILL -> Value.FILL_OR_KILL
             GOOD_TILL_DATE -> Value.GOOD_TILL_DATE
-            AT_THE_OPENING -> Value.AT_THE_OPENING
-            AT_THE_CLOSE -> Value.AT_THE_CLOSE
+            AT_OPEN -> Value.AT_OPEN
+            AT_CLOSE -> Value.AT_CLOSE
             else -> Value._UNKNOWN
         }
 
@@ -109,8 +109,8 @@ class RequestTimeInForce @JsonCreator private constructor(private val value: Jso
             IMMEDIATE_OR_CANCEL -> Known.IMMEDIATE_OR_CANCEL
             FILL_OR_KILL -> Known.FILL_OR_KILL
             GOOD_TILL_DATE -> Known.GOOD_TILL_DATE
-            AT_THE_OPENING -> Known.AT_THE_OPENING
-            AT_THE_CLOSE -> Known.AT_THE_CLOSE
+            AT_OPEN -> Known.AT_OPEN
+            AT_CLOSE -> Known.AT_CLOSE
             else -> throw ClearStreetInvalidDataException("Unknown RequestTimeInForce: $value")
         }
 

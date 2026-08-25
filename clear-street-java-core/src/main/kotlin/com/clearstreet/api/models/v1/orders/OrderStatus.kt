@@ -23,6 +23,10 @@ class OrderStatus @JsonCreator private constructor(private val value: JsonField<
 
         @JvmField val PENDING_NEW = of("PENDING_NEW")
 
+        @JvmField val QUEUED = of("QUEUED")
+
+        @JvmField val PENDING_TRIGGER = of("PENDING_TRIGGER")
+
         @JvmField val NEW = of("NEW")
 
         @JvmField val PARTIALLY_FILLED = of("PARTIALLY_FILLED")
@@ -57,6 +61,8 @@ class OrderStatus @JsonCreator private constructor(private val value: JsonField<
     /** An enum containing [OrderStatus]'s known values. */
     enum class Known {
         PENDING_NEW,
+        QUEUED,
+        PENDING_TRIGGER,
         NEW,
         PARTIALLY_FILLED,
         FILLED,
@@ -84,6 +90,8 @@ class OrderStatus @JsonCreator private constructor(private val value: JsonField<
      */
     enum class Value {
         PENDING_NEW,
+        QUEUED,
+        PENDING_TRIGGER,
         NEW,
         PARTIALLY_FILLED,
         FILLED,
@@ -112,6 +120,8 @@ class OrderStatus @JsonCreator private constructor(private val value: JsonField<
     fun value(): Value =
         when (this) {
             PENDING_NEW -> Value.PENDING_NEW
+            QUEUED -> Value.QUEUED
+            PENDING_TRIGGER -> Value.PENDING_TRIGGER
             NEW -> Value.NEW
             PARTIALLY_FILLED -> Value.PARTIALLY_FILLED
             FILLED -> Value.FILLED
@@ -141,6 +151,8 @@ class OrderStatus @JsonCreator private constructor(private val value: JsonField<
     fun known(): Known =
         when (this) {
             PENDING_NEW -> Known.PENDING_NEW
+            QUEUED -> Known.QUEUED
+            PENDING_TRIGGER -> Known.PENDING_TRIGGER
             NEW -> Known.NEW
             PARTIALLY_FILLED -> Known.PARTIALLY_FILLED
             FILLED -> Known.FILLED
