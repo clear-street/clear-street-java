@@ -56,6 +56,9 @@ interface InstrumentDataService {
      *   once both bounds are given.
      * - Filtered (with `instrument_ids`): a 30-day lookback ending on the anchor (`from_date` =
      *   anchor − 30 days, `to_date` = anchor).
+     *
+     * Pagination metadata does not include `total_items` or `total_pages` for this endpoint. Use
+     * `next_page_token` to detect whether more results exist.
      */
     fun getAllInstrumentEvents(): InstrumentDataGetAllInstrumentEventsResponse =
         getAllInstrumentEvents(InstrumentDataGetAllInstrumentEventsParams.none())
@@ -141,6 +144,9 @@ interface InstrumentDataService {
      * Date range defaults:
      * - `from_date`: None (no lower bound)
      * - `to_date`: None (no upper bound)
+     *
+     * Pagination metadata does not include `total_items` or `total_pages` for this endpoint. Use
+     * `next_page_token` to detect whether more results exist.
      */
     fun getInstrumentBalanceSheetStatements(
         instrumentId: String
@@ -198,6 +204,9 @@ interface InstrumentDataService {
      *
      * Retrieves historical cash flow statements for the specified instrument. Cash flow statements
      * show cash inflows and outflows from operating, investing, and financing activities.
+     *
+     * Pagination metadata does not include `total_items` or `total_pages` for this endpoint. Use
+     * `next_page_token` to detect whether more results exist.
      */
     fun getInstrumentCashFlowStatements(
         instrumentId: String
@@ -360,6 +369,9 @@ interface InstrumentDataService {
      * Date range defaults:
      * - `from_date`: None (no lower bound)
      * - `to_date`: None (no upper bound)
+     *
+     * Pagination metadata does not include `total_items` or `total_pages` for this endpoint. Use
+     * `next_page_token` to detect whether more results exist.
      */
     fun getInstrumentIncomeStatements(
         instrumentId: String

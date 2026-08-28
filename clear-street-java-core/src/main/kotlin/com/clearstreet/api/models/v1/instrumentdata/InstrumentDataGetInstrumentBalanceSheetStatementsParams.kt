@@ -18,6 +18,9 @@ import kotlin.jvm.optionals.getOrNull
  * Date range defaults:
  * - `from_date`: None (no lower bound)
  * - `to_date`: None (no upper bound)
+ *
+ * Pagination metadata does not include `total_items` or `total_pages` for this endpoint. Use
+ * `next_page_token` to detect whether more results exist.
  */
 class InstrumentDataGetInstrumentBalanceSheetStatementsParams
 private constructor(

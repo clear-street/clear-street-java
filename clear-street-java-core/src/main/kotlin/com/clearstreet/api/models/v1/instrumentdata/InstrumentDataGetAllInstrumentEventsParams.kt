@@ -21,6 +21,9 @@ import kotlin.jvm.optionals.getOrNull
  *   both bounds are given.
  * - Filtered (with `instrument_ids`): a 30-day lookback ending on the anchor (`from_date` = anchor
  *   − 30 days, `to_date` = anchor).
+ *
+ * Pagination metadata does not include `total_items` or `total_pages` for this endpoint. Use
+ * `next_page_token` to detect whether more results exist.
  */
 class InstrumentDataGetAllInstrumentEventsParams
 private constructor(
