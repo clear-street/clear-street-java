@@ -23,6 +23,14 @@ internal class OrderGetOrdersParamsTest {
             .symbol("symbol")
             .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .addUnderlyingInstrumentId("x")
+            .updatedAt(
+                OrderGetOrdersParams.UpdatedAt.builder()
+                    .gt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .gte(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .lt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .lte(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .build()
+            )
             .build()
     }
 
@@ -50,6 +58,14 @@ internal class OrderGetOrdersParamsTest {
                 .symbol("symbol")
                 .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .addUnderlyingInstrumentId("x")
+                .updatedAt(
+                    OrderGetOrdersParams.UpdatedAt.builder()
+                        .gt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .gte(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .lt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .lte(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .build()
+                )
                 .build()
 
         val queryParams = params._queryParams()
@@ -67,6 +83,10 @@ internal class OrderGetOrdersParamsTest {
                     .put("symbol", "symbol")
                     .put("to", "2019-12-27T18:11:19.117Z")
                     .put("underlying_instrument_ids", listOf("x").joinToString(","))
+                    .put("updated_at[gt]", "2019-12-27T18:11:19.117Z")
+                    .put("updated_at[gte]", "2019-12-27T18:11:19.117Z")
+                    .put("updated_at[lt]", "2019-12-27T18:11:19.117Z")
+                    .put("updated_at[lte]", "2019-12-27T18:11:19.117Z")
                     .build()
             )
     }

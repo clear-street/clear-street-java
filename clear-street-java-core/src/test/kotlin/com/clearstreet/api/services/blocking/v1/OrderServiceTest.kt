@@ -131,6 +131,14 @@ internal class OrderServiceTest {
                     .symbol("symbol")
                     .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .addUnderlyingInstrumentId("x")
+                    .updatedAt(
+                        OrderGetOrdersParams.UpdatedAt.builder()
+                            .gt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .gte(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .lt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .lte(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .build()
+                    )
                     .build()
             )
 

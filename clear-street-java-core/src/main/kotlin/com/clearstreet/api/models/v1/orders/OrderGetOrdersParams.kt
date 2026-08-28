@@ -30,6 +30,7 @@ private constructor(
     private val symbol: String?,
     private val to: OffsetDateTime?,
     private val underlyingInstrumentIds: List<String>?,
+    private val updatedAt: UpdatedAt?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -76,6 +77,8 @@ private constructor(
     fun underlyingInstrumentIds(): Optional<List<String>> =
         Optional.ofNullable(underlyingInstrumentIds)
 
+    fun updatedAt(): Optional<UpdatedAt> = Optional.ofNullable(updatedAt)
+
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
 
@@ -106,6 +109,7 @@ private constructor(
         private var symbol: String? = null
         private var to: OffsetDateTime? = null
         private var underlyingInstrumentIds: MutableList<String>? = null
+        private var updatedAt: UpdatedAt? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -122,6 +126,7 @@ private constructor(
             symbol = orderGetOrdersParams.symbol
             to = orderGetOrdersParams.to
             underlyingInstrumentIds = orderGetOrdersParams.underlyingInstrumentIds?.toMutableList()
+            updatedAt = orderGetOrdersParams.updatedAt
             additionalHeaders = orderGetOrdersParams.additionalHeaders.toBuilder()
             additionalQueryParams = orderGetOrdersParams.additionalQueryParams.toBuilder()
         }
@@ -265,6 +270,11 @@ private constructor(
                 (underlyingInstrumentIds ?: mutableListOf()).apply { add(underlyingInstrumentId) }
         }
 
+        fun updatedAt(updatedAt: UpdatedAt?) = apply { this.updatedAt = updatedAt }
+
+        /** Alias for calling [Builder.updatedAt] with `updatedAt.orElse(null)`. */
+        fun updatedAt(updatedAt: Optional<UpdatedAt>) = updatedAt(updatedAt.getOrNull())
+
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
             putAllAdditionalHeaders(additionalHeaders)
@@ -381,6 +391,7 @@ private constructor(
                 symbol,
                 to,
                 underlyingInstrumentIds?.toImmutable(),
+                updatedAt,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -408,6 +419,25 @@ private constructor(
                 to?.let { put("to", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 underlyingInstrumentIds?.let {
                     put("underlying_instrument_ids", it.joinToString(","))
+                }
+                updatedAt?.let {
+                    it.gt().ifPresent {
+                        put("updated_at[gt]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
+                    }
+                    it.gte().ifPresent {
+                        put("updated_at[gte]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
+                    }
+                    it.lt().ifPresent {
+                        put("updated_at[lt]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
+                    }
+                    it.lte().ifPresent {
+                        put("updated_at[lte]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
+                    }
+                    it._additionalProperties().keys().forEach { key ->
+                        it._additionalProperties().values(key).forEach { value ->
+                            put("updated_at[$key]", value)
+                        }
+                    }
                 }
                 putAll(additionalQueryParams)
             }
@@ -793,6 +823,150 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    class UpdatedAt
+    private constructor(
+        private val gt: OffsetDateTime?,
+        private val gte: OffsetDateTime?,
+        private val lt: OffsetDateTime?,
+        private val lte: OffsetDateTime?,
+        private val additionalProperties: QueryParams,
+    ) {
+
+        fun gt(): Optional<OffsetDateTime> = Optional.ofNullable(gt)
+
+        fun gte(): Optional<OffsetDateTime> = Optional.ofNullable(gte)
+
+        fun lt(): Optional<OffsetDateTime> = Optional.ofNullable(lt)
+
+        fun lte(): Optional<OffsetDateTime> = Optional.ofNullable(lte)
+
+        /** Query params to send with the request. */
+        fun _additionalProperties(): QueryParams = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [UpdatedAt]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [UpdatedAt]. */
+        class Builder internal constructor() {
+
+            private var gt: OffsetDateTime? = null
+            private var gte: OffsetDateTime? = null
+            private var lt: OffsetDateTime? = null
+            private var lte: OffsetDateTime? = null
+            private var additionalProperties: QueryParams.Builder = QueryParams.builder()
+
+            @JvmSynthetic
+            internal fun from(updatedAt: UpdatedAt) = apply {
+                gt = updatedAt.gt
+                gte = updatedAt.gte
+                lt = updatedAt.lt
+                lte = updatedAt.lte
+                additionalProperties = updatedAt.additionalProperties.toBuilder()
+            }
+
+            fun gt(gt: OffsetDateTime?) = apply { this.gt = gt }
+
+            /** Alias for calling [Builder.gt] with `gt.orElse(null)`. */
+            fun gt(gt: Optional<OffsetDateTime>) = gt(gt.getOrNull())
+
+            fun gte(gte: OffsetDateTime?) = apply { this.gte = gte }
+
+            /** Alias for calling [Builder.gte] with `gte.orElse(null)`. */
+            fun gte(gte: Optional<OffsetDateTime>) = gte(gte.getOrNull())
+
+            fun lt(lt: OffsetDateTime?) = apply { this.lt = lt }
+
+            /** Alias for calling [Builder.lt] with `lt.orElse(null)`. */
+            fun lt(lt: Optional<OffsetDateTime>) = lt(lt.getOrNull())
+
+            fun lte(lte: OffsetDateTime?) = apply { this.lte = lte }
+
+            /** Alias for calling [Builder.lte] with `lte.orElse(null)`. */
+            fun lte(lte: Optional<OffsetDateTime>) = lte(lte.getOrNull())
+
+            fun additionalProperties(additionalProperties: QueryParams) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, Iterable<String>>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: String) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAdditionalProperties(key: String, values: Iterable<String>) = apply {
+                additionalProperties.put(key, values)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: QueryParams) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, Iterable<String>>) =
+                apply {
+                    this.additionalProperties.putAll(additionalProperties)
+                }
+
+            fun replaceAdditionalProperties(key: String, value: String) = apply {
+                additionalProperties.replace(key, value)
+            }
+
+            fun replaceAdditionalProperties(key: String, values: Iterable<String>) = apply {
+                additionalProperties.replace(key, values)
+            }
+
+            fun replaceAllAdditionalProperties(additionalProperties: QueryParams) = apply {
+                this.additionalProperties.replaceAll(additionalProperties)
+            }
+
+            fun replaceAllAdditionalProperties(
+                additionalProperties: Map<String, Iterable<String>>
+            ) = apply { this.additionalProperties.replaceAll(additionalProperties) }
+
+            fun removeAdditionalProperties(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                additionalProperties.removeAll(keys)
+            }
+
+            /**
+             * Returns an immutable instance of [UpdatedAt].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): UpdatedAt = UpdatedAt(gt, gte, lt, lte, additionalProperties.build())
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is UpdatedAt &&
+                gt == other.gt &&
+                gte == other.gte &&
+                lt == other.lt &&
+                lte == other.lte &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(gt, gte, lt, lte, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "UpdatedAt{gt=$gt, gte=$gte, lt=$lt, lte=$lte, additionalProperties=$additionalProperties}"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -810,6 +984,7 @@ private constructor(
             symbol == other.symbol &&
             to == other.to &&
             underlyingInstrumentIds == other.underlyingInstrumentIds &&
+            updatedAt == other.updatedAt &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -827,10 +1002,11 @@ private constructor(
             symbol,
             to,
             underlyingInstrumentIds,
+            updatedAt,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "OrderGetOrdersParams{accountId=$accountId, from=$from, instrumentIds=$instrumentIds, instrumentType=$instrumentType, orderIds=$orderIds, pageSize=$pageSize, pageToken=$pageToken, status=$status, symbol=$symbol, to=$to, underlyingInstrumentIds=$underlyingInstrumentIds, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "OrderGetOrdersParams{accountId=$accountId, from=$from, instrumentIds=$instrumentIds, instrumentType=$instrumentType, orderIds=$orderIds, pageSize=$pageSize, pageToken=$pageToken, status=$status, symbol=$symbol, to=$to, underlyingInstrumentIds=$underlyingInstrumentIds, updatedAt=$updatedAt, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
