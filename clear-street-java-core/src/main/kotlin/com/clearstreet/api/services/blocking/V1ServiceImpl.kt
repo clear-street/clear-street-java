@@ -15,6 +15,8 @@ import com.clearstreet.api.services.blocking.v1.InstrumentService
 import com.clearstreet.api.services.blocking.v1.InstrumentServiceImpl
 import com.clearstreet.api.services.blocking.v1.OmniAiService
 import com.clearstreet.api.services.blocking.v1.OmniAiServiceImpl
+import com.clearstreet.api.services.blocking.v1.OmniFeedService
+import com.clearstreet.api.services.blocking.v1.OmniFeedServiceImpl
 import com.clearstreet.api.services.blocking.v1.OrderService
 import com.clearstreet.api.services.blocking.v1.OrderServiceImpl
 import com.clearstreet.api.services.blocking.v1.PositionService
@@ -45,6 +47,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     private val omniAi: OmniAiService by lazy { OmniAiServiceImpl(clientOptions) }
 
+    private val omniFeed: OmniFeedService by lazy { OmniFeedServiceImpl(clientOptions) }
+
     private val orders: OrderService by lazy { OrderServiceImpl(clientOptions) }
 
     private val positions: PositionService by lazy { PositionServiceImpl(clientOptions) }
@@ -74,6 +78,13 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     override fun instruments(): InstrumentService = instruments
 
     override fun omniAi(): OmniAiService = omniAi
+
+    /**
+     * Personalized feed of market stories: upcoming earnings, dividends, and splits, plus market
+     * news. Served per caller in a stable order; item ids double as pagination cursors, so any
+     * previously returned page can be re-read.
+     */
+    override fun omniFeed(): OmniFeedService = omniFeed
 
     /** Place, monitor, and manage trading orders. */
     override fun orders(): OrderService = orders
@@ -112,6 +123,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         private val omniAi: OmniAiService.WithRawResponse by lazy {
             OmniAiServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val omniFeed: OmniFeedService.WithRawResponse by lazy {
+            OmniFeedServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val orders: OrderService.WithRawResponse by lazy {
@@ -153,6 +168,13 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
         override fun instruments(): InstrumentService.WithRawResponse = instruments
 
         override fun omniAi(): OmniAiService.WithRawResponse = omniAi
+
+        /**
+         * Personalized feed of market stories: upcoming earnings, dividends, and splits, plus
+         * market news. Served per caller in a stable order; item ids double as pagination cursors,
+         * so any previously returned page can be re-read.
+         */
+        override fun omniFeed(): OmniFeedService.WithRawResponse = omniFeed
 
         /** Place, monitor, and manage trading orders. */
         override fun orders(): OrderService.WithRawResponse = orders

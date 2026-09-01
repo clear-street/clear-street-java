@@ -9,6 +9,7 @@ import com.clearstreet.api.services.blocking.v1.CalendarService
 import com.clearstreet.api.services.blocking.v1.InstrumentDataService
 import com.clearstreet.api.services.blocking.v1.InstrumentService
 import com.clearstreet.api.services.blocking.v1.OmniAiService
+import com.clearstreet.api.services.blocking.v1.OmniFeedService
 import com.clearstreet.api.services.blocking.v1.OrderService
 import com.clearstreet.api.services.blocking.v1.PositionService
 import com.clearstreet.api.services.blocking.v1.ScreenerService
@@ -45,6 +46,13 @@ interface V1Service {
     fun instruments(): InstrumentService
 
     fun omniAi(): OmniAiService
+
+    /**
+     * Personalized feed of market stories: upcoming earnings, dividends, and splits, plus market
+     * news. Served per caller in a stable order; item ids double as pagination cursors, so any
+     * previously returned page can be re-read.
+     */
+    fun omniFeed(): OmniFeedService
 
     /** Place, monitor, and manage trading orders. */
     fun orders(): OrderService
@@ -84,6 +92,13 @@ interface V1Service {
         fun instruments(): InstrumentService.WithRawResponse
 
         fun omniAi(): OmniAiService.WithRawResponse
+
+        /**
+         * Personalized feed of market stories: upcoming earnings, dividends, and splits, plus
+         * market news. Served per caller in a stable order; item ids double as pagination cursors,
+         * so any previously returned page can be re-read.
+         */
+        fun omniFeed(): OmniFeedService.WithRawResponse
 
         /** Place, monitor, and manage trading orders. */
         fun orders(): OrderService.WithRawResponse

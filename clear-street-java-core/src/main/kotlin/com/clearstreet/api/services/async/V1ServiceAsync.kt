@@ -9,6 +9,7 @@ import com.clearstreet.api.services.async.v1.CalendarServiceAsync
 import com.clearstreet.api.services.async.v1.InstrumentDataServiceAsync
 import com.clearstreet.api.services.async.v1.InstrumentServiceAsync
 import com.clearstreet.api.services.async.v1.OmniAiServiceAsync
+import com.clearstreet.api.services.async.v1.OmniFeedServiceAsync
 import com.clearstreet.api.services.async.v1.OrderServiceAsync
 import com.clearstreet.api.services.async.v1.PositionServiceAsync
 import com.clearstreet.api.services.async.v1.ScreenerServiceAsync
@@ -45,6 +46,13 @@ interface V1ServiceAsync {
     fun instruments(): InstrumentServiceAsync
 
     fun omniAi(): OmniAiServiceAsync
+
+    /**
+     * Personalized feed of market stories: upcoming earnings, dividends, and splits, plus market
+     * news. Served per caller in a stable order; item ids double as pagination cursors, so any
+     * previously returned page can be re-read.
+     */
+    fun omniFeed(): OmniFeedServiceAsync
 
     /** Place, monitor, and manage trading orders. */
     fun orders(): OrderServiceAsync
@@ -84,6 +92,13 @@ interface V1ServiceAsync {
         fun instruments(): InstrumentServiceAsync.WithRawResponse
 
         fun omniAi(): OmniAiServiceAsync.WithRawResponse
+
+        /**
+         * Personalized feed of market stories: upcoming earnings, dividends, and splits, plus
+         * market news. Served per caller in a stable order; item ids double as pagination cursors,
+         * so any previously returned page can be re-read.
+         */
+        fun omniFeed(): OmniFeedServiceAsync.WithRawResponse
 
         /** Place, monitor, and manage trading orders. */
         fun orders(): OrderServiceAsync.WithRawResponse

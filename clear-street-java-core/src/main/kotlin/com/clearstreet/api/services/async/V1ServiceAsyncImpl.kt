@@ -15,6 +15,8 @@ import com.clearstreet.api.services.async.v1.InstrumentServiceAsync
 import com.clearstreet.api.services.async.v1.InstrumentServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.OmniAiServiceAsync
 import com.clearstreet.api.services.async.v1.OmniAiServiceAsyncImpl
+import com.clearstreet.api.services.async.v1.OmniFeedServiceAsync
+import com.clearstreet.api.services.async.v1.OmniFeedServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.OrderServiceAsync
 import com.clearstreet.api.services.async.v1.OrderServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.PositionServiceAsync
@@ -50,6 +52,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     private val omniAi: OmniAiServiceAsync by lazy { OmniAiServiceAsyncImpl(clientOptions) }
 
+    private val omniFeed: OmniFeedServiceAsync by lazy { OmniFeedServiceAsyncImpl(clientOptions) }
+
     private val orders: OrderServiceAsync by lazy { OrderServiceAsyncImpl(clientOptions) }
 
     private val positions: PositionServiceAsync by lazy { PositionServiceAsyncImpl(clientOptions) }
@@ -81,6 +85,13 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     override fun instruments(): InstrumentServiceAsync = instruments
 
     override fun omniAi(): OmniAiServiceAsync = omniAi
+
+    /**
+     * Personalized feed of market stories: upcoming earnings, dividends, and splits, plus market
+     * news. Served per caller in a stable order; item ids double as pagination cursors, so any
+     * previously returned page can be re-read.
+     */
+    override fun omniFeed(): OmniFeedServiceAsync = omniFeed
 
     /** Place, monitor, and manage trading orders. */
     override fun orders(): OrderServiceAsync = orders
@@ -119,6 +130,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         private val omniAi: OmniAiServiceAsync.WithRawResponse by lazy {
             OmniAiServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val omniFeed: OmniFeedServiceAsync.WithRawResponse by lazy {
+            OmniFeedServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val orders: OrderServiceAsync.WithRawResponse by lazy {
@@ -160,6 +175,13 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         override fun instruments(): InstrumentServiceAsync.WithRawResponse = instruments
 
         override fun omniAi(): OmniAiServiceAsync.WithRawResponse = omniAi
+
+        /**
+         * Personalized feed of market stories: upcoming earnings, dividends, and splits, plus
+         * market news. Served per caller in a stable order; item ids double as pagination cursors,
+         * so any previously returned page can be re-read.
+         */
+        override fun omniFeed(): OmniFeedServiceAsync.WithRawResponse = omniFeed
 
         /** Place, monitor, and manage trading orders. */
         override fun orders(): OrderServiceAsync.WithRawResponse = orders
