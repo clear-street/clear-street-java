@@ -11,7 +11,6 @@ import com.clearstreet.api.services.async.v1.InstrumentServiceAsync
 import com.clearstreet.api.services.async.v1.OmniAiServiceAsync
 import com.clearstreet.api.services.async.v1.OrderServiceAsync
 import com.clearstreet.api.services.async.v1.PositionServiceAsync
-import com.clearstreet.api.services.async.v1.PrivateMarketServiceAsync
 import com.clearstreet.api.services.async.v1.ScreenerServiceAsync
 import com.clearstreet.api.services.async.v1.WatchlistServiceAsync
 import java.util.function.Consumer
@@ -53,12 +52,6 @@ interface V1ServiceAsync {
     /** View positions and manage position instructions. */
     fun positions(): PositionServiceAsync
 
-    /**
-     * Browse private-market offerings and their indicative terms. Access requires the account
-     * holder to hold an accreditation attestation.
-     */
-    fun privateMarkets(): PrivateMarketServiceAsync
-
     /** Search instruments and manage saved screeners. */
     fun screener(): ScreenerServiceAsync
 
@@ -97,12 +90,6 @@ interface V1ServiceAsync {
 
         /** View positions and manage position instructions. */
         fun positions(): PositionServiceAsync.WithRawResponse
-
-        /**
-         * Browse private-market offerings and their indicative terms. Access requires the account
-         * holder to hold an accreditation attestation.
-         */
-        fun privateMarkets(): PrivateMarketServiceAsync.WithRawResponse
 
         /** Search instruments and manage saved screeners. */
         fun screener(): ScreenerServiceAsync.WithRawResponse

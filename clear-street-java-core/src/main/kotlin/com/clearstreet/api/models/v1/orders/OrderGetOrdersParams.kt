@@ -832,12 +832,16 @@ private constructor(
         private val additionalProperties: QueryParams,
     ) {
 
+        /** **Alpha** — this parameter is experimental and may change or be removed at any time. */
         fun gt(): Optional<OffsetDateTime> = Optional.ofNullable(gt)
 
+        /** **Alpha** — this parameter is experimental and may change or be removed at any time. */
         fun gte(): Optional<OffsetDateTime> = Optional.ofNullable(gte)
 
+        /** **Alpha** — this parameter is experimental and may change or be removed at any time. */
         fun lt(): Optional<OffsetDateTime> = Optional.ofNullable(lt)
 
+        /** **Alpha** — this parameter is experimental and may change or be removed at any time. */
         fun lte(): Optional<OffsetDateTime> = Optional.ofNullable(lte)
 
         /** Query params to send with the request. */
@@ -869,21 +873,37 @@ private constructor(
                 additionalProperties = updatedAt.additionalProperties.toBuilder()
             }
 
+            /**
+             * > **Alpha** — this parameter is experimental and may change or be removed at any
+             * > time.
+             */
             fun gt(gt: OffsetDateTime?) = apply { this.gt = gt }
 
             /** Alias for calling [Builder.gt] with `gt.orElse(null)`. */
             fun gt(gt: Optional<OffsetDateTime>) = gt(gt.getOrNull())
 
+            /**
+             * > **Alpha** — this parameter is experimental and may change or be removed at any
+             * > time.
+             */
             fun gte(gte: OffsetDateTime?) = apply { this.gte = gte }
 
             /** Alias for calling [Builder.gte] with `gte.orElse(null)`. */
             fun gte(gte: Optional<OffsetDateTime>) = gte(gte.getOrNull())
 
+            /**
+             * > **Alpha** — this parameter is experimental and may change or be removed at any
+             * > time.
+             */
             fun lt(lt: OffsetDateTime?) = apply { this.lt = lt }
 
             /** Alias for calling [Builder.lt] with `lt.orElse(null)`. */
             fun lt(lt: Optional<OffsetDateTime>) = lt(lt.getOrNull())
 
+            /**
+             * > **Alpha** — this parameter is experimental and may change or be removed at any
+             * > time.
+             */
             fun lte(lte: OffsetDateTime?) = apply { this.lte = lte }
 
             /** Alias for calling [Builder.lte] with `lte.orElse(null)`. */
