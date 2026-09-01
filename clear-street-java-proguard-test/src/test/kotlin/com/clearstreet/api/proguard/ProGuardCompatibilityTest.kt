@@ -5,6 +5,7 @@ package com.clearstreet.api.proguard
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.v1.accounts.Account
+import com.clearstreet.api.models.v1.accounts.AccountHolderEntityKind
 import com.clearstreet.api.models.v1.accounts.AccountStatus
 import com.clearstreet.api.models.v1.accounts.AccountSubtype
 import com.clearstreet.api.models.v1.accounts.AccountType
@@ -71,6 +72,7 @@ internal class ProGuardCompatibilityTest {
             Account.builder()
                 .id(19816L)
                 .accountHolderEntityId(987654321L)
+                .accountHolderEntityKind(AccountHolderEntityKind.NATURAL_PERSON)
                 .fullName("Test Trading Account")
                 .openDate(LocalDate.parse("2023-01-15"))
                 .optionsLevel(1L)
@@ -127,16 +129,16 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun accountStatusRoundtrip() {
+    fun accountHolderEntityKindRoundtrip() {
         val jsonMapper = jsonMapper()
-        val accountStatus = AccountStatus.ACTIVE
+        val accountHolderEntityKind = AccountHolderEntityKind.NATURAL_PERSON
 
-        val roundtrippedAccountStatus =
+        val roundtrippedAccountHolderEntityKind =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(accountStatus),
-                jacksonTypeRef<AccountStatus>(),
+                jsonMapper.writeValueAsString(accountHolderEntityKind),
+                jacksonTypeRef<AccountHolderEntityKind>(),
             )
 
-        assertThat(roundtrippedAccountStatus).isEqualTo(accountStatus)
+        assertThat(roundtrippedAccountHolderEntityKind).isEqualTo(accountHolderEntityKind)
     }
 }

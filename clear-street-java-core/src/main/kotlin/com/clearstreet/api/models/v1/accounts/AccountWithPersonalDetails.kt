@@ -24,6 +24,7 @@ class AccountWithPersonalDetails
 private constructor(
     private val id: JsonField<Long>,
     private val accountHolderEntityId: JsonField<Long>,
+    private val accountHolderEntityKind: JsonField<AccountHolderEntityKind>,
     private val fullName: JsonField<String>,
     private val openDate: JsonField<LocalDate>,
     private val optionsLevel: JsonField<Long>,
@@ -45,6 +46,9 @@ private constructor(
         @JsonProperty("account_holder_entity_id")
         @ExcludeMissing
         accountHolderEntityId: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("account_holder_entity_kind")
+        @ExcludeMissing
+        accountHolderEntityKind: JsonField<AccountHolderEntityKind> = JsonMissing.of(),
         @JsonProperty("full_name") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("open_date")
         @ExcludeMissing
@@ -76,6 +80,7 @@ private constructor(
     ) : this(
         id,
         accountHolderEntityId,
+        accountHolderEntityKind,
         fullName,
         openDate,
         optionsLevel,
@@ -107,6 +112,15 @@ private constructor(
      */
     fun accountHolderEntityId(): Long =
         accountHolderEntityId.getRequired("account_holder_entity_id")
+
+    /**
+     * Whether the account holder is a natural person or a legal entity.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun accountHolderEntityKind(): AccountHolderEntityKind =
+        accountHolderEntityKind.getRequired("account_holder_entity_kind")
 
     /**
      * The full legal name of the account
@@ -232,6 +246,16 @@ private constructor(
     fun _accountHolderEntityId(): JsonField<Long> = accountHolderEntityId
 
     /**
+     * Returns the raw JSON value of [accountHolderEntityKind].
+     *
+     * Unlike [accountHolderEntityKind], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("account_holder_entity_kind")
+    @ExcludeMissing
+    fun _accountHolderEntityKind(): JsonField<AccountHolderEntityKind> = accountHolderEntityKind
+
+    /**
      * Returns the raw JSON value of [fullName].
      *
      * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected type.
@@ -347,6 +371,7 @@ private constructor(
          * ```java
          * .id()
          * .accountHolderEntityId()
+         * .accountHolderEntityKind()
          * .fullName()
          * .openDate()
          * .optionsLevel()
@@ -364,6 +389,7 @@ private constructor(
 
         private var id: JsonField<Long>? = null
         private var accountHolderEntityId: JsonField<Long>? = null
+        private var accountHolderEntityKind: JsonField<AccountHolderEntityKind>? = null
         private var fullName: JsonField<String>? = null
         private var openDate: JsonField<LocalDate>? = null
         private var optionsLevel: JsonField<Long>? = null
@@ -382,6 +408,7 @@ private constructor(
         internal fun from(accountWithPersonalDetails: AccountWithPersonalDetails) = apply {
             id = accountWithPersonalDetails.id
             accountHolderEntityId = accountWithPersonalDetails.accountHolderEntityId
+            accountHolderEntityKind = accountWithPersonalDetails.accountHolderEntityKind
             fullName = accountWithPersonalDetails.fullName
             openDate = accountWithPersonalDetails.openDate
             optionsLevel = accountWithPersonalDetails.optionsLevel
@@ -422,6 +449,22 @@ private constructor(
         fun accountHolderEntityId(accountHolderEntityId: JsonField<Long>) = apply {
             this.accountHolderEntityId = accountHolderEntityId
         }
+
+        /** Whether the account holder is a natural person or a legal entity. */
+        fun accountHolderEntityKind(accountHolderEntityKind: AccountHolderEntityKind) =
+            accountHolderEntityKind(JsonField.of(accountHolderEntityKind))
+
+        /**
+         * Sets [Builder.accountHolderEntityKind] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.accountHolderEntityKind] with a well-typed
+         * [AccountHolderEntityKind] value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
+         */
+        fun accountHolderEntityKind(accountHolderEntityKind: JsonField<AccountHolderEntityKind>) =
+            apply {
+                this.accountHolderEntityKind = accountHolderEntityKind
+            }
 
         /** The full legal name of the account */
         fun fullName(fullName: String) = fullName(JsonField.of(fullName))
@@ -641,6 +684,7 @@ private constructor(
          * ```java
          * .id()
          * .accountHolderEntityId()
+         * .accountHolderEntityKind()
          * .fullName()
          * .openDate()
          * .optionsLevel()
@@ -656,6 +700,7 @@ private constructor(
             AccountWithPersonalDetails(
                 checkRequired("id", id),
                 checkRequired("accountHolderEntityId", accountHolderEntityId),
+                checkRequired("accountHolderEntityKind", accountHolderEntityKind),
                 checkRequired("fullName", fullName),
                 checkRequired("openDate", openDate),
                 checkRequired("optionsLevel", optionsLevel),
@@ -689,6 +734,7 @@ private constructor(
 
         id()
         accountHolderEntityId()
+        accountHolderEntityKind().validate()
         fullName()
         openDate()
         optionsLevel()
@@ -721,6 +767,7 @@ private constructor(
     internal fun validity(): Int =
         (if (id.asKnown().isPresent) 1 else 0) +
             (if (accountHolderEntityId.asKnown().isPresent) 1 else 0) +
+            (accountHolderEntityKind.asKnown().getOrNull()?.validity() ?: 0) +
             (if (fullName.asKnown().isPresent) 1 else 0) +
             (if (openDate.asKnown().isPresent) 1 else 0) +
             (if (optionsLevel.asKnown().isPresent) 1 else 0) +
@@ -742,6 +789,7 @@ private constructor(
         return other is AccountWithPersonalDetails &&
             id == other.id &&
             accountHolderEntityId == other.accountHolderEntityId &&
+            accountHolderEntityKind == other.accountHolderEntityKind &&
             fullName == other.fullName &&
             openDate == other.openDate &&
             optionsLevel == other.optionsLevel &&
@@ -761,6 +809,7 @@ private constructor(
         Objects.hash(
             id,
             accountHolderEntityId,
+            accountHolderEntityKind,
             fullName,
             openDate,
             optionsLevel,
@@ -780,5 +829,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AccountWithPersonalDetails{id=$id, accountHolderEntityId=$accountHolderEntityId, fullName=$fullName, openDate=$openDate, optionsLevel=$optionsLevel, shortName=$shortName, status=$status, subtype=$subtype, type=$type, closeDate=$closeDate, countryOfTaxResidency=$countryOfTaxResidency, dateOfBirth=$dateOfBirth, mailingAddress=$mailingAddress, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        "AccountWithPersonalDetails{id=$id, accountHolderEntityId=$accountHolderEntityId, accountHolderEntityKind=$accountHolderEntityKind, fullName=$fullName, openDate=$openDate, optionsLevel=$optionsLevel, shortName=$shortName, status=$status, subtype=$subtype, type=$type, closeDate=$closeDate, countryOfTaxResidency=$countryOfTaxResidency, dateOfBirth=$dateOfBirth, mailingAddress=$mailingAddress, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }
