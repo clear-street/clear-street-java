@@ -22,6 +22,8 @@ class MarketSessionType @JsonCreator private constructor(private val value: Json
 
     companion object {
 
+        @JvmField val OVERNIGHT = of("overnight")
+
         @JvmField val PRE_MARKET = of("pre_market")
 
         @JvmField val REGULAR = of("regular")
@@ -33,6 +35,7 @@ class MarketSessionType @JsonCreator private constructor(private val value: Json
 
     /** An enum containing [MarketSessionType]'s known values. */
     enum class Known {
+        OVERNIGHT,
         PRE_MARKET,
         REGULAR,
         AFTER_HOURS,
@@ -48,6 +51,7 @@ class MarketSessionType @JsonCreator private constructor(private val value: Json
      * - It was constructed with an arbitrary value using the [of] method.
      */
     enum class Value {
+        OVERNIGHT,
         PRE_MARKET,
         REGULAR,
         AFTER_HOURS,
@@ -67,6 +71,7 @@ class MarketSessionType @JsonCreator private constructor(private val value: Json
      */
     fun value(): Value =
         when (this) {
+            OVERNIGHT -> Value.OVERNIGHT
             PRE_MARKET -> Value.PRE_MARKET
             REGULAR -> Value.REGULAR
             AFTER_HOURS -> Value.AFTER_HOURS
@@ -84,6 +89,7 @@ class MarketSessionType @JsonCreator private constructor(private val value: Json
      */
     fun known(): Known =
         when (this) {
+            OVERNIGHT -> Known.OVERNIGHT
             PRE_MARKET -> Known.PRE_MARKET
             REGULAR -> Known.REGULAR
             AFTER_HOURS -> Known.AFTER_HOURS

@@ -55,6 +55,14 @@ internal class CalendarGetMarketHoursCalendarResponseTest {
                                         .timeUntilOpen(null)
                                         .build()
                                 )
+                                .overnight(
+                                    SessionSchedule.builder()
+                                        .close(OffsetDateTime.parse("2025-10-16T04:00:00-04:00"))
+                                        .open(OffsetDateTime.parse("2025-10-15T20:00:00-04:00"))
+                                        .timeUntilClose("PT1H30M")
+                                        .timeUntilOpen(null)
+                                        .build()
+                                )
                                 .preMarket(
                                     SessionSchedule.builder()
                                         .close(OffsetDateTime.parse("2025-10-16T09:30:00-04:00"))
@@ -89,6 +97,14 @@ internal class CalendarGetMarketHoursCalendarResponseTest {
                                         .open(OffsetDateTime.parse("2025-10-15T16:00:00-04:00"))
                                         .timeUntilClose("PT1H30M")
                                         .timeUntilOpen("PT1H30M")
+                                        .build()
+                                )
+                                .overnight(
+                                    SessionSchedule.builder()
+                                        .close(OffsetDateTime.parse("2025-10-15T04:00:00-04:00"))
+                                        .open(OffsetDateTime.parse("2025-10-14T20:00:00-04:00"))
+                                        .timeUntilClose("PT1H30M")
+                                        .timeUntilOpen(null)
                                         .build()
                                 )
                                 .preMarket(
@@ -153,6 +169,14 @@ internal class CalendarGetMarketHoursCalendarResponseTest {
                                     .timeUntilOpen(null)
                                     .build()
                             )
+                            .overnight(
+                                SessionSchedule.builder()
+                                    .close(OffsetDateTime.parse("2025-10-16T04:00:00-04:00"))
+                                    .open(OffsetDateTime.parse("2025-10-15T20:00:00-04:00"))
+                                    .timeUntilClose("PT1H30M")
+                                    .timeUntilOpen(null)
+                                    .build()
+                            )
                             .preMarket(
                                 SessionSchedule.builder()
                                     .close(OffsetDateTime.parse("2025-10-16T09:30:00-04:00"))
@@ -187,6 +211,14 @@ internal class CalendarGetMarketHoursCalendarResponseTest {
                                     .open(OffsetDateTime.parse("2025-10-15T16:00:00-04:00"))
                                     .timeUntilClose("PT1H30M")
                                     .timeUntilOpen("PT1H30M")
+                                    .build()
+                            )
+                            .overnight(
+                                SessionSchedule.builder()
+                                    .close(OffsetDateTime.parse("2025-10-15T04:00:00-04:00"))
+                                    .open(OffsetDateTime.parse("2025-10-14T20:00:00-04:00"))
+                                    .timeUntilClose("PT1H30M")
+                                    .timeUntilOpen(null)
                                     .build()
                             )
                             .preMarket(
@@ -253,6 +285,14 @@ internal class CalendarGetMarketHoursCalendarResponseTest {
                                         .timeUntilOpen(null)
                                         .build()
                                 )
+                                .overnight(
+                                    SessionSchedule.builder()
+                                        .close(OffsetDateTime.parse("2025-10-16T04:00:00-04:00"))
+                                        .open(OffsetDateTime.parse("2025-10-15T20:00:00-04:00"))
+                                        .timeUntilClose("PT1H30M")
+                                        .timeUntilOpen(null)
+                                        .build()
+                                )
                                 .preMarket(
                                     SessionSchedule.builder()
                                         .close(OffsetDateTime.parse("2025-10-16T09:30:00-04:00"))
@@ -287,6 +327,14 @@ internal class CalendarGetMarketHoursCalendarResponseTest {
                                         .open(OffsetDateTime.parse("2025-10-15T16:00:00-04:00"))
                                         .timeUntilClose("PT1H30M")
                                         .timeUntilOpen("PT1H30M")
+                                        .build()
+                                )
+                                .overnight(
+                                    SessionSchedule.builder()
+                                        .close(OffsetDateTime.parse("2025-10-15T04:00:00-04:00"))
+                                        .open(OffsetDateTime.parse("2025-10-14T20:00:00-04:00"))
+                                        .timeUntilClose("PT1H30M")
+                                        .timeUntilOpen(null)
                                         .build()
                                 )
                                 .preMarket(
