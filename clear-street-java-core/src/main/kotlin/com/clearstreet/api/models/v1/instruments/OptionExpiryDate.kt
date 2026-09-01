@@ -55,8 +55,10 @@ private constructor(
     fun hasSettlesOnClose(): Boolean = hasSettlesOnClose.getRequired("has_settles_on_close")
 
     /**
-     * Whether this date has at least one listed contract that settles on the opening print (AM
-     * settlement).
+     * Whether this date has at least one contract that settles on the opening print (AM settlement)
+     * and can still be traded. AM-settled contracts stop trading at the close of the business day
+     * before settlement, so this turns false before the expiration date arrives. A date leaves the
+     * list once no contract on it can be traded in either settlement cycle.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -163,8 +165,11 @@ private constructor(
         }
 
         /**
-         * Whether this date has at least one listed contract that settles on the opening print (AM
-         * settlement).
+         * Whether this date has at least one contract that settles on the opening print (AM
+         * settlement) and can still be traded. AM-settled contracts stop trading at the close of
+         * the business day before settlement, so this turns false before the expiration date
+         * arrives. A date leaves the list once no contract on it can be traded in either settlement
+         * cycle.
          */
         fun hasSettlesOnOpen(hasSettlesOnOpen: Boolean) =
             hasSettlesOnOpen(JsonField.of(hasSettlesOnOpen))
