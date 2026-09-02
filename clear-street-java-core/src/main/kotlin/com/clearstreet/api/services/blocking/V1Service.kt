@@ -12,6 +12,7 @@ import com.clearstreet.api.services.blocking.v1.OmniAiService
 import com.clearstreet.api.services.blocking.v1.OmniFeedService
 import com.clearstreet.api.services.blocking.v1.OrderService
 import com.clearstreet.api.services.blocking.v1.PositionService
+import com.clearstreet.api.services.blocking.v1.PrivateMarketService
 import com.clearstreet.api.services.blocking.v1.ScreenerService
 import com.clearstreet.api.services.blocking.v1.WatchlistService
 import java.util.function.Consumer
@@ -60,6 +61,12 @@ interface V1Service {
     /** View positions and manage position instructions. */
     fun positions(): PositionService
 
+    /**
+     * Browse private-market offerings and their indicative terms. Access requires the account
+     * holder to hold an accreditation attestation.
+     */
+    fun privateMarkets(): PrivateMarketService
+
     /** Search instruments and manage saved screeners. */
     fun screener(): ScreenerService
 
@@ -105,6 +112,12 @@ interface V1Service {
 
         /** View positions and manage position instructions. */
         fun positions(): PositionService.WithRawResponse
+
+        /**
+         * Browse private-market offerings and their indicative terms. Access requires the account
+         * holder to hold an accreditation attestation.
+         */
+        fun privateMarkets(): PrivateMarketService.WithRawResponse
 
         /** Search instruments and manage saved screeners. */
         fun screener(): ScreenerService.WithRawResponse

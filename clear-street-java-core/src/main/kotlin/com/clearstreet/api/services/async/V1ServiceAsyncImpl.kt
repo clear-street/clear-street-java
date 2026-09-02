@@ -21,6 +21,8 @@ import com.clearstreet.api.services.async.v1.OrderServiceAsync
 import com.clearstreet.api.services.async.v1.OrderServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.PositionServiceAsync
 import com.clearstreet.api.services.async.v1.PositionServiceAsyncImpl
+import com.clearstreet.api.services.async.v1.PrivateMarketServiceAsync
+import com.clearstreet.api.services.async.v1.PrivateMarketServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.ScreenerServiceAsync
 import com.clearstreet.api.services.async.v1.ScreenerServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.WatchlistServiceAsync
@@ -57,6 +59,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
     private val orders: OrderServiceAsync by lazy { OrderServiceAsyncImpl(clientOptions) }
 
     private val positions: PositionServiceAsync by lazy { PositionServiceAsyncImpl(clientOptions) }
+
+    private val privateMarkets: PrivateMarketServiceAsync by lazy {
+        PrivateMarketServiceAsyncImpl(clientOptions)
+    }
 
     private val screener: ScreenerServiceAsync by lazy { ScreenerServiceAsyncImpl(clientOptions) }
 
@@ -98,6 +104,12 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     /** View positions and manage position instructions. */
     override fun positions(): PositionServiceAsync = positions
+
+    /**
+     * Browse private-market offerings and their indicative terms. Access requires the account
+     * holder to hold an accreditation attestation.
+     */
+    override fun privateMarkets(): PrivateMarketServiceAsync = privateMarkets
 
     /** Search instruments and manage saved screeners. */
     override fun screener(): ScreenerServiceAsync = screener
@@ -144,6 +156,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             PositionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val privateMarkets: PrivateMarketServiceAsync.WithRawResponse by lazy {
+            PrivateMarketServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val screener: ScreenerServiceAsync.WithRawResponse by lazy {
             ScreenerServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -188,6 +204,12 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         /** View positions and manage position instructions. */
         override fun positions(): PositionServiceAsync.WithRawResponse = positions
+
+        /**
+         * Browse private-market offerings and their indicative terms. Access requires the account
+         * holder to hold an accreditation attestation.
+         */
+        override fun privateMarkets(): PrivateMarketServiceAsync.WithRawResponse = privateMarkets
 
         /** Search instruments and manage saved screeners. */
         override fun screener(): ScreenerServiceAsync.WithRawResponse = screener
