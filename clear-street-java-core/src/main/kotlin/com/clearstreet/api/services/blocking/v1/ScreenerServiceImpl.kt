@@ -26,6 +26,8 @@ import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogResponse
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersResponse
+import com.clearstreet.api.models.v1.screener.ScreenerPatchScreenerParams
+import com.clearstreet.api.models.v1.screener.ScreenerPatchScreenerResponse
 import com.clearstreet.api.models.v1.screener.ScreenerReplaceScreenerParams
 import com.clearstreet.api.models.v1.screener.ScreenerReplaceScreenerResponse
 import com.clearstreet.api.models.v1.screener.ScreenerSearchScreenerParams
@@ -82,6 +84,14 @@ class ScreenerServiceImpl internal constructor(private val clientOptions: Client
         // get /v1/saved-screeners
         withRawResponse().getScreeners(params, requestOptions).parse()
 
+    override fun patchScreener(
+        params: ScreenerPatchScreenerParams,
+        requestOptions: RequestOptions,
+    ): ScreenerPatchScreenerResponse =
+        // patch /v1/saved-screeners/{screener_id}
+        withRawResponse().patchScreener(params, requestOptions).parse()
+
+    @Deprecated("deprecated")
     override fun replaceScreener(
         params: ScreenerReplaceScreenerParams,
         requestOptions: RequestOptions,
@@ -245,9 +255,41 @@ class ScreenerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
+        private val patchScreenerHandler: Handler<ScreenerPatchScreenerResponse> =
+            jsonHandler<ScreenerPatchScreenerResponse>(clientOptions.jsonMapper)
+
+        override fun patchScreener(
+            params: ScreenerPatchScreenerParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<ScreenerPatchScreenerResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("screenerId", params.screenerId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PATCH)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "saved-screeners", params._pathParam(0))
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { patchScreenerHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
         private val replaceScreenerHandler: Handler<ScreenerReplaceScreenerResponse> =
             jsonHandler<ScreenerReplaceScreenerResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun replaceScreener(
             params: ScreenerReplaceScreenerParams,
             requestOptions: RequestOptions,

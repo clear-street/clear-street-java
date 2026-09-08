@@ -26,6 +26,8 @@ import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogResponse
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersResponse
+import com.clearstreet.api.models.v1.screener.ScreenerPatchScreenerParams
+import com.clearstreet.api.models.v1.screener.ScreenerPatchScreenerResponse
 import com.clearstreet.api.models.v1.screener.ScreenerReplaceScreenerParams
 import com.clearstreet.api.models.v1.screener.ScreenerReplaceScreenerResponse
 import com.clearstreet.api.models.v1.screener.ScreenerSearchScreenerParams
@@ -82,6 +84,14 @@ class ScreenerServiceAsyncImpl internal constructor(private val clientOptions: C
         // get /v1/saved-screeners
         withRawResponse().getScreeners(params, requestOptions).thenApply { it.parse() }
 
+    override fun patchScreener(
+        params: ScreenerPatchScreenerParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<ScreenerPatchScreenerResponse> =
+        // patch /v1/saved-screeners/{screener_id}
+        withRawResponse().patchScreener(params, requestOptions).thenApply { it.parse() }
+
+    @Deprecated("deprecated")
     override fun replaceScreener(
         params: ScreenerReplaceScreenerParams,
         requestOptions: RequestOptions,
@@ -260,9 +270,44 @@ class ScreenerServiceAsyncImpl internal constructor(private val clientOptions: C
                 }
         }
 
+        private val patchScreenerHandler: Handler<ScreenerPatchScreenerResponse> =
+            jsonHandler<ScreenerPatchScreenerResponse>(clientOptions.jsonMapper)
+
+        override fun patchScreener(
+            params: ScreenerPatchScreenerParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<ScreenerPatchScreenerResponse>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("screenerId", params.screenerId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PATCH)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "saved-screeners", params._pathParam(0))
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { patchScreenerHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
         private val replaceScreenerHandler: Handler<ScreenerReplaceScreenerResponse> =
             jsonHandler<ScreenerReplaceScreenerResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun replaceScreener(
             params: ScreenerReplaceScreenerParams,
             requestOptions: RequestOptions,

@@ -15,6 +15,8 @@ import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenerCatalogResponse
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersParams
 import com.clearstreet.api.models.v1.screener.ScreenerGetScreenersResponse
+import com.clearstreet.api.models.v1.screener.ScreenerPatchScreenerParams
+import com.clearstreet.api.models.v1.screener.ScreenerPatchScreenerResponse
 import com.clearstreet.api.models.v1.screener.ScreenerReplaceScreenerParams
 import com.clearstreet.api.models.v1.screener.ScreenerReplaceScreenerResponse
 import com.clearstreet.api.models.v1.screener.ScreenerSearchScreenerParams
@@ -199,15 +201,68 @@ interface ScreenerServiceAsync {
         getScreeners(ScreenerGetScreenersParams.none(), requestOptions)
 
     /**
+     * Partially update a saved screener configuration.
+     *
+     * Every field is optional. Omitting a field, or sending it as `null`, leaves the stored value
+     * unchanged. Sending a field's empty value clears it: `columns: []` clears the stored columns,
+     * `sorts: []` clears the stored sort, and `filters: []` clears the stored filters. `name: ""`
+     * is rejected -- a screener's name cannot be cleared. `shared: false` sets it to `false`; it is
+     * a value, not a clear.
+     *
+     * Unknown fields are rejected with a 422.
+     */
+    fun patchScreener(screenerId: String): CompletableFuture<ScreenerPatchScreenerResponse> =
+        patchScreener(screenerId, ScreenerPatchScreenerParams.none())
+
+    /** @see patchScreener */
+    fun patchScreener(
+        screenerId: String,
+        params: ScreenerPatchScreenerParams = ScreenerPatchScreenerParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ScreenerPatchScreenerResponse> =
+        patchScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
+
+    /** @see patchScreener */
+    fun patchScreener(
+        screenerId: String,
+        params: ScreenerPatchScreenerParams = ScreenerPatchScreenerParams.none(),
+    ): CompletableFuture<ScreenerPatchScreenerResponse> =
+        patchScreener(screenerId, params, RequestOptions.none())
+
+    /** @see patchScreener */
+    fun patchScreener(
+        params: ScreenerPatchScreenerParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ScreenerPatchScreenerResponse>
+
+    /** @see patchScreener */
+    fun patchScreener(
+        params: ScreenerPatchScreenerParams
+    ): CompletableFuture<ScreenerPatchScreenerResponse> =
+        patchScreener(params, RequestOptions.none())
+
+    /** @see patchScreener */
+    fun patchScreener(
+        screenerId: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<ScreenerPatchScreenerResponse> =
+        patchScreener(screenerId, ScreenerPatchScreenerParams.none(), requestOptions)
+
+    /**
      * Update a saved screener configuration.
      *
      * Replaces the screener configuration for the authenticated user. If `name` is null, the
      * existing name is preserved.
+     *
+     * Deprecated -- use `PATCH /saved-screeners/{screener_id}`; PUT replaces omitted `columns`,
+     * `filters` and `sorts` with empty values.
      */
+    @Deprecated("deprecated")
     fun replaceScreener(screenerId: String): CompletableFuture<ScreenerReplaceScreenerResponse> =
         replaceScreener(screenerId, ScreenerReplaceScreenerParams.none())
 
     /** @see replaceScreener */
+    @Deprecated("deprecated")
     fun replaceScreener(
         screenerId: String,
         params: ScreenerReplaceScreenerParams = ScreenerReplaceScreenerParams.none(),
@@ -216,6 +271,7 @@ interface ScreenerServiceAsync {
         replaceScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
 
     /** @see replaceScreener */
+    @Deprecated("deprecated")
     fun replaceScreener(
         screenerId: String,
         params: ScreenerReplaceScreenerParams = ScreenerReplaceScreenerParams.none(),
@@ -223,18 +279,21 @@ interface ScreenerServiceAsync {
         replaceScreener(screenerId, params, RequestOptions.none())
 
     /** @see replaceScreener */
+    @Deprecated("deprecated")
     fun replaceScreener(
         params: ScreenerReplaceScreenerParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<ScreenerReplaceScreenerResponse>
 
     /** @see replaceScreener */
+    @Deprecated("deprecated")
     fun replaceScreener(
         params: ScreenerReplaceScreenerParams
     ): CompletableFuture<ScreenerReplaceScreenerResponse> =
         replaceScreener(params, RequestOptions.none())
 
     /** @see replaceScreener */
+    @Deprecated("deprecated")
     fun replaceScreener(
         screenerId: String,
         requestOptions: RequestOptions,
@@ -453,15 +512,60 @@ interface ScreenerServiceAsync {
             getScreeners(ScreenerGetScreenersParams.none(), requestOptions)
 
         /**
+         * Returns a raw HTTP response for `patch /v1/saved-screeners/{screener_id}`, but is
+         * otherwise the same as [ScreenerServiceAsync.patchScreener].
+         */
+        fun patchScreener(
+            screenerId: String
+        ): CompletableFuture<HttpResponseFor<ScreenerPatchScreenerResponse>> =
+            patchScreener(screenerId, ScreenerPatchScreenerParams.none())
+
+        /** @see patchScreener */
+        fun patchScreener(
+            screenerId: String,
+            params: ScreenerPatchScreenerParams = ScreenerPatchScreenerParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ScreenerPatchScreenerResponse>> =
+            patchScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
+
+        /** @see patchScreener */
+        fun patchScreener(
+            screenerId: String,
+            params: ScreenerPatchScreenerParams = ScreenerPatchScreenerParams.none(),
+        ): CompletableFuture<HttpResponseFor<ScreenerPatchScreenerResponse>> =
+            patchScreener(screenerId, params, RequestOptions.none())
+
+        /** @see patchScreener */
+        fun patchScreener(
+            params: ScreenerPatchScreenerParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ScreenerPatchScreenerResponse>>
+
+        /** @see patchScreener */
+        fun patchScreener(
+            params: ScreenerPatchScreenerParams
+        ): CompletableFuture<HttpResponseFor<ScreenerPatchScreenerResponse>> =
+            patchScreener(params, RequestOptions.none())
+
+        /** @see patchScreener */
+        fun patchScreener(
+            screenerId: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<ScreenerPatchScreenerResponse>> =
+            patchScreener(screenerId, ScreenerPatchScreenerParams.none(), requestOptions)
+
+        /**
          * Returns a raw HTTP response for `put /v1/saved-screeners/{screener_id}`, but is otherwise
          * the same as [ScreenerServiceAsync.replaceScreener].
          */
+        @Deprecated("deprecated")
         fun replaceScreener(
             screenerId: String
         ): CompletableFuture<HttpResponseFor<ScreenerReplaceScreenerResponse>> =
             replaceScreener(screenerId, ScreenerReplaceScreenerParams.none())
 
         /** @see replaceScreener */
+        @Deprecated("deprecated")
         fun replaceScreener(
             screenerId: String,
             params: ScreenerReplaceScreenerParams = ScreenerReplaceScreenerParams.none(),
@@ -470,6 +574,7 @@ interface ScreenerServiceAsync {
             replaceScreener(params.toBuilder().screenerId(screenerId).build(), requestOptions)
 
         /** @see replaceScreener */
+        @Deprecated("deprecated")
         fun replaceScreener(
             screenerId: String,
             params: ScreenerReplaceScreenerParams = ScreenerReplaceScreenerParams.none(),
@@ -477,18 +582,21 @@ interface ScreenerServiceAsync {
             replaceScreener(screenerId, params, RequestOptions.none())
 
         /** @see replaceScreener */
+        @Deprecated("deprecated")
         fun replaceScreener(
             params: ScreenerReplaceScreenerParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<ScreenerReplaceScreenerResponse>>
 
         /** @see replaceScreener */
+        @Deprecated("deprecated")
         fun replaceScreener(
             params: ScreenerReplaceScreenerParams
         ): CompletableFuture<HttpResponseFor<ScreenerReplaceScreenerResponse>> =
             replaceScreener(params, RequestOptions.none())
 
         /** @see replaceScreener */
+        @Deprecated("deprecated")
         fun replaceScreener(
             screenerId: String,
             requestOptions: RequestOptions,

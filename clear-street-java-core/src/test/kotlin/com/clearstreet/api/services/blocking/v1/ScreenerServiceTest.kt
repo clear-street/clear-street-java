@@ -16,6 +16,7 @@ import com.clearstreet.api.models.v1.screener.Modifier
 import com.clearstreet.api.models.v1.screener.ModifierOp
 import com.clearstreet.api.models.v1.screener.OperatorArg
 import com.clearstreet.api.models.v1.screener.ScreenerCreateScreenerParams
+import com.clearstreet.api.models.v1.screener.ScreenerPatchScreenerParams
 import com.clearstreet.api.models.v1.screener.ScreenerReplaceScreenerParams
 import com.clearstreet.api.models.v1.screener.ScreenerSearchScreenerParams
 import com.clearstreet.api.models.v1.screener.SearchFilter
@@ -155,6 +156,85 @@ internal class ScreenerServiceTest {
         val screenerService = client.v1().screener()
 
         val response = screenerService.getScreeners()
+
+        response.validate()
+    }
+
+    @Test
+    fun patchScreener() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val screenerService = client.v1().screener()
+
+        val response =
+            screenerService.patchScreener(
+                ScreenerPatchScreenerParams.builder()
+                    .screenerId("550e8400-e29b-41d4-a716-446655440000")
+                    .addColumn(
+                        FieldRef.builder()
+                            .name("market_cap")
+                            .lookback(FieldLookback.ONE_DAY)
+                            .period(FieldPeriod.QUARTER)
+                            .valueType(FieldType.DECIMAL)
+                            .build()
+                    )
+                    .addFilter(
+                        SearchFilter.builder()
+                            .left(
+                                FieldRef.builder()
+                                    .name("market_cap")
+                                    .lookback(FieldLookback.ONE_DAY)
+                                    .period(FieldPeriod.QUARTER)
+                                    .valueType(FieldType.DECIMAL)
+                                    .build()
+                            )
+                            .op(
+                                FilterOpSpec.builder()
+                                    .name(FilterOperator.GREATER_OR_EQUAL)
+                                    .addArg(OperatorArg.LEFT_INCLUSIVE)
+                                    .build()
+                            )
+                            .addRight(
+                                FilterValue.builder()
+                                    .value(1000000000.0)
+                                    .variable(
+                                        Variable.builder()
+                                            .name("today")
+                                            .lookback(FieldLookback.ONE_DAY)
+                                            .modifier(
+                                                Modifier.builder()
+                                                    .addArg(30.0)
+                                                    .addArg("DAY")
+                                                    .name(ModifierOp.SUBTRACT)
+                                                    .build()
+                                            )
+                                            .period(FieldPeriod.QUARTER)
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .name("name")
+                    .shared(true)
+                    .addSort(
+                        SortSpec.builder()
+                            .field(
+                                FieldRef.builder()
+                                    .name("market_cap")
+                                    .lookback(FieldLookback.ONE_DAY)
+                                    .period(FieldPeriod.QUARTER)
+                                    .valueType(FieldType.DECIMAL)
+                                    .build()
+                            )
+                            .direction(SortDirection.DESC)
+                            .build()
+                    )
+                    .build()
+            )
 
         response.validate()
     }

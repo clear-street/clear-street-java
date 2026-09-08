@@ -22,16 +22,17 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Update a saved screener configuration.
+ * Partially update a saved screener configuration.
  *
- * Replaces the screener configuration for the authenticated user. If `name` is null, the existing
- * name is preserved.
+ * Every field is optional. Omitting a field, or sending it as `null`, leaves the stored value
+ * unchanged. Sending a field's empty value clears it: `columns: []` clears the stored columns,
+ * `sorts: []` clears the stored sort, and `filters: []` clears the stored filters. `name: ""` is
+ * rejected -- a screener's name cannot be cleared. `shared: false` sets it to `false`; it is a
+ * value, not a clear.
  *
- * Deprecated -- use `PATCH /saved-screeners/{screener_id}`; PUT replaces omitted `columns`,
- * `filters` and `sorts` with empty values.
+ * Unknown fields are rejected with a 422.
  */
-@Deprecated("deprecated")
-class ScreenerReplaceScreenerParams
+class ScreenerPatchScreenerParams
 private constructor(
     private val screenerId: String?,
     private val body: Body,
@@ -42,7 +43,8 @@ private constructor(
     fun screenerId(): Optional<String> = Optional.ofNullable(screenerId)
 
     /**
-     * Structured field references to include when running this screener
+     * Structured field references to include when running this screener. Omit or send `null` to
+     * leave unchanged; `[]` clears the stored columns.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -50,7 +52,8 @@ private constructor(
     fun columns(): Optional<List<FieldRef>> = body.columns()
 
     /**
-     * Structured search filter criteria
+     * Structured search filter criteria. Omit or send `null` to leave unchanged; `[]` clears the
+     * stored filters.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -58,7 +61,8 @@ private constructor(
     fun filters(): Optional<List<SearchFilter>> = body.filters()
 
     /**
-     * The name for this screener configuration
+     * The name for this screener configuration. Omit or send `null` to leave unchanged. Cannot be
+     * set to an empty string.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -66,8 +70,8 @@ private constructor(
     fun name(): Optional<String> = body.name()
 
     /**
-     * Whether any user may fetch this screener by id. Omit to leave the existing value unchanged
-     * (defaults to `false` when creating).
+     * Whether any user may fetch this screener by id. Omit or send `null` to leave unchanged.
+     * `false` is a value, not a clear.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -75,7 +79,8 @@ private constructor(
     fun shared(): Optional<Boolean> = body.shared()
 
     /**
-     * Multi-field sort specifications
+     * Multi-field sort specifications. Omit or send `null` to leave unchanged; `[]` clears the
+     * stored sort.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -129,16 +134,15 @@ private constructor(
 
     companion object {
 
-        @JvmStatic fun none(): ScreenerReplaceScreenerParams = builder().build()
+        @JvmStatic fun none(): ScreenerPatchScreenerParams = builder().build()
 
         /**
-         * Returns a mutable builder for constructing an instance of
-         * [ScreenerReplaceScreenerParams].
+         * Returns a mutable builder for constructing an instance of [ScreenerPatchScreenerParams].
          */
         @JvmStatic fun builder() = Builder()
     }
 
-    /** A builder for [ScreenerReplaceScreenerParams]. */
+    /** A builder for [ScreenerPatchScreenerParams]. */
     class Builder internal constructor() {
 
         private var screenerId: String? = null
@@ -147,11 +151,11 @@ private constructor(
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
-        internal fun from(screenerReplaceScreenerParams: ScreenerReplaceScreenerParams) = apply {
-            screenerId = screenerReplaceScreenerParams.screenerId
-            body = screenerReplaceScreenerParams.body.toBuilder()
-            additionalHeaders = screenerReplaceScreenerParams.additionalHeaders.toBuilder()
-            additionalQueryParams = screenerReplaceScreenerParams.additionalQueryParams.toBuilder()
+        internal fun from(screenerPatchScreenerParams: ScreenerPatchScreenerParams) = apply {
+            screenerId = screenerPatchScreenerParams.screenerId
+            body = screenerPatchScreenerParams.body.toBuilder()
+            additionalHeaders = screenerPatchScreenerParams.additionalHeaders.toBuilder()
+            additionalQueryParams = screenerPatchScreenerParams.additionalQueryParams.toBuilder()
         }
 
         fun screenerId(screenerId: String?) = apply { this.screenerId = screenerId }
@@ -173,7 +177,10 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** Structured field references to include when running this screener */
+        /**
+         * Structured field references to include when running this screener. Omit or send `null` to
+         * leave unchanged; `[]` clears the stored columns.
+         */
         fun columns(columns: List<FieldRef>?) = apply { body.columns(columns) }
 
         /** Alias for calling [Builder.columns] with `columns.orElse(null)`. */
@@ -195,7 +202,10 @@ private constructor(
          */
         fun addColumn(column: FieldRef) = apply { body.addColumn(column) }
 
-        /** Structured search filter criteria */
+        /**
+         * Structured search filter criteria. Omit or send `null` to leave unchanged; `[]` clears
+         * the stored filters.
+         */
         fun filters(filters: List<SearchFilter>?) = apply { body.filters(filters) }
 
         /** Alias for calling [Builder.filters] with `filters.orElse(null)`. */
@@ -217,7 +227,10 @@ private constructor(
          */
         fun addFilter(filter: SearchFilter) = apply { body.addFilter(filter) }
 
-        /** The name for this screener configuration */
+        /**
+         * The name for this screener configuration. Omit or send `null` to leave unchanged. Cannot
+         * be set to an empty string.
+         */
         fun name(name: String?) = apply { body.name(name) }
 
         /** Alias for calling [Builder.name] with `name.orElse(null)`. */
@@ -232,8 +245,8 @@ private constructor(
         fun name(name: JsonField<String>) = apply { body.name(name) }
 
         /**
-         * Whether any user may fetch this screener by id. Omit to leave the existing value
-         * unchanged (defaults to `false` when creating).
+         * Whether any user may fetch this screener by id. Omit or send `null` to leave unchanged.
+         * `false` is a value, not a clear.
          */
         fun shared(shared: Boolean?) = apply { body.shared(shared) }
 
@@ -255,7 +268,10 @@ private constructor(
          */
         fun shared(shared: JsonField<Boolean>) = apply { body.shared(shared) }
 
-        /** Multi-field sort specifications */
+        /**
+         * Multi-field sort specifications. Omit or send `null` to leave unchanged; `[]` clears the
+         * stored sort.
+         */
         fun sorts(sorts: List<SortSpec>?) = apply { body.sorts(sorts) }
 
         /** Alias for calling [Builder.sorts] with `sorts.orElse(null)`. */
@@ -395,12 +411,12 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [ScreenerReplaceScreenerParams].
+         * Returns an immutable instance of [ScreenerPatchScreenerParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): ScreenerReplaceScreenerParams =
-            ScreenerReplaceScreenerParams(
+        fun build(): ScreenerPatchScreenerParams =
+            ScreenerPatchScreenerParams(
                 screenerId,
                 body.build(),
                 additionalHeaders.build(),
@@ -420,7 +436,17 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /** Request body for creating or updating a saved screener configuration */
+    /**
+     * Request body for partially updating a saved screener configuration.
+     *
+     * Every field is optional. Omitting a field, or sending it as `null`, leaves the stored value
+     * unchanged. Sending a field's empty value clears it: `columns: []` clears the stored columns,
+     * `sorts: []` clears the stored sort, and `filters: []` clears the stored filters. `name` has
+     * no empty value that clears it -- `name: ""` is rejected. `shared` has no empty value either
+     * -- `shared: false` sets it to `false`, it does not clear anything.
+     *
+     * Unknown fields are rejected.
+     */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -448,7 +474,8 @@ private constructor(
         ) : this(columns, filters, name, shared, sorts, mutableMapOf())
 
         /**
-         * Structured field references to include when running this screener
+         * Structured field references to include when running this screener. Omit or send `null` to
+         * leave unchanged; `[]` clears the stored columns.
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -456,7 +483,8 @@ private constructor(
         fun columns(): Optional<List<FieldRef>> = columns.getOptional("columns")
 
         /**
-         * Structured search filter criteria
+         * Structured search filter criteria. Omit or send `null` to leave unchanged; `[]` clears
+         * the stored filters.
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -464,7 +492,8 @@ private constructor(
         fun filters(): Optional<List<SearchFilter>> = filters.getOptional("filters")
 
         /**
-         * The name for this screener configuration
+         * The name for this screener configuration. Omit or send `null` to leave unchanged. Cannot
+         * be set to an empty string.
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -472,8 +501,8 @@ private constructor(
         fun name(): Optional<String> = name.getOptional("name")
 
         /**
-         * Whether any user may fetch this screener by id. Omit to leave the existing value
-         * unchanged (defaults to `false` when creating).
+         * Whether any user may fetch this screener by id. Omit or send `null` to leave unchanged.
+         * `false` is a value, not a clear.
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -481,7 +510,8 @@ private constructor(
         fun shared(): Optional<Boolean> = shared.getOptional("shared")
 
         /**
-         * Multi-field sort specifications
+         * Multi-field sort specifications. Omit or send `null` to leave unchanged; `[]` clears the
+         * stored sort.
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -563,7 +593,10 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** Structured field references to include when running this screener */
+            /**
+             * Structured field references to include when running this screener. Omit or send
+             * `null` to leave unchanged; `[]` clears the stored columns.
+             */
             fun columns(columns: List<FieldRef>?) = columns(JsonField.ofNullable(columns))
 
             /** Alias for calling [Builder.columns] with `columns.orElse(null)`. */
@@ -592,7 +625,10 @@ private constructor(
                     }
             }
 
-            /** Structured search filter criteria */
+            /**
+             * Structured search filter criteria. Omit or send `null` to leave unchanged; `[]`
+             * clears the stored filters.
+             */
             fun filters(filters: List<SearchFilter>?) = filters(JsonField.ofNullable(filters))
 
             /** Alias for calling [Builder.filters] with `filters.orElse(null)`. */
@@ -621,7 +657,10 @@ private constructor(
                     }
             }
 
-            /** The name for this screener configuration */
+            /**
+             * The name for this screener configuration. Omit or send `null` to leave unchanged.
+             * Cannot be set to an empty string.
+             */
             fun name(name: String?) = name(JsonField.ofNullable(name))
 
             /** Alias for calling [Builder.name] with `name.orElse(null)`. */
@@ -637,8 +676,8 @@ private constructor(
             fun name(name: JsonField<String>) = apply { this.name = name }
 
             /**
-             * Whether any user may fetch this screener by id. Omit to leave the existing value
-             * unchanged (defaults to `false` when creating).
+             * Whether any user may fetch this screener by id. Omit or send `null` to leave
+             * unchanged. `false` is a value, not a clear.
              */
             fun shared(shared: Boolean?) = shared(JsonField.ofNullable(shared))
 
@@ -661,7 +700,10 @@ private constructor(
              */
             fun shared(shared: JsonField<Boolean>) = apply { this.shared = shared }
 
-            /** Multi-field sort specifications */
+            /**
+             * Multi-field sort specifications. Omit or send `null` to leave unchanged; `[]` clears
+             * the stored sort.
+             */
             fun sorts(sorts: List<SortSpec>?) = sorts(JsonField.ofNullable(sorts))
 
             /** Alias for calling [Builder.sorts] with `sorts.orElse(null)`. */
@@ -800,7 +842,7 @@ private constructor(
             return true
         }
 
-        return other is ScreenerReplaceScreenerParams &&
+        return other is ScreenerPatchScreenerParams &&
             screenerId == other.screenerId &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -811,5 +853,5 @@ private constructor(
         Objects.hash(screenerId, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "ScreenerReplaceScreenerParams{screenerId=$screenerId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ScreenerPatchScreenerParams{screenerId=$screenerId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
