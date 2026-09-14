@@ -112,8 +112,9 @@ private constructor(
     fun lastQuote(): Optional<SnapshotQuote> = lastQuote.getOptional("last_quote")
 
     /**
-     * Most recent last-sale trade if available. When a null/undefined value is observed, it
-     * indicates that there is no available data.
+     * Most recent last-sale-eligible trade if available. Omitted when the most recent known print
+     * is ineligible (e.g. an odd lot or an out-of-sequence report) rather than showing that print's
+     * price. When a null/undefined value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -348,8 +349,10 @@ private constructor(
         fun lastQuote(lastQuote: JsonField<SnapshotQuote>) = apply { this.lastQuote = lastQuote }
 
         /**
-         * Most recent last-sale trade if available. When a null/undefined value is observed, it
-         * indicates that there is no available data.
+         * Most recent last-sale-eligible trade if available. Omitted when the most recent known
+         * print is ineligible (e.g. an odd lot or an out-of-sequence report) rather than showing
+         * that print's price. When a null/undefined value is observed, it indicates that there is
+         * no available data.
          */
         fun lastTrade(lastTrade: SnapshotLastTrade?) = lastTrade(JsonField.ofNullable(lastTrade))
 

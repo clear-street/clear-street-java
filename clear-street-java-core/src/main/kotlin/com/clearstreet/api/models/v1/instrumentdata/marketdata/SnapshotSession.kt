@@ -43,7 +43,7 @@ private constructor(
     ) : this(change, changePercent, previousClose, previousCloseUnadjusted, mutableMapOf())
 
     /**
-     * Absolute change from previous close to last trade.
+     * Absolute change from previous close to the most recent last-sale-eligible trade.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -51,7 +51,7 @@ private constructor(
     fun change(): String = change.getRequired("change")
 
     /**
-     * Percent change from previous close to last trade.
+     * Percent change from previous close to the most recent last-sale-eligible trade.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -160,7 +160,7 @@ private constructor(
             additionalProperties = snapshotSession.additionalProperties.toMutableMap()
         }
 
-        /** Absolute change from previous close to last trade. */
+        /** Absolute change from previous close to the most recent last-sale-eligible trade. */
         fun change(change: String) = change(JsonField.of(change))
 
         /**
@@ -171,7 +171,7 @@ private constructor(
          */
         fun change(change: JsonField<String>) = apply { this.change = change }
 
-        /** Percent change from previous close to last trade. */
+        /** Percent change from previous close to the most recent last-sale-eligible trade. */
         fun changePercent(changePercent: String) = changePercent(JsonField.of(changePercent))
 
         /**
