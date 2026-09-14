@@ -32,6 +32,7 @@ private constructor(
     private val symbol: JsonField<String>,
     private val acceptedQuantity: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
+    private val rejection: JsonField<PositionInstructionRejection>,
     private val rejectionReason: JsonField<String>,
     private val underlyingInstrumentId: JsonField<String>,
     private val updatedAt: JsonField<OffsetDateTime>,
@@ -62,6 +63,9 @@ private constructor(
         @JsonProperty("created_at")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("rejection")
+        @ExcludeMissing
+        rejection: JsonField<PositionInstructionRejection> = JsonMissing.of(),
         @JsonProperty("rejection_reason")
         @ExcludeMissing
         rejectionReason: JsonField<String> = JsonMissing.of(),
@@ -82,6 +86,7 @@ private constructor(
         symbol,
         acceptedQuantity,
         createdAt,
+        rejection,
         rejectionReason,
         underlyingInstrumentId,
         updatedAt,
@@ -171,6 +176,18 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun createdAt(): Optional<OffsetDateTime> = createdAt.getOptional("created_at")
+
+    /**
+     * Machine-readable counterpart to `rejection_reason`: a stable reason code plus params,
+     * populated on the submit and cancel responses for a row rejected with a structured reason.
+     * Branch on `rejection.reason` instead of parsing `rejection_reason`. Absent when listing
+     * historical instructions. When a null/undefined value is observed, it indicates it does not
+     * apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun rejection(): Optional<PositionInstructionRejection> = rejection.getOptional("rejection")
 
     /**
      * Human-readable explanation populated on any non-success terminal status — `REJECTED` or
@@ -287,6 +304,15 @@ private constructor(
     fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
     /**
+     * Returns the raw JSON value of [rejection].
+     *
+     * Unlike [rejection], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("rejection")
+    @ExcludeMissing
+    fun _rejection(): JsonField<PositionInstructionRejection> = rejection
+
+    /**
      * Returns the raw JSON value of [rejectionReason].
      *
      * Unlike [rejectionReason], this method doesn't throw if the JSON field has an unexpected type.
@@ -359,6 +385,7 @@ private constructor(
         private var symbol: JsonField<String>? = null
         private var acceptedQuantity: JsonField<String> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var rejection: JsonField<PositionInstructionRejection> = JsonMissing.of()
         private var rejectionReason: JsonField<String> = JsonMissing.of()
         private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -376,6 +403,7 @@ private constructor(
             symbol = positionInstruction.symbol
             acceptedQuantity = positionInstruction.acceptedQuantity
             createdAt = positionInstruction.createdAt
+            rejection = positionInstruction.rejection
             rejectionReason = positionInstruction.rejectionReason
             underlyingInstrumentId = positionInstruction.underlyingInstrumentId
             updatedAt = positionInstruction.updatedAt
@@ -527,6 +555,31 @@ private constructor(
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
         /**
+         * Machine-readable counterpart to `rejection_reason`: a stable reason code plus params,
+         * populated on the submit and cancel responses for a row rejected with a structured reason.
+         * Branch on `rejection.reason` instead of parsing `rejection_reason`. Absent when listing
+         * historical instructions. When a null/undefined value is observed, it indicates it does
+         * not apply.
+         */
+        fun rejection(rejection: PositionInstructionRejection?) =
+            rejection(JsonField.ofNullable(rejection))
+
+        /** Alias for calling [Builder.rejection] with `rejection.orElse(null)`. */
+        fun rejection(rejection: Optional<PositionInstructionRejection>) =
+            rejection(rejection.getOrNull())
+
+        /**
+         * Sets [Builder.rejection] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.rejection] with a well-typed
+         * [PositionInstructionRejection] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
+         */
+        fun rejection(rejection: JsonField<PositionInstructionRejection>) = apply {
+            this.rejection = rejection
+        }
+
+        /**
          * Human-readable explanation populated on any non-success terminal status — `REJECTED` or
          * `CANCEL_FAILED`. On a `207 Multi-Status` batch submit the top-level `error` field
          * summarizes the batch; per-row detail continues to live here. When a null/undefined value
@@ -643,6 +696,7 @@ private constructor(
                 checkRequired("symbol", symbol),
                 acceptedQuantity,
                 createdAt,
+                rejection,
                 rejectionReason,
                 underlyingInstrumentId,
                 updatedAt,
@@ -675,6 +729,7 @@ private constructor(
         symbol()
         acceptedQuantity()
         createdAt()
+        rejection().ifPresent { it.validate() }
         rejectionReason()
         underlyingInstrumentId()
         updatedAt()
@@ -706,6 +761,7 @@ private constructor(
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (acceptedQuantity.asKnown().isPresent) 1 else 0) +
             (if (createdAt.asKnown().isPresent) 1 else 0) +
+            (rejection.asKnown().getOrNull()?.validity() ?: 0) +
             (if (rejectionReason.asKnown().isPresent) 1 else 0) +
             (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0) +
             (if (updatedAt.asKnown().isPresent) 1 else 0)
@@ -726,6 +782,7 @@ private constructor(
             symbol == other.symbol &&
             acceptedQuantity == other.acceptedQuantity &&
             createdAt == other.createdAt &&
+            rejection == other.rejection &&
             rejectionReason == other.rejectionReason &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
             updatedAt == other.updatedAt &&
@@ -744,6 +801,7 @@ private constructor(
             symbol,
             acceptedQuantity,
             createdAt,
+            rejection,
             rejectionReason,
             underlyingInstrumentId,
             updatedAt,
@@ -754,5 +812,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PositionInstruction{id=$id, accountId=$accountId, clientInstructionId=$clientInstructionId, instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, status=$status, symbol=$symbol, acceptedQuantity=$acceptedQuantity, createdAt=$createdAt, rejectionReason=$rejectionReason, underlyingInstrumentId=$underlyingInstrumentId, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "PositionInstruction{id=$id, accountId=$accountId, clientInstructionId=$clientInstructionId, instructionType=$instructionType, instrumentId=$instrumentId, quantity=$quantity, status=$status, symbol=$symbol, acceptedQuantity=$acceptedQuantity, createdAt=$createdAt, rejection=$rejection, rejectionReason=$rejectionReason, underlyingInstrumentId=$underlyingInstrumentId, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

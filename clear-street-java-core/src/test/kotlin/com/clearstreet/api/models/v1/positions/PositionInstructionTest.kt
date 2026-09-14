@@ -2,6 +2,7 @@
 
 package com.clearstreet.api.models.v1.positions
 
+import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
@@ -24,6 +25,13 @@ internal class PositionInstructionTest {
                 .symbol("AAPL  280121C00195000")
                 .acceptedQuantity(null)
                 .createdAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
+                .rejection(
+                    PositionInstructionRejection.builder()
+                        .domain("com.clearstreet.oems.exercise")
+                        .metadata(JsonValue.from(mapOf("available" to "3", "requested" to "5")))
+                        .reason("INSUFFICIENT_POSITION")
+                        .build()
+                )
                 .rejectionReason(null)
                 .underlyingInstrumentId("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
                 .updatedAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
@@ -42,6 +50,14 @@ internal class PositionInstructionTest {
         assertThat(positionInstruction.acceptedQuantity()).isEmpty
         assertThat(positionInstruction.createdAt())
             .contains(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
+        assertThat(positionInstruction.rejection())
+            .contains(
+                PositionInstructionRejection.builder()
+                    .domain("com.clearstreet.oems.exercise")
+                    .metadata(JsonValue.from(mapOf("available" to "3", "requested" to "5")))
+                    .reason("INSUFFICIENT_POSITION")
+                    .build()
+            )
         assertThat(positionInstruction.rejectionReason()).isEmpty
         assertThat(positionInstruction.underlyingInstrumentId())
             .contains("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
@@ -64,6 +80,13 @@ internal class PositionInstructionTest {
                 .symbol("AAPL  280121C00195000")
                 .acceptedQuantity(null)
                 .createdAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
+                .rejection(
+                    PositionInstructionRejection.builder()
+                        .domain("com.clearstreet.oems.exercise")
+                        .metadata(JsonValue.from(mapOf("available" to "3", "requested" to "5")))
+                        .reason("INSUFFICIENT_POSITION")
+                        .build()
+                )
                 .rejectionReason(null)
                 .underlyingInstrumentId("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
                 .updatedAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
