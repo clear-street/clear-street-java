@@ -32,6 +32,7 @@ internal class PositionTest {
                 .dailyUnrealizedPnlPct("3.65")
                 .instrumentPrice("151.00")
                 .underlyingInstrumentId("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
+                .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                 .unrealizedPnl("550.00")
                 .unrealizedPnlPct("3.79")
                 .build()
@@ -54,6 +55,7 @@ internal class PositionTest {
         assertThat(position.instrumentPrice()).contains("151.00")
         assertThat(position.underlyingInstrumentId())
             .contains("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
+        assertThat(position.underlyingInstrumentType()).contains(SecurityType.COMMON_STOCK)
         assertThat(position.unrealizedPnl()).contains("550.00")
         assertThat(position.unrealizedPnlPct()).contains("3.79")
     }
@@ -80,6 +82,7 @@ internal class PositionTest {
                 .dailyUnrealizedPnlPct("3.65")
                 .instrumentPrice("151.00")
                 .underlyingInstrumentId("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
+                .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                 .unrealizedPnl("550.00")
                 .unrealizedPnlPct("3.79")
                 .build()

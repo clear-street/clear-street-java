@@ -62,6 +62,7 @@ private constructor(
     private val trailingWatermarkPx: JsonField<String>,
     private val trailingWatermarkTs: JsonField<OffsetDateTime>,
     private val underlyingInstrumentId: JsonField<String>,
+    private val underlyingInstrumentType: JsonField<SecurityType>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -147,6 +148,9 @@ private constructor(
         @JsonProperty("underlying_instrument_id")
         @ExcludeMissing
         underlyingInstrumentId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("underlying_instrument_type")
+        @ExcludeMissing
+        underlyingInstrumentType: JsonField<SecurityType> = JsonMissing.of(),
     ) : this(
         id,
         accountId,
@@ -180,6 +184,7 @@ private constructor(
         trailingWatermarkPx,
         trailingWatermarkTs,
         underlyingInstrumentId,
+        underlyingInstrumentType,
         mutableMapOf(),
     )
 
@@ -466,6 +471,16 @@ private constructor(
         underlyingInstrumentId.getOptional("underlying_instrument_id")
 
     /**
+     * Type of the underlying instrument, alongside `underlying_instrument_id`. When a
+     * null/undefined value is observed, it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun underlyingInstrumentType(): Optional<SecurityType> =
+        underlyingInstrumentType.getOptional("underlying_instrument_type")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -736,6 +751,16 @@ private constructor(
     @ExcludeMissing
     fun _underlyingInstrumentId(): JsonField<String> = underlyingInstrumentId
 
+    /**
+     * Returns the raw JSON value of [underlyingInstrumentType].
+     *
+     * Unlike [underlyingInstrumentType], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("underlying_instrument_type")
+    @ExcludeMissing
+    fun _underlyingInstrumentType(): JsonField<SecurityType> = underlyingInstrumentType
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -808,6 +833,7 @@ private constructor(
         private var trailingWatermarkPx: JsonField<String> = JsonMissing.of()
         private var trailingWatermarkTs: JsonField<OffsetDateTime> = JsonMissing.of()
         private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
+        private var underlyingInstrumentType: JsonField<SecurityType> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -844,6 +870,7 @@ private constructor(
             trailingWatermarkPx = order.trailingWatermarkPx
             trailingWatermarkTs = order.trailingWatermarkTs
             underlyingInstrumentId = order.underlyingInstrumentId
+            underlyingInstrumentType = order.underlyingInstrumentType
             additionalProperties = order.additionalProperties.toMutableMap()
         }
 
@@ -1417,6 +1444,31 @@ private constructor(
             this.underlyingInstrumentId = underlyingInstrumentId
         }
 
+        /**
+         * Type of the underlying instrument, alongside `underlying_instrument_id`. When a
+         * null/undefined value is observed, it indicates it does not apply.
+         */
+        fun underlyingInstrumentType(underlyingInstrumentType: SecurityType?) =
+            underlyingInstrumentType(JsonField.ofNullable(underlyingInstrumentType))
+
+        /**
+         * Alias for calling [Builder.underlyingInstrumentType] with
+         * `underlyingInstrumentType.orElse(null)`.
+         */
+        fun underlyingInstrumentType(underlyingInstrumentType: Optional<SecurityType>) =
+            underlyingInstrumentType(underlyingInstrumentType.getOrNull())
+
+        /**
+         * Sets [Builder.underlyingInstrumentType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.underlyingInstrumentType] with a well-typed
+         * [SecurityType] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun underlyingInstrumentType(underlyingInstrumentType: JsonField<SecurityType>) = apply {
+            this.underlyingInstrumentType = underlyingInstrumentType
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -1494,6 +1546,7 @@ private constructor(
                 trailingWatermarkPx,
                 trailingWatermarkTs,
                 underlyingInstrumentId,
+                underlyingInstrumentType,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -1545,6 +1598,7 @@ private constructor(
         trailingWatermarkPx()
         trailingWatermarkTs()
         underlyingInstrumentId()
+        underlyingInstrumentType().ifPresent { it.validate() }
         validated = true
     }
 
@@ -1594,7 +1648,8 @@ private constructor(
             (if (trailingStopPx.asKnown().isPresent) 1 else 0) +
             (if (trailingWatermarkPx.asKnown().isPresent) 1 else 0) +
             (if (trailingWatermarkTs.asKnown().isPresent) 1 else 0) +
-            (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0)
+            (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0) +
+            (underlyingInstrumentType.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -1634,6 +1689,7 @@ private constructor(
             trailingWatermarkPx == other.trailingWatermarkPx &&
             trailingWatermarkTs == other.trailingWatermarkTs &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
+            underlyingInstrumentType == other.underlyingInstrumentType &&
             additionalProperties == other.additionalProperties
     }
 
@@ -1671,6 +1727,7 @@ private constructor(
             trailingWatermarkPx,
             trailingWatermarkTs,
             underlyingInstrumentId,
+            underlyingInstrumentType,
             additionalProperties,
         )
     }
@@ -1678,5 +1735,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, instrumentType=$instrumentType, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, instrumentType=$instrumentType, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
 }

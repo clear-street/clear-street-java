@@ -48,6 +48,7 @@ internal class OrderTest {
                 .trailingWatermarkPx("50.00")
                 .trailingWatermarkTs(OffsetDateTime.parse("2025-10-31T13:35:10.000000000Z"))
                 .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                 .build()
 
         assertThat(order.id()).isEqualTo("0195f6c7-4f64-7e3c-8b0a-1d8e4f5e6a7b")
@@ -87,6 +88,7 @@ internal class OrderTest {
         assertThat(order.trailingWatermarkTs())
             .contains(OffsetDateTime.parse("2025-10-31T13:35:10.000000000Z"))
         assertThat(order.underlyingInstrumentId()).contains("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+        assertThat(order.underlyingInstrumentType()).contains(SecurityType.COMMON_STOCK)
     }
 
     @Test
@@ -126,6 +128,7 @@ internal class OrderTest {
                 .trailingWatermarkPx("50.00")
                 .trailingWatermarkTs(OffsetDateTime.parse("2025-10-31T13:35:10.000000000Z"))
                 .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                 .build()
 
         val roundtrippedOrder =

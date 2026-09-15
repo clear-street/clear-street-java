@@ -73,6 +73,7 @@ internal class OrderGetOrdersResponseTest {
                         .trailingWatermarkPx("50.00")
                         .trailingWatermarkTs(OffsetDateTime.parse("2025-10-31T13:35:10.000000000Z"))
                         .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                        .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                         .build()
                 )
                 .build()
@@ -135,6 +136,7 @@ internal class OrderGetOrdersResponseTest {
                     .trailingWatermarkPx("50.00")
                     .trailingWatermarkTs(OffsetDateTime.parse("2025-10-31T13:35:10.000000000Z"))
                     .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                    .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                     .build()
             )
     }
@@ -199,6 +201,7 @@ internal class OrderGetOrdersResponseTest {
                         .trailingWatermarkPx("50.00")
                         .trailingWatermarkTs(OffsetDateTime.parse("2025-10-31T13:35:10.000000000Z"))
                         .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                        .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                         .build()
                 )
                 .build()

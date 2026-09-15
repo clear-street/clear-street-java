@@ -40,6 +40,7 @@ private constructor(
     private val dailyUnrealizedPnlPct: JsonField<String>,
     private val instrumentPrice: JsonField<String>,
     private val underlyingInstrumentId: JsonField<String>,
+    private val underlyingInstrumentType: JsonField<SecurityType>,
     private val unrealizedPnl: JsonField<String>,
     private val unrealizedPnlPct: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -88,6 +89,9 @@ private constructor(
         @JsonProperty("underlying_instrument_id")
         @ExcludeMissing
         underlyingInstrumentId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("underlying_instrument_type")
+        @ExcludeMissing
+        underlyingInstrumentType: JsonField<SecurityType> = JsonMissing.of(),
         @JsonProperty("unrealized_pnl")
         @ExcludeMissing
         unrealizedPnl: JsonField<String> = JsonMissing.of(),
@@ -112,6 +116,7 @@ private constructor(
         dailyUnrealizedPnlPct,
         instrumentPrice,
         underlyingInstrumentId,
+        underlyingInstrumentType,
         unrealizedPnl,
         unrealizedPnlPct,
         mutableMapOf(),
@@ -265,6 +270,16 @@ private constructor(
      */
     fun underlyingInstrumentId(): Optional<String> =
         underlyingInstrumentId.getOptional("underlying_instrument_id")
+
+    /**
+     * Type of the underlying instrument, alongside `underlying_instrument_id` When a null/undefined
+     * value is observed, it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun underlyingInstrumentType(): Optional<SecurityType> =
+        underlyingInstrumentType.getOptional("underlying_instrument_type")
 
     /**
      * The total unrealized profit or loss for this position based on current market value When a
@@ -435,6 +450,16 @@ private constructor(
     fun _underlyingInstrumentId(): JsonField<String> = underlyingInstrumentId
 
     /**
+     * Returns the raw JSON value of [underlyingInstrumentType].
+     *
+     * Unlike [underlyingInstrumentType], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("underlying_instrument_type")
+    @ExcludeMissing
+    fun _underlyingInstrumentType(): JsonField<SecurityType> = underlyingInstrumentType
+
+    /**
      * Returns the raw JSON value of [unrealizedPnl].
      *
      * Unlike [unrealizedPnl], this method doesn't throw if the JSON field has an unexpected type.
@@ -505,6 +530,7 @@ private constructor(
         private var dailyUnrealizedPnlPct: JsonField<String> = JsonMissing.of()
         private var instrumentPrice: JsonField<String> = JsonMissing.of()
         private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
+        private var underlyingInstrumentType: JsonField<SecurityType> = JsonMissing.of()
         private var unrealizedPnl: JsonField<String> = JsonMissing.of()
         private var unrealizedPnlPct: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -528,6 +554,7 @@ private constructor(
             dailyUnrealizedPnlPct = position.dailyUnrealizedPnlPct
             instrumentPrice = position.instrumentPrice
             underlyingInstrumentId = position.underlyingInstrumentId
+            underlyingInstrumentType = position.underlyingInstrumentType
             unrealizedPnl = position.unrealizedPnl
             unrealizedPnlPct = position.unrealizedPnlPct
             additionalProperties = position.additionalProperties.toMutableMap()
@@ -833,6 +860,31 @@ private constructor(
         }
 
         /**
+         * Type of the underlying instrument, alongside `underlying_instrument_id` When a
+         * null/undefined value is observed, it indicates it does not apply.
+         */
+        fun underlyingInstrumentType(underlyingInstrumentType: SecurityType?) =
+            underlyingInstrumentType(JsonField.ofNullable(underlyingInstrumentType))
+
+        /**
+         * Alias for calling [Builder.underlyingInstrumentType] with
+         * `underlyingInstrumentType.orElse(null)`.
+         */
+        fun underlyingInstrumentType(underlyingInstrumentType: Optional<SecurityType>) =
+            underlyingInstrumentType(underlyingInstrumentType.getOrNull())
+
+        /**
+         * Sets [Builder.underlyingInstrumentType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.underlyingInstrumentType] with a well-typed
+         * [SecurityType] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun underlyingInstrumentType(underlyingInstrumentType: JsonField<SecurityType>) = apply {
+            this.underlyingInstrumentType = underlyingInstrumentType
+        }
+
+        /**
          * The total unrealized profit or loss for this position based on current market value When
          * a null/undefined value is observed, it indicates that there is no available data.
          */
@@ -934,6 +986,7 @@ private constructor(
                 dailyUnrealizedPnlPct,
                 instrumentPrice,
                 underlyingInstrumentId,
+                underlyingInstrumentType,
                 unrealizedPnl,
                 unrealizedPnlPct,
                 additionalProperties.toMutableMap(),
@@ -972,6 +1025,7 @@ private constructor(
         dailyUnrealizedPnlPct()
         instrumentPrice()
         underlyingInstrumentId()
+        underlyingInstrumentType().ifPresent { it.validate() }
         unrealizedPnl()
         unrealizedPnlPct()
         validated = true
@@ -1009,6 +1063,7 @@ private constructor(
             (if (dailyUnrealizedPnlPct.asKnown().isPresent) 1 else 0) +
             (if (instrumentPrice.asKnown().isPresent) 1 else 0) +
             (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0) +
+            (underlyingInstrumentType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (unrealizedPnl.asKnown().isPresent) 1 else 0) +
             (if (unrealizedPnlPct.asKnown().isPresent) 1 else 0)
 
@@ -1035,6 +1090,7 @@ private constructor(
             dailyUnrealizedPnlPct == other.dailyUnrealizedPnlPct &&
             instrumentPrice == other.instrumentPrice &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
+            underlyingInstrumentType == other.underlyingInstrumentType &&
             unrealizedPnl == other.unrealizedPnl &&
             unrealizedPnlPct == other.unrealizedPnlPct &&
             additionalProperties == other.additionalProperties
@@ -1059,6 +1115,7 @@ private constructor(
             dailyUnrealizedPnlPct,
             instrumentPrice,
             underlyingInstrumentId,
+            underlyingInstrumentType,
             unrealizedPnl,
             unrealizedPnlPct,
             additionalProperties,
@@ -1068,5 +1125,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Position{accountId=$accountId, availableQuantity=$availableQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, marketValue=$marketValue, positionType=$positionType, quantity=$quantity, symbol=$symbol, avgPrice=$avgPrice, closingPrice=$closingPrice, closingPriceDate=$closingPriceDate, costBasis=$costBasis, dailyRealizedPnl=$dailyRealizedPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, dailyUnrealizedPnlPct=$dailyUnrealizedPnlPct, instrumentPrice=$instrumentPrice, underlyingInstrumentId=$underlyingInstrumentId, unrealizedPnl=$unrealizedPnl, unrealizedPnlPct=$unrealizedPnlPct, additionalProperties=$additionalProperties}"
+        "Position{accountId=$accountId, availableQuantity=$availableQuantity, instrumentId=$instrumentId, instrumentType=$instrumentType, marketValue=$marketValue, positionType=$positionType, quantity=$quantity, symbol=$symbol, avgPrice=$avgPrice, closingPrice=$closingPrice, closingPriceDate=$closingPriceDate, costBasis=$costBasis, dailyRealizedPnl=$dailyRealizedPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, dailyUnrealizedPnlPct=$dailyUnrealizedPnlPct, instrumentPrice=$instrumentPrice, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, unrealizedPnl=$unrealizedPnl, unrealizedPnlPct=$unrealizedPnlPct, additionalProperties=$additionalProperties}"
 }

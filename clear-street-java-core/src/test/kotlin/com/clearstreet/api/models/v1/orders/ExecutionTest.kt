@@ -3,6 +3,7 @@
 package com.clearstreet.api.models.v1.orders
 
 import com.clearstreet.api.core.jsonMapper
+import com.clearstreet.api.models.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -23,6 +24,7 @@ internal class ExecutionTest {
                 .price("150.25")
                 .symbol("AAPL")
                 .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                 .venue("XNAS")
                 .build()
 
@@ -37,6 +39,7 @@ internal class ExecutionTest {
         assertThat(execution.symbol()).contains("AAPL")
         assertThat(execution.underlyingInstrumentId())
             .contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(execution.underlyingInstrumentType()).contains(SecurityType.COMMON_STOCK)
         assertThat(execution.venue()).contains("XNAS")
     }
 
@@ -54,6 +57,7 @@ internal class ExecutionTest {
                 .price("150.25")
                 .symbol("AAPL")
                 .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                 .venue("XNAS")
                 .build()
 

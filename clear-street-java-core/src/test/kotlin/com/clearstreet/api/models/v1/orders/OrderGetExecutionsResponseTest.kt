@@ -6,6 +6,7 @@ import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
+import com.clearstreet.api.models.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -49,6 +50,7 @@ internal class OrderGetExecutionsResponseTest {
                         .price("150.25")
                         .symbol("AAPL")
                         .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                         .venue("XNAS")
                         .build()
                 )
@@ -89,6 +91,7 @@ internal class OrderGetExecutionsResponseTest {
                     .price("150.25")
                     .symbol("AAPL")
                     .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                     .venue("XNAS")
                     .build()
             )
@@ -131,6 +134,7 @@ internal class OrderGetExecutionsResponseTest {
                         .price("150.25")
                         .symbol("AAPL")
                         .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                         .venue("XNAS")
                         .build()
                 )
