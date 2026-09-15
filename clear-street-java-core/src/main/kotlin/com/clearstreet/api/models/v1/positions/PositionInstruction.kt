@@ -178,11 +178,11 @@ private constructor(
     fun createdAt(): Optional<OffsetDateTime> = createdAt.getOptional("created_at")
 
     /**
-     * Machine-readable counterpart to `rejection_reason`: a stable reason code plus params,
-     * populated on the submit and cancel responses for a row rejected with a structured reason.
-     * Branch on `rejection.reason` instead of parsing `rejection_reason`. Absent when listing
-     * historical instructions. When a null/undefined value is observed, it indicates it does not
-     * apply.
+     * Machine-readable counterpart to `rejection_reason`: a stable reason code plus params, present
+     * on every rejected row that has a `rejection_reason` — on submit, cancel, get, and list alike.
+     * Branch on `rejection.reason` instead of parsing `rejection_reason`. Forward-only:
+     * instructions rejected before this field shipped may carry only `rejection_reason`. When a
+     * null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -556,10 +556,11 @@ private constructor(
 
         /**
          * Machine-readable counterpart to `rejection_reason`: a stable reason code plus params,
-         * populated on the submit and cancel responses for a row rejected with a structured reason.
-         * Branch on `rejection.reason` instead of parsing `rejection_reason`. Absent when listing
-         * historical instructions. When a null/undefined value is observed, it indicates it does
-         * not apply.
+         * present on every rejected row that has a `rejection_reason` — on submit, cancel, get, and
+         * list alike. Branch on `rejection.reason` instead of parsing `rejection_reason`.
+         * Forward-only: instructions rejected before this field shipped may carry only
+         * `rejection_reason`. When a null/undefined value is observed, it indicates it does not
+         * apply.
          */
         fun rejection(rejection: PositionInstructionRejection?) =
             rejection(JsonField.ofNullable(rejection))

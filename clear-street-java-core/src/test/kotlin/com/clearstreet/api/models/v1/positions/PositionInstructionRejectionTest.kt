@@ -15,13 +15,23 @@ internal class PositionInstructionRejectionTest {
         val positionInstructionRejection =
             PositionInstructionRejection.builder()
                 .domain("com.clearstreet.oems.exercise")
-                .metadata(JsonValue.from(mapOf("available" to "3", "requested" to "5")))
+                .metadata(
+                    PositionInstructionRejection.Metadata.builder()
+                        .putAdditionalProperty("available", JsonValue.from("3"))
+                        .putAdditionalProperty("requested", JsonValue.from("5"))
+                        .build()
+                )
                 .reason("INSUFFICIENT_POSITION")
                 .build()
 
         assertThat(positionInstructionRejection.domain()).isEqualTo("com.clearstreet.oems.exercise")
-        assertThat(positionInstructionRejection._metadata())
-            .isEqualTo(JsonValue.from(mapOf("available" to "3", "requested" to "5")))
+        assertThat(positionInstructionRejection.metadata())
+            .isEqualTo(
+                PositionInstructionRejection.Metadata.builder()
+                    .putAdditionalProperty("available", JsonValue.from("3"))
+                    .putAdditionalProperty("requested", JsonValue.from("5"))
+                    .build()
+            )
         assertThat(positionInstructionRejection.reason()).isEqualTo("INSUFFICIENT_POSITION")
     }
 
@@ -31,7 +41,12 @@ internal class PositionInstructionRejectionTest {
         val positionInstructionRejection =
             PositionInstructionRejection.builder()
                 .domain("com.clearstreet.oems.exercise")
-                .metadata(JsonValue.from(mapOf("available" to "3", "requested" to "5")))
+                .metadata(
+                    PositionInstructionRejection.Metadata.builder()
+                        .putAdditionalProperty("available", JsonValue.from("3"))
+                        .putAdditionalProperty("requested", JsonValue.from("5"))
+                        .build()
+                )
                 .reason("INSUFFICIENT_POSITION")
                 .build()
 

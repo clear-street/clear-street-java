@@ -54,7 +54,10 @@ internal class PositionGetPositionInstructionsResponseTest {
                             PositionInstructionRejection.builder()
                                 .domain("com.clearstreet.oems.exercise")
                                 .metadata(
-                                    JsonValue.from(mapOf("available" to "3", "requested" to "5"))
+                                    PositionInstructionRejection.Metadata.builder()
+                                        .putAdditionalProperty("available", JsonValue.from("3"))
+                                        .putAdditionalProperty("requested", JsonValue.from("5"))
+                                        .build()
                                 )
                                 .reason("INSUFFICIENT_POSITION")
                                 .build()
@@ -105,7 +108,12 @@ internal class PositionGetPositionInstructionsResponseTest {
                     .rejection(
                         PositionInstructionRejection.builder()
                             .domain("com.clearstreet.oems.exercise")
-                            .metadata(JsonValue.from(mapOf("available" to "3", "requested" to "5")))
+                            .metadata(
+                                PositionInstructionRejection.Metadata.builder()
+                                    .putAdditionalProperty("available", JsonValue.from("3"))
+                                    .putAdditionalProperty("requested", JsonValue.from("5"))
+                                    .build()
+                            )
                             .reason("INSUFFICIENT_POSITION")
                             .build()
                     )
@@ -158,7 +166,10 @@ internal class PositionGetPositionInstructionsResponseTest {
                             PositionInstructionRejection.builder()
                                 .domain("com.clearstreet.oems.exercise")
                                 .metadata(
-                                    JsonValue.from(mapOf("available" to "3", "requested" to "5"))
+                                    PositionInstructionRejection.Metadata.builder()
+                                        .putAdditionalProperty("available", JsonValue.from("3"))
+                                        .putAdditionalProperty("requested", JsonValue.from("5"))
+                                        .build()
                                 )
                                 .reason("INSUFFICIENT_POSITION")
                                 .build()
