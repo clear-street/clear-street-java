@@ -28,6 +28,9 @@ interface MarketDataService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): MarketDataService
 
     /**
+     * **Deprecated**: use `GET /market-data/snapshot` instead, which now reports the same
+     * open/high/low/volume/open-interest fields under `session` and top-level `open_interest`.
+     *
      * Returns the most recent open, high, low, volume (OHLV) and current price for the requested
      * instruments.
      *
@@ -36,11 +39,13 @@ interface MarketDataService {
      * populated but market-data fields `null`. Ids that fail to resolve are omitted from `data` and
      * reported in `error` instead (see the 207/404 responses below).
      */
+    @Deprecated("deprecated")
     fun getDailySummaries(
         params: MarketDataGetDailySummariesParams
     ): MarketDataGetDailySummariesResponse = getDailySummaries(params, RequestOptions.none())
 
     /** @see getDailySummaries */
+    @Deprecated("deprecated")
     fun getDailySummaries(
         params: MarketDataGetDailySummariesParams,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -81,6 +86,7 @@ interface MarketDataService {
          * Returns a raw HTTP response for `get /v1/market-data/daily-summary`, but is otherwise the
          * same as [MarketDataService.getDailySummaries].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun getDailySummaries(
             params: MarketDataGetDailySummariesParams
@@ -88,6 +94,7 @@ interface MarketDataService {
             getDailySummaries(params, RequestOptions.none())
 
         /** @see getDailySummaries */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun getDailySummaries(
             params: MarketDataGetDailySummariesParams,

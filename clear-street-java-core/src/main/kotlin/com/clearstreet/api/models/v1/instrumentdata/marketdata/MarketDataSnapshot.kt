@@ -22,13 +22,14 @@ class MarketDataSnapshot
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val instrumentId: JsonField<String>,
+    private val session: JsonField<SnapshotSession>,
     private val symbol: JsonField<String>,
     private val cumulativeVolume: JsonField<Long>,
     private val greeks: JsonField<SnapshotGreeks>,
     private val lastQuote: JsonField<SnapshotQuote>,
     private val lastTrade: JsonField<SnapshotLastTrade>,
     private val name: JsonField<String>,
-    private val session: JsonField<SnapshotSession>,
+    private val openInterest: JsonField<Long>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -37,6 +38,9 @@ private constructor(
         @JsonProperty("instrument_id")
         @ExcludeMissing
         instrumentId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("session")
+        @ExcludeMissing
+        session: JsonField<SnapshotSession> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("cumulative_volume")
         @ExcludeMissing
@@ -51,18 +55,19 @@ private constructor(
         @ExcludeMissing
         lastTrade: JsonField<SnapshotLastTrade> = JsonMissing.of(),
         @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("session")
+        @JsonProperty("open_interest")
         @ExcludeMissing
-        session: JsonField<SnapshotSession> = JsonMissing.of(),
+        openInterest: JsonField<Long> = JsonMissing.of(),
     ) : this(
         instrumentId,
+        session,
         symbol,
         cumulativeVolume,
         greeks,
         lastQuote,
         lastTrade,
         name,
-        session,
+        openInterest,
         mutableMapOf(),
     )
 
@@ -75,6 +80,15 @@ private constructor(
     fun instrumentId(): String = instrumentId.getRequired("instrument_id")
 
     /**
+     * Session-level pricing and OHLV metrics. Always present; each inner field is independently
+     * nullable.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun session(): SnapshotSession = session.getRequired("session")
+
+    /**
      * Display symbol for the security.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -84,12 +98,15 @@ private constructor(
 
     /**
      * Cumulative traded volume reported on the most recent trade, in shares for equities or
-     * contracts for options. Absent when no trade is available. When a null/undefined value is
-     * observed, it indicates that there is no available data.
+     * contracts for options. Absent when no trade is available.
+     *
+     * Deprecated: use `session.cumulative_volume`, the same value from the same source. When a
+     * null/undefined value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
+    @Deprecated("deprecated")
     fun cumulativeVolume(): Optional<Long> = cumulativeVolume.getOptional("cumulative_volume")
 
     /**
@@ -131,13 +148,14 @@ private constructor(
     fun name(): Optional<String> = name.getOptional("name")
 
     /**
-     * Session metrics computed from previous close and last trade, if available. When a
-     * null/undefined value is observed, it indicates that there is no available data.
+     * Open interest (outstanding contracts) as of the most recent OPRA Refresh. Populated for
+     * options only; absent for equities and indices. When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun session(): Optional<SnapshotSession> = session.getOptional("session")
+    fun openInterest(): Optional<Long> = openInterest.getOptional("open_interest")
 
     /**
      * Returns the raw JSON value of [instrumentId].
@@ -147,6 +165,13 @@ private constructor(
     @JsonProperty("instrument_id")
     @ExcludeMissing
     fun _instrumentId(): JsonField<String> = instrumentId
+
+    /**
+     * Returns the raw JSON value of [session].
+     *
+     * Unlike [session], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("session") @ExcludeMissing fun _session(): JsonField<SnapshotSession> = session
 
     /**
      * Returns the raw JSON value of [symbol].
@@ -161,6 +186,7 @@ private constructor(
      * Unlike [cumulativeVolume], this method doesn't throw if the JSON field has an unexpected
      * type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("cumulative_volume")
     @ExcludeMissing
     fun _cumulativeVolume(): JsonField<Long> = cumulativeVolume
@@ -198,11 +224,13 @@ private constructor(
     @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
 
     /**
-     * Returns the raw JSON value of [session].
+     * Returns the raw JSON value of [openInterest].
      *
-     * Unlike [session], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [openInterest], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("session") @ExcludeMissing fun _session(): JsonField<SnapshotSession> = session
+    @JsonProperty("open_interest")
+    @ExcludeMissing
+    fun _openInterest(): JsonField<Long> = openInterest
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -224,6 +252,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .instrumentId()
+         * .session()
          * .symbol()
          * ```
          */
@@ -234,25 +263,27 @@ private constructor(
     class Builder internal constructor() {
 
         private var instrumentId: JsonField<String>? = null
+        private var session: JsonField<SnapshotSession>? = null
         private var symbol: JsonField<String>? = null
         private var cumulativeVolume: JsonField<Long> = JsonMissing.of()
         private var greeks: JsonField<SnapshotGreeks> = JsonMissing.of()
         private var lastQuote: JsonField<SnapshotQuote> = JsonMissing.of()
         private var lastTrade: JsonField<SnapshotLastTrade> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
-        private var session: JsonField<SnapshotSession> = JsonMissing.of()
+        private var openInterest: JsonField<Long> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(marketDataSnapshot: MarketDataSnapshot) = apply {
             instrumentId = marketDataSnapshot.instrumentId
+            session = marketDataSnapshot.session
             symbol = marketDataSnapshot.symbol
             cumulativeVolume = marketDataSnapshot.cumulativeVolume
             greeks = marketDataSnapshot.greeks
             lastQuote = marketDataSnapshot.lastQuote
             lastTrade = marketDataSnapshot.lastTrade
             name = marketDataSnapshot.name
-            session = marketDataSnapshot.session
+            openInterest = marketDataSnapshot.openInterest
             additionalProperties = marketDataSnapshot.additionalProperties.toMutableMap()
         }
 
@@ -270,6 +301,21 @@ private constructor(
             this.instrumentId = instrumentId
         }
 
+        /**
+         * Session-level pricing and OHLV metrics. Always present; each inner field is independently
+         * nullable.
+         */
+        fun session(session: SnapshotSession) = session(JsonField.of(session))
+
+        /**
+         * Sets [Builder.session] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.session] with a well-typed [SnapshotSession] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun session(session: JsonField<SnapshotSession>) = apply { this.session = session }
+
         /** Display symbol for the security. */
         fun symbol(symbol: String) = symbol(JsonField.of(symbol))
 
@@ -283,9 +329,12 @@ private constructor(
 
         /**
          * Cumulative traded volume reported on the most recent trade, in shares for equities or
-         * contracts for options. Absent when no trade is available. When a null/undefined value is
-         * observed, it indicates that there is no available data.
+         * contracts for options. Absent when no trade is available.
+         *
+         * Deprecated: use `session.cumulative_volume`, the same value from the same source. When a
+         * null/undefined value is observed, it indicates that there is no available data.
          */
+        @Deprecated("deprecated")
         fun cumulativeVolume(cumulativeVolume: Long?) =
             cumulativeVolume(JsonField.ofNullable(cumulativeVolume))
 
@@ -294,9 +343,11 @@ private constructor(
          *
          * This unboxed primitive overload exists for backwards compatibility.
          */
+        @Deprecated("deprecated")
         fun cumulativeVolume(cumulativeVolume: Long) = cumulativeVolume(cumulativeVolume as Long?)
 
         /** Alias for calling [Builder.cumulativeVolume] with `cumulativeVolume.orElse(null)`. */
+        @Deprecated("deprecated")
         fun cumulativeVolume(cumulativeVolume: Optional<Long>) =
             cumulativeVolume(cumulativeVolume.getOrNull())
 
@@ -307,6 +358,7 @@ private constructor(
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
+        @Deprecated("deprecated")
         fun cumulativeVolume(cumulativeVolume: JsonField<Long>) = apply {
             this.cumulativeVolume = cumulativeVolume
         }
@@ -388,22 +440,30 @@ private constructor(
         fun name(name: JsonField<String>) = apply { this.name = name }
 
         /**
-         * Session metrics computed from previous close and last trade, if available. When a
-         * null/undefined value is observed, it indicates that there is no available data.
+         * Open interest (outstanding contracts) as of the most recent OPRA Refresh. Populated for
+         * options only; absent for equities and indices. When a null/undefined value is observed,
+         * it indicates that there is no available data.
          */
-        fun session(session: SnapshotSession?) = session(JsonField.ofNullable(session))
-
-        /** Alias for calling [Builder.session] with `session.orElse(null)`. */
-        fun session(session: Optional<SnapshotSession>) = session(session.getOrNull())
+        fun openInterest(openInterest: Long?) = openInterest(JsonField.ofNullable(openInterest))
 
         /**
-         * Sets [Builder.session] to an arbitrary JSON value.
+         * Alias for [Builder.openInterest].
          *
-         * You should usually call [Builder.session] with a well-typed [SnapshotSession] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * This unboxed primitive overload exists for backwards compatibility.
          */
-        fun session(session: JsonField<SnapshotSession>) = apply { this.session = session }
+        fun openInterest(openInterest: Long) = openInterest(openInterest as Long?)
+
+        /** Alias for calling [Builder.openInterest] with `openInterest.orElse(null)`. */
+        fun openInterest(openInterest: Optional<Long>) = openInterest(openInterest.getOrNull())
+
+        /**
+         * Sets [Builder.openInterest] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.openInterest] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun openInterest(openInterest: JsonField<Long>) = apply { this.openInterest = openInterest }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -432,6 +492,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .instrumentId()
+         * .session()
          * .symbol()
          * ```
          *
@@ -440,13 +501,14 @@ private constructor(
         fun build(): MarketDataSnapshot =
             MarketDataSnapshot(
                 checkRequired("instrumentId", instrumentId),
+                checkRequired("session", session),
                 checkRequired("symbol", symbol),
                 cumulativeVolume,
                 greeks,
                 lastQuote,
                 lastTrade,
                 name,
-                session,
+                openInterest,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -467,13 +529,14 @@ private constructor(
         }
 
         instrumentId()
+        session().validate()
         symbol()
         cumulativeVolume()
         greeks().ifPresent { it.validate() }
         lastQuote().ifPresent { it.validate() }
         lastTrade().ifPresent { it.validate() }
         name()
-        session().ifPresent { it.validate() }
+        openInterest()
         validated = true
     }
 
@@ -493,13 +556,14 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (if (instrumentId.asKnown().isPresent) 1 else 0) +
+            (session.asKnown().getOrNull()?.validity() ?: 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (cumulativeVolume.asKnown().isPresent) 1 else 0) +
             (greeks.asKnown().getOrNull()?.validity() ?: 0) +
             (lastQuote.asKnown().getOrNull()?.validity() ?: 0) +
             (lastTrade.asKnown().getOrNull()?.validity() ?: 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
-            (session.asKnown().getOrNull()?.validity() ?: 0)
+            (if (openInterest.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -508,26 +572,28 @@ private constructor(
 
         return other is MarketDataSnapshot &&
             instrumentId == other.instrumentId &&
+            session == other.session &&
             symbol == other.symbol &&
             cumulativeVolume == other.cumulativeVolume &&
             greeks == other.greeks &&
             lastQuote == other.lastQuote &&
             lastTrade == other.lastTrade &&
             name == other.name &&
-            session == other.session &&
+            openInterest == other.openInterest &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
         Objects.hash(
             instrumentId,
+            session,
             symbol,
             cumulativeVolume,
             greeks,
             lastQuote,
             lastTrade,
             name,
-            session,
+            openInterest,
             additionalProperties,
         )
     }
@@ -535,5 +601,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "MarketDataSnapshot{instrumentId=$instrumentId, symbol=$symbol, cumulativeVolume=$cumulativeVolume, greeks=$greeks, lastQuote=$lastQuote, lastTrade=$lastTrade, name=$name, session=$session, additionalProperties=$additionalProperties}"
+        "MarketDataSnapshot{instrumentId=$instrumentId, session=$session, symbol=$symbol, cumulativeVolume=$cumulativeVolume, greeks=$greeks, lastQuote=$lastQuote, lastTrade=$lastTrade, name=$name, openInterest=$openInterest, additionalProperties=$additionalProperties}"
 }

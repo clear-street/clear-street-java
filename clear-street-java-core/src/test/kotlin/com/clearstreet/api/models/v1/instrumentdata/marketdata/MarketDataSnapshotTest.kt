@@ -4,6 +4,7 @@ package com.clearstreet.api.models.v1.instrumentdata.marketdata
 
 import com.clearstreet.api.core.jsonMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -15,6 +16,20 @@ internal class MarketDataSnapshotTest {
         val marketDataSnapshot =
             MarketDataSnapshot.builder()
                 .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                .session(
+                    SnapshotSession.builder()
+                        .ohlvApplicable(true)
+                        .change("4.68")
+                        .changePercent("2.2780")
+                        .cumulativeVolume(12345678L)
+                        .high("211.30")
+                        .low("207.55")
+                        .ohlvDate(LocalDate.parse("2026-08-11"))
+                        .open("208.00")
+                        .previousClose("205.44")
+                        .previousCloseUnadjusted("208.30")
+                        .build()
+                )
                 .symbol("AAPL")
                 .cumulativeVolume(12345678L)
                 .greeks(
@@ -51,18 +66,26 @@ internal class MarketDataSnapshotTest {
                         .build()
                 )
                 .name("Apple Inc.")
-                .session(
-                    SnapshotSession.builder()
-                        .change("4.68")
-                        .changePercent("2.2780")
-                        .previousClose("205.44")
-                        .previousCloseUnadjusted("208.30")
-                        .build()
-                )
+                .openInterest(4520L)
                 .build()
 
         assertThat(marketDataSnapshot.instrumentId())
             .isEqualTo("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+        assertThat(marketDataSnapshot.session())
+            .isEqualTo(
+                SnapshotSession.builder()
+                    .ohlvApplicable(true)
+                    .change("4.68")
+                    .changePercent("2.2780")
+                    .cumulativeVolume(12345678L)
+                    .high("211.30")
+                    .low("207.55")
+                    .ohlvDate(LocalDate.parse("2026-08-11"))
+                    .open("208.00")
+                    .previousClose("205.44")
+                    .previousCloseUnadjusted("208.30")
+                    .build()
+            )
         assertThat(marketDataSnapshot.symbol()).isEqualTo("AAPL")
         assertThat(marketDataSnapshot.cumulativeVolume()).contains(12345678L)
         assertThat(marketDataSnapshot.greeks())
@@ -102,15 +125,7 @@ internal class MarketDataSnapshotTest {
                     .build()
             )
         assertThat(marketDataSnapshot.name()).contains("Apple Inc.")
-        assertThat(marketDataSnapshot.session())
-            .contains(
-                SnapshotSession.builder()
-                    .change("4.68")
-                    .changePercent("2.2780")
-                    .previousClose("205.44")
-                    .previousCloseUnadjusted("208.30")
-                    .build()
-            )
+        assertThat(marketDataSnapshot.openInterest()).contains(4520L)
     }
 
     @Test
@@ -119,6 +134,20 @@ internal class MarketDataSnapshotTest {
         val marketDataSnapshot =
             MarketDataSnapshot.builder()
                 .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                .session(
+                    SnapshotSession.builder()
+                        .ohlvApplicable(true)
+                        .change("4.68")
+                        .changePercent("2.2780")
+                        .cumulativeVolume(12345678L)
+                        .high("211.30")
+                        .low("207.55")
+                        .ohlvDate(LocalDate.parse("2026-08-11"))
+                        .open("208.00")
+                        .previousClose("205.44")
+                        .previousCloseUnadjusted("208.30")
+                        .build()
+                )
                 .symbol("AAPL")
                 .cumulativeVolume(12345678L)
                 .greeks(
@@ -155,14 +184,7 @@ internal class MarketDataSnapshotTest {
                         .build()
                 )
                 .name("Apple Inc.")
-                .session(
-                    SnapshotSession.builder()
-                        .change("4.68")
-                        .changePercent("2.2780")
-                        .previousClose("205.44")
-                        .previousCloseUnadjusted("208.30")
-                        .build()
-                )
+                .openInterest(4520L)
                 .build()
 
         val roundtrippedMarketDataSnapshot =

@@ -33,6 +33,7 @@ class MarketDataServiceImpl internal constructor(private val clientOptions: Clie
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): MarketDataService =
         MarketDataServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    @Deprecated("deprecated")
     override fun getDailySummaries(
         params: MarketDataGetDailySummariesParams,
         requestOptions: RequestOptions,
@@ -63,6 +64,7 @@ class MarketDataServiceImpl internal constructor(private val clientOptions: Clie
         private val getDailySummariesHandler: Handler<MarketDataGetDailySummariesResponse> =
             jsonHandler<MarketDataGetDailySummariesResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun getDailySummaries(
             params: MarketDataGetDailySummariesParams,
             requestOptions: RequestOptions,

@@ -9,6 +9,9 @@ import com.clearstreet.api.core.http.QueryParams
 import java.util.Objects
 
 /**
+ * **Deprecated**: use `GET /market-data/snapshot` instead, which now reports the same
+ * open/high/low/volume/open-interest fields under `session` and top-level `open_interest`.
+ *
  * Returns the most recent open, high, low, volume (OHLV) and current price for the requested
  * instruments.
  *
@@ -17,6 +20,7 @@ import java.util.Objects
  * but market-data fields `null`. Ids that fail to resolve are omitted from `data` and reported in
  * `error` instead (see the 207/404 responses below).
  */
+@Deprecated("deprecated")
 class MarketDataGetDailySummariesParams
 private constructor(
     private val instrumentIds: String,

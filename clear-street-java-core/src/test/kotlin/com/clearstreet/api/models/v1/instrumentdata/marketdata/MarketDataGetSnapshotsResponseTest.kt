@@ -7,6 +7,7 @@ import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -41,6 +42,20 @@ internal class MarketDataGetSnapshotsResponseTest {
                 .addData(
                     MarketDataSnapshot.builder()
                         .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                        .session(
+                            SnapshotSession.builder()
+                                .ohlvApplicable(true)
+                                .change("4.68")
+                                .changePercent("2.2780")
+                                .cumulativeVolume(12345678L)
+                                .high("211.30")
+                                .low("207.55")
+                                .ohlvDate(LocalDate.parse("2026-08-11"))
+                                .open("208.00")
+                                .previousClose("205.44")
+                                .previousCloseUnadjusted("208.30")
+                                .build()
+                        )
                         .symbol("AAPL")
                         .cumulativeVolume(12345678L)
                         .greeks(
@@ -81,14 +96,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                                 .build()
                         )
                         .name("Apple Inc.")
-                        .session(
-                            SnapshotSession.builder()
-                                .change("4.68")
-                                .changePercent("2.2780")
-                                .previousClose("205.44")
-                                .previousCloseUnadjusted("208.30")
-                                .build()
-                        )
+                        .openInterest(4520L)
                         .build()
                 )
                 .build()
@@ -120,6 +128,20 @@ internal class MarketDataGetSnapshotsResponseTest {
             .containsExactly(
                 MarketDataSnapshot.builder()
                     .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                    .session(
+                        SnapshotSession.builder()
+                            .ohlvApplicable(true)
+                            .change("4.68")
+                            .changePercent("2.2780")
+                            .cumulativeVolume(12345678L)
+                            .high("211.30")
+                            .low("207.55")
+                            .ohlvDate(LocalDate.parse("2026-08-11"))
+                            .open("208.00")
+                            .previousClose("205.44")
+                            .previousCloseUnadjusted("208.30")
+                            .build()
+                    )
                     .symbol("AAPL")
                     .cumulativeVolume(12345678L)
                     .greeks(
@@ -156,14 +178,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                             .build()
                     )
                     .name("Apple Inc.")
-                    .session(
-                        SnapshotSession.builder()
-                            .change("4.68")
-                            .changePercent("2.2780")
-                            .previousClose("205.44")
-                            .previousCloseUnadjusted("208.30")
-                            .build()
-                    )
+                    .openInterest(4520L)
                     .build()
             )
     }
@@ -197,6 +212,20 @@ internal class MarketDataGetSnapshotsResponseTest {
                 .addData(
                     MarketDataSnapshot.builder()
                         .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                        .session(
+                            SnapshotSession.builder()
+                                .ohlvApplicable(true)
+                                .change("4.68")
+                                .changePercent("2.2780")
+                                .cumulativeVolume(12345678L)
+                                .high("211.30")
+                                .low("207.55")
+                                .ohlvDate(LocalDate.parse("2026-08-11"))
+                                .open("208.00")
+                                .previousClose("205.44")
+                                .previousCloseUnadjusted("208.30")
+                                .build()
+                        )
                         .symbol("AAPL")
                         .cumulativeVolume(12345678L)
                         .greeks(
@@ -237,14 +266,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                                 .build()
                         )
                         .name("Apple Inc.")
-                        .session(
-                            SnapshotSession.builder()
-                                .change("4.68")
-                                .changePercent("2.2780")
-                                .previousClose("205.44")
-                                .previousCloseUnadjusted("208.30")
-                                .build()
-                        )
+                        .openInterest(4520L)
                         .build()
                 )
                 .build()

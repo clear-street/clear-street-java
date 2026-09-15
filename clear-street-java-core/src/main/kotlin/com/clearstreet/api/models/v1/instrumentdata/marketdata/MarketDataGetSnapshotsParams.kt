@@ -18,7 +18,10 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols). */
+    /**
+     * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
+     * Required; accepts 1 to 100 IDs. Duplicate resolved ids collapse to a single row.
+     */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
 
     /** Additional headers to send with the request. */
@@ -55,6 +58,7 @@ private constructor(
 
         /**
          * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
+         * Required; accepts 1 to 100 IDs. Duplicate resolved ids collapse to a single row.
          */
         fun instrumentIds(instrumentIds: List<String>?) = apply {
             this.instrumentIds = instrumentIds?.toMutableList()
