@@ -7,7 +7,7 @@ import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/** Sort direction sorted results */
+/** Sort direction for sorted results */
 class SortDirection @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
     /**

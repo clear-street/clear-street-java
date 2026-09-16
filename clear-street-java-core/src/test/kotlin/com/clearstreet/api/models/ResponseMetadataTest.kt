@@ -15,18 +15,18 @@ internal class ResponseMetadataTest {
             ResponseMetadata.builder()
                 .requestId("request_id")
                 .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
-                .pageNumber(0)
+                .pageNumber(1)
                 .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
-                .totalItems(0L)
-                .totalPages(0)
+                .totalItems(42L)
+                .totalPages(5)
                 .build()
 
         assertThat(responseMetadata.requestId()).isEqualTo("request_id")
         assertThat(responseMetadata.nextPageToken()).contains("U3RhaW5sZXNzIHJvY2tz")
-        assertThat(responseMetadata.pageNumber()).contains(0)
+        assertThat(responseMetadata.pageNumber()).contains(1)
         assertThat(responseMetadata.previousPageToken()).contains("U3RhaW5sZXNzIHJvY2tz")
-        assertThat(responseMetadata.totalItems()).contains(0L)
-        assertThat(responseMetadata.totalPages()).contains(0)
+        assertThat(responseMetadata.totalItems()).contains(42L)
+        assertThat(responseMetadata.totalPages()).contains(5)
     }
 
     @Test
@@ -36,10 +36,10 @@ internal class ResponseMetadataTest {
             ResponseMetadata.builder()
                 .requestId("request_id")
                 .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
-                .pageNumber(0)
+                .pageNumber(1)
                 .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
-                .totalItems(0L)
-                .totalPages(0)
+                .totalItems(42L)
+                .totalPages(5)
                 .build()
 
         val roundtrippedResponseMetadata =

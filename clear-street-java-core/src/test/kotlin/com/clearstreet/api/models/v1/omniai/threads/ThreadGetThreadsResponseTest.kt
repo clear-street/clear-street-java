@@ -7,6 +7,7 @@ import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -20,10 +21,10 @@ internal class ThreadGetThreadsResponseTest {
                     ResponseMetadata.builder()
                         .requestId("request_id")
                         .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
-                        .pageNumber(0)
+                        .pageNumber(1)
                         .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
-                        .totalItems(0L)
-                        .totalPages(0)
+                        .totalItems(42L)
+                        .totalPages(5)
                         .build()
                 )
                 .error(
@@ -40,9 +41,9 @@ internal class ThreadGetThreadsResponseTest {
                 .addData(
                     Thread.builder()
                         .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .createdAt("created_at")
+                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .title("title")
-                        .updatedAt("updated_at")
+                        .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
                 )
                 .build()
@@ -52,10 +53,10 @@ internal class ThreadGetThreadsResponseTest {
                 ResponseMetadata.builder()
                     .requestId("request_id")
                     .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
-                    .pageNumber(0)
+                    .pageNumber(1)
                     .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
-                    .totalItems(0L)
-                    .totalPages(0)
+                    .totalItems(42L)
+                    .totalPages(5)
                     .build()
             )
         assertThat(threadGetThreadsResponse.error())
@@ -74,9 +75,9 @@ internal class ThreadGetThreadsResponseTest {
             .containsExactly(
                 Thread.builder()
                     .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .createdAt("created_at")
+                    .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .title("title")
-                    .updatedAt("updated_at")
+                    .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
     }
@@ -90,10 +91,10 @@ internal class ThreadGetThreadsResponseTest {
                     ResponseMetadata.builder()
                         .requestId("request_id")
                         .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
-                        .pageNumber(0)
+                        .pageNumber(1)
                         .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
-                        .totalItems(0L)
-                        .totalPages(0)
+                        .totalItems(42L)
+                        .totalPages(5)
                         .build()
                 )
                 .error(
@@ -110,9 +111,9 @@ internal class ThreadGetThreadsResponseTest {
                 .addData(
                     Thread.builder()
                         .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .createdAt("created_at")
+                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .title("title")
-                        .updatedAt("updated_at")
+                        .updatedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .build()
                 )
                 .build()

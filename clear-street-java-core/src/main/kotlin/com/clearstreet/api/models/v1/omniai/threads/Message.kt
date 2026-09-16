@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -24,7 +25,7 @@ class Message
 private constructor(
     private val id: JsonField<String>,
     private val content: JsonField<MessageContent>,
-    private val createdAt: JsonField<String>,
+    private val createdAt: JsonField<OffsetDateTime>,
     private val outcome: JsonField<MessageOutcome>,
     private val role: JsonField<MessageRole>,
     private val seq: JsonField<Long>,
@@ -39,7 +40,9 @@ private constructor(
         @JsonProperty("content")
         @ExcludeMissing
         content: JsonField<MessageContent> = JsonMissing.of(),
-        @JsonProperty("created_at") @ExcludeMissing createdAt: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("created_at")
+        @ExcludeMissing
+        createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("outcome")
         @ExcludeMissing
         outcome: JsonField<MessageOutcome> = JsonMissing.of(),
@@ -67,7 +70,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun createdAt(): String = createdAt.getRequired("created_at")
+    fun createdAt(): OffsetDateTime = createdAt.getRequired("created_at")
 
     /**
      * Immutable terminal outcome for a finalized assistant message.
@@ -124,7 +127,9 @@ private constructor(
      *
      * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("created_at") @ExcludeMissing fun _createdAt(): JsonField<String> = createdAt
+    @JsonProperty("created_at")
+    @ExcludeMissing
+    fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
     /**
      * Returns the raw JSON value of [outcome].
@@ -197,7 +202,7 @@ private constructor(
 
         private var id: JsonField<String>? = null
         private var content: JsonField<MessageContent>? = null
-        private var createdAt: JsonField<String>? = null
+        private var createdAt: JsonField<OffsetDateTime>? = null
         private var outcome: JsonField<MessageOutcome>? = null
         private var role: JsonField<MessageRole>? = null
         private var seq: JsonField<Long>? = null
@@ -240,16 +245,16 @@ private constructor(
          */
         fun content(content: JsonField<MessageContent>) = apply { this.content = content }
 
-        fun createdAt(createdAt: String) = createdAt(JsonField.of(createdAt))
+        fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
 
         /**
          * Sets [Builder.createdAt] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.createdAt] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.createdAt] with a well-typed [OffsetDateTime] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun createdAt(createdAt: JsonField<String>) = apply { this.createdAt = createdAt }
+        fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
         /** Immutable terminal outcome for a finalized assistant message. */
         fun outcome(outcome: MessageOutcome) = outcome(JsonField.of(outcome))

@@ -42,7 +42,7 @@ private constructor(
     fun args(): List<ModifierArg> = args.getRequired("args")
 
     /**
-     * `"ADD"` or `"SUBTRACT"`.
+     * The modifier operation name: one of `"ADD"` or `"SUBTRACT"`.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -126,7 +126,7 @@ private constructor(
             args = (args ?: JsonField.of(mutableListOf())).also { checkKnown("args", it).add(arg) }
         }
 
-        /** `"ADD"` or `"SUBTRACT"`. */
+        /** The modifier operation name: one of `"ADD"` or `"SUBTRACT"`. */
         fun name(name: String) = name(JsonField.of(name))
 
         /**

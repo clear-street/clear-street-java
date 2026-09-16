@@ -13,6 +13,7 @@ import com.clearstreet.api.models.v1.omniai.threads.MessageContentPart
 import com.clearstreet.api.models.v1.omniai.threads.MessageOutcome
 import com.clearstreet.api.models.v1.omniai.threads.MessageRole
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -26,10 +27,10 @@ internal class MessageGetMessageByIdResponseTest {
                     ResponseMetadata.builder()
                         .requestId("request_id")
                         .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
-                        .pageNumber(0)
+                        .pageNumber(1)
                         .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
-                        .totalItems(0L)
-                        .totalPages(0)
+                        .totalItems(42L)
+                        .totalPages(5)
                         .build()
                 )
                 .error(
@@ -56,7 +57,7 @@ internal class MessageGetMessageByIdResponseTest {
                                 )
                                 .build()
                         )
-                        .createdAt("created_at")
+                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .outcome(MessageOutcome.COMPLETED)
                         .role(MessageRole.USER)
                         .seq(0L)
@@ -77,10 +78,10 @@ internal class MessageGetMessageByIdResponseTest {
                 ResponseMetadata.builder()
                     .requestId("request_id")
                     .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
-                    .pageNumber(0)
+                    .pageNumber(1)
                     .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
-                    .totalItems(0L)
-                    .totalPages(0)
+                    .totalItems(42L)
+                    .totalPages(5)
                     .build()
             )
         assertThat(messageGetMessageByIdResponse.error())
@@ -109,7 +110,7 @@ internal class MessageGetMessageByIdResponseTest {
                             )
                             .build()
                     )
-                    .createdAt("created_at")
+                    .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .outcome(MessageOutcome.COMPLETED)
                     .role(MessageRole.USER)
                     .seq(0L)
@@ -134,10 +135,10 @@ internal class MessageGetMessageByIdResponseTest {
                     ResponseMetadata.builder()
                         .requestId("request_id")
                         .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
-                        .pageNumber(0)
+                        .pageNumber(1)
                         .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
-                        .totalItems(0L)
-                        .totalPages(0)
+                        .totalItems(42L)
+                        .totalPages(5)
                         .build()
                 )
                 .error(
@@ -164,7 +165,7 @@ internal class MessageGetMessageByIdResponseTest {
                                 )
                                 .build()
                         )
-                        .createdAt("created_at")
+                        .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .outcome(MessageOutcome.COMPLETED)
                         .role(MessageRole.USER)
                         .seq(0L)

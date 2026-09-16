@@ -439,8 +439,9 @@ private constructor(
     fun trailingStopPx(): Optional<String> = trailingStopPx.getOptional("trailing_stop_px")
 
     /**
-     * Trailing watermark price for trailing orders When a null/undefined value is observed, it
-     * indicates it does not apply.
+     * Trailing watermark price for trailing orders. Strategy-computed, so it is absent on the
+     * order-submission acknowledgement and only appears once fetched via the order fetch or list
+     * endpoints. When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -449,8 +450,9 @@ private constructor(
         trailingWatermarkPx.getOptional("trailing_watermark_px")
 
     /**
-     * Trailing watermark timestamp for trailing orders When a null/undefined value is observed, it
-     * indicates it does not apply.
+     * Trailing watermark timestamp for trailing orders. Strategy-computed, so it is absent on the
+     * order-submission acknowledgement and only appears once fetched via the order fetch or list
+     * endpoints. When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -1370,8 +1372,9 @@ private constructor(
         }
 
         /**
-         * Trailing watermark price for trailing orders When a null/undefined value is observed, it
-         * indicates it does not apply.
+         * Trailing watermark price for trailing orders. Strategy-computed, so it is absent on the
+         * order-submission acknowledgement and only appears once fetched via the order fetch or
+         * list endpoints. When a null/undefined value is observed, it indicates it does not apply.
          */
         fun trailingWatermarkPx(trailingWatermarkPx: String?) =
             trailingWatermarkPx(JsonField.ofNullable(trailingWatermarkPx))
@@ -1394,8 +1397,9 @@ private constructor(
         }
 
         /**
-         * Trailing watermark timestamp for trailing orders When a null/undefined value is observed,
-         * it indicates it does not apply.
+         * Trailing watermark timestamp for trailing orders. Strategy-computed, so it is absent on
+         * the order-submission acknowledgement and only appears once fetched via the order fetch or
+         * list endpoints. When a null/undefined value is observed, it indicates it does not apply.
          */
         fun trailingWatermarkTs(trailingWatermarkTs: OffsetDateTime?) =
             trailingWatermarkTs(JsonField.ofNullable(trailingWatermarkTs))

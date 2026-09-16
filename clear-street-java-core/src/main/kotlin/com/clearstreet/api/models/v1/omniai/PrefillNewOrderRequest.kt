@@ -23,7 +23,7 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Request to submit a new order (PlaceOrderRequest from spec) */
+/** Request to submit a new order */
 class PrefillNewOrderRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

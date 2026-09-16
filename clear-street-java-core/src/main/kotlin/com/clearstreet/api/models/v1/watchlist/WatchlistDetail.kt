@@ -43,7 +43,7 @@ private constructor(
     ) : this(id, createdAt, items, name, mutableMapOf())
 
     /**
-     * Watchlist ID
+     * The unique identifier for the watchlist.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -51,7 +51,7 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * Creation timestamp
+     * The timestamp when the watchlist was created.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -67,7 +67,7 @@ private constructor(
     fun items(): List<WatchlistItemEntry> = items.getRequired("items")
 
     /**
-     * Watchlist name
+     * The user-provided watchlist name.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -150,7 +150,7 @@ private constructor(
             additionalProperties = watchlistDetail.additionalProperties.toMutableMap()
         }
 
-        /** Watchlist ID */
+        /** The unique identifier for the watchlist. */
         fun id(id: String) = id(JsonField.of(id))
 
         /**
@@ -161,7 +161,7 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        /** Creation timestamp */
+        /** The timestamp when the watchlist was created. */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
 
         /**
@@ -197,7 +197,7 @@ private constructor(
                 (items ?: JsonField.of(mutableListOf())).also { checkKnown("items", it).add(item) }
         }
 
-        /** Watchlist name */
+        /** The user-provided watchlist name. */
         fun name(name: String) = name(JsonField.of(name))
 
         /**

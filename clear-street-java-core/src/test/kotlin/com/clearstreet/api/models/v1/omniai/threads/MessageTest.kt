@@ -6,6 +6,7 @@ import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.v1.omniai.responses.ErrorStatus
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -26,7 +27,7 @@ internal class MessageTest {
                         )
                         .build()
                 )
-                .createdAt("created_at")
+                .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .outcome(MessageOutcome.COMPLETED)
                 .role(MessageRole.USER)
                 .seq(0L)
@@ -52,7 +53,7 @@ internal class MessageTest {
                     )
                     .build()
             )
-        assertThat(message.createdAt()).isEqualTo("created_at")
+        assertThat(message.createdAt()).isEqualTo(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
         assertThat(message.outcome()).isEqualTo(MessageOutcome.COMPLETED)
         assertThat(message.role()).isEqualTo(MessageRole.USER)
         assertThat(message.seq()).isEqualTo(0L)
@@ -83,7 +84,7 @@ internal class MessageTest {
                         )
                         .build()
                 )
-                .createdAt("created_at")
+                .createdAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .outcome(MessageOutcome.COMPLETED)
                 .role(MessageRole.USER)
                 .seq(0L)

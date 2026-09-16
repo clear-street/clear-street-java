@@ -294,8 +294,8 @@ interface ScreenerService {
      * hint (e.g. `CURR_USD`, `PERCENT`), and the `value`. An `instrument_id` column is always
      * prepended. Metadata carries `total_items`, `total_pages`, and `next_page_token` for paging.
      *
-     * Due to the volatility of screener responses we recommend reconciling page results since
-     * results can shuffle between calls.
+     * Screener results can shuffle between calls; reconcile by re-checking rows across pages rather
+     * than assuming stable ordering.
      */
     fun searchScreener(): ScreenerSearchScreenerResponse =
         searchScreener(ScreenerSearchScreenerParams.none())

@@ -7,10 +7,7 @@ import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/**
- * Position effect for a multileg strategy leg: client-attested open/close intent. Required on every
- * leg of a multileg order submission.
- */
+/** Client-attested open/close intent for an order. */
 class RequestPositionEffect @JsonCreator private constructor(private val value: JsonField<String>) :
     Enum {
 
