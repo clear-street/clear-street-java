@@ -45,6 +45,9 @@ internal class InstrumentTest {
                 .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
+                .addTickRule(
+                    TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
+                )
                 .build()
 
         assertThat(instrument.id()).isEqualTo("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
@@ -78,6 +81,10 @@ internal class InstrumentTest {
             .containsExactly(LocalDate.parse("2019-12-27"))
         assertThat(instrument.previousClose()).contains("210.87")
         assertThat(instrument.shortMarginRate()).contains("0.25")
+        assertThat(instrument.tickRules().getOrNull())
+            .containsExactly(
+                TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
+            )
     }
 
     @Test
@@ -114,6 +121,9 @@ internal class InstrumentTest {
                 .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
+                .addTickRule(
+                    TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
+                )
                 .build()
 
         val roundtrippedInstrument =

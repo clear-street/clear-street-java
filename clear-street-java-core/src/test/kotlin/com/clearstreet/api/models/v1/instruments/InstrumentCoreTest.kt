@@ -5,6 +5,7 @@ package com.clearstreet.api.models.v1.instruments
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -35,6 +36,9 @@ internal class InstrumentCoreTest {
                 .notionalAdv("15815250000")
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
+                .addTickRule(
+                    TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
+                )
                 .build()
 
         assertThat(instrumentCore.id()).isEqualTo("0f5a1a4e-5b3e-4d8f-9b7a-2b1d0e3f4a5b")
@@ -58,6 +62,10 @@ internal class InstrumentCoreTest {
         assertThat(instrumentCore.notionalAdv()).contains("15815250000")
         assertThat(instrumentCore.previousClose()).contains("210.87")
         assertThat(instrumentCore.shortMarginRate()).contains("0.25")
+        assertThat(instrumentCore.tickRules().getOrNull())
+            .containsExactly(
+                TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
+            )
     }
 
     @Test
@@ -86,6 +94,9 @@ internal class InstrumentCoreTest {
                 .notionalAdv("15815250000")
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
+                .addTickRule(
+                    TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
+                )
                 .build()
 
         val roundtrippedInstrumentCore =

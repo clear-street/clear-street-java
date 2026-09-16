@@ -6,6 +6,7 @@ import com.clearstreet.api.core.jsonMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
 import java.time.OffsetDateTime
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -31,6 +32,9 @@ internal class OptionsContractTest {
                 .isSettleOnOpen(true)
                 .lastTradeCutoff(OffsetDateTime.parse("2026-08-20T20:00:00Z"))
                 .openInterest(0L)
+                .addTickRule(
+                    TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
+                )
                 .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
@@ -51,6 +55,10 @@ internal class OptionsContractTest {
         assertThat(optionsContract.lastTradeCutoff())
             .contains(OffsetDateTime.parse("2026-08-20T20:00:00Z"))
         assertThat(optionsContract.openInterest()).contains(0L)
+        assertThat(optionsContract.tickRules().getOrNull())
+            .containsExactly(
+                TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
+            )
         assertThat(optionsContract.underlyingInstrumentId())
             .contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
     }
@@ -76,6 +84,9 @@ internal class OptionsContractTest {
                 .isSettleOnOpen(true)
                 .lastTradeCutoff(OffsetDateTime.parse("2026-08-20T20:00:00Z"))
                 .openInterest(0L)
+                .addTickRule(
+                    TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
+                )
                 .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 

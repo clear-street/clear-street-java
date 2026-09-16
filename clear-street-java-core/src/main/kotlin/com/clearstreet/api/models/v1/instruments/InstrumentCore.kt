@@ -6,7 +6,9 @@ import com.clearstreet.api.core.ExcludeMissing
 import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.core.JsonMissing
 import com.clearstreet.api.core.JsonValue
+import com.clearstreet.api.core.checkKnown
 import com.clearstreet.api.core.checkRequired
+import com.clearstreet.api.core.toImmutable
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.clearstreet.api.models.v1.SecurityType
 import com.fasterxml.jackson.annotation.JsonAnyGetter
@@ -42,6 +44,7 @@ private constructor(
     private val notionalAdv: JsonField<String>,
     private val previousClose: JsonField<String>,
     private val shortMarginRate: JsonField<String>,
+    private val tickRules: JsonField<List<TickRule>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -96,6 +99,9 @@ private constructor(
         @JsonProperty("short_margin_rate")
         @ExcludeMissing
         shortMarginRate: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("tick_rules")
+        @ExcludeMissing
+        tickRules: JsonField<List<TickRule>> = JsonMissing.of(),
     ) : this(
         id,
         countryOfIssue,
@@ -118,6 +124,7 @@ private constructor(
         notionalAdv,
         previousClose,
         shortMarginRate,
+        tickRules,
         mutableMapOf(),
     )
 
@@ -302,6 +309,15 @@ private constructor(
     fun shortMarginRate(): Optional<String> = shortMarginRate.getOptional("short_margin_rate")
 
     /**
+     * Price bands this instrument quotes on, ascending. Absent when we have no schedule for it,
+     * which includes an option whose penny-program status our reference data never supplied.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun tickRules(): Optional<List<TickRule>> = tickRules.getOptional("tick_rules")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -478,6 +494,15 @@ private constructor(
     @ExcludeMissing
     fun _shortMarginRate(): JsonField<String> = shortMarginRate
 
+    /**
+     * Returns the raw JSON value of [tickRules].
+     *
+     * Unlike [tickRules], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("tick_rules")
+    @ExcludeMissing
+    fun _tickRules(): JsonField<List<TickRule>> = tickRules
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -539,6 +564,7 @@ private constructor(
         private var notionalAdv: JsonField<String> = JsonMissing.of()
         private var previousClose: JsonField<String> = JsonMissing.of()
         private var shortMarginRate: JsonField<String> = JsonMissing.of()
+        private var tickRules: JsonField<MutableList<TickRule>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -564,6 +590,7 @@ private constructor(
             notionalAdv = instrumentCore.notionalAdv
             previousClose = instrumentCore.previousClose
             shortMarginRate = instrumentCore.shortMarginRate
+            tickRules = instrumentCore.tickRules.map { it.toMutableList() }
             additionalProperties = instrumentCore.additionalProperties.toMutableMap()
         }
 
@@ -905,6 +932,35 @@ private constructor(
             this.shortMarginRate = shortMarginRate
         }
 
+        /**
+         * Price bands this instrument quotes on, ascending. Absent when we have no schedule for it,
+         * which includes an option whose penny-program status our reference data never supplied.
+         */
+        fun tickRules(tickRules: List<TickRule>) = tickRules(JsonField.of(tickRules))
+
+        /**
+         * Sets [Builder.tickRules] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.tickRules] with a well-typed `List<TickRule>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun tickRules(tickRules: JsonField<List<TickRule>>) = apply {
+            this.tickRules = tickRules.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [TickRule] to [tickRules].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addTickRule(tickRule: TickRule) = apply {
+            tickRules =
+                (tickRules ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("tickRules", it).add(tickRule)
+                }
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -971,6 +1027,7 @@ private constructor(
                 notionalAdv,
                 previousClose,
                 shortMarginRate,
+                (tickRules ?: JsonMissing.of()).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
     }
@@ -1011,6 +1068,7 @@ private constructor(
         notionalAdv()
         previousClose()
         shortMarginRate()
+        tickRules().ifPresent { it.forEach { it.validate() } }
         validated = true
     }
 
@@ -1049,7 +1107,8 @@ private constructor(
             (if (name.asKnown().isPresent) 1 else 0) +
             (if (notionalAdv.asKnown().isPresent) 1 else 0) +
             (if (previousClose.asKnown().isPresent) 1 else 0) +
-            (if (shortMarginRate.asKnown().isPresent) 1 else 0)
+            (if (shortMarginRate.asKnown().isPresent) 1 else 0) +
+            (tickRules.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -1078,6 +1137,7 @@ private constructor(
             notionalAdv == other.notionalAdv &&
             previousClose == other.previousClose &&
             shortMarginRate == other.shortMarginRate &&
+            tickRules == other.tickRules &&
             additionalProperties == other.additionalProperties
     }
 
@@ -1104,6 +1164,7 @@ private constructor(
             notionalAdv,
             previousClose,
             shortMarginRate,
+            tickRules,
             additionalProperties,
         )
     }
@@ -1111,5 +1172,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, caxAdjustedPreviousClose=$caxAdjustedPreviousClose, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, additionalProperties=$additionalProperties}"
+        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, caxAdjustedPreviousClose=$caxAdjustedPreviousClose, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, tickRules=$tickRules, additionalProperties=$additionalProperties}"
 }

@@ -9,6 +9,7 @@ import com.clearstreet.api.models.ResponseMetadata
 import com.clearstreet.api.models.v1.SecurityType
 import com.clearstreet.api.models.v1.instruments.Instrument
 import com.clearstreet.api.models.v1.instruments.OptionExpiryDate
+import com.clearstreet.api.models.v1.instruments.TickRule
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -82,6 +83,13 @@ internal class WatchlistGetWatchlistByIdResponseTest {
                                         .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                                         .previousClose("210.87")
                                         .shortMarginRate("0.25")
+                                        .addTickRule(
+                                            TickRule.builder()
+                                                .startPrice("3.00")
+                                                .tickSize("0.10")
+                                                .endPrice("10.00")
+                                                .build()
+                                        )
                                         .build()
                                 )
                                 .build()
@@ -155,6 +163,13 @@ internal class WatchlistGetWatchlistByIdResponseTest {
                                     .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                                     .previousClose("210.87")
                                     .shortMarginRate("0.25")
+                                    .addTickRule(
+                                        TickRule.builder()
+                                            .startPrice("3.00")
+                                            .tickSize("0.10")
+                                            .endPrice("10.00")
+                                            .build()
+                                    )
                                     .build()
                             )
                             .build()
@@ -230,6 +245,13 @@ internal class WatchlistGetWatchlistByIdResponseTest {
                                         .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                                         .previousClose("210.87")
                                         .shortMarginRate("0.25")
+                                        .addTickRule(
+                                            TickRule.builder()
+                                                .startPrice("3.00")
+                                                .tickSize("0.10")
+                                                .endPrice("10.00")
+                                                .build()
+                                        )
                                         .build()
                                 )
                                 .build()

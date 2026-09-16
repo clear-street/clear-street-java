@@ -6,7 +6,9 @@ import com.clearstreet.api.core.ExcludeMissing
 import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.core.JsonMissing
 import com.clearstreet.api.core.JsonValue
+import com.clearstreet.api.core.checkKnown
 import com.clearstreet.api.core.checkRequired
+import com.clearstreet.api.core.toImmutable
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -39,6 +41,7 @@ private constructor(
     private val isSettleOnOpen: JsonField<Boolean>,
     private val lastTradeCutoff: JsonField<OffsetDateTime>,
     private val openInterest: JsonField<Long>,
+    private val tickRules: JsonField<List<TickRule>>,
     private val underlyingInstrumentId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -83,6 +86,9 @@ private constructor(
         @JsonProperty("open_interest")
         @ExcludeMissing
         openInterest: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("tick_rules")
+        @ExcludeMissing
+        tickRules: JsonField<List<TickRule>> = JsonMissing.of(),
         @JsonProperty("underlying_instrument_id")
         @ExcludeMissing
         underlyingInstrumentId: JsonField<String> = JsonMissing.of(),
@@ -103,6 +109,7 @@ private constructor(
         isSettleOnOpen,
         lastTradeCutoff,
         openInterest,
+        tickRules,
         underlyingInstrumentId,
         mutableMapOf(),
     )
@@ -238,6 +245,15 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun openInterest(): Optional<Long> = openInterest.getOptional("open_interest")
+
+    /**
+     * Price bands this contract quotes on, ascending. Absent when our reference data never supplied
+     * the contract's penny-program status.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun tickRules(): Optional<List<TickRule>> = tickRules.getOptional("tick_rules")
 
     /**
      * Instrument ID of the underlying instrument, when available When a null/undefined value is
@@ -381,6 +397,15 @@ private constructor(
     fun _openInterest(): JsonField<Long> = openInterest
 
     /**
+     * Returns the raw JSON value of [tickRules].
+     *
+     * Unlike [tickRules], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("tick_rules")
+    @ExcludeMissing
+    fun _tickRules(): JsonField<List<TickRule>> = tickRules
+
+    /**
      * Returns the raw JSON value of [underlyingInstrumentId].
      *
      * Unlike [underlyingInstrumentId], this method doesn't throw if the JSON field has an
@@ -446,6 +471,7 @@ private constructor(
         private var isSettleOnOpen: JsonField<Boolean> = JsonMissing.of()
         private var lastTradeCutoff: JsonField<OffsetDateTime> = JsonMissing.of()
         private var openInterest: JsonField<Long> = JsonMissing.of()
+        private var tickRules: JsonField<MutableList<TickRule>>? = null
         private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -467,6 +493,7 @@ private constructor(
             isSettleOnOpen = optionsContract.isSettleOnOpen
             lastTradeCutoff = optionsContract.lastTradeCutoff
             openInterest = optionsContract.openInterest
+            tickRules = optionsContract.tickRules.map { it.toMutableList() }
             underlyingInstrumentId = optionsContract.underlyingInstrumentId
             additionalProperties = optionsContract.additionalProperties.toMutableMap()
         }
@@ -711,6 +738,35 @@ private constructor(
         fun openInterest(openInterest: JsonField<Long>) = apply { this.openInterest = openInterest }
 
         /**
+         * Price bands this contract quotes on, ascending. Absent when our reference data never
+         * supplied the contract's penny-program status.
+         */
+        fun tickRules(tickRules: List<TickRule>) = tickRules(JsonField.of(tickRules))
+
+        /**
+         * Sets [Builder.tickRules] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.tickRules] with a well-typed `List<TickRule>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun tickRules(tickRules: JsonField<List<TickRule>>) = apply {
+            this.tickRules = tickRules.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [TickRule] to [tickRules].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addTickRule(tickRule: TickRule) = apply {
+            tickRules =
+                (tickRules ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("tickRules", it).add(tickRule)
+                }
+        }
+
+        /**
          * Instrument ID of the underlying instrument, when available When a null/undefined value is
          * observed, it indicates that there is no available data.
          */
@@ -796,6 +852,7 @@ private constructor(
                 isSettleOnOpen,
                 lastTradeCutoff,
                 openInterest,
+                (tickRules ?: JsonMissing.of()).map { it.toImmutable() },
                 underlyingInstrumentId,
                 additionalProperties.toMutableMap(),
             )
@@ -832,6 +889,7 @@ private constructor(
         isSettleOnOpen()
         lastTradeCutoff()
         openInterest()
+        tickRules().ifPresent { it.forEach { it.validate() } }
         underlyingInstrumentId()
         validated = true
     }
@@ -867,6 +925,7 @@ private constructor(
             (if (isSettleOnOpen.asKnown().isPresent) 1 else 0) +
             (if (lastTradeCutoff.asKnown().isPresent) 1 else 0) +
             (if (openInterest.asKnown().isPresent) 1 else 0) +
+            (tickRules.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
@@ -891,6 +950,7 @@ private constructor(
             isSettleOnOpen == other.isSettleOnOpen &&
             lastTradeCutoff == other.lastTradeCutoff &&
             openInterest == other.openInterest &&
+            tickRules == other.tickRules &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
             additionalProperties == other.additionalProperties
     }
@@ -913,6 +973,7 @@ private constructor(
             isSettleOnOpen,
             lastTradeCutoff,
             openInterest,
+            tickRules,
             underlyingInstrumentId,
             additionalProperties,
         )
@@ -921,5 +982,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OptionsContract{id=$id, contractType=$contractType, currency=$currency, exchange=$exchange, exerciseStyle=$exerciseStyle, expiry=$expiry, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isTradable=$isTradable, listingType=$listingType, multiplier=$multiplier, strikePrice=$strikePrice, symbol=$symbol, isSettleOnOpen=$isSettleOnOpen, lastTradeCutoff=$lastTradeCutoff, openInterest=$openInterest, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
+        "OptionsContract{id=$id, contractType=$contractType, currency=$currency, exchange=$exchange, exerciseStyle=$exerciseStyle, expiry=$expiry, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isTradable=$isTradable, listingType=$listingType, multiplier=$multiplier, strikePrice=$strikePrice, symbol=$symbol, isSettleOnOpen=$isSettleOnOpen, lastTradeCutoff=$lastTradeCutoff, openInterest=$openInterest, tickRules=$tickRules, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
 }
