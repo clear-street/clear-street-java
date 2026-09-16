@@ -22,6 +22,7 @@ class MarketDataSnapshot
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val instrumentId: JsonField<String>,
+    private val rule201: JsonField<SnapshotRule201>,
     private val session: JsonField<SnapshotSession>,
     private val symbol: JsonField<String>,
     private val cumulativeVolume: JsonField<Long>,
@@ -38,6 +39,9 @@ private constructor(
         @JsonProperty("instrument_id")
         @ExcludeMissing
         instrumentId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("rule_201")
+        @ExcludeMissing
+        rule201: JsonField<SnapshotRule201> = JsonMissing.of(),
         @JsonProperty("session")
         @ExcludeMissing
         session: JsonField<SnapshotSession> = JsonMissing.of(),
@@ -60,6 +64,7 @@ private constructor(
         openInterest: JsonField<Long> = JsonMissing.of(),
     ) : this(
         instrumentId,
+        rule201,
         session,
         symbol,
         cumulativeVolume,
@@ -78,6 +83,18 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun instrumentId(): String = instrumentId.getRequired("instrument_id")
+
+    /**
+     * Live SEC Rule 201 short-sale price test state, from the trading-status feed. Always present.
+     *
+     * This is the current market condition, not a statement about whether Clear Street will reject
+     * your order. It is also distinct from `is_short_prohibited` on the instrument endpoints, which
+     * is a standing property of the security rather than a live circuit breaker.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun rule201(): SnapshotRule201 = rule201.getRequired("rule_201")
 
     /**
      * Session-level pricing and OHLV metrics. Always present; each inner field is independently
@@ -167,6 +184,13 @@ private constructor(
     fun _instrumentId(): JsonField<String> = instrumentId
 
     /**
+     * Returns the raw JSON value of [rule201].
+     *
+     * Unlike [rule201], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("rule_201") @ExcludeMissing fun _rule201(): JsonField<SnapshotRule201> = rule201
+
+    /**
      * Returns the raw JSON value of [session].
      *
      * Unlike [session], this method doesn't throw if the JSON field has an unexpected type.
@@ -252,6 +276,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .instrumentId()
+         * .rule201()
          * .session()
          * .symbol()
          * ```
@@ -263,6 +288,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var instrumentId: JsonField<String>? = null
+        private var rule201: JsonField<SnapshotRule201>? = null
         private var session: JsonField<SnapshotSession>? = null
         private var symbol: JsonField<String>? = null
         private var cumulativeVolume: JsonField<Long> = JsonMissing.of()
@@ -276,6 +302,7 @@ private constructor(
         @JvmSynthetic
         internal fun from(marketDataSnapshot: MarketDataSnapshot) = apply {
             instrumentId = marketDataSnapshot.instrumentId
+            rule201 = marketDataSnapshot.rule201
             session = marketDataSnapshot.session
             symbol = marketDataSnapshot.symbol
             cumulativeVolume = marketDataSnapshot.cumulativeVolume
@@ -300,6 +327,26 @@ private constructor(
         fun instrumentId(instrumentId: JsonField<String>) = apply {
             this.instrumentId = instrumentId
         }
+
+        /**
+         * Live SEC Rule 201 short-sale price test state, from the trading-status feed. Always
+         * present.
+         *
+         * This is the current market condition, not a statement about whether Clear Street will
+         * reject your order. It is also distinct from `is_short_prohibited` on the instrument
+         * endpoints, which is a standing property of the security rather than a live circuit
+         * breaker.
+         */
+        fun rule201(rule201: SnapshotRule201) = rule201(JsonField.of(rule201))
+
+        /**
+         * Sets [Builder.rule201] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.rule201] with a well-typed [SnapshotRule201] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun rule201(rule201: JsonField<SnapshotRule201>) = apply { this.rule201 = rule201 }
 
         /**
          * Session-level pricing and OHLV metrics. Always present; each inner field is independently
@@ -492,6 +539,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .instrumentId()
+         * .rule201()
          * .session()
          * .symbol()
          * ```
@@ -501,6 +549,7 @@ private constructor(
         fun build(): MarketDataSnapshot =
             MarketDataSnapshot(
                 checkRequired("instrumentId", instrumentId),
+                checkRequired("rule201", rule201),
                 checkRequired("session", session),
                 checkRequired("symbol", symbol),
                 cumulativeVolume,
@@ -529,6 +578,7 @@ private constructor(
         }
 
         instrumentId()
+        rule201().validate()
         session().validate()
         symbol()
         cumulativeVolume()
@@ -556,6 +606,7 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (if (instrumentId.asKnown().isPresent) 1 else 0) +
+            (rule201.asKnown().getOrNull()?.validity() ?: 0) +
             (session.asKnown().getOrNull()?.validity() ?: 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (cumulativeVolume.asKnown().isPresent) 1 else 0) +
@@ -572,6 +623,7 @@ private constructor(
 
         return other is MarketDataSnapshot &&
             instrumentId == other.instrumentId &&
+            rule201 == other.rule201 &&
             session == other.session &&
             symbol == other.symbol &&
             cumulativeVolume == other.cumulativeVolume &&
@@ -586,6 +638,7 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             instrumentId,
+            rule201,
             session,
             symbol,
             cumulativeVolume,
@@ -601,5 +654,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "MarketDataSnapshot{instrumentId=$instrumentId, session=$session, symbol=$symbol, cumulativeVolume=$cumulativeVolume, greeks=$greeks, lastQuote=$lastQuote, lastTrade=$lastTrade, name=$name, openInterest=$openInterest, additionalProperties=$additionalProperties}"
+        "MarketDataSnapshot{instrumentId=$instrumentId, rule201=$rule201, session=$session, symbol=$symbol, cumulativeVolume=$cumulativeVolume, greeks=$greeks, lastQuote=$lastQuote, lastTrade=$lastTrade, name=$name, openInterest=$openInterest, additionalProperties=$additionalProperties}"
 }
