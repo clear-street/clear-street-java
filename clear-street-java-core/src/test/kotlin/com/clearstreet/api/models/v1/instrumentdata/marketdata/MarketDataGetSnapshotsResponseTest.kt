@@ -42,9 +42,6 @@ internal class MarketDataGetSnapshotsResponseTest {
                 .addData(
                     MarketDataSnapshot.builder()
                         .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
-                        .rule201(
-                            SnapshotRule201.builder().state(Rule201State.NOT_RESTRICTED).build()
-                        )
                         .session(
                             SnapshotSession.builder()
                                 .ohlvApplicable(true)
@@ -59,6 +56,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                                 .previousCloseUnadjusted("208.30")
                                 .build()
                         )
+                        .shortSaleRestricted(false)
                         .symbol("AAPL")
                         .cumulativeVolume(12345678L)
                         .greeks(
@@ -131,7 +129,6 @@ internal class MarketDataGetSnapshotsResponseTest {
             .containsExactly(
                 MarketDataSnapshot.builder()
                     .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
-                    .rule201(SnapshotRule201.builder().state(Rule201State.NOT_RESTRICTED).build())
                     .session(
                         SnapshotSession.builder()
                             .ohlvApplicable(true)
@@ -146,6 +143,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                             .previousCloseUnadjusted("208.30")
                             .build()
                     )
+                    .shortSaleRestricted(false)
                     .symbol("AAPL")
                     .cumulativeVolume(12345678L)
                     .greeks(
@@ -216,9 +214,6 @@ internal class MarketDataGetSnapshotsResponseTest {
                 .addData(
                     MarketDataSnapshot.builder()
                         .instrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
-                        .rule201(
-                            SnapshotRule201.builder().state(Rule201State.NOT_RESTRICTED).build()
-                        )
                         .session(
                             SnapshotSession.builder()
                                 .ohlvApplicable(true)
@@ -233,6 +228,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                                 .previousCloseUnadjusted("208.30")
                                 .build()
                         )
+                        .shortSaleRestricted(false)
                         .symbol("AAPL")
                         .cumulativeVolume(12345678L)
                         .greeks(

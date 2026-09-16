@@ -207,8 +207,8 @@ private constructor(
 
     /**
      * Indicates if short selling is prohibited for the instrument. This is a standing property of
-     * the security. For the live Rule 201 circuit breaker, see `rule_201` on the market-data
-     * snapshot.
+     * the security. For the live Rule 201 circuit breaker, see `short_sale_restricted` on the
+     * market-data snapshot.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -770,8 +770,8 @@ private constructor(
 
         /**
          * Indicates if short selling is prohibited for the instrument. This is a standing property
-         * of the security. For the live Rule 201 circuit breaker, see `rule_201` on the market-data
-         * snapshot.
+         * of the security. For the live Rule 201 circuit breaker, see `short_sale_restricted` on
+         * the market-data snapshot.
          */
         fun isShortProhibited(isShortProhibited: Boolean) =
             isShortProhibited(JsonField.of(isShortProhibited))
