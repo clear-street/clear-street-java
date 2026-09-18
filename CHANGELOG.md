@@ -1,5 +1,48 @@
 # Changelog
 
+## [0.5.0](https://github.com/clear-street/clear-street-java/compare/v0.4.0...v0.5.0) (2026-09-18)
+
+
+### Features
+
+* **api:** api update ([9fc2c87](https://github.com/clear-street/clear-street-java/commit/9fc2c87b01d2b74dd11ddce44183fbf933647af2))
+* **api:** api update ([5fb73a7](https://github.com/clear-street/clear-street-java/commit/5fb73a7c37bf17aaa9b45564238e84e00d0f78e5))
+* **api:** api update ([49e4f9f](https://github.com/clear-street/clear-street-java/commit/49e4f9fbf0a82e0f4b6ff91762f301b95285af69))
+* **api:** api update ([009e6a6](https://github.com/clear-street/clear-street-java/commit/009e6a68364e0006280ab429ce1600fb806480ff))
+* **api:** api update ([3026e05](https://github.com/clear-street/clear-street-java/commit/3026e056974d4b32521e8cf90c9092f93525731c))
+* **api:** api update ([0ee4895](https://github.com/clear-street/clear-street-java/commit/0ee4895010c5f3f37509b76d50e8e0c8ab133cb7))
+* **api:** api update ([9f2f86d](https://github.com/clear-street/clear-street-java/commit/9f2f86dbcadeba1091427be3ac4c602ab43d98d6))
+* **api:** api update ([7b7d39d](https://github.com/clear-street/clear-street-java/commit/7b7d39d1e35c0d9969164f940eccb78862113c9a))
+* **api:** api update ([2380ff1](https://github.com/clear-street/clear-street-java/commit/2380ff17adc53278ff2b3ee523289d6b0cad9b5b))
+* **api:** api update ([9297d86](https://github.com/clear-street/clear-street-java/commit/9297d866631db7bb915f2df37853066d71c55949))
+* **api:** api update ([fa47f69](https://github.com/clear-street/clear-street-java/commit/fa47f694eb86eac5e5193be58277064fddc88957))
+* **api:** api update ([89cbe66](https://github.com/clear-street/clear-street-java/commit/89cbe66cc649415119d3500701cc24b8bda3eba1))
+* **api:** api update ([90e85a9](https://github.com/clear-street/clear-street-java/commit/90e85a9db756d3030fb74315317a9042ef6618ee))
+* **api:** api update ([f6e0281](https://github.com/clear-street/clear-street-java/commit/f6e0281d35484dfd819a431fda4339ff47657a65))
+* **api:** api update ([3ce028d](https://github.com/clear-street/clear-street-java/commit/3ce028d76e4bf532b72d5c5a877a9f716b08762e))
+* **api:** api update ([d8bbefb](https://github.com/clear-street/clear-street-java/commit/d8bbefbcf6d71cd5609dd83ed8b1660fbdc62aad))
+* **api:** api update ([02d0b26](https://github.com/clear-street/clear-street-java/commit/02d0b26a2024e7215dac38e0bf5d49ed265ec4df))
+* **api:** api update ([a007f2c](https://github.com/clear-street/clear-street-java/commit/a007f2c1af581f053c4504d0a5ba7a1897d2aeb9))
+* **api:** api update ([bd3e3d8](https://github.com/clear-street/clear-street-java/commit/bd3e3d8ae699cb39e6238ffdf6c4ee0dd8c505ee))
+* **api:** api update ([01c497b](https://github.com/clear-street/clear-street-java/commit/01c497b025c02cb951051cb00361e7b7b9aac243))
+* **api:** api update ([96575c5](https://github.com/clear-street/clear-street-java/commit/96575c5fd73a954e654a0e7056dcb0974cb0744c))
+* **api:** api update ([e74c041](https://github.com/clear-street/clear-street-java/commit/e74c041698bd188345a9170e587123dbe747ecbd))
+* **api:** api update ([33d407f](https://github.com/clear-street/clear-street-java/commit/33d407f1fc79fc3a19e64f5b53751356ade91756))
+* **api:** api update ([ff671ff](https://github.com/clear-street/clear-street-java/commit/ff671ff37a369f04c5d1f5637987eaf6af26370c))
+* **api:** api update ([839ec76](https://github.com/clear-street/clear-street-java/commit/839ec76db10f94efea1514c36c1b6f71c8c23324))
+* **api:** api update ([4ab8e60](https://github.com/clear-street/clear-street-java/commit/4ab8e607b154745820283df979ab88b9176e9aee))
+* **api:** api update ([57deef6](https://github.com/clear-street/clear-street-java/commit/57deef66f0eb0c5915a76b548eaa6e710783cd1d))
+* **api:** api update ([67aabdb](https://github.com/clear-street/clear-street-java/commit/67aabdb8e652b648344f9b1a63173262462e6f4a))
+* **api:** api update ([0d3088b](https://github.com/clear-street/clear-street-java/commit/0d3088b4b7f0553deb9c72eeee952e7b2d7c9252))
+* **api:** api update ([320f305](https://github.com/clear-street/clear-street-java/commit/320f3054b233e2d363a8bd09781fb91a5e2ae824))
+* **api:** api update ([01dade5](https://github.com/clear-street/clear-street-java/commit/01dade5937188285d672a09d3a5bc39e8e5b3ce8))
+
+
+### Bug Fixes
+
+* reconcile forked trunks with production (2026-08-14) ([a82f014](https://github.com/clear-street/clear-street-java/commit/a82f01413588315d7685060db9790168c5f8c59c))
+* update javadoc badge link target to 0.4.0 ([aa108f6](https://github.com/clear-street/clear-street-java/commit/aa108f6864acb94889cdb1e4fb4e29cb4753be10))
+
 ## [0.4.0](https://github.com/clear-street/clear-street-java/compare/v0.3.0...v0.4.0) (2026-08-13)
 
 
