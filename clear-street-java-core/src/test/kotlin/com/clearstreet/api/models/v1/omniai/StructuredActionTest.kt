@@ -5,6 +5,7 @@ package com.clearstreet.api.models.v1.omniai
 import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
+import com.clearstreet.api.models.v1.orders.OrderStrategy
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestPositionEffect
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
@@ -42,6 +43,11 @@ internal class StructuredActionTest {
                                 .limitPrice("150.00")
                                 .positionIntent(RequestPositionEffect.OPEN)
                                 .stopPrice("52.00")
+                                .strategy(
+                                    OrderStrategy.Type.builder()
+                                        .type(OrderStrategy.Type.InnerType.SOR)
+                                        .build()
+                                )
                                 .symbol("AAPL")
                                 .trailingOffset("2.00")
                                 .trailingOffsetType(TrailingOffsetType.PRICE)
@@ -85,6 +91,11 @@ internal class StructuredActionTest {
                                     .limitPrice("150.00")
                                     .positionIntent(RequestPositionEffect.OPEN)
                                     .stopPrice("52.00")
+                                    .strategy(
+                                        OrderStrategy.Type.builder()
+                                            .type(OrderStrategy.Type.InnerType.SOR)
+                                            .build()
+                                    )
                                     .symbol("AAPL")
                                     .trailingOffset("2.00")
                                     .trailingOffsetType(TrailingOffsetType.PRICE)

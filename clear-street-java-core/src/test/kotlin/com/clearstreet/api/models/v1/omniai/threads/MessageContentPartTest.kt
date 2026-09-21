@@ -16,6 +16,7 @@ import com.clearstreet.api.models.v1.omniai.PromptButtonAction
 import com.clearstreet.api.models.v1.omniai.StructuredAction
 import com.clearstreet.api.models.v1.omniai.StructuredActionButtonAction
 import com.clearstreet.api.models.v1.omniai.SuggestedActionsPayload
+import com.clearstreet.api.models.v1.orders.OrderStrategy
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestPositionEffect
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
@@ -93,6 +94,11 @@ internal class MessageContentPartTest {
                                         .limitPrice("150.00")
                                         .positionIntent(RequestPositionEffect.OPEN)
                                         .stopPrice("52.00")
+                                        .strategy(
+                                            OrderStrategy.Type.builder()
+                                                .type(OrderStrategy.Type.InnerType.SOR)
+                                                .build()
+                                        )
                                         .symbol("AAPL")
                                         .trailingOffset("2.00")
                                         .trailingOffsetType(TrailingOffsetType.PRICE)
@@ -150,6 +156,11 @@ internal class MessageContentPartTest {
                                             .limitPrice("150.00")
                                             .positionIntent(RequestPositionEffect.OPEN)
                                             .stopPrice("52.00")
+                                            .strategy(
+                                                OrderStrategy.Type.builder()
+                                                    .type(OrderStrategy.Type.InnerType.SOR)
+                                                    .build()
+                                            )
                                             .symbol("AAPL")
                                             .trailingOffset("2.00")
                                             .trailingOffsetType(TrailingOffsetType.PRICE)

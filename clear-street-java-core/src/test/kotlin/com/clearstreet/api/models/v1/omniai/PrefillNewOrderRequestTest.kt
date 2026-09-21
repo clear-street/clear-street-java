@@ -3,6 +3,7 @@
 package com.clearstreet.api.models.v1.omniai
 
 import com.clearstreet.api.core.jsonMapper
+import com.clearstreet.api.models.v1.orders.OrderStrategy
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestPositionEffect
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
@@ -32,6 +33,9 @@ internal class PrefillNewOrderRequestTest {
                 .limitPrice("48.00")
                 .positionIntent(RequestPositionEffect.OPEN)
                 .stopPrice("52.00")
+                .strategy(
+                    OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
+                )
                 .symbol("TSLA")
                 .trailingOffset("2.00")
                 .trailingOffsetType(TrailingOffsetType.PRICE)
@@ -51,6 +55,12 @@ internal class PrefillNewOrderRequestTest {
         assertThat(prefillNewOrderRequest.limitPrice()).contains("48.00")
         assertThat(prefillNewOrderRequest.positionIntent()).contains(RequestPositionEffect.OPEN)
         assertThat(prefillNewOrderRequest.stopPrice()).contains("52.00")
+        assertThat(prefillNewOrderRequest.strategy())
+            .contains(
+                OrderStrategy.ofType(
+                    OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
+                )
+            )
         assertThat(prefillNewOrderRequest.symbol()).contains("TSLA")
         assertThat(prefillNewOrderRequest.trailingOffset()).contains("2.00")
         assertThat(prefillNewOrderRequest.trailingOffsetType()).contains(TrailingOffsetType.PRICE)
@@ -74,6 +84,9 @@ internal class PrefillNewOrderRequestTest {
                 .limitPrice("48.00")
                 .positionIntent(RequestPositionEffect.OPEN)
                 .stopPrice("52.00")
+                .strategy(
+                    OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
+                )
                 .symbol("TSLA")
                 .trailingOffset("2.00")
                 .trailingOffsetType(TrailingOffsetType.PRICE)

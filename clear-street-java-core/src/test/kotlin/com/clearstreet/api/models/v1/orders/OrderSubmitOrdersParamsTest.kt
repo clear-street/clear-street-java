@@ -26,6 +26,9 @@ internal class OrderSubmitOrdersParamsTest {
                     .limitPrice("48.00")
                     .positionIntent(RequestPositionEffect.OPEN)
                     .stopPrice("52.00")
+                    .strategy(
+                        OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
+                    )
                     .symbol("TSLA")
                     .trailingOffset("2.00")
                     .trailingOffsetType(TrailingOffsetType.PRICE)
@@ -73,6 +76,11 @@ internal class OrderSubmitOrdersParamsTest {
                         .limitPrice("48.00")
                         .positionIntent(RequestPositionEffect.OPEN)
                         .stopPrice("52.00")
+                        .strategy(
+                            OrderStrategy.Type.builder()
+                                .type(OrderStrategy.Type.InnerType.SOR)
+                                .build()
+                        )
                         .symbol("TSLA")
                         .trailingOffset("2.00")
                         .trailingOffsetType(TrailingOffsetType.PRICE)
@@ -97,6 +105,9 @@ internal class OrderSubmitOrdersParamsTest {
                     .limitPrice("48.00")
                     .positionIntent(RequestPositionEffect.OPEN)
                     .stopPrice("52.00")
+                    .strategy(
+                        OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
+                    )
                     .symbol("TSLA")
                     .trailingOffset("2.00")
                     .trailingOffsetType(TrailingOffsetType.PRICE)

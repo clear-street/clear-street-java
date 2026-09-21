@@ -26,6 +26,9 @@ internal class NewOrderRequestTest {
                 .limitPrice("48.00")
                 .positionIntent(RequestPositionEffect.OPEN)
                 .stopPrice("52.00")
+                .strategy(
+                    OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
+                )
                 .symbol("TSLA")
                 .trailingOffset("2.00")
                 .trailingOffsetType(TrailingOffsetType.PRICE)
@@ -44,6 +47,12 @@ internal class NewOrderRequestTest {
         assertThat(newOrderRequest.limitPrice()).contains("48.00")
         assertThat(newOrderRequest.positionIntent()).contains(RequestPositionEffect.OPEN)
         assertThat(newOrderRequest.stopPrice()).contains("52.00")
+        assertThat(newOrderRequest.strategy())
+            .contains(
+                OrderStrategy.ofType(
+                    OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
+                )
+            )
         assertThat(newOrderRequest.symbol()).contains("TSLA")
         assertThat(newOrderRequest.trailingOffset()).contains("2.00")
         assertThat(newOrderRequest.trailingOffsetType()).contains(TrailingOffsetType.PRICE)
@@ -66,6 +75,9 @@ internal class NewOrderRequestTest {
                 .limitPrice("48.00")
                 .positionIntent(RequestPositionEffect.OPEN)
                 .stopPrice("52.00")
+                .strategy(
+                    OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
+                )
                 .symbol("TSLA")
                 .trailingOffset("2.00")
                 .trailingOffsetType(TrailingOffsetType.PRICE)

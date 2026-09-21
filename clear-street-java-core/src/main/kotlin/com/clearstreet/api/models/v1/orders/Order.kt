@@ -54,6 +54,7 @@ private constructor(
     private val queueState: JsonField<QueueState>,
     private val releasesAt: JsonField<OffsetDateTime>,
     private val stopPrice: JsonField<String>,
+    private val strategy: JsonField<Strategy>,
     private val symbol: JsonField<String>,
     private val trailingLimitPx: JsonField<String>,
     private val trailingOffset: JsonField<String>,
@@ -126,6 +127,7 @@ private constructor(
         @ExcludeMissing
         releasesAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("strategy") @ExcludeMissing strategy: JsonField<Strategy> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("trailing_limit_px")
         @ExcludeMissing
@@ -176,6 +178,7 @@ private constructor(
         queueState,
         releasesAt,
         stopPrice,
+        strategy,
         symbol,
         trailingLimitPx,
         trailingOffset,
@@ -391,6 +394,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
+
+    /**
+     * The execution strategy the order was submitted with, if any.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun strategy(): Optional<Strategy> = strategy.getOptional("strategy")
 
     /**
      * Trading symbol. `null` when the order has no single resolvable instrument. When a
@@ -680,6 +691,13 @@ private constructor(
     @JsonProperty("stop_price") @ExcludeMissing fun _stopPrice(): JsonField<String> = stopPrice
 
     /**
+     * Returns the raw JSON value of [strategy].
+     *
+     * Unlike [strategy], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("strategy") @ExcludeMissing fun _strategy(): JsonField<Strategy> = strategy
+
+    /**
      * Returns the raw JSON value of [symbol].
      *
      * Unlike [symbol], this method doesn't throw if the JSON field has an unexpected type.
@@ -827,6 +845,7 @@ private constructor(
         private var queueState: JsonField<QueueState> = JsonMissing.of()
         private var releasesAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
+        private var strategy: JsonField<Strategy> = JsonMissing.of()
         private var symbol: JsonField<String> = JsonMissing.of()
         private var trailingLimitPx: JsonField<String> = JsonMissing.of()
         private var trailingOffset: JsonField<String> = JsonMissing.of()
@@ -864,6 +883,7 @@ private constructor(
             queueState = order.queueState
             releasesAt = order.releasesAt
             stopPrice = order.stopPrice
+            strategy = order.strategy
             symbol = order.symbol
             trailingLimitPx = order.trailingLimitPx
             trailingOffset = order.trailingOffset
@@ -1264,6 +1284,18 @@ private constructor(
          */
         fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
 
+        /** The execution strategy the order was submitted with, if any. */
+        fun strategy(strategy: Strategy) = strategy(JsonField.of(strategy))
+
+        /**
+         * Sets [Builder.strategy] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.strategy] with a well-typed [Strategy] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun strategy(strategy: JsonField<Strategy>) = apply { this.strategy = strategy }
+
         /**
          * Trading symbol. `null` when the order has no single resolvable instrument. When a
          * null/undefined value is observed, it indicates it does not apply.
@@ -1542,6 +1574,7 @@ private constructor(
                 queueState,
                 releasesAt,
                 stopPrice,
+                strategy,
                 symbol,
                 trailingLimitPx,
                 trailingOffset,
@@ -1594,6 +1627,7 @@ private constructor(
         queueState().ifPresent { it.validate() }
         releasesAt()
         stopPrice()
+        strategy().ifPresent { it.validate() }
         symbol()
         trailingLimitPx()
         trailingOffset()
@@ -1645,6 +1679,7 @@ private constructor(
             (queueState.asKnown().getOrNull()?.validity() ?: 0) +
             (if (releasesAt.asKnown().isPresent) 1 else 0) +
             (if (stopPrice.asKnown().isPresent) 1 else 0) +
+            (strategy.asKnown().getOrNull()?.validity() ?: 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (trailingLimitPx.asKnown().isPresent) 1 else 0) +
             (if (trailingOffset.asKnown().isPresent) 1 else 0) +
@@ -1654,6 +1689,255 @@ private constructor(
             (if (trailingWatermarkTs.asKnown().isPresent) 1 else 0) +
             (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0) +
             (underlyingInstrumentType.asKnown().getOrNull()?.validity() ?: 0)
+
+    /** The execution strategy the order was submitted with, if any. */
+    class Strategy
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val type: JsonField<String>,
+        private val endAt: JsonField<OffsetDateTime>,
+        private val startAt: JsonField<OffsetDateTime>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("type") @ExcludeMissing type: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("end_at")
+            @ExcludeMissing
+            endAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("start_at")
+            @ExcludeMissing
+            startAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        ) : this(type, endAt, startAt, mutableMapOf())
+
+        /**
+         * Execution strategy type.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun type(): String = type.getRequired("type")
+
+        /**
+         * UTC timestamp (RFC 3339) at which execution ends.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun endAt(): Optional<OffsetDateTime> = endAt.getOptional("end_at")
+
+        /**
+         * UTC timestamp (RFC 3339) at which execution begins.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun startAt(): Optional<OffsetDateTime> = startAt.getOptional("start_at")
+
+        /**
+         * Returns the raw JSON value of [type].
+         *
+         * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<String> = type
+
+        /**
+         * Returns the raw JSON value of [endAt].
+         *
+         * Unlike [endAt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("end_at") @ExcludeMissing fun _endAt(): JsonField<OffsetDateTime> = endAt
+
+        /**
+         * Returns the raw JSON value of [startAt].
+         *
+         * Unlike [startAt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("start_at")
+        @ExcludeMissing
+        fun _startAt(): JsonField<OffsetDateTime> = startAt
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [Strategy].
+             *
+             * The following fields are required:
+             * ```java
+             * .type()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Strategy]. */
+        class Builder internal constructor() {
+
+            private var type: JsonField<String>? = null
+            private var endAt: JsonField<OffsetDateTime> = JsonMissing.of()
+            private var startAt: JsonField<OffsetDateTime> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(strategy: Strategy) = apply {
+                type = strategy.type
+                endAt = strategy.endAt
+                startAt = strategy.startAt
+                additionalProperties = strategy.additionalProperties.toMutableMap()
+            }
+
+            /** Execution strategy type. */
+            fun type(type: String) = type(JsonField.of(type))
+
+            /**
+             * Sets [Builder.type] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.type] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun type(type: JsonField<String>) = apply { this.type = type }
+
+            /** UTC timestamp (RFC 3339) at which execution ends. */
+            fun endAt(endAt: OffsetDateTime) = endAt(JsonField.of(endAt))
+
+            /**
+             * Sets [Builder.endAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.endAt] with a well-typed [OffsetDateTime] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun endAt(endAt: JsonField<OffsetDateTime>) = apply { this.endAt = endAt }
+
+            /** UTC timestamp (RFC 3339) at which execution begins. */
+            fun startAt(startAt: OffsetDateTime) = startAt(JsonField.of(startAt))
+
+            /**
+             * Sets [Builder.startAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.startAt] with a well-typed [OffsetDateTime] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun startAt(startAt: JsonField<OffsetDateTime>) = apply { this.startAt = startAt }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Strategy].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .type()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): Strategy =
+                Strategy(
+                    checkRequired("type", type),
+                    endAt,
+                    startAt,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws ClearStreetInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Strategy = apply {
+            if (validated) {
+                return@apply
+            }
+
+            type()
+            endAt()
+            startAt()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: ClearStreetInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (if (type.asKnown().isPresent) 1 else 0) +
+                (if (endAt.asKnown().isPresent) 1 else 0) +
+                (if (startAt.asKnown().isPresent) 1 else 0)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Strategy &&
+                type == other.type &&
+                endAt == other.endAt &&
+                startAt == other.startAt &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(type, endAt, startAt, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Strategy{type=$type, endAt=$endAt, startAt=$startAt, additionalProperties=$additionalProperties}"
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -1685,6 +1969,7 @@ private constructor(
             queueState == other.queueState &&
             releasesAt == other.releasesAt &&
             stopPrice == other.stopPrice &&
+            strategy == other.strategy &&
             symbol == other.symbol &&
             trailingLimitPx == other.trailingLimitPx &&
             trailingOffset == other.trailingOffset &&
@@ -1723,6 +2008,7 @@ private constructor(
             queueState,
             releasesAt,
             stopPrice,
+            strategy,
             symbol,
             trailingLimitPx,
             trailingOffset,
@@ -1739,5 +2025,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, instrumentType=$instrumentType, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, instrumentType=$instrumentType, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
 }

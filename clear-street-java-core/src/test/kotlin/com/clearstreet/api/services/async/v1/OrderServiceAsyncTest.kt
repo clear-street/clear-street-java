@@ -11,6 +11,7 @@ import com.clearstreet.api.models.v1.orders.OrderGetExecutionsParams
 import com.clearstreet.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clearstreet.api.models.v1.orders.OrderGetOrdersParams
 import com.clearstreet.api.models.v1.orders.OrderReplaceOrderParams
+import com.clearstreet.api.models.v1.orders.OrderStrategy
 import com.clearstreet.api.models.v1.orders.OrderSubmitOrdersParams
 import com.clearstreet.api.models.v1.orders.ReplaceOrderRequest
 import com.clearstreet.api.models.v1.orders.RequestOrderType
@@ -208,6 +209,11 @@ internal class OrderServiceAsyncTest {
                             .limitPrice("48.00")
                             .positionIntent(RequestPositionEffect.OPEN)
                             .stopPrice("52.00")
+                            .strategy(
+                                OrderStrategy.Type.builder()
+                                    .type(OrderStrategy.Type.InnerType.SOR)
+                                    .build()
+                            )
                             .symbol("TSLA")
                             .trailingOffset("2.00")
                             .trailingOffsetType(TrailingOffsetType.PRICE)

@@ -34,6 +34,7 @@ private constructor(
     private val limitPrice: JsonField<String>,
     private val positionIntent: JsonField<RequestPositionEffect>,
     private val stopPrice: JsonField<String>,
+    private val strategy: JsonField<OrderStrategy>,
     private val symbol: JsonField<String>,
     private val trailingOffset: JsonField<String>,
     private val trailingOffsetType: JsonField<TrailingOffsetType>,
@@ -70,6 +71,9 @@ private constructor(
         @ExcludeMissing
         positionIntent: JsonField<RequestPositionEffect> = JsonMissing.of(),
         @JsonProperty("stop_price") @ExcludeMissing stopPrice: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("strategy")
+        @ExcludeMissing
+        strategy: JsonField<OrderStrategy> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("trailing_offset")
         @ExcludeMissing
@@ -90,6 +94,7 @@ private constructor(
         limitPrice,
         positionIntent,
         stopPrice,
+        strategy,
         symbol,
         trailingOffset,
         trailingOffsetType,
@@ -196,6 +201,16 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
+
+    /**
+     * Optional execution strategy. Omit to use standard routing. One of `SOR`, `VWAP`, or `TWAP`.
+     * Supported only on `MARKET` and `LIMIT` orders with `DAY` time-in-force, and not supported on
+     * OTC common-stock orders.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun strategy(): Optional<OrderStrategy> = strategy.getOptional("strategy")
 
     /**
      * Trading symbol. For equities, use the ticker symbol (e.g., "TSLA"). For options, use the OSI
@@ -322,6 +337,13 @@ private constructor(
     @JsonProperty("stop_price") @ExcludeMissing fun _stopPrice(): JsonField<String> = stopPrice
 
     /**
+     * Returns the raw JSON value of [strategy].
+     *
+     * Unlike [strategy], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("strategy") @ExcludeMissing fun _strategy(): JsonField<OrderStrategy> = strategy
+
+    /**
      * Returns the raw JSON value of [symbol].
      *
      * Unlike [symbol], this method doesn't throw if the JSON field has an unexpected type.
@@ -390,6 +412,7 @@ private constructor(
         private var limitPrice: JsonField<String> = JsonMissing.of()
         private var positionIntent: JsonField<RequestPositionEffect> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
+        private var strategy: JsonField<OrderStrategy> = JsonMissing.of()
         private var symbol: JsonField<String> = JsonMissing.of()
         private var trailingOffset: JsonField<String> = JsonMissing.of()
         private var trailingOffsetType: JsonField<TrailingOffsetType> = JsonMissing.of()
@@ -409,6 +432,7 @@ private constructor(
             limitPrice = newOrderRequest.limitPrice
             positionIntent = newOrderRequest.positionIntent
             stopPrice = newOrderRequest.stopPrice
+            strategy = newOrderRequest.strategy
             symbol = newOrderRequest.symbol
             trailingOffset = newOrderRequest.trailingOffset
             trailingOffsetType = newOrderRequest.trailingOffsetType
@@ -614,6 +638,36 @@ private constructor(
         fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
 
         /**
+         * Optional execution strategy. Omit to use standard routing. One of `SOR`, `VWAP`, or
+         * `TWAP`. Supported only on `MARKET` and `LIMIT` orders with `DAY` time-in-force, and not
+         * supported on OTC common-stock orders.
+         */
+        fun strategy(strategy: OrderStrategy?) = strategy(JsonField.ofNullable(strategy))
+
+        /** Alias for calling [Builder.strategy] with `strategy.orElse(null)`. */
+        fun strategy(strategy: Optional<OrderStrategy>) = strategy(strategy.getOrNull())
+
+        /**
+         * Sets [Builder.strategy] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.strategy] with a well-typed [OrderStrategy] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun strategy(strategy: JsonField<OrderStrategy>) = apply { this.strategy = strategy }
+
+        /** Alias for calling [strategy] with `OrderStrategy.ofType(type)`. */
+        fun strategy(type: OrderStrategy.Type) = strategy(OrderStrategy.ofType(type))
+
+        /** Alias for calling [strategy] with `OrderStrategy.ofUnionMember1(unionMember1)`. */
+        fun strategy(unionMember1: OrderStrategy.UnionMember1) =
+            strategy(OrderStrategy.ofUnionMember1(unionMember1))
+
+        /** Alias for calling [strategy] with `OrderStrategy.ofUnionMember2(unionMember2)`. */
+        fun strategy(unionMember2: OrderStrategy.UnionMember2) =
+            strategy(OrderStrategy.ofUnionMember2(unionMember2))
+
+        /**
          * Trading symbol. For equities, use the ticker symbol (e.g., "TSLA"). For options, use the
          * OSI symbol (e.g., "TSLA 250117C00190000"). Either `symbol` or `instrument_id` must be
          * provided.
@@ -719,6 +773,7 @@ private constructor(
                 limitPrice,
                 positionIntent,
                 stopPrice,
+                strategy,
                 symbol,
                 trailingOffset,
                 trailingOffsetType,
@@ -753,6 +808,7 @@ private constructor(
         limitPrice()
         positionIntent().ifPresent { it.validate() }
         stopPrice()
+        strategy().ifPresent { it.validate() }
         symbol()
         trailingOffset()
         trailingOffsetType().ifPresent { it.validate() }
@@ -786,6 +842,7 @@ private constructor(
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
             (positionIntent.asKnown().getOrNull()?.validity() ?: 0) +
             (if (stopPrice.asKnown().isPresent) 1 else 0) +
+            (strategy.asKnown().getOrNull()?.validity() ?: 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (trailingOffset.asKnown().isPresent) 1 else 0) +
             (trailingOffsetType.asKnown().getOrNull()?.validity() ?: 0)
@@ -808,6 +865,7 @@ private constructor(
             limitPrice == other.limitPrice &&
             positionIntent == other.positionIntent &&
             stopPrice == other.stopPrice &&
+            strategy == other.strategy &&
             symbol == other.symbol &&
             trailingOffset == other.trailingOffset &&
             trailingOffsetType == other.trailingOffsetType &&
@@ -828,6 +886,7 @@ private constructor(
             limitPrice,
             positionIntent,
             stopPrice,
+            strategy,
             symbol,
             trailingOffset,
             trailingOffsetType,
@@ -838,5 +897,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "NewOrderRequest{orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, limitOffset=$limitOffset, limitPrice=$limitPrice, positionIntent=$positionIntent, stopPrice=$stopPrice, symbol=$symbol, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
+        "NewOrderRequest{orderType=$orderType, quantity=$quantity, side=$side, timeInForce=$timeInForce, id=$id, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, limitOffset=$limitOffset, limitPrice=$limitPrice, positionIntent=$positionIntent, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, additionalProperties=$additionalProperties}"
 }

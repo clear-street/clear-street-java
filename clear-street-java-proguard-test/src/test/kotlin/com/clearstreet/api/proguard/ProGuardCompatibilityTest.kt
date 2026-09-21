@@ -11,6 +11,7 @@ import com.clearstreet.api.models.v1.accounts.AccountSubtype
 import com.clearstreet.api.models.v1.accounts.AccountType
 import com.clearstreet.api.models.v1.omniai.PrefillNewOrderRequest
 import com.clearstreet.api.models.v1.omniai.PrefillOrderAction
+import com.clearstreet.api.models.v1.orders.OrderStrategy
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestPositionEffect
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
@@ -110,6 +111,11 @@ internal class ProGuardCompatibilityTest {
                             .limitPrice("150.00")
                             .positionIntent(RequestPositionEffect.OPEN)
                             .stopPrice("52.00")
+                            .strategy(
+                                OrderStrategy.Type.builder()
+                                    .type(OrderStrategy.Type.InnerType.SOR)
+                                    .build()
+                            )
                             .symbol("AAPL")
                             .trailingOffset("2.00")
                             .trailingOffsetType(TrailingOffsetType.PRICE)
