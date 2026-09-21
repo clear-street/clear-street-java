@@ -3,7 +3,6 @@
 package com.clearstreet.api.models.v1.omniai.responses
 
 import com.clearstreet.api.core.Params
-import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
 import java.util.Objects
@@ -11,28 +10,30 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Poll a response for assistant output.
+ * Poll the current snapshot of an in-progress or completed assistant response. While its status is
+ * `queued` or `running`, content may be partial and include thinking parts. Continue polling until
+ * it becomes `succeeded`, `failed`, or `canceled`.
  *
- * Returns the current snapshot of an in-progress or completed response. While the status is
- * `queued` or `running`, the content may be partial and may include `thinking` parts. Poll this
- * endpoint periodically until the status reaches a terminal value (`succeeded`, `failed`, or
- * `canceled`).
- *
- * Once terminal, the finalized assistant message is available in thread history via `GET
- * /omni-ai/threads/{thread_id}/messages`.
+ * Once terminal, the finalized message is available through `GET
+ * /omni-ai/threads/{thread_id}/messages`. Authorization uses the current parent thread account,
+ * including for responses created before the account link.
  */
 class ResponseGetResponseByIdParams
 private constructor(
     private val responseId: String?,
-    private val accountId: Long,
+    private val accountId: Long?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun responseId(): Optional<String> = Optional.ofNullable(responseId)
 
-    /** Account ID for the request */
-    fun accountId(): Long = accountId
+    /**
+     * Lists only conversations for this account, or unlinked conversations when omitted. Other
+     * reads authorize the resource's linked account. Omit when no account is selected; empty values
+     * and the string null are invalid.
+     */
+    fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -44,14 +45,11 @@ private constructor(
 
     companion object {
 
+        @JvmStatic fun none(): ResponseGetResponseByIdParams = builder().build()
+
         /**
          * Returns a mutable builder for constructing an instance of
          * [ResponseGetResponseByIdParams].
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
          */
         @JvmStatic fun builder() = Builder()
     }
@@ -77,8 +75,22 @@ private constructor(
         /** Alias for calling [Builder.responseId] with `responseId.orElse(null)`. */
         fun responseId(responseId: Optional<String>) = responseId(responseId.getOrNull())
 
-        /** Account ID for the request */
-        fun accountId(accountId: Long) = apply { this.accountId = accountId }
+        /**
+         * Lists only conversations for this account, or unlinked conversations when omitted. Other
+         * reads authorize the resource's linked account. Omit when no account is selected; empty
+         * values and the string null are invalid.
+         */
+        fun accountId(accountId: Long?) = apply { this.accountId = accountId }
+
+        /**
+         * Alias for [Builder.accountId].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun accountId(accountId: Long) = accountId(accountId as Long?)
+
+        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+        fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -182,18 +194,11 @@ private constructor(
          * Returns an immutable instance of [ResponseGetResponseByIdParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): ResponseGetResponseByIdParams =
             ResponseGetResponseByIdParams(
                 responseId,
-                checkRequired("accountId", accountId),
+                accountId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -210,7 +215,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                put("account_id", accountId.toString())
+                accountId?.let { put("account_id", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()

@@ -32,6 +32,24 @@ internal class MessageTest {
                 .role(MessageRole.USER)
                 .seq(0L)
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .context(
+                    TurnContext.builder()
+                        .addItem(
+                            ContextItem.builder()
+                                .data(
+                                    ContextItem.Data.builder()
+                                        .putAdditionalProperty("change_pct", JsonValue.from("bar"))
+                                        .putAdditionalProperty("range", JsonValue.from("bar"))
+                                        .putAdditionalProperty("ticker", JsonValue.from("bar"))
+                                        .build()
+                                )
+                                .kind("chart")
+                                .label("NVDA intraday performance")
+                                .capturedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .build()
+                        )
+                        .build()
+                )
                 .error(
                     ErrorStatus.builder()
                         .code("code")
@@ -58,6 +76,25 @@ internal class MessageTest {
         assertThat(message.role()).isEqualTo(MessageRole.USER)
         assertThat(message.seq()).isEqualTo(0L)
         assertThat(message.threadId()).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(message.context())
+            .contains(
+                TurnContext.builder()
+                    .addItem(
+                        ContextItem.builder()
+                            .data(
+                                ContextItem.Data.builder()
+                                    .putAdditionalProperty("change_pct", JsonValue.from("bar"))
+                                    .putAdditionalProperty("range", JsonValue.from("bar"))
+                                    .putAdditionalProperty("ticker", JsonValue.from("bar"))
+                                    .build()
+                            )
+                            .kind("chart")
+                            .label("NVDA intraday performance")
+                            .capturedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .build()
+                    )
+                    .build()
+            )
         assertThat(message.error())
             .contains(
                 ErrorStatus.builder()
@@ -89,6 +126,24 @@ internal class MessageTest {
                 .role(MessageRole.USER)
                 .seq(0L)
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .context(
+                    TurnContext.builder()
+                        .addItem(
+                            ContextItem.builder()
+                                .data(
+                                    ContextItem.Data.builder()
+                                        .putAdditionalProperty("change_pct", JsonValue.from("bar"))
+                                        .putAdditionalProperty("range", JsonValue.from("bar"))
+                                        .putAdditionalProperty("ticker", JsonValue.from("bar"))
+                                        .build()
+                                )
+                                .kind("chart")
+                                .label("NVDA intraday performance")
+                                .capturedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .build()
+                        )
+                        .build()
+                )
                 .error(
                     ErrorStatus.builder()
                         .code("code")

@@ -58,7 +58,7 @@ private constructor(
     fun error(): Optional<ApiError> = error.getOptional("error")
 
     /**
-     * Thread metadata returned by list/get thread endpoints.
+     * Thread metadata.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -156,7 +156,7 @@ private constructor(
          */
         fun error(error: JsonField<ApiError>) = apply { this.error = error }
 
-        /** Thread metadata returned by list/get thread endpoints. */
+        /** Thread metadata. */
         fun data(data: Thread) = data(JsonField.of(data))
 
         /**

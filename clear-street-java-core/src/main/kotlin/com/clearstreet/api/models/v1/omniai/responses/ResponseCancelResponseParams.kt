@@ -4,7 +4,6 @@ package com.clearstreet.api.models.v1.omniai.responses
 
 import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.Params
-import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
 import com.clearstreet.api.core.toImmutable
@@ -13,16 +12,16 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Cancel a response.
+ * Cancel a queued or running response. Cancellation is idempotent after the response becomes
+ * terminal. A canceled turn still produces a finalized assistant message with outcome `canceled` in
+ * the thread history.
  *
- * Requests cancellation of a queued or running response. If the response has already reached a
- * terminal status, this is an idempotent success. A canceled turn still produces a final assistant
- * message with outcome `canceled` in the thread history.
+ * Authorization uses the linked account before any cancellation.
  */
 class ResponseCancelResponseParams
 private constructor(
     private val responseId: String?,
-    private val accountId: Long,
+    private val accountId: Long?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
     private val additionalBodyProperties: Map<String, JsonValue>,
@@ -30,8 +29,12 @@ private constructor(
 
     fun responseId(): Optional<String> = Optional.ofNullable(responseId)
 
-    /** Account ID for the request */
-    fun accountId(): Long = accountId
+    /**
+     * Lists only conversations for this account, or unlinked conversations when omitted. Other
+     * reads authorize the resource's linked account. Omit when no account is selected; empty values
+     * and the string null are invalid.
+     */
+    fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
     /** Additional body properties to send with the request. */
     fun _additionalBodyProperties(): Map<String, JsonValue> = additionalBodyProperties
@@ -46,13 +49,10 @@ private constructor(
 
     companion object {
 
+        @JvmStatic fun none(): ResponseCancelResponseParams = builder().build()
+
         /**
          * Returns a mutable builder for constructing an instance of [ResponseCancelResponseParams].
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
          */
         @JvmStatic fun builder() = Builder()
     }
@@ -81,8 +81,22 @@ private constructor(
         /** Alias for calling [Builder.responseId] with `responseId.orElse(null)`. */
         fun responseId(responseId: Optional<String>) = responseId(responseId.getOrNull())
 
-        /** Account ID for the request */
-        fun accountId(accountId: Long) = apply { this.accountId = accountId }
+        /**
+         * Lists only conversations for this account, or unlinked conversations when omitted. Other
+         * reads authorize the resource's linked account. Omit when no account is selected; empty
+         * values and the string null are invalid.
+         */
+        fun accountId(accountId: Long?) = apply { this.accountId = accountId }
+
+        /**
+         * Alias for [Builder.accountId].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun accountId(accountId: Long) = accountId(accountId as Long?)
+
+        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+        fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -208,18 +222,11 @@ private constructor(
          * Returns an immutable instance of [ResponseCancelResponseParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): ResponseCancelResponseParams =
             ResponseCancelResponseParams(
                 responseId,
-                checkRequired("accountId", accountId),
+                accountId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
                 additionalBodyProperties.toImmutable(),
@@ -240,7 +247,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                put("account_id", accountId.toString())
+                accountId?.let { put("account_id", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()

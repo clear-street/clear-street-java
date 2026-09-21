@@ -25,7 +25,7 @@ internal class ResponseServiceTest {
             responseService.cancelResponse(
                 ResponseCancelResponseParams.builder()
                     .responseId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .accountId(0L)
+                    .accountId(1L)
                     .build()
             )
 
@@ -45,7 +45,7 @@ internal class ResponseServiceTest {
             responseService.getResponseById(
                 ResponseGetResponseByIdParams.builder()
                     .responseId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .accountId(0L)
+                    .accountId(1L)
                     .build()
             )
 

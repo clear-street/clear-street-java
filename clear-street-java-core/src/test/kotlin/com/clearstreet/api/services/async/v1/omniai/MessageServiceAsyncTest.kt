@@ -26,7 +26,7 @@ internal class MessageServiceAsyncTest {
             messageServiceAsync.getMessageById(
                 MessageGetMessageByIdParams.builder()
                     .messageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .accountId(0L)
+                    .accountId(1L)
                     .build()
             )
 
@@ -47,8 +47,8 @@ internal class MessageServiceAsyncTest {
             messageServiceAsync.submitFeedback(
                 MessageSubmitFeedbackParams.builder()
                     .messageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .accountId(0L)
                     .score(0)
+                    .accountId(1L)
                     .comment("comment")
                     .metadata(JsonValue.from(mapOf<String, Any>()))
                     .build()

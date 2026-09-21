@@ -3,7 +3,6 @@
 package com.clearstreet.api.models.v1.omniai.threads
 
 import com.clearstreet.api.core.Params
-import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
 import java.util.Objects
@@ -11,23 +10,27 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Get a specific thread.
+ * Read an owned thread's metadata. Use `GET /omni-ai/threads/{thread_id}/messages` for conversation
+ * history.
  *
- * Returns metadata (title, timestamps) for a single thread. Does not include messages — use `GET
- * /omni-ai/threads/{thread_id}/messages` for conversation history.
+ * Omission or another account selection does not change authorization.
  */
 class ThreadGetThreadByIdParams
 private constructor(
     private val threadId: String?,
-    private val accountId: Long,
+    private val accountId: Long?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun threadId(): Optional<String> = Optional.ofNullable(threadId)
 
-    /** Account ID for the request */
-    fun accountId(): Long = accountId
+    /**
+     * Lists only conversations for this account, or unlinked conversations when omitted. Other
+     * reads authorize the resource's linked account. Omit when no account is selected; empty values
+     * and the string null are invalid.
+     */
+    fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -39,13 +42,10 @@ private constructor(
 
     companion object {
 
+        @JvmStatic fun none(): ThreadGetThreadByIdParams = builder().build()
+
         /**
          * Returns a mutable builder for constructing an instance of [ThreadGetThreadByIdParams].
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
          */
         @JvmStatic fun builder() = Builder()
     }
@@ -71,8 +71,22 @@ private constructor(
         /** Alias for calling [Builder.threadId] with `threadId.orElse(null)`. */
         fun threadId(threadId: Optional<String>) = threadId(threadId.getOrNull())
 
-        /** Account ID for the request */
-        fun accountId(accountId: Long) = apply { this.accountId = accountId }
+        /**
+         * Lists only conversations for this account, or unlinked conversations when omitted. Other
+         * reads authorize the resource's linked account. Omit when no account is selected; empty
+         * values and the string null are invalid.
+         */
+        fun accountId(accountId: Long?) = apply { this.accountId = accountId }
+
+        /**
+         * Alias for [Builder.accountId].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun accountId(accountId: Long) = accountId(accountId as Long?)
+
+        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+        fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -176,18 +190,11 @@ private constructor(
          * Returns an immutable instance of [ThreadGetThreadByIdParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): ThreadGetThreadByIdParams =
             ThreadGetThreadByIdParams(
                 threadId,
-                checkRequired("accountId", accountId),
+                accountId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -204,7 +211,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                put("account_id", accountId.toString())
+                accountId?.let { put("account_id", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()

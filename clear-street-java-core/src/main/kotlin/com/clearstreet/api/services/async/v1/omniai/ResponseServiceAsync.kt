@@ -33,25 +33,35 @@ interface ResponseServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ResponseServiceAsync
 
     /**
-     * Cancel a response.
+     * Cancel a queued or running response. Cancellation is idempotent after the response becomes
+     * terminal. A canceled turn still produces a finalized assistant message with outcome
+     * `canceled` in the thread history.
      *
-     * Requests cancellation of a queued or running response. If the response has already reached a
-     * terminal status, this is an idempotent success. A canceled turn still produces a final
-     * assistant message with outcome `canceled` in the thread history.
+     * Authorization uses the linked account before any cancellation.
      */
+    fun cancelResponse(responseId: String): CompletableFuture<ResponseCancelResponseResponse> =
+        cancelResponse(responseId, ResponseCancelResponseParams.none())
+
+    /** @see cancelResponse */
     fun cancelResponse(
         responseId: String,
-        params: ResponseCancelResponseParams,
+        params: ResponseCancelResponseParams = ResponseCancelResponseParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ResponseCancelResponseResponse> =
+        cancelResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
+
+    /** @see cancelResponse */
+    fun cancelResponse(
+        responseId: String,
+        params: ResponseCancelResponseParams = ResponseCancelResponseParams.none(),
     ): CompletableFuture<ResponseCancelResponseResponse> =
         cancelResponse(responseId, params, RequestOptions.none())
 
     /** @see cancelResponse */
     fun cancelResponse(
-        responseId: String,
         params: ResponseCancelResponseParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ResponseCancelResponseResponse> =
-        cancelResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
+    ): CompletableFuture<ResponseCancelResponseResponse>
 
     /** @see cancelResponse */
     fun cancelResponse(
@@ -61,34 +71,43 @@ interface ResponseServiceAsync {
 
     /** @see cancelResponse */
     fun cancelResponse(
-        params: ResponseCancelResponseParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ResponseCancelResponseResponse>
+        responseId: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<ResponseCancelResponseResponse> =
+        cancelResponse(responseId, ResponseCancelResponseParams.none(), requestOptions)
 
     /**
-     * Poll a response for assistant output.
+     * Poll the current snapshot of an in-progress or completed assistant response. While its status
+     * is `queued` or `running`, content may be partial and include thinking parts. Continue polling
+     * until it becomes `succeeded`, `failed`, or `canceled`.
      *
-     * Returns the current snapshot of an in-progress or completed response. While the status is
-     * `queued` or `running`, the content may be partial and may include `thinking` parts. Poll this
-     * endpoint periodically until the status reaches a terminal value (`succeeded`, `failed`, or
-     * `canceled`).
-     *
-     * Once terminal, the finalized assistant message is available in thread history via `GET
-     * /omni-ai/threads/{thread_id}/messages`.
+     * Once terminal, the finalized message is available through `GET
+     * /omni-ai/threads/{thread_id}/messages`. Authorization uses the current parent thread account,
+     * including for responses created before the account link.
      */
+    fun getResponseById(responseId: String): CompletableFuture<ResponseGetResponseByIdResponse> =
+        getResponseById(responseId, ResponseGetResponseByIdParams.none())
+
+    /** @see getResponseById */
     fun getResponseById(
         responseId: String,
-        params: ResponseGetResponseByIdParams,
+        params: ResponseGetResponseByIdParams = ResponseGetResponseByIdParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ResponseGetResponseByIdResponse> =
+        getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
+
+    /** @see getResponseById */
+    fun getResponseById(
+        responseId: String,
+        params: ResponseGetResponseByIdParams = ResponseGetResponseByIdParams.none(),
     ): CompletableFuture<ResponseGetResponseByIdResponse> =
         getResponseById(responseId, params, RequestOptions.none())
 
     /** @see getResponseById */
     fun getResponseById(
-        responseId: String,
         params: ResponseGetResponseByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ResponseGetResponseByIdResponse> =
-        getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
+    ): CompletableFuture<ResponseGetResponseByIdResponse>
 
     /** @see getResponseById */
     fun getResponseById(
@@ -98,9 +117,10 @@ interface ResponseServiceAsync {
 
     /** @see getResponseById */
     fun getResponseById(
-        params: ResponseGetResponseByIdParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ResponseGetResponseByIdResponse>
+        responseId: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<ResponseGetResponseByIdResponse> =
+        getResponseById(responseId, ResponseGetResponseByIdParams.none(), requestOptions)
 
     /**
      * A view of [ResponseServiceAsync] that provides access to raw HTTP responses for each method.
@@ -121,18 +141,30 @@ interface ResponseServiceAsync {
          * otherwise the same as [ResponseServiceAsync.cancelResponse].
          */
         fun cancelResponse(
+            responseId: String
+        ): CompletableFuture<HttpResponseFor<ResponseCancelResponseResponse>> =
+            cancelResponse(responseId, ResponseCancelResponseParams.none())
+
+        /** @see cancelResponse */
+        fun cancelResponse(
             responseId: String,
-            params: ResponseCancelResponseParams,
+            params: ResponseCancelResponseParams = ResponseCancelResponseParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ResponseCancelResponseResponse>> =
+            cancelResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
+
+        /** @see cancelResponse */
+        fun cancelResponse(
+            responseId: String,
+            params: ResponseCancelResponseParams = ResponseCancelResponseParams.none(),
         ): CompletableFuture<HttpResponseFor<ResponseCancelResponseResponse>> =
             cancelResponse(responseId, params, RequestOptions.none())
 
         /** @see cancelResponse */
         fun cancelResponse(
-            responseId: String,
             params: ResponseCancelResponseParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ResponseCancelResponseResponse>> =
-            cancelResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<ResponseCancelResponseResponse>>
 
         /** @see cancelResponse */
         fun cancelResponse(
@@ -142,27 +174,40 @@ interface ResponseServiceAsync {
 
         /** @see cancelResponse */
         fun cancelResponse(
-            params: ResponseCancelResponseParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ResponseCancelResponseResponse>>
+            responseId: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<ResponseCancelResponseResponse>> =
+            cancelResponse(responseId, ResponseCancelResponseParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/responses/{response_id}`, but is
          * otherwise the same as [ResponseServiceAsync.getResponseById].
          */
         fun getResponseById(
+            responseId: String
+        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>> =
+            getResponseById(responseId, ResponseGetResponseByIdParams.none())
+
+        /** @see getResponseById */
+        fun getResponseById(
             responseId: String,
-            params: ResponseGetResponseByIdParams,
+            params: ResponseGetResponseByIdParams = ResponseGetResponseByIdParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>> =
+            getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
+
+        /** @see getResponseById */
+        fun getResponseById(
+            responseId: String,
+            params: ResponseGetResponseByIdParams = ResponseGetResponseByIdParams.none(),
         ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>> =
             getResponseById(responseId, params, RequestOptions.none())
 
         /** @see getResponseById */
         fun getResponseById(
-            responseId: String,
             params: ResponseGetResponseByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>> =
-            getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>>
 
         /** @see getResponseById */
         fun getResponseById(
@@ -172,8 +217,9 @@ interface ResponseServiceAsync {
 
         /** @see getResponseById */
         fun getResponseById(
-            params: ResponseGetResponseByIdParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>>
+            responseId: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<ResponseGetResponseByIdResponse>> =
+            getResponseById(responseId, ResponseGetResponseByIdParams.none(), requestOptions)
     }
 }

@@ -4,12 +4,16 @@ package com.clearstreet.api.services.blocking.v1.omniai
 
 import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
+import com.clearstreet.api.core.JsonValue
+import com.clearstreet.api.models.v1.omniai.threads.ContextItem
 import com.clearstreet.api.models.v1.omniai.threads.ThreadCreateMessageParams
 import com.clearstreet.api.models.v1.omniai.threads.ThreadCreateThreadParams
 import com.clearstreet.api.models.v1.omniai.threads.ThreadGetMessagesParams
 import com.clearstreet.api.models.v1.omniai.threads.ThreadGetThreadByIdParams
 import com.clearstreet.api.models.v1.omniai.threads.ThreadGetThreadResponseParams
 import com.clearstreet.api.models.v1.omniai.threads.ThreadGetThreadsParams
+import com.clearstreet.api.models.v1.omniai.threads.TurnContext
+import java.time.OffsetDateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -29,9 +33,30 @@ internal class ThreadServiceTest {
             threadService.createMessage(
                 ThreadCreateMessageParams.builder()
                     .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .accountId(19816L)
                     .text("Compare that to AMD.")
+                    .accountId(19816L)
                     .addCapability(ThreadCreateMessageParams.Capability.PREFILL_ORDER)
+                    .context(
+                        TurnContext.builder()
+                            .addItem(
+                                ContextItem.builder()
+                                    .data(
+                                        ContextItem.Data.builder()
+                                            .putAdditionalProperty(
+                                                "change_pct",
+                                                JsonValue.from("bar"),
+                                            )
+                                            .putAdditionalProperty("range", JsonValue.from("bar"))
+                                            .putAdditionalProperty("ticker", JsonValue.from("bar"))
+                                            .build()
+                                    )
+                                    .kind("chart")
+                                    .label("NVDA intraday performance")
+                                    .capturedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .build()
+                            )
+                            .build()
+                    )
                     .build()
             )
 
@@ -50,9 +75,30 @@ internal class ThreadServiceTest {
         val response =
             threadService.createThread(
                 ThreadCreateThreadParams.builder()
-                    .accountId(19816L)
                     .type(ThreadCreateThreadParams.Type.INSTANT)
+                    .accountId(19816L)
                     .addCapability(ThreadCreateThreadParams.Capability.PREFILL_ORDER)
+                    .context(
+                        TurnContext.builder()
+                            .addItem(
+                                ContextItem.builder()
+                                    .data(
+                                        ContextItem.Data.builder()
+                                            .putAdditionalProperty(
+                                                "change_pct",
+                                                JsonValue.from("bar"),
+                                            )
+                                            .putAdditionalProperty("range", JsonValue.from("bar"))
+                                            .putAdditionalProperty("ticker", JsonValue.from("bar"))
+                                            .build()
+                                    )
+                                    .kind("chart")
+                                    .label("NVDA intraday performance")
+                                    .capturedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .build()
+                            )
+                            .build()
+                    )
                     .target(
                         ThreadCreateThreadParams.Target.builder()
                             .ticker("ticker")
@@ -80,7 +126,7 @@ internal class ThreadServiceTest {
             threadService.getMessages(
                 ThreadGetMessagesParams.builder()
                     .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .accountId(0L)
+                    .accountId(1L)
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .build()
@@ -102,7 +148,7 @@ internal class ThreadServiceTest {
             threadService.getThreadById(
                 ThreadGetThreadByIdParams.builder()
                     .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .accountId(0L)
+                    .accountId(1L)
                     .build()
             )
 
@@ -122,7 +168,7 @@ internal class ThreadServiceTest {
             threadService.getThreadResponse(
                 ThreadGetThreadResponseParams.builder()
                     .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .accountId(0L)
+                    .accountId(1L)
                     .build()
             )
 
@@ -141,7 +187,7 @@ internal class ThreadServiceTest {
         val response =
             threadService.getThreads(
                 ThreadGetThreadsParams.builder()
-                    .accountId(0L)
+                    .accountId(1L)
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .build()

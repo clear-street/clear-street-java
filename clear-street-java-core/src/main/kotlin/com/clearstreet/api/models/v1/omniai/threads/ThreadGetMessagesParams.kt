@@ -3,7 +3,6 @@
 package com.clearstreet.api.models.v1.omniai.threads
 
 import com.clearstreet.api.core.Params
-import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
 import java.util.Objects
@@ -11,19 +10,17 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * List finalized messages in a thread.
+ * List finalized messages, including messages created before the account link. Return the latest
+ * page by default, in chronological order within each page. Use the returned page token to navigate
+ * history.
  *
- * Returns the latest page of **finalized** messages by default, with messages within each page
- * ordered chronologically. Messages from in-progress assistant turns are excluded — use `GET
- * /omni-ai/threads/{thread_id}/response` or `GET /omni-ai/responses/{response_id}` for live output.
- *
- * If the last finalized message has role `USER`, an active response likely exists and should be
- * polled separately.
+ * In-progress assistant output is not included. Poll `GET /omni-ai/responses/{response_id}` until
+ * the response reaches a terminal status, then read its finalized message here.
  */
 class ThreadGetMessagesParams
 private constructor(
     private val threadId: String?,
-    private val accountId: Long,
+    private val accountId: Long?,
     private val pageSize: Long?,
     private val pageToken: String?,
     private val additionalHeaders: Headers,
@@ -32,8 +29,12 @@ private constructor(
 
     fun threadId(): Optional<String> = Optional.ofNullable(threadId)
 
-    /** Account ID for the request */
-    fun accountId(): Long = accountId
+    /**
+     * Lists only conversations for this account, or unlinked conversations when omitted. Other
+     * reads authorize the resource's linked account. Omit when no account is selected; empty values
+     * and the string null are invalid.
+     */
+    fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
     /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
@@ -54,14 +55,9 @@ private constructor(
 
     companion object {
 
-        /**
-         * Returns a mutable builder for constructing an instance of [ThreadGetMessagesParams].
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
-         */
+        @JvmStatic fun none(): ThreadGetMessagesParams = builder().build()
+
+        /** Returns a mutable builder for constructing an instance of [ThreadGetMessagesParams]. */
         @JvmStatic fun builder() = Builder()
     }
 
@@ -90,8 +86,22 @@ private constructor(
         /** Alias for calling [Builder.threadId] with `threadId.orElse(null)`. */
         fun threadId(threadId: Optional<String>) = threadId(threadId.getOrNull())
 
-        /** Account ID for the request */
-        fun accountId(accountId: Long) = apply { this.accountId = accountId }
+        /**
+         * Lists only conversations for this account, or unlinked conversations when omitted. Other
+         * reads authorize the resource's linked account. Omit when no account is selected; empty
+         * values and the string null are invalid.
+         */
+        fun accountId(accountId: Long?) = apply { this.accountId = accountId }
+
+        /**
+         * Alias for [Builder.accountId].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun accountId(accountId: Long) = accountId(accountId as Long?)
+
+        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+        fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
         /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
@@ -217,18 +227,11 @@ private constructor(
          * Returns an immutable instance of [ThreadGetMessagesParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): ThreadGetMessagesParams =
             ThreadGetMessagesParams(
                 threadId,
-                checkRequired("accountId", accountId),
+                accountId,
                 pageSize,
                 pageToken,
                 additionalHeaders.build(),
@@ -247,7 +250,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                put("account_id", accountId.toString())
+                accountId?.let { put("account_id", it.toString()) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 putAll(additionalQueryParams)

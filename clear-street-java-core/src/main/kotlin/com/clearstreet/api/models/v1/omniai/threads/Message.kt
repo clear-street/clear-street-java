@@ -30,6 +30,7 @@ private constructor(
     private val role: JsonField<MessageRole>,
     private val seq: JsonField<Long>,
     private val threadId: JsonField<String>,
+    private val context: JsonField<TurnContext>,
     private val error: JsonField<ErrorStatus>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -49,8 +50,9 @@ private constructor(
         @JsonProperty("role") @ExcludeMissing role: JsonField<MessageRole> = JsonMissing.of(),
         @JsonProperty("seq") @ExcludeMissing seq: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("thread_id") @ExcludeMissing threadId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("context") @ExcludeMissing context: JsonField<TurnContext> = JsonMissing.of(),
         @JsonProperty("error") @ExcludeMissing error: JsonField<ErrorStatus> = JsonMissing.of(),
-    ) : this(id, content, createdAt, outcome, role, seq, threadId, error, mutableMapOf())
+    ) : this(id, content, createdAt, outcome, role, seq, threadId, context, error, mutableMapOf())
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -99,6 +101,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun threadId(): String = threadId.getRequired("thread_id")
+
+    /**
+     * Immutable snapshots attached to this user message. Omitted when none were supplied. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun context(): Optional<TurnContext> = context.getOptional("context")
 
     /**
      * When a null/undefined value is observed, it indicates it does not apply.
@@ -160,6 +171,13 @@ private constructor(
     @JsonProperty("thread_id") @ExcludeMissing fun _threadId(): JsonField<String> = threadId
 
     /**
+     * Returns the raw JSON value of [context].
+     *
+     * Unlike [context], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("context") @ExcludeMissing fun _context(): JsonField<TurnContext> = context
+
+    /**
      * Returns the raw JSON value of [error].
      *
      * Unlike [error], this method doesn't throw if the JSON field has an unexpected type.
@@ -207,6 +225,7 @@ private constructor(
         private var role: JsonField<MessageRole>? = null
         private var seq: JsonField<Long>? = null
         private var threadId: JsonField<String>? = null
+        private var context: JsonField<TurnContext> = JsonMissing.of()
         private var error: JsonField<ErrorStatus> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -219,6 +238,7 @@ private constructor(
             role = message.role
             seq = message.seq
             threadId = message.threadId
+            context = message.context
             error = message.error
             additionalProperties = message.additionalProperties.toMutableMap()
         }
@@ -300,6 +320,24 @@ private constructor(
          */
         fun threadId(threadId: JsonField<String>) = apply { this.threadId = threadId }
 
+        /**
+         * Immutable snapshots attached to this user message. Omitted when none were supplied. When
+         * a null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun context(context: TurnContext?) = context(JsonField.ofNullable(context))
+
+        /** Alias for calling [Builder.context] with `context.orElse(null)`. */
+        fun context(context: Optional<TurnContext>) = context(context.getOrNull())
+
+        /**
+         * Sets [Builder.context] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.context] with a well-typed [TurnContext] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun context(context: JsonField<TurnContext>) = apply { this.context = context }
+
         /** When a null/undefined value is observed, it indicates it does not apply. */
         fun error(error: ErrorStatus?) = error(JsonField.ofNullable(error))
 
@@ -361,6 +399,7 @@ private constructor(
                 checkRequired("role", role),
                 checkRequired("seq", seq),
                 checkRequired("threadId", threadId),
+                context,
                 error,
                 additionalProperties.toMutableMap(),
             )
@@ -388,6 +427,7 @@ private constructor(
         role().validate()
         seq()
         threadId()
+        context().ifPresent { it.validate() }
         error().ifPresent { it.validate() }
         validated = true
     }
@@ -414,6 +454,7 @@ private constructor(
             (role.asKnown().getOrNull()?.validity() ?: 0) +
             (if (seq.asKnown().isPresent) 1 else 0) +
             (if (threadId.asKnown().isPresent) 1 else 0) +
+            (context.asKnown().getOrNull()?.validity() ?: 0) +
             (error.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
@@ -429,6 +470,7 @@ private constructor(
             role == other.role &&
             seq == other.seq &&
             threadId == other.threadId &&
+            context == other.context &&
             error == other.error &&
             additionalProperties == other.additionalProperties
     }
@@ -442,6 +484,7 @@ private constructor(
             role,
             seq,
             threadId,
+            context,
             error,
             additionalProperties,
         )
@@ -450,5 +493,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Message{id=$id, content=$content, createdAt=$createdAt, outcome=$outcome, role=$role, seq=$seq, threadId=$threadId, error=$error, additionalProperties=$additionalProperties}"
+        "Message{id=$id, content=$content, createdAt=$createdAt, outcome=$outcome, role=$role, seq=$seq, threadId=$threadId, context=$context, error=$error, additionalProperties=$additionalProperties}"
 }

@@ -11,7 +11,7 @@ internal class ThreadGetThreadsParamsTest {
     @Test
     fun create() {
         ThreadGetThreadsParams.builder()
-            .accountId(0L)
+            .accountId(1L)
             .pageSize(1L)
             .pageToken("U3RhaW5sZXNzIHJvY2tz")
             .build()
@@ -21,7 +21,7 @@ internal class ThreadGetThreadsParamsTest {
     fun queryParams() {
         val params =
             ThreadGetThreadsParams.builder()
-                .accountId(0L)
+                .accountId(1L)
                 .pageSize(1L)
                 .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .build()
@@ -31,7 +31,7 @@ internal class ThreadGetThreadsParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put("account_id", "0")
+                    .put("account_id", "1")
                     .put("page_size", "1")
                     .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
                     .build()
@@ -40,10 +40,10 @@ internal class ThreadGetThreadsParamsTest {
 
     @Test
     fun queryParamsWithoutOptionalFields() {
-        val params = ThreadGetThreadsParams.builder().accountId(0L).build()
+        val params = ThreadGetThreadsParams.builder().build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams).isEqualTo(QueryParams.builder().put("account_id", "0").build())
+        assertThat(queryParams).isEqualTo(QueryParams.builder().build())
     }
 }

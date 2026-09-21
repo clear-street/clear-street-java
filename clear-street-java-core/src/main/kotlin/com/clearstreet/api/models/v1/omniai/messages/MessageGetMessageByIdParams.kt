@@ -3,7 +3,6 @@
 package com.clearstreet.api.models.v1.omniai.messages
 
 import com.clearstreet.api.core.Params
-import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
 import java.util.Objects
@@ -11,24 +10,25 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Get a finalized message by ID.
- *
- * Returns a single finalized message. Returns **404** if the message belongs to an in-progress
- * assistant turn (use the response endpoint for live output). Once the turn completes, the message
- * becomes available here.
+ * Read a finalized message using its parent thread for ownership and linked-account authorization.
+ * In-progress assistant messages are not available here; use the response polling endpoint instead.
  */
 class MessageGetMessageByIdParams
 private constructor(
     private val messageId: String?,
-    private val accountId: Long,
+    private val accountId: Long?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun messageId(): Optional<String> = Optional.ofNullable(messageId)
 
-    /** Account ID for the request */
-    fun accountId(): Long = accountId
+    /**
+     * Lists only conversations for this account, or unlinked conversations when omitted. Other
+     * reads authorize the resource's linked account. Omit when no account is selected; empty values
+     * and the string null are invalid.
+     */
+    fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -40,13 +40,10 @@ private constructor(
 
     companion object {
 
+        @JvmStatic fun none(): MessageGetMessageByIdParams = builder().build()
+
         /**
          * Returns a mutable builder for constructing an instance of [MessageGetMessageByIdParams].
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
          */
         @JvmStatic fun builder() = Builder()
     }
@@ -72,8 +69,22 @@ private constructor(
         /** Alias for calling [Builder.messageId] with `messageId.orElse(null)`. */
         fun messageId(messageId: Optional<String>) = messageId(messageId.getOrNull())
 
-        /** Account ID for the request */
-        fun accountId(accountId: Long) = apply { this.accountId = accountId }
+        /**
+         * Lists only conversations for this account, or unlinked conversations when omitted. Other
+         * reads authorize the resource's linked account. Omit when no account is selected; empty
+         * values and the string null are invalid.
+         */
+        fun accountId(accountId: Long?) = apply { this.accountId = accountId }
+
+        /**
+         * Alias for [Builder.accountId].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun accountId(accountId: Long) = accountId(accountId as Long?)
+
+        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+        fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -177,18 +188,11 @@ private constructor(
          * Returns an immutable instance of [MessageGetMessageByIdParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): MessageGetMessageByIdParams =
             MessageGetMessageByIdParams(
                 messageId,
-                checkRequired("accountId", accountId),
+                accountId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -205,7 +209,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                put("account_id", accountId.toString())
+                accountId?.let { put("account_id", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()

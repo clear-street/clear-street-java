@@ -12,8 +12,8 @@ internal class MessageSubmitFeedbackParamsTest {
     fun create() {
         MessageSubmitFeedbackParams.builder()
             .messageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-            .accountId(0L)
             .score(0)
+            .accountId(1L)
             .comment("comment")
             .metadata(JsonValue.from(mapOf<String, Any>()))
             .build()
@@ -24,7 +24,6 @@ internal class MessageSubmitFeedbackParamsTest {
         val params =
             MessageSubmitFeedbackParams.builder()
                 .messageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId(0L)
                 .score(0)
                 .build()
 
@@ -38,16 +37,16 @@ internal class MessageSubmitFeedbackParamsTest {
         val params =
             MessageSubmitFeedbackParams.builder()
                 .messageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId(0L)
                 .score(0)
+                .accountId(1L)
                 .comment("comment")
                 .metadata(JsonValue.from(mapOf<String, Any>()))
                 .build()
 
         val body = params._body()
 
-        assertThat(body.accountId()).isEqualTo(0L)
         assertThat(body.score()).isEqualTo(0)
+        assertThat(body.accountId()).contains(1L)
         assertThat(body.comment()).contains("comment")
         assertThat(body._metadata()).isEqualTo(JsonValue.from(mapOf<String, Any>()))
     }
@@ -57,13 +56,11 @@ internal class MessageSubmitFeedbackParamsTest {
         val params =
             MessageSubmitFeedbackParams.builder()
                 .messageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId(0L)
                 .score(0)
                 .build()
 
         val body = params._body()
 
-        assertThat(body.accountId()).isEqualTo(0L)
         assertThat(body.score()).isEqualTo(0)
     }
 }

@@ -41,15 +41,15 @@ interface ThreadServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ThreadServiceAsync
 
     /**
-     * Continue an existing conversation thread.
+     * Append a user message to an existing thread and start an assistant response. Poll the
+     * returned `response_id` via `GET /omni-ai/responses/{response_id}` for assistant output.
      *
-     * Appends a new user message to the thread and starts an assistant response. Only one response
-     * may be active per thread at a time — if the previous turn is still in progress, this endpoint
-     * returns **409 Conflict**. Wait for the active response to reach a terminal status before
-     * submitting the next turn.
+     * Only one response may be active per thread. Wait for it to reach a terminal status before
+     * submitting another turn; otherwise this endpoint returns 409.
      *
-     * Poll the returned `response_id` via `GET /omni-ai/responses/{response_id}` for assistant
-     * output.
+     * The first accepted selected-account message links an unlinked thread. A linked thread keeps
+     * its account regardless of omission or another selection. A changed scope also returns 409
+     * without accepting a turn.
      */
     fun createMessage(
         threadId: String,
@@ -77,15 +77,16 @@ interface ThreadServiceAsync {
     ): CompletableFuture<ThreadCreateMessageResponse>
 
     /**
-     * Create a new conversation thread.
+     * Atomically create a conversation and submit its first user turn. Use `instant` with `text`
+     * for a prompt, or `deep_insights` with a ticker `target` and optional `thesis` for long-form
+     * research.
      *
-     * Atomically creates a new thread and submits the first user turn. The response contains a
-     * `response_id` that should be polled via `GET /omni-ai/responses/{response_id}` for assistant
+     * Poll the returned `response_id` via `GET /omni-ai/responses/{response_id}` for assistant
      * output.
      *
-     * Two creation modes are supported:
-     * - **instant** — provide `text` with a natural-language prompt.
-     * - **deep_insights** — provide a `target` ticker and optional `thesis` for long-form research.
+     * Omit `account_id` to start without an account. The first accepted turn with a selected
+     * account links that account permanently. Reuse `Idempotency-Key` only for an identical
+     * request.
      */
     fun createThread(
         params: ThreadCreateThreadParams
@@ -98,33 +99,30 @@ interface ThreadServiceAsync {
     ): CompletableFuture<ThreadCreateThreadResponse>
 
     /**
-     * List finalized messages in a thread.
+     * List finalized messages, including messages created before the account link. Return the
+     * latest page by default, in chronological order within each page. Use the returned page token
+     * to navigate history.
      *
-     * Returns the latest page of **finalized** messages by default, with messages within each page
-     * ordered chronologically. Messages from in-progress assistant turns are excluded — use `GET
-     * /omni-ai/threads/{thread_id}/response` or `GET /omni-ai/responses/{response_id}` for live
-     * output.
-     *
-     * If the last finalized message has role `USER`, an active response likely exists and should be
-     * polled separately.
+     * In-progress assistant output is not included. Poll `GET /omni-ai/responses/{response_id}`
+     * until the response reaches a terminal status, then read its finalized message here.
      */
-    fun getMessages(
-        threadId: String,
-        params: ThreadGetMessagesParams,
-    ): CompletableFuture<ThreadGetMessagesResponse> =
-        getMessages(threadId, params, RequestOptions.none())
+    fun getMessages(threadId: String): CompletableFuture<ThreadGetMessagesResponse> =
+        getMessages(threadId, ThreadGetMessagesParams.none())
 
     /** @see getMessages */
     fun getMessages(
         threadId: String,
-        params: ThreadGetMessagesParams,
+        params: ThreadGetMessagesParams = ThreadGetMessagesParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<ThreadGetMessagesResponse> =
         getMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
 
     /** @see getMessages */
-    fun getMessages(params: ThreadGetMessagesParams): CompletableFuture<ThreadGetMessagesResponse> =
-        getMessages(params, RequestOptions.none())
+    fun getMessages(
+        threadId: String,
+        params: ThreadGetMessagesParams = ThreadGetMessagesParams.none(),
+    ): CompletableFuture<ThreadGetMessagesResponse> =
+        getMessages(threadId, params, RequestOptions.none())
 
     /** @see getMessages */
     fun getMessages(
@@ -132,25 +130,46 @@ interface ThreadServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<ThreadGetMessagesResponse>
 
+    /** @see getMessages */
+    fun getMessages(params: ThreadGetMessagesParams): CompletableFuture<ThreadGetMessagesResponse> =
+        getMessages(params, RequestOptions.none())
+
+    /** @see getMessages */
+    fun getMessages(
+        threadId: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<ThreadGetMessagesResponse> =
+        getMessages(threadId, ThreadGetMessagesParams.none(), requestOptions)
+
     /**
-     * Get a specific thread.
+     * Read an owned thread's metadata. Use `GET /omni-ai/threads/{thread_id}/messages` for
+     * conversation history.
      *
-     * Returns metadata (title, timestamps) for a single thread. Does not include messages — use
-     * `GET /omni-ai/threads/{thread_id}/messages` for conversation history.
+     * Omission or another account selection does not change authorization.
      */
+    fun getThreadById(threadId: String): CompletableFuture<ThreadGetThreadByIdResponse> =
+        getThreadById(threadId, ThreadGetThreadByIdParams.none())
+
+    /** @see getThreadById */
     fun getThreadById(
         threadId: String,
-        params: ThreadGetThreadByIdParams,
+        params: ThreadGetThreadByIdParams = ThreadGetThreadByIdParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ThreadGetThreadByIdResponse> =
+        getThreadById(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+    /** @see getThreadById */
+    fun getThreadById(
+        threadId: String,
+        params: ThreadGetThreadByIdParams = ThreadGetThreadByIdParams.none(),
     ): CompletableFuture<ThreadGetThreadByIdResponse> =
         getThreadById(threadId, params, RequestOptions.none())
 
     /** @see getThreadById */
     fun getThreadById(
-        threadId: String,
         params: ThreadGetThreadByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ThreadGetThreadByIdResponse> =
-        getThreadById(params.toBuilder().threadId(threadId).build(), requestOptions)
+    ): CompletableFuture<ThreadGetThreadByIdResponse>
 
     /** @see getThreadById */
     fun getThreadById(
@@ -159,32 +178,40 @@ interface ThreadServiceAsync {
 
     /** @see getThreadById */
     fun getThreadById(
-        params: ThreadGetThreadByIdParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ThreadGetThreadByIdResponse>
+        threadId: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<ThreadGetThreadByIdResponse> =
+        getThreadById(threadId, ThreadGetThreadByIdParams.none(), requestOptions)
 
     /**
-     * Get the active response for a thread.
+     * Look up the currently active response without knowing its `response_id`. Use this endpoint
+     * when reopening a thread whose assistant turn may still be in progress.
      *
-     * Convenience endpoint to look up the currently active response for a thread without knowing
-     * the `response_id`. Useful when reloading a thread whose last finalized message is a `USER`
-     * message — this indicates an assistant turn is likely in progress.
-     *
-     * Returns **404** if no active response exists (the thread is idle).
+     * An idle owned thread returns HTTP 200 with `data: null`.
      */
+    fun getThreadResponse(threadId: String): CompletableFuture<ThreadGetThreadResponseResponse> =
+        getThreadResponse(threadId, ThreadGetThreadResponseParams.none())
+
+    /** @see getThreadResponse */
     fun getThreadResponse(
         threadId: String,
-        params: ThreadGetThreadResponseParams,
+        params: ThreadGetThreadResponseParams = ThreadGetThreadResponseParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<ThreadGetThreadResponseResponse> =
+        getThreadResponse(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+    /** @see getThreadResponse */
+    fun getThreadResponse(
+        threadId: String,
+        params: ThreadGetThreadResponseParams = ThreadGetThreadResponseParams.none(),
     ): CompletableFuture<ThreadGetThreadResponseResponse> =
         getThreadResponse(threadId, params, RequestOptions.none())
 
     /** @see getThreadResponse */
     fun getThreadResponse(
-        threadId: String,
         params: ThreadGetThreadResponseParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ThreadGetThreadResponseResponse> =
-        getThreadResponse(params.toBuilder().threadId(threadId).build(), requestOptions)
+    ): CompletableFuture<ThreadGetThreadResponseResponse>
 
     /** @see getThreadResponse */
     fun getThreadResponse(
@@ -194,25 +221,35 @@ interface ThreadServiceAsync {
 
     /** @see getThreadResponse */
     fun getThreadResponse(
-        params: ThreadGetThreadResponseParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<ThreadGetThreadResponseResponse>
+        threadId: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<ThreadGetThreadResponseResponse> =
+        getThreadResponse(threadId, ThreadGetThreadResponseParams.none(), requestOptions)
 
     /**
-     * List conversation threads.
+     * List authorized conversation metadata, newest first. Use `page_size` and `page_token` for
+     * pagination, and the messages endpoint for conversation history.
      *
-     * Returns thread metadata ordered by most recently created first. Use `page_size` and
-     * `page_token` for pagination. Thread objects contain only metadata (title, timestamps) — use
-     * the messages endpoint for conversation history.
+     * With `account_id`, list only conversations linked to that account and require current account
+     * access. Without it, list only conversations with no linked account.
      */
-    fun getThreads(params: ThreadGetThreadsParams): CompletableFuture<ThreadGetThreadsResponse> =
-        getThreads(params, RequestOptions.none())
+    fun getThreads(): CompletableFuture<ThreadGetThreadsResponse> =
+        getThreads(ThreadGetThreadsParams.none())
 
     /** @see getThreads */
     fun getThreads(
-        params: ThreadGetThreadsParams,
+        params: ThreadGetThreadsParams = ThreadGetThreadsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<ThreadGetThreadsResponse>
+
+    /** @see getThreads */
+    fun getThreads(
+        params: ThreadGetThreadsParams = ThreadGetThreadsParams.none()
+    ): CompletableFuture<ThreadGetThreadsResponse> = getThreads(params, RequestOptions.none())
+
+    /** @see getThreads */
+    fun getThreads(requestOptions: RequestOptions): CompletableFuture<ThreadGetThreadsResponse> =
+        getThreads(ThreadGetThreadsParams.none(), requestOptions)
 
     /**
      * A view of [ThreadServiceAsync] that provides access to raw HTTP responses for each method.
@@ -278,18 +315,30 @@ interface ThreadServiceAsync {
          * otherwise the same as [ThreadServiceAsync.getMessages].
          */
         fun getMessages(
+            threadId: String
+        ): CompletableFuture<HttpResponseFor<ThreadGetMessagesResponse>> =
+            getMessages(threadId, ThreadGetMessagesParams.none())
+
+        /** @see getMessages */
+        fun getMessages(
             threadId: String,
-            params: ThreadGetMessagesParams,
+            params: ThreadGetMessagesParams = ThreadGetMessagesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ThreadGetMessagesResponse>> =
+            getMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+        /** @see getMessages */
+        fun getMessages(
+            threadId: String,
+            params: ThreadGetMessagesParams = ThreadGetMessagesParams.none(),
         ): CompletableFuture<HttpResponseFor<ThreadGetMessagesResponse>> =
             getMessages(threadId, params, RequestOptions.none())
 
         /** @see getMessages */
         fun getMessages(
-            threadId: String,
             params: ThreadGetMessagesParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ThreadGetMessagesResponse>> =
-            getMessages(params.toBuilder().threadId(threadId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<ThreadGetMessagesResponse>>
 
         /** @see getMessages */
         fun getMessages(
@@ -299,27 +348,40 @@ interface ThreadServiceAsync {
 
         /** @see getMessages */
         fun getMessages(
-            params: ThreadGetMessagesParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ThreadGetMessagesResponse>>
+            threadId: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<ThreadGetMessagesResponse>> =
+            getMessages(threadId, ThreadGetMessagesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/threads/{thread_id}`, but is otherwise
          * the same as [ThreadServiceAsync.getThreadById].
          */
         fun getThreadById(
+            threadId: String
+        ): CompletableFuture<HttpResponseFor<ThreadGetThreadByIdResponse>> =
+            getThreadById(threadId, ThreadGetThreadByIdParams.none())
+
+        /** @see getThreadById */
+        fun getThreadById(
             threadId: String,
-            params: ThreadGetThreadByIdParams,
+            params: ThreadGetThreadByIdParams = ThreadGetThreadByIdParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ThreadGetThreadByIdResponse>> =
+            getThreadById(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+        /** @see getThreadById */
+        fun getThreadById(
+            threadId: String,
+            params: ThreadGetThreadByIdParams = ThreadGetThreadByIdParams.none(),
         ): CompletableFuture<HttpResponseFor<ThreadGetThreadByIdResponse>> =
             getThreadById(threadId, params, RequestOptions.none())
 
         /** @see getThreadById */
         fun getThreadById(
-            threadId: String,
             params: ThreadGetThreadByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ThreadGetThreadByIdResponse>> =
-            getThreadById(params.toBuilder().threadId(threadId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<ThreadGetThreadByIdResponse>>
 
         /** @see getThreadById */
         fun getThreadById(
@@ -329,27 +391,40 @@ interface ThreadServiceAsync {
 
         /** @see getThreadById */
         fun getThreadById(
-            params: ThreadGetThreadByIdParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ThreadGetThreadByIdResponse>>
+            threadId: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<ThreadGetThreadByIdResponse>> =
+            getThreadById(threadId, ThreadGetThreadByIdParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/threads/{thread_id}/response`, but is
          * otherwise the same as [ThreadServiceAsync.getThreadResponse].
          */
         fun getThreadResponse(
+            threadId: String
+        ): CompletableFuture<HttpResponseFor<ThreadGetThreadResponseResponse>> =
+            getThreadResponse(threadId, ThreadGetThreadResponseParams.none())
+
+        /** @see getThreadResponse */
+        fun getThreadResponse(
             threadId: String,
-            params: ThreadGetThreadResponseParams,
+            params: ThreadGetThreadResponseParams = ThreadGetThreadResponseParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ThreadGetThreadResponseResponse>> =
+            getThreadResponse(params.toBuilder().threadId(threadId).build(), requestOptions)
+
+        /** @see getThreadResponse */
+        fun getThreadResponse(
+            threadId: String,
+            params: ThreadGetThreadResponseParams = ThreadGetThreadResponseParams.none(),
         ): CompletableFuture<HttpResponseFor<ThreadGetThreadResponseResponse>> =
             getThreadResponse(threadId, params, RequestOptions.none())
 
         /** @see getThreadResponse */
         fun getThreadResponse(
-            threadId: String,
             params: ThreadGetThreadResponseParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ThreadGetThreadResponseResponse>> =
-            getThreadResponse(params.toBuilder().threadId(threadId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<ThreadGetThreadResponseResponse>>
 
         /** @see getThreadResponse */
         fun getThreadResponse(
@@ -359,23 +434,34 @@ interface ThreadServiceAsync {
 
         /** @see getThreadResponse */
         fun getThreadResponse(
-            params: ThreadGetThreadResponseParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ThreadGetThreadResponseResponse>>
+            threadId: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<ThreadGetThreadResponseResponse>> =
+            getThreadResponse(threadId, ThreadGetThreadResponseParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/threads`, but is otherwise the same as
          * [ThreadServiceAsync.getThreads].
          */
+        fun getThreads(): CompletableFuture<HttpResponseFor<ThreadGetThreadsResponse>> =
+            getThreads(ThreadGetThreadsParams.none())
+
+        /** @see getThreads */
         fun getThreads(
-            params: ThreadGetThreadsParams
+            params: ThreadGetThreadsParams = ThreadGetThreadsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<ThreadGetThreadsResponse>>
+
+        /** @see getThreads */
+        fun getThreads(
+            params: ThreadGetThreadsParams = ThreadGetThreadsParams.none()
         ): CompletableFuture<HttpResponseFor<ThreadGetThreadsResponse>> =
             getThreads(params, RequestOptions.none())
 
         /** @see getThreads */
         fun getThreads(
-            params: ThreadGetThreadsParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<ThreadGetThreadsResponse>>
+            requestOptions: RequestOptions
+        ): CompletableFuture<HttpResponseFor<ThreadGetThreadsResponse>> =
+            getThreads(ThreadGetThreadsParams.none(), requestOptions)
     }
 }

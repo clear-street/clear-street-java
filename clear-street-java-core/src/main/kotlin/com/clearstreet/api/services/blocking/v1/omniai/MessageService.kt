@@ -33,28 +33,26 @@ interface MessageService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): MessageService
 
     /**
-     * Get a finalized message by ID.
-     *
-     * Returns a single finalized message. Returns **404** if the message belongs to an in-progress
-     * assistant turn (use the response endpoint for live output). Once the turn completes, the
-     * message becomes available here.
+     * Read a finalized message using its parent thread for ownership and linked-account
+     * authorization. In-progress assistant messages are not available here; use the response
+     * polling endpoint instead.
      */
-    fun getMessageById(
-        messageId: String,
-        params: MessageGetMessageByIdParams,
-    ): MessageGetMessageByIdResponse = getMessageById(messageId, params, RequestOptions.none())
+    fun getMessageById(messageId: String): MessageGetMessageByIdResponse =
+        getMessageById(messageId, MessageGetMessageByIdParams.none())
 
     /** @see getMessageById */
     fun getMessageById(
         messageId: String,
-        params: MessageGetMessageByIdParams,
+        params: MessageGetMessageByIdParams = MessageGetMessageByIdParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): MessageGetMessageByIdResponse =
         getMessageById(params.toBuilder().messageId(messageId).build(), requestOptions)
 
     /** @see getMessageById */
-    fun getMessageById(params: MessageGetMessageByIdParams): MessageGetMessageByIdResponse =
-        getMessageById(params, RequestOptions.none())
+    fun getMessageById(
+        messageId: String,
+        params: MessageGetMessageByIdParams = MessageGetMessageByIdParams.none(),
+    ): MessageGetMessageByIdResponse = getMessageById(messageId, params, RequestOptions.none())
 
     /** @see getMessageById */
     fun getMessageById(
@@ -62,11 +60,22 @@ interface MessageService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): MessageGetMessageByIdResponse
 
+    /** @see getMessageById */
+    fun getMessageById(params: MessageGetMessageByIdParams): MessageGetMessageByIdResponse =
+        getMessageById(params, RequestOptions.none())
+
+    /** @see getMessageById */
+    fun getMessageById(
+        messageId: String,
+        requestOptions: RequestOptions,
+    ): MessageGetMessageByIdResponse =
+        getMessageById(messageId, MessageGetMessageByIdParams.none(), requestOptions)
+
     /**
-     * Submit feedback on a finalized assistant message.
+     * Attach a score and optional comment to a finalized assistant message. Feedback is only valid
+     * for messages with role `ASSISTANT` that have reached a terminal outcome.
      *
-     * Attaches a score and optional comment to a finalized assistant message. Feedback is only
-     * valid for messages with role `ASSISTANT` that have reached a terminal outcome.
+     * The current thread account governs access even when the message predates its account link.
      */
     fun submitFeedback(
         messageId: String,
@@ -106,20 +115,32 @@ interface MessageService {
          * the same as [MessageService.getMessageById].
          */
         @MustBeClosed
+        fun getMessageById(messageId: String): HttpResponseFor<MessageGetMessageByIdResponse> =
+            getMessageById(messageId, MessageGetMessageByIdParams.none())
+
+        /** @see getMessageById */
+        @MustBeClosed
         fun getMessageById(
             messageId: String,
-            params: MessageGetMessageByIdParams,
+            params: MessageGetMessageByIdParams = MessageGetMessageByIdParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<MessageGetMessageByIdResponse> =
+            getMessageById(params.toBuilder().messageId(messageId).build(), requestOptions)
+
+        /** @see getMessageById */
+        @MustBeClosed
+        fun getMessageById(
+            messageId: String,
+            params: MessageGetMessageByIdParams = MessageGetMessageByIdParams.none(),
         ): HttpResponseFor<MessageGetMessageByIdResponse> =
             getMessageById(messageId, params, RequestOptions.none())
 
         /** @see getMessageById */
         @MustBeClosed
         fun getMessageById(
-            messageId: String,
             params: MessageGetMessageByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<MessageGetMessageByIdResponse> =
-            getMessageById(params.toBuilder().messageId(messageId).build(), requestOptions)
+        ): HttpResponseFor<MessageGetMessageByIdResponse>
 
         /** @see getMessageById */
         @MustBeClosed
@@ -131,9 +152,10 @@ interface MessageService {
         /** @see getMessageById */
         @MustBeClosed
         fun getMessageById(
-            params: MessageGetMessageByIdParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<MessageGetMessageByIdResponse>
+            messageId: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<MessageGetMessageByIdResponse> =
+            getMessageById(messageId, MessageGetMessageByIdParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /v1/omni-ai/messages/{message_id}/feedback`, but is

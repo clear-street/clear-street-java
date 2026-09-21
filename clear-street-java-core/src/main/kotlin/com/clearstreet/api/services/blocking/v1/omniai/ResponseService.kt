@@ -33,28 +33,28 @@ interface ResponseService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ResponseService
 
     /**
-     * Cancel a response.
+     * Cancel a queued or running response. Cancellation is idempotent after the response becomes
+     * terminal. A canceled turn still produces a finalized assistant message with outcome
+     * `canceled` in the thread history.
      *
-     * Requests cancellation of a queued or running response. If the response has already reached a
-     * terminal status, this is an idempotent success. A canceled turn still produces a final
-     * assistant message with outcome `canceled` in the thread history.
+     * Authorization uses the linked account before any cancellation.
      */
-    fun cancelResponse(
-        responseId: String,
-        params: ResponseCancelResponseParams,
-    ): ResponseCancelResponseResponse = cancelResponse(responseId, params, RequestOptions.none())
+    fun cancelResponse(responseId: String): ResponseCancelResponseResponse =
+        cancelResponse(responseId, ResponseCancelResponseParams.none())
 
     /** @see cancelResponse */
     fun cancelResponse(
         responseId: String,
-        params: ResponseCancelResponseParams,
+        params: ResponseCancelResponseParams = ResponseCancelResponseParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ResponseCancelResponseResponse =
         cancelResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
 
     /** @see cancelResponse */
-    fun cancelResponse(params: ResponseCancelResponseParams): ResponseCancelResponseResponse =
-        cancelResponse(params, RequestOptions.none())
+    fun cancelResponse(
+        responseId: String,
+        params: ResponseCancelResponseParams = ResponseCancelResponseParams.none(),
+    ): ResponseCancelResponseResponse = cancelResponse(responseId, params, RequestOptions.none())
 
     /** @see cancelResponse */
     fun cancelResponse(
@@ -62,29 +62,48 @@ interface ResponseService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ResponseCancelResponseResponse
 
-    /**
-     * Poll a response for assistant output.
-     *
-     * Returns the current snapshot of an in-progress or completed response. While the status is
-     * `queued` or `running`, the content may be partial and may include `thinking` parts. Poll this
-     * endpoint periodically until the status reaches a terminal value (`succeeded`, `failed`, or
-     * `canceled`).
-     *
-     * Once terminal, the finalized assistant message is available in thread history via `GET
-     * /omni-ai/threads/{thread_id}/messages`.
-     */
-    fun getResponseById(
+    /** @see cancelResponse */
+    fun cancelResponse(params: ResponseCancelResponseParams): ResponseCancelResponseResponse =
+        cancelResponse(params, RequestOptions.none())
+
+    /** @see cancelResponse */
+    fun cancelResponse(
         responseId: String,
-        params: ResponseGetResponseByIdParams,
-    ): ResponseGetResponseByIdResponse = getResponseById(responseId, params, RequestOptions.none())
+        requestOptions: RequestOptions,
+    ): ResponseCancelResponseResponse =
+        cancelResponse(responseId, ResponseCancelResponseParams.none(), requestOptions)
+
+    /**
+     * Poll the current snapshot of an in-progress or completed assistant response. While its status
+     * is `queued` or `running`, content may be partial and include thinking parts. Continue polling
+     * until it becomes `succeeded`, `failed`, or `canceled`.
+     *
+     * Once terminal, the finalized message is available through `GET
+     * /omni-ai/threads/{thread_id}/messages`. Authorization uses the current parent thread account,
+     * including for responses created before the account link.
+     */
+    fun getResponseById(responseId: String): ResponseGetResponseByIdResponse =
+        getResponseById(responseId, ResponseGetResponseByIdParams.none())
 
     /** @see getResponseById */
     fun getResponseById(
         responseId: String,
-        params: ResponseGetResponseByIdParams,
+        params: ResponseGetResponseByIdParams = ResponseGetResponseByIdParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ResponseGetResponseByIdResponse =
         getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
+
+    /** @see getResponseById */
+    fun getResponseById(
+        responseId: String,
+        params: ResponseGetResponseByIdParams = ResponseGetResponseByIdParams.none(),
+    ): ResponseGetResponseByIdResponse = getResponseById(responseId, params, RequestOptions.none())
+
+    /** @see getResponseById */
+    fun getResponseById(
+        params: ResponseGetResponseByIdParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ResponseGetResponseByIdResponse
 
     /** @see getResponseById */
     fun getResponseById(params: ResponseGetResponseByIdParams): ResponseGetResponseByIdResponse =
@@ -92,9 +111,10 @@ interface ResponseService {
 
     /** @see getResponseById */
     fun getResponseById(
-        params: ResponseGetResponseByIdParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): ResponseGetResponseByIdResponse
+        responseId: String,
+        requestOptions: RequestOptions,
+    ): ResponseGetResponseByIdResponse =
+        getResponseById(responseId, ResponseGetResponseByIdParams.none(), requestOptions)
 
     /** A view of [ResponseService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -111,20 +131,32 @@ interface ResponseService {
          * otherwise the same as [ResponseService.cancelResponse].
          */
         @MustBeClosed
+        fun cancelResponse(responseId: String): HttpResponseFor<ResponseCancelResponseResponse> =
+            cancelResponse(responseId, ResponseCancelResponseParams.none())
+
+        /** @see cancelResponse */
+        @MustBeClosed
         fun cancelResponse(
             responseId: String,
-            params: ResponseCancelResponseParams,
+            params: ResponseCancelResponseParams = ResponseCancelResponseParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ResponseCancelResponseResponse> =
+            cancelResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
+
+        /** @see cancelResponse */
+        @MustBeClosed
+        fun cancelResponse(
+            responseId: String,
+            params: ResponseCancelResponseParams = ResponseCancelResponseParams.none(),
         ): HttpResponseFor<ResponseCancelResponseResponse> =
             cancelResponse(responseId, params, RequestOptions.none())
 
         /** @see cancelResponse */
         @MustBeClosed
         fun cancelResponse(
-            responseId: String,
             params: ResponseCancelResponseParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ResponseCancelResponseResponse> =
-            cancelResponse(params.toBuilder().responseId(responseId).build(), requestOptions)
+        ): HttpResponseFor<ResponseCancelResponseResponse>
 
         /** @see cancelResponse */
         @MustBeClosed
@@ -136,29 +168,42 @@ interface ResponseService {
         /** @see cancelResponse */
         @MustBeClosed
         fun cancelResponse(
-            params: ResponseCancelResponseParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ResponseCancelResponseResponse>
+            responseId: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<ResponseCancelResponseResponse> =
+            cancelResponse(responseId, ResponseCancelResponseParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /v1/omni-ai/responses/{response_id}`, but is
          * otherwise the same as [ResponseService.getResponseById].
          */
         @MustBeClosed
+        fun getResponseById(responseId: String): HttpResponseFor<ResponseGetResponseByIdResponse> =
+            getResponseById(responseId, ResponseGetResponseByIdParams.none())
+
+        /** @see getResponseById */
+        @MustBeClosed
         fun getResponseById(
             responseId: String,
-            params: ResponseGetResponseByIdParams,
+            params: ResponseGetResponseByIdParams = ResponseGetResponseByIdParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ResponseGetResponseByIdResponse> =
+            getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
+
+        /** @see getResponseById */
+        @MustBeClosed
+        fun getResponseById(
+            responseId: String,
+            params: ResponseGetResponseByIdParams = ResponseGetResponseByIdParams.none(),
         ): HttpResponseFor<ResponseGetResponseByIdResponse> =
             getResponseById(responseId, params, RequestOptions.none())
 
         /** @see getResponseById */
         @MustBeClosed
         fun getResponseById(
-            responseId: String,
             params: ResponseGetResponseByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ResponseGetResponseByIdResponse> =
-            getResponseById(params.toBuilder().responseId(responseId).build(), requestOptions)
+        ): HttpResponseFor<ResponseGetResponseByIdResponse>
 
         /** @see getResponseById */
         @MustBeClosed
@@ -170,8 +215,9 @@ interface ResponseService {
         /** @see getResponseById */
         @MustBeClosed
         fun getResponseById(
-            params: ResponseGetResponseByIdParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ResponseGetResponseByIdResponse>
+            responseId: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<ResponseGetResponseByIdResponse> =
+            getResponseById(responseId, ResponseGetResponseByIdParams.none(), requestOptions)
     }
 }

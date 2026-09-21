@@ -24,14 +24,15 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Continue an existing conversation thread.
+ * Append a user message to an existing thread and start an assistant response. Poll the returned
+ * `response_id` via `GET /omni-ai/responses/{response_id}` for assistant output.
  *
- * Appends a new user message to the thread and starts an assistant response. Only one response may
- * be active per thread at a time — if the previous turn is still in progress, this endpoint returns
- * **409 Conflict**. Wait for the active response to reach a terminal status before submitting the
- * next turn.
+ * Only one response may be active per thread. Wait for it to reach a terminal status before
+ * submitting another turn; otherwise this endpoint returns 409.
  *
- * Poll the returned `response_id` via `GET /omni-ai/responses/{response_id}` for assistant output.
+ * The first accepted selected-account message links an unlinked thread. A linked thread keeps its
+ * account regardless of omission or another selection. A changed scope also returns 409 without
+ * accepting a turn.
  */
 class ThreadCreateMessageParams
 private constructor(
@@ -47,13 +48,17 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun accountId(): Long = body.accountId()
+    fun text(): String = body.text()
 
     /**
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * Selected account for creation or the first account-linked turn. Omit for an unlinked
+     * conversation. An existing account link remains authoritative even when another account is
+     * selected.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
      */
-    fun text(): String = body.text()
+    fun accountId(): Optional<Long> = body.accountId()
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -62,11 +67,12 @@ private constructor(
     fun capabilities(): Optional<List<Capability>> = body.capabilities()
 
     /**
-     * Returns the raw JSON value of [accountId].
+     * Snapshots for this instant-chat message. Omission does not remove earlier attachments.
      *
-     * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
      */
-    fun _accountId(): JsonField<Long> = body._accountId()
+    fun context(): Optional<TurnContext> = body.context()
 
     /**
      * Returns the raw JSON value of [text].
@@ -76,11 +82,25 @@ private constructor(
     fun _text(): JsonField<String> = body._text()
 
     /**
+     * Returns the raw JSON value of [accountId].
+     *
+     * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _accountId(): JsonField<Long> = body._accountId()
+
+    /**
      * Returns the raw JSON value of [capabilities].
      *
      * Unlike [capabilities], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _capabilities(): JsonField<List<Capability>> = body._capabilities()
+
+    /**
+     * Returns the raw JSON value of [context].
+     *
+     * Unlike [context], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _context(): JsonField<TurnContext> = body._context()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -99,7 +119,6 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .accountId()
          * .text()
          * ```
          */
@@ -132,21 +151,12 @@ private constructor(
          *
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
-         * - [accountId]
          * - [text]
+         * - [accountId]
          * - [capabilities]
+         * - [context]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
-
-        fun accountId(accountId: Long) = apply { body.accountId(accountId) }
-
-        /**
-         * Sets [Builder.accountId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.accountId] with a well-typed [Long] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun accountId(accountId: JsonField<Long>) = apply { body.accountId(accountId) }
 
         fun text(text: String) = apply { body.text(text) }
 
@@ -157,6 +167,31 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun text(text: JsonField<String>) = apply { body.text(text) }
+
+        /**
+         * Selected account for creation or the first account-linked turn. Omit for an unlinked
+         * conversation. An existing account link remains authoritative even when another account is
+         * selected.
+         */
+        fun accountId(accountId: Long?) = apply { body.accountId(accountId) }
+
+        /**
+         * Alias for [Builder.accountId].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun accountId(accountId: Long) = accountId(accountId as Long?)
+
+        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+        fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
+
+        /**
+         * Sets [Builder.accountId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.accountId] with a well-typed [Long] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun accountId(accountId: JsonField<Long>) = apply { body.accountId(accountId) }
 
         fun capabilities(capabilities: List<Capability>) = apply { body.capabilities(capabilities) }
 
@@ -177,6 +212,23 @@ private constructor(
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
         fun addCapability(capability: Capability) = apply { body.addCapability(capability) }
+
+        /**
+         * Snapshots for this instant-chat message. Omission does not remove earlier attachments.
+         */
+        fun context(context: TurnContext?) = apply { body.context(context) }
+
+        /** Alias for calling [Builder.context] with `context.orElse(null)`. */
+        fun context(context: Optional<TurnContext>) = context(context.getOrNull())
+
+        /**
+         * Sets [Builder.context] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.context] with a well-typed [TurnContext] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun context(context: JsonField<TurnContext>) = apply { body.context(context) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -302,7 +354,6 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .accountId()
          * .text()
          * ```
          *
@@ -333,28 +384,26 @@ private constructor(
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val accountId: JsonField<Long>,
         private val text: JsonField<String>,
+        private val accountId: JsonField<Long>,
         private val capabilities: JsonField<List<Capability>>,
+        private val context: JsonField<TurnContext>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
+            @JsonProperty("text") @ExcludeMissing text: JsonField<String> = JsonMissing.of(),
             @JsonProperty("account_id")
             @ExcludeMissing
             accountId: JsonField<Long> = JsonMissing.of(),
-            @JsonProperty("text") @ExcludeMissing text: JsonField<String> = JsonMissing.of(),
             @JsonProperty("capabilities")
             @ExcludeMissing
             capabilities: JsonField<List<Capability>> = JsonMissing.of(),
-        ) : this(accountId, text, capabilities, mutableMapOf())
-
-        /**
-         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun accountId(): Long = accountId.getRequired("account_id")
+            @JsonProperty("context")
+            @ExcludeMissing
+            context: JsonField<TurnContext> = JsonMissing.of(),
+        ) : this(text, accountId, capabilities, context, mutableMapOf())
 
         /**
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -363,17 +412,28 @@ private constructor(
         fun text(): String = text.getRequired("text")
 
         /**
+         * Selected account for creation or the first account-linked turn. Omit for an unlinked
+         * conversation. An existing account link remains authoritative even when another account is
+         * selected.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun accountId(): Optional<Long> = accountId.getOptional("account_id")
+
+        /**
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun capabilities(): Optional<List<Capability>> = capabilities.getOptional("capabilities")
 
         /**
-         * Returns the raw JSON value of [accountId].
+         * Snapshots for this instant-chat message. Omission does not remove earlier attachments.
          *
-         * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
          */
-        @JsonProperty("account_id") @ExcludeMissing fun _accountId(): JsonField<Long> = accountId
+        fun context(): Optional<TurnContext> = context.getOptional("context")
 
         /**
          * Returns the raw JSON value of [text].
@@ -381,6 +441,13 @@ private constructor(
          * Unlike [text], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("text") @ExcludeMissing fun _text(): JsonField<String> = text
+
+        /**
+         * Returns the raw JSON value of [accountId].
+         *
+         * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("account_id") @ExcludeMissing fun _accountId(): JsonField<Long> = accountId
 
         /**
          * Returns the raw JSON value of [capabilities].
@@ -391,6 +458,13 @@ private constructor(
         @JsonProperty("capabilities")
         @ExcludeMissing
         fun _capabilities(): JsonField<List<Capability>> = capabilities
+
+        /**
+         * Returns the raw JSON value of [context].
+         *
+         * Unlike [context], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("context") @ExcludeMissing fun _context(): JsonField<TurnContext> = context
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -411,7 +485,6 @@ private constructor(
              *
              * The following fields are required:
              * ```java
-             * .accountId()
              * .text()
              * ```
              */
@@ -421,29 +494,20 @@ private constructor(
         /** A builder for [Body]. */
         class Builder internal constructor() {
 
-            private var accountId: JsonField<Long>? = null
             private var text: JsonField<String>? = null
+            private var accountId: JsonField<Long> = JsonMissing.of()
             private var capabilities: JsonField<MutableList<Capability>>? = null
+            private var context: JsonField<TurnContext> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
-                accountId = body.accountId
                 text = body.text
+                accountId = body.accountId
                 capabilities = body.capabilities.map { it.toMutableList() }
+                context = body.context
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
-
-            fun accountId(accountId: Long) = accountId(JsonField.of(accountId))
-
-            /**
-             * Sets [Builder.accountId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.accountId] with a well-typed [Long] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
 
             fun text(text: String) = text(JsonField.of(text))
 
@@ -455,6 +519,32 @@ private constructor(
              * value.
              */
             fun text(text: JsonField<String>) = apply { this.text = text }
+
+            /**
+             * Selected account for creation or the first account-linked turn. Omit for an unlinked
+             * conversation. An existing account link remains authoritative even when another
+             * account is selected.
+             */
+            fun accountId(accountId: Long?) = accountId(JsonField.ofNullable(accountId))
+
+            /**
+             * Alias for [Builder.accountId].
+             *
+             * This unboxed primitive overload exists for backwards compatibility.
+             */
+            fun accountId(accountId: Long) = accountId(accountId as Long?)
+
+            /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+            fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
+
+            /**
+             * Sets [Builder.accountId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.accountId] with a well-typed [Long] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
 
             fun capabilities(capabilities: List<Capability>) =
                 capabilities(JsonField.of(capabilities))
@@ -482,6 +572,24 @@ private constructor(
                     }
             }
 
+            /**
+             * Snapshots for this instant-chat message. Omission does not remove earlier
+             * attachments.
+             */
+            fun context(context: TurnContext?) = context(JsonField.ofNullable(context))
+
+            /** Alias for calling [Builder.context] with `context.orElse(null)`. */
+            fun context(context: Optional<TurnContext>) = context(context.getOrNull())
+
+            /**
+             * Sets [Builder.context] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.context] with a well-typed [TurnContext] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun context(context: JsonField<TurnContext>) = apply { this.context = context }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -508,7 +616,6 @@ private constructor(
              *
              * The following fields are required:
              * ```java
-             * .accountId()
              * .text()
              * ```
              *
@@ -516,9 +623,10 @@ private constructor(
              */
             fun build(): Body =
                 Body(
-                    checkRequired("accountId", accountId),
                     checkRequired("text", text),
+                    accountId,
                     (capabilities ?: JsonMissing.of()).map { it.toImmutable() },
+                    context,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -539,9 +647,10 @@ private constructor(
                 return@apply
             }
 
-            accountId()
             text()
+            accountId()
             capabilities().ifPresent { it.forEach { it.validate() } }
+            context().ifPresent { it.validate() }
             validated = true
         }
 
@@ -561,9 +670,10 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (if (accountId.asKnown().isPresent) 1 else 0) +
-                (if (text.asKnown().isPresent) 1 else 0) +
-                (capabilities.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
+            (if (text.asKnown().isPresent) 1 else 0) +
+                (if (accountId.asKnown().isPresent) 1 else 0) +
+                (capabilities.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
+                (context.asKnown().getOrNull()?.validity() ?: 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -571,20 +681,21 @@ private constructor(
             }
 
             return other is Body &&
-                accountId == other.accountId &&
                 text == other.text &&
+                accountId == other.accountId &&
                 capabilities == other.capabilities &&
+                context == other.context &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(accountId, text, capabilities, additionalProperties)
+            Objects.hash(text, accountId, capabilities, context, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{accountId=$accountId, text=$text, capabilities=$capabilities, additionalProperties=$additionalProperties}"
+            "Body{text=$text, accountId=$accountId, capabilities=$capabilities, context=$context, additionalProperties=$additionalProperties}"
     }
 
     /**

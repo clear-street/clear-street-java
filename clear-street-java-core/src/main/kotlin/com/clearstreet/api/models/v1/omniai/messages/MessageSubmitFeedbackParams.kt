@@ -21,10 +21,10 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Submit feedback on a finalized assistant message.
+ * Attach a score and optional comment to a finalized assistant message. Feedback is only valid for
+ * messages with role `ASSISTANT` that have reached a terminal outcome.
  *
- * Attaches a score and optional comment to a finalized assistant message. Feedback is only valid
- * for messages with role `ASSISTANT` that have reached a terminal outcome.
+ * The current thread account governs access even when the message predates its account link.
  */
 class MessageSubmitFeedbackParams
 private constructor(
@@ -37,20 +37,20 @@ private constructor(
     fun messageId(): Optional<String> = Optional.ofNullable(messageId)
 
     /**
-     * Account ID for the request
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun accountId(): Long = body.accountId()
-
-    /**
-     * Feedback score (-1, 0, +1 or 1-5)
+     * Feedback score (-1, 0, +1 or 1-5).
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun score(): Int = body.score()
+
+    /**
+     * Optional selection. Feedback always uses the thread's linked account.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun accountId(): Optional<Long> = body.accountId()
 
     /**
      * Optional feedback comment
@@ -71,18 +71,18 @@ private constructor(
     fun _metadata(): JsonValue = body._metadata()
 
     /**
-     * Returns the raw JSON value of [accountId].
-     *
-     * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _accountId(): JsonField<Long> = body._accountId()
-
-    /**
      * Returns the raw JSON value of [score].
      *
      * Unlike [score], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _score(): JsonField<Int> = body._score()
+
+    /**
+     * Returns the raw JSON value of [accountId].
+     *
+     * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _accountId(): JsonField<Long> = body._accountId()
 
     /**
      * Returns the raw JSON value of [comment].
@@ -108,7 +108,6 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .accountId()
          * .score()
          * ```
          */
@@ -141,25 +140,14 @@ private constructor(
          *
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
-         * - [accountId]
          * - [score]
+         * - [accountId]
          * - [comment]
          * - [metadata]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** Account ID for the request */
-        fun accountId(accountId: Long) = apply { body.accountId(accountId) }
-
-        /**
-         * Sets [Builder.accountId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.accountId] with a well-typed [Long] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun accountId(accountId: JsonField<Long>) = apply { body.accountId(accountId) }
-
-        /** Feedback score (-1, 0, +1 or 1-5) */
+        /** Feedback score (-1, 0, +1 or 1-5). */
         fun score(score: Int) = apply { body.score(score) }
 
         /**
@@ -169,6 +157,27 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun score(score: JsonField<Int>) = apply { body.score(score) }
+
+        /** Optional selection. Feedback always uses the thread's linked account. */
+        fun accountId(accountId: Long?) = apply { body.accountId(accountId) }
+
+        /**
+         * Alias for [Builder.accountId].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun accountId(accountId: Long) = accountId(accountId as Long?)
+
+        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+        fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
+
+        /**
+         * Sets [Builder.accountId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.accountId] with a well-typed [Long] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun accountId(accountId: JsonField<Long>) = apply { body.accountId(accountId) }
 
         /** Optional feedback comment */
         fun comment(comment: String) = apply { body.comment(comment) }
@@ -308,7 +317,6 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .accountId()
          * .score()
          * ```
          *
@@ -338,8 +346,8 @@ private constructor(
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val accountId: JsonField<Long>,
         private val score: JsonField<Int>,
+        private val accountId: JsonField<Long>,
         private val comment: JsonField<String>,
         private val metadata: JsonValue,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -347,29 +355,29 @@ private constructor(
 
         @JsonCreator
         private constructor(
+            @JsonProperty("score") @ExcludeMissing score: JsonField<Int> = JsonMissing.of(),
             @JsonProperty("account_id")
             @ExcludeMissing
             accountId: JsonField<Long> = JsonMissing.of(),
-            @JsonProperty("score") @ExcludeMissing score: JsonField<Int> = JsonMissing.of(),
             @JsonProperty("comment") @ExcludeMissing comment: JsonField<String> = JsonMissing.of(),
             @JsonProperty("metadata") @ExcludeMissing metadata: JsonValue = JsonMissing.of(),
-        ) : this(accountId, score, comment, metadata, mutableMapOf())
+        ) : this(score, accountId, comment, metadata, mutableMapOf())
 
         /**
-         * Account ID for the request
-         *
-         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun accountId(): Long = accountId.getRequired("account_id")
-
-        /**
-         * Feedback score (-1, 0, +1 or 1-5)
+         * Feedback score (-1, 0, +1 or 1-5).
          *
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun score(): Int = score.getRequired("score")
+
+        /**
+         * Optional selection. Feedback always uses the thread's linked account.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun accountId(): Optional<Long> = accountId.getOptional("account_id")
 
         /**
          * Optional feedback comment
@@ -390,18 +398,18 @@ private constructor(
         @JsonProperty("metadata") @ExcludeMissing fun _metadata(): JsonValue = metadata
 
         /**
-         * Returns the raw JSON value of [accountId].
-         *
-         * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("account_id") @ExcludeMissing fun _accountId(): JsonField<Long> = accountId
-
-        /**
          * Returns the raw JSON value of [score].
          *
          * Unlike [score], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("score") @ExcludeMissing fun _score(): JsonField<Int> = score
+
+        /**
+         * Returns the raw JSON value of [accountId].
+         *
+         * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("account_id") @ExcludeMissing fun _accountId(): JsonField<Long> = accountId
 
         /**
          * Returns the raw JSON value of [comment].
@@ -429,7 +437,6 @@ private constructor(
              *
              * The following fields are required:
              * ```java
-             * .accountId()
              * .score()
              * ```
              */
@@ -439,34 +446,22 @@ private constructor(
         /** A builder for [Body]. */
         class Builder internal constructor() {
 
-            private var accountId: JsonField<Long>? = null
             private var score: JsonField<Int>? = null
+            private var accountId: JsonField<Long> = JsonMissing.of()
             private var comment: JsonField<String> = JsonMissing.of()
             private var metadata: JsonValue = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
-                accountId = body.accountId
                 score = body.score
+                accountId = body.accountId
                 comment = body.comment
                 metadata = body.metadata
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** Account ID for the request */
-            fun accountId(accountId: Long) = accountId(JsonField.of(accountId))
-
-            /**
-             * Sets [Builder.accountId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.accountId] with a well-typed [Long] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
-
-            /** Feedback score (-1, 0, +1 or 1-5) */
+            /** Feedback score (-1, 0, +1 or 1-5). */
             fun score(score: Int) = score(JsonField.of(score))
 
             /**
@@ -477,6 +472,28 @@ private constructor(
              * value.
              */
             fun score(score: JsonField<Int>) = apply { this.score = score }
+
+            /** Optional selection. Feedback always uses the thread's linked account. */
+            fun accountId(accountId: Long?) = accountId(JsonField.ofNullable(accountId))
+
+            /**
+             * Alias for [Builder.accountId].
+             *
+             * This unboxed primitive overload exists for backwards compatibility.
+             */
+            fun accountId(accountId: Long) = accountId(accountId as Long?)
+
+            /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+            fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
+
+            /**
+             * Sets [Builder.accountId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.accountId] with a well-typed [Long] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun accountId(accountId: JsonField<Long>) = apply { this.accountId = accountId }
 
             /** Optional feedback comment */
             fun comment(comment: String) = comment(JsonField.of(comment))
@@ -519,7 +536,6 @@ private constructor(
              *
              * The following fields are required:
              * ```java
-             * .accountId()
              * .score()
              * ```
              *
@@ -527,8 +543,8 @@ private constructor(
              */
             fun build(): Body =
                 Body(
-                    checkRequired("accountId", accountId),
                     checkRequired("score", score),
+                    accountId,
                     comment,
                     metadata,
                     additionalProperties.toMutableMap(),
@@ -551,8 +567,8 @@ private constructor(
                 return@apply
             }
 
-            accountId()
             score()
+            accountId()
             comment()
             validated = true
         }
@@ -573,8 +589,8 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (if (accountId.asKnown().isPresent) 1 else 0) +
-                (if (score.asKnown().isPresent) 1 else 0) +
+            (if (score.asKnown().isPresent) 1 else 0) +
+                (if (accountId.asKnown().isPresent) 1 else 0) +
                 (if (comment.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
@@ -583,21 +599,21 @@ private constructor(
             }
 
             return other is Body &&
-                accountId == other.accountId &&
                 score == other.score &&
+                accountId == other.accountId &&
                 comment == other.comment &&
                 metadata == other.metadata &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(accountId, score, comment, metadata, additionalProperties)
+            Objects.hash(score, accountId, comment, metadata, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{accountId=$accountId, score=$score, comment=$comment, metadata=$metadata, additionalProperties=$additionalProperties}"
+            "Body{score=$score, accountId=$accountId, comment=$comment, metadata=$metadata, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

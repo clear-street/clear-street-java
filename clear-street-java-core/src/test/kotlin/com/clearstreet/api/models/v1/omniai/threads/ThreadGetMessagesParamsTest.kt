@@ -12,7 +12,7 @@ internal class ThreadGetMessagesParamsTest {
     fun create() {
         ThreadGetMessagesParams.builder()
             .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-            .accountId(0L)
+            .accountId(1L)
             .pageSize(1L)
             .pageToken("U3RhaW5sZXNzIHJvY2tz")
             .build()
@@ -23,7 +23,6 @@ internal class ThreadGetMessagesParamsTest {
         val params =
             ThreadGetMessagesParams.builder()
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId(0L)
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
@@ -36,7 +35,7 @@ internal class ThreadGetMessagesParamsTest {
         val params =
             ThreadGetMessagesParams.builder()
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId(0L)
+                .accountId(1L)
                 .pageSize(1L)
                 .pageToken("U3RhaW5sZXNzIHJvY2tz")
                 .build()
@@ -46,7 +45,7 @@ internal class ThreadGetMessagesParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put("account_id", "0")
+                    .put("account_id", "1")
                     .put("page_size", "1")
                     .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
                     .build()
@@ -58,11 +57,10 @@ internal class ThreadGetMessagesParamsTest {
         val params =
             ThreadGetMessagesParams.builder()
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId(0L)
                 .build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams).isEqualTo(QueryParams.builder().put("account_id", "0").build())
+        assertThat(queryParams).isEqualTo(QueryParams.builder().build())
     }
 }

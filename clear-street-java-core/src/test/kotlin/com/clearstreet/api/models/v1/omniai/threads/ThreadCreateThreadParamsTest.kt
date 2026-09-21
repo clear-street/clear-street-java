@@ -2,6 +2,8 @@
 
 package com.clearstreet.api.models.v1.omniai.threads
 
+import com.clearstreet.api.core.JsonValue
+import java.time.OffsetDateTime
 import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -11,9 +13,27 @@ internal class ThreadCreateThreadParamsTest {
     @Test
     fun create() {
         ThreadCreateThreadParams.builder()
-            .accountId(19816L)
             .type(ThreadCreateThreadParams.Type.INSTANT)
+            .accountId(19816L)
             .addCapability(ThreadCreateThreadParams.Capability.PREFILL_ORDER)
+            .context(
+                TurnContext.builder()
+                    .addItem(
+                        ContextItem.builder()
+                            .data(
+                                ContextItem.Data.builder()
+                                    .putAdditionalProperty("change_pct", JsonValue.from("bar"))
+                                    .putAdditionalProperty("range", JsonValue.from("bar"))
+                                    .putAdditionalProperty("ticker", JsonValue.from("bar"))
+                                    .build()
+                            )
+                            .kind("chart")
+                            .label("NVDA intraday performance")
+                            .capturedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .build()
+                    )
+                    .build()
+            )
             .target(
                 ThreadCreateThreadParams.Target.builder()
                     .ticker("ticker")
@@ -29,9 +49,27 @@ internal class ThreadCreateThreadParamsTest {
     fun body() {
         val params =
             ThreadCreateThreadParams.builder()
-                .accountId(19816L)
                 .type(ThreadCreateThreadParams.Type.INSTANT)
+                .accountId(19816L)
                 .addCapability(ThreadCreateThreadParams.Capability.PREFILL_ORDER)
+                .context(
+                    TurnContext.builder()
+                        .addItem(
+                            ContextItem.builder()
+                                .data(
+                                    ContextItem.Data.builder()
+                                        .putAdditionalProperty("change_pct", JsonValue.from("bar"))
+                                        .putAdditionalProperty("range", JsonValue.from("bar"))
+                                        .putAdditionalProperty("ticker", JsonValue.from("bar"))
+                                        .build()
+                                )
+                                .kind("chart")
+                                .label("NVDA intraday performance")
+                                .capturedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .build()
+                        )
+                        .build()
+                )
                 .target(
                     ThreadCreateThreadParams.Target.builder()
                         .ticker("ticker")
@@ -44,10 +82,29 @@ internal class ThreadCreateThreadParamsTest {
 
         val body = params._body()
 
-        assertThat(body.accountId()).isEqualTo(19816L)
         assertThat(body.type()).isEqualTo(ThreadCreateThreadParams.Type.INSTANT)
+        assertThat(body.accountId()).contains(19816L)
         assertThat(body.capabilities().getOrNull())
             .containsExactly(ThreadCreateThreadParams.Capability.PREFILL_ORDER)
+        assertThat(body.context())
+            .contains(
+                TurnContext.builder()
+                    .addItem(
+                        ContextItem.builder()
+                            .data(
+                                ContextItem.Data.builder()
+                                    .putAdditionalProperty("change_pct", JsonValue.from("bar"))
+                                    .putAdditionalProperty("range", JsonValue.from("bar"))
+                                    .putAdditionalProperty("ticker", JsonValue.from("bar"))
+                                    .build()
+                            )
+                            .kind("chart")
+                            .label("NVDA intraday performance")
+                            .capturedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .build()
+                    )
+                    .build()
+            )
         assertThat(body.target())
             .contains(
                 ThreadCreateThreadParams.Target.builder()
@@ -62,14 +119,10 @@ internal class ThreadCreateThreadParamsTest {
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
-            ThreadCreateThreadParams.builder()
-                .accountId(19816L)
-                .type(ThreadCreateThreadParams.Type.INSTANT)
-                .build()
+            ThreadCreateThreadParams.builder().type(ThreadCreateThreadParams.Type.INSTANT).build()
 
         val body = params._body()
 
-        assertThat(body.accountId()).isEqualTo(19816L)
         assertThat(body.type()).isEqualTo(ThreadCreateThreadParams.Type.INSTANT)
     }
 }

@@ -16,7 +16,7 @@ import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-/** Thread metadata returned by list/get thread endpoints. */
+/** Thread metadata. */
 class Thread
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

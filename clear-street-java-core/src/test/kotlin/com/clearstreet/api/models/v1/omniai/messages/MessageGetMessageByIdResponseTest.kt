@@ -7,11 +7,13 @@ import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
 import com.clearstreet.api.models.v1.omniai.responses.ErrorStatus
+import com.clearstreet.api.models.v1.omniai.threads.ContextItem
 import com.clearstreet.api.models.v1.omniai.threads.Message
 import com.clearstreet.api.models.v1.omniai.threads.MessageContent
 import com.clearstreet.api.models.v1.omniai.threads.MessageContentPart
 import com.clearstreet.api.models.v1.omniai.threads.MessageOutcome
 import com.clearstreet.api.models.v1.omniai.threads.MessageRole
+import com.clearstreet.api.models.v1.omniai.threads.TurnContext
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -62,6 +64,35 @@ internal class MessageGetMessageByIdResponseTest {
                         .role(MessageRole.USER)
                         .seq(0L)
                         .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .context(
+                            TurnContext.builder()
+                                .addItem(
+                                    ContextItem.builder()
+                                        .data(
+                                            ContextItem.Data.builder()
+                                                .putAdditionalProperty(
+                                                    "change_pct",
+                                                    JsonValue.from("bar"),
+                                                )
+                                                .putAdditionalProperty(
+                                                    "range",
+                                                    JsonValue.from("bar"),
+                                                )
+                                                .putAdditionalProperty(
+                                                    "ticker",
+                                                    JsonValue.from("bar"),
+                                                )
+                                                .build()
+                                        )
+                                        .kind("chart")
+                                        .label("NVDA intraday performance")
+                                        .capturedAt(
+                                            OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .error(
                             ErrorStatus.builder()
                                 .code("code")
@@ -115,6 +146,27 @@ internal class MessageGetMessageByIdResponseTest {
                     .role(MessageRole.USER)
                     .seq(0L)
                     .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .context(
+                        TurnContext.builder()
+                            .addItem(
+                                ContextItem.builder()
+                                    .data(
+                                        ContextItem.Data.builder()
+                                            .putAdditionalProperty(
+                                                "change_pct",
+                                                JsonValue.from("bar"),
+                                            )
+                                            .putAdditionalProperty("range", JsonValue.from("bar"))
+                                            .putAdditionalProperty("ticker", JsonValue.from("bar"))
+                                            .build()
+                                    )
+                                    .kind("chart")
+                                    .label("NVDA intraday performance")
+                                    .capturedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .build()
+                            )
+                            .build()
+                    )
                     .error(
                         ErrorStatus.builder()
                             .code("code")
@@ -170,6 +222,35 @@ internal class MessageGetMessageByIdResponseTest {
                         .role(MessageRole.USER)
                         .seq(0L)
                         .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .context(
+                            TurnContext.builder()
+                                .addItem(
+                                    ContextItem.builder()
+                                        .data(
+                                            ContextItem.Data.builder()
+                                                .putAdditionalProperty(
+                                                    "change_pct",
+                                                    JsonValue.from("bar"),
+                                                )
+                                                .putAdditionalProperty(
+                                                    "range",
+                                                    JsonValue.from("bar"),
+                                                )
+                                                .putAdditionalProperty(
+                                                    "ticker",
+                                                    JsonValue.from("bar"),
+                                                )
+                                                .build()
+                                        )
+                                        .kind("chart")
+                                        .label("NVDA intraday performance")
+                                        .capturedAt(
+                                            OffsetDateTime.parse("2019-12-27T18:11:19.117Z")
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .error(
                             ErrorStatus.builder()
                                 .code("code")

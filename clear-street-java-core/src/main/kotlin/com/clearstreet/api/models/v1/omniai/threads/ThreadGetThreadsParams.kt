@@ -3,7 +3,6 @@
 package com.clearstreet.api.models.v1.omniai.threads
 
 import com.clearstreet.api.core.Params
-import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
 import java.util.Objects
@@ -11,23 +10,27 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * List conversation threads.
+ * List authorized conversation metadata, newest first. Use `page_size` and `page_token` for
+ * pagination, and the messages endpoint for conversation history.
  *
- * Returns thread metadata ordered by most recently created first. Use `page_size` and `page_token`
- * for pagination. Thread objects contain only metadata (title, timestamps) — use the messages
- * endpoint for conversation history.
+ * With `account_id`, list only conversations linked to that account and require current account
+ * access. Without it, list only conversations with no linked account.
  */
 class ThreadGetThreadsParams
 private constructor(
-    private val accountId: Long,
+    private val accountId: Long?,
     private val pageSize: Long?,
     private val pageToken: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** Account ID for the request */
-    fun accountId(): Long = accountId
+    /**
+     * Lists only conversations for this account, or unlinked conversations when omitted. Other
+     * reads authorize the resource's linked account. Omit when no account is selected; empty values
+     * and the string null are invalid.
+     */
+    fun accountId(): Optional<Long> = Optional.ofNullable(accountId)
 
     /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
@@ -48,14 +51,9 @@ private constructor(
 
     companion object {
 
-        /**
-         * Returns a mutable builder for constructing an instance of [ThreadGetThreadsParams].
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
-         */
+        @JvmStatic fun none(): ThreadGetThreadsParams = builder().build()
+
+        /** Returns a mutable builder for constructing an instance of [ThreadGetThreadsParams]. */
         @JvmStatic fun builder() = Builder()
     }
 
@@ -77,8 +75,22 @@ private constructor(
             additionalQueryParams = threadGetThreadsParams.additionalQueryParams.toBuilder()
         }
 
-        /** Account ID for the request */
-        fun accountId(accountId: Long) = apply { this.accountId = accountId }
+        /**
+         * Lists only conversations for this account, or unlinked conversations when omitted. Other
+         * reads authorize the resource's linked account. Omit when no account is selected; empty
+         * values and the string null are invalid.
+         */
+        fun accountId(accountId: Long?) = apply { this.accountId = accountId }
+
+        /**
+         * Alias for [Builder.accountId].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun accountId(accountId: Long) = accountId(accountId as Long?)
+
+        /** Alias for calling [Builder.accountId] with `accountId.orElse(null)`. */
+        fun accountId(accountId: Optional<Long>) = accountId(accountId.getOrNull())
 
         /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
@@ -204,17 +216,10 @@ private constructor(
          * Returns an immutable instance of [ThreadGetThreadsParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```java
-         * .accountId()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): ThreadGetThreadsParams =
             ThreadGetThreadsParams(
-                checkRequired("accountId", accountId),
+                accountId,
                 pageSize,
                 pageToken,
                 additionalHeaders.build(),
@@ -227,7 +232,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
-                put("account_id", accountId.toString())
+                accountId?.let { put("account_id", it.toString()) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 putAll(additionalQueryParams)

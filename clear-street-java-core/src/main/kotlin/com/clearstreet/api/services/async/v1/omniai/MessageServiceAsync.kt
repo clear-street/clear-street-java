@@ -33,25 +33,33 @@ interface MessageServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): MessageServiceAsync
 
     /**
-     * Get a finalized message by ID.
-     *
-     * Returns a single finalized message. Returns **404** if the message belongs to an in-progress
-     * assistant turn (use the response endpoint for live output). Once the turn completes, the
-     * message becomes available here.
+     * Read a finalized message using its parent thread for ownership and linked-account
+     * authorization. In-progress assistant messages are not available here; use the response
+     * polling endpoint instead.
      */
+    fun getMessageById(messageId: String): CompletableFuture<MessageGetMessageByIdResponse> =
+        getMessageById(messageId, MessageGetMessageByIdParams.none())
+
+    /** @see getMessageById */
     fun getMessageById(
         messageId: String,
-        params: MessageGetMessageByIdParams,
+        params: MessageGetMessageByIdParams = MessageGetMessageByIdParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<MessageGetMessageByIdResponse> =
+        getMessageById(params.toBuilder().messageId(messageId).build(), requestOptions)
+
+    /** @see getMessageById */
+    fun getMessageById(
+        messageId: String,
+        params: MessageGetMessageByIdParams = MessageGetMessageByIdParams.none(),
     ): CompletableFuture<MessageGetMessageByIdResponse> =
         getMessageById(messageId, params, RequestOptions.none())
 
     /** @see getMessageById */
     fun getMessageById(
-        messageId: String,
         params: MessageGetMessageByIdParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<MessageGetMessageByIdResponse> =
-        getMessageById(params.toBuilder().messageId(messageId).build(), requestOptions)
+    ): CompletableFuture<MessageGetMessageByIdResponse>
 
     /** @see getMessageById */
     fun getMessageById(
@@ -61,15 +69,16 @@ interface MessageServiceAsync {
 
     /** @see getMessageById */
     fun getMessageById(
-        params: MessageGetMessageByIdParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<MessageGetMessageByIdResponse>
+        messageId: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<MessageGetMessageByIdResponse> =
+        getMessageById(messageId, MessageGetMessageByIdParams.none(), requestOptions)
 
     /**
-     * Submit feedback on a finalized assistant message.
+     * Attach a score and optional comment to a finalized assistant message. Feedback is only valid
+     * for messages with role `ASSISTANT` that have reached a terminal outcome.
      *
-     * Attaches a score and optional comment to a finalized assistant message. Feedback is only
-     * valid for messages with role `ASSISTANT` that have reached a terminal outcome.
+     * The current thread account governs access even when the message predates its account link.
      */
     fun submitFeedback(
         messageId: String,
@@ -116,18 +125,30 @@ interface MessageServiceAsync {
          * the same as [MessageServiceAsync.getMessageById].
          */
         fun getMessageById(
+            messageId: String
+        ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>> =
+            getMessageById(messageId, MessageGetMessageByIdParams.none())
+
+        /** @see getMessageById */
+        fun getMessageById(
             messageId: String,
-            params: MessageGetMessageByIdParams,
+            params: MessageGetMessageByIdParams = MessageGetMessageByIdParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>> =
+            getMessageById(params.toBuilder().messageId(messageId).build(), requestOptions)
+
+        /** @see getMessageById */
+        fun getMessageById(
+            messageId: String,
+            params: MessageGetMessageByIdParams = MessageGetMessageByIdParams.none(),
         ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>> =
             getMessageById(messageId, params, RequestOptions.none())
 
         /** @see getMessageById */
         fun getMessageById(
-            messageId: String,
             params: MessageGetMessageByIdParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>> =
-            getMessageById(params.toBuilder().messageId(messageId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>>
 
         /** @see getMessageById */
         fun getMessageById(
@@ -137,9 +158,10 @@ interface MessageServiceAsync {
 
         /** @see getMessageById */
         fun getMessageById(
-            params: MessageGetMessageByIdParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>>
+            messageId: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<MessageGetMessageByIdResponse>> =
+            getMessageById(messageId, MessageGetMessageByIdParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /v1/omni-ai/messages/{message_id}/feedback`, but is

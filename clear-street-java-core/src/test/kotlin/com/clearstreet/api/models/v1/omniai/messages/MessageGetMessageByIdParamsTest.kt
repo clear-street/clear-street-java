@@ -12,7 +12,7 @@ internal class MessageGetMessageByIdParamsTest {
     fun create() {
         MessageGetMessageByIdParams.builder()
             .messageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-            .accountId(0L)
+            .accountId(1L)
             .build()
     }
 
@@ -21,7 +21,6 @@ internal class MessageGetMessageByIdParamsTest {
         val params =
             MessageGetMessageByIdParams.builder()
                 .messageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId(0L)
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
@@ -34,11 +33,23 @@ internal class MessageGetMessageByIdParamsTest {
         val params =
             MessageGetMessageByIdParams.builder()
                 .messageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .accountId(0L)
+                .accountId(1L)
                 .build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams).isEqualTo(QueryParams.builder().put("account_id", "0").build())
+        assertThat(queryParams).isEqualTo(QueryParams.builder().put("account_id", "1").build())
+    }
+
+    @Test
+    fun queryParamsWithoutOptionalFields() {
+        val params =
+            MessageGetMessageByIdParams.builder()
+                .messageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .build()
+
+        val queryParams = params._queryParams()
+
+        assertThat(queryParams).isEqualTo(QueryParams.builder().build())
     }
 }
