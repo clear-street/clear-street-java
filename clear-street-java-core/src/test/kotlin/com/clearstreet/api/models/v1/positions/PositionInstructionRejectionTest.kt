@@ -14,6 +14,9 @@ internal class PositionInstructionRejectionTest {
     fun create() {
         val positionInstructionRejection =
             PositionInstructionRejection.builder()
+                .description(
+                    "The position instruction quantity is greater than available position quantity."
+                )
                 .domain("com.clearstreet.oems.exercise")
                 .metadata(
                     PositionInstructionRejection.Metadata.builder()
@@ -24,6 +27,10 @@ internal class PositionInstructionRejectionTest {
                 .reason("INSUFFICIENT_POSITION")
                 .build()
 
+        assertThat(positionInstructionRejection.description())
+            .isEqualTo(
+                "The position instruction quantity is greater than available position quantity."
+            )
         assertThat(positionInstructionRejection.domain()).isEqualTo("com.clearstreet.oems.exercise")
         assertThat(positionInstructionRejection.metadata())
             .isEqualTo(
@@ -40,6 +47,9 @@ internal class PositionInstructionRejectionTest {
         val jsonMapper = jsonMapper()
         val positionInstructionRejection =
             PositionInstructionRejection.builder()
+                .description(
+                    "The position instruction quantity is greater than available position quantity."
+                )
                 .domain("com.clearstreet.oems.exercise")
                 .metadata(
                     PositionInstructionRejection.Metadata.builder()

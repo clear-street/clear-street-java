@@ -20,14 +20,14 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Machine-readable detail for a rejected position instruction.
  *
- * Present on every rejected row that carries a `rejection_reason`, across the full lifecycle —
- * submit, cancel, get, and list. Branch on `reason` for programmatic handling and template your own
- * copy from `metadata`; `rejection_reason` remains the human-readable fallback. Forward-only:
- * instructions rejected before this field shipped may carry only `rejection_reason`.
+ * Present on every rejected row, across the full lifecycle — submit, cancel, get, and list. Branch
+ * on `reason` for programmatic handling and template your own copy from `metadata`, or show
+ * `description` directly.
  */
 class PositionInstructionRejection
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val description: JsonField<String>,
     private val domain: JsonField<String>,
     private val metadata: JsonField<Metadata>,
     private val reason: JsonField<String>,
@@ -36,10 +36,22 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("description")
+        @ExcludeMissing
+        description: JsonField<String> = JsonMissing.of(),
         @JsonProperty("domain") @ExcludeMissing domain: JsonField<String> = JsonMissing.of(),
         @JsonProperty("metadata") @ExcludeMissing metadata: JsonField<Metadata> = JsonMissing.of(),
         @JsonProperty("reason") @ExcludeMissing reason: JsonField<String> = JsonMissing.of(),
-    ) : this(domain, metadata, reason, mutableMapOf())
+    ) : this(description, domain, metadata, reason, mutableMapOf())
+
+    /**
+     * Human-readable explanation of the rejection. Duplicates the top-level `rejection_reason`;
+     * prefer this field.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun description(): String = description.getRequired("description")
 
     /**
      * Namespacing domain of the `reason` code — `com.clearstreet.oems.exercise` for reasons OEMS
@@ -74,6 +86,13 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun reason(): String = reason.getRequired("reason")
+
+    /**
+     * Returns the raw JSON value of [description].
+     *
+     * Unlike [description], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("description") @ExcludeMissing fun _description(): JsonField<String> = description
 
     /**
      * Returns the raw JSON value of [domain].
@@ -115,6 +134,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .description()
          * .domain()
          * .metadata()
          * .reason()
@@ -126,6 +146,7 @@ private constructor(
     /** A builder for [PositionInstructionRejection]. */
     class Builder internal constructor() {
 
+        private var description: JsonField<String>? = null
         private var domain: JsonField<String>? = null
         private var metadata: JsonField<Metadata>? = null
         private var reason: JsonField<String>? = null
@@ -133,11 +154,27 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(positionInstructionRejection: PositionInstructionRejection) = apply {
+            description = positionInstructionRejection.description
             domain = positionInstructionRejection.domain
             metadata = positionInstructionRejection.metadata
             reason = positionInstructionRejection.reason
             additionalProperties = positionInstructionRejection.additionalProperties.toMutableMap()
         }
+
+        /**
+         * Human-readable explanation of the rejection. Duplicates the top-level `rejection_reason`;
+         * prefer this field.
+         */
+        fun description(description: String) = description(JsonField.of(description))
+
+        /**
+         * Sets [Builder.description] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.description] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun description(description: JsonField<String>) = apply { this.description = description }
 
         /**
          * Namespacing domain of the `reason` code — `com.clearstreet.oems.exercise` for reasons
@@ -215,6 +252,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
+         * .description()
          * .domain()
          * .metadata()
          * .reason()
@@ -224,6 +262,7 @@ private constructor(
          */
         fun build(): PositionInstructionRejection =
             PositionInstructionRejection(
+                checkRequired("description", description),
                 checkRequired("domain", domain),
                 checkRequired("metadata", metadata),
                 checkRequired("reason", reason),
@@ -246,6 +285,7 @@ private constructor(
             return@apply
         }
 
+        description()
         domain()
         metadata().validate()
         reason()
@@ -267,7 +307,8 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (if (domain.asKnown().isPresent) 1 else 0) +
+        (if (description.asKnown().isPresent) 1 else 0) +
+            (if (domain.asKnown().isPresent) 1 else 0) +
             (metadata.asKnown().getOrNull()?.validity() ?: 0) +
             (if (reason.asKnown().isPresent) 1 else 0)
 
@@ -396,6 +437,7 @@ private constructor(
         }
 
         return other is PositionInstructionRejection &&
+            description == other.description &&
             domain == other.domain &&
             metadata == other.metadata &&
             reason == other.reason &&
@@ -403,11 +445,11 @@ private constructor(
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(domain, metadata, reason, additionalProperties)
+        Objects.hash(description, domain, metadata, reason, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PositionInstructionRejection{domain=$domain, metadata=$metadata, reason=$reason, additionalProperties=$additionalProperties}"
+        "PositionInstructionRejection{description=$description, domain=$domain, metadata=$metadata, reason=$reason, additionalProperties=$additionalProperties}"
 }

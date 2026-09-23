@@ -52,6 +52,9 @@ internal class PositionCancelPositionInstructionResponseTest {
                         .createdAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
                         .rejection(
                             PositionInstructionRejection.builder()
+                                .description(
+                                    "The position instruction quantity is greater than available position quantity."
+                                )
                                 .domain("com.clearstreet.oems.exercise")
                                 .metadata(
                                     PositionInstructionRejection.Metadata.builder()
@@ -107,6 +110,9 @@ internal class PositionCancelPositionInstructionResponseTest {
                     .createdAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
                     .rejection(
                         PositionInstructionRejection.builder()
+                            .description(
+                                "The position instruction quantity is greater than available position quantity."
+                            )
                             .domain("com.clearstreet.oems.exercise")
                             .metadata(
                                 PositionInstructionRejection.Metadata.builder()
@@ -164,6 +170,9 @@ internal class PositionCancelPositionInstructionResponseTest {
                         .createdAt(OffsetDateTime.parse("2026-04-24T14:30:00Z"))
                         .rejection(
                             PositionInstructionRejection.builder()
+                                .description(
+                                    "The position instruction quantity is greater than available position quantity."
+                                )
                                 .domain("com.clearstreet.oems.exercise")
                                 .metadata(
                                     PositionInstructionRejection.Metadata.builder()
