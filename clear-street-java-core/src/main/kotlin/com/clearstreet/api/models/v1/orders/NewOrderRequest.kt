@@ -203,9 +203,9 @@ private constructor(
     fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
 
     /**
-     * Optional execution strategy. Omit to use standard routing. One of `SOR`, `VWAP`, or `TWAP`.
-     * Supported only on `MARKET` and `LIMIT` orders with `DAY` time-in-force, and not supported on
-     * OTC common-stock orders.
+     * Optional execution strategy. One of `SOR`, `VWAP`, or `TWAP`. Defaults to `SOR`. `VWAP` and
+     * `TWAP` are supported only on `MARKET` and `LIMIT` orders with `DAY` time-in-force, and are
+     * not supported on OTC common-stock orders.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -638,9 +638,9 @@ private constructor(
         fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
 
         /**
-         * Optional execution strategy. Omit to use standard routing. One of `SOR`, `VWAP`, or
-         * `TWAP`. Supported only on `MARKET` and `LIMIT` orders with `DAY` time-in-force, and not
-         * supported on OTC common-stock orders.
+         * Optional execution strategy. One of `SOR`, `VWAP`, or `TWAP`. Defaults to `SOR`. `VWAP`
+         * and `TWAP` are supported only on `MARKET` and `LIMIT` orders with `DAY` time-in-force,
+         * and are not supported on OTC common-stock orders.
          */
         fun strategy(strategy: OrderStrategy?) = strategy(JsonField.ofNullable(strategy))
 
