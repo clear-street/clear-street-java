@@ -4,6 +4,7 @@ package com.clearstreet.api.services.blocking.v1
 
 import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
+import com.clearstreet.api.models.v1.calendar.CalendarGetEconomicEventsCalendarParams
 import com.clearstreet.api.models.v1.calendar.CalendarGetMarketHoursCalendarParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -21,6 +22,36 @@ internal class CalendarServiceTest {
         val calendarService = client.v1().calendar()
 
         val response = calendarService.getClock()
+
+        response.validate()
+    }
+
+    @Test
+    fun getEconomicEventsCalendar() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val calendarService = client.v1().calendar()
+
+        val response =
+            calendarService.getEconomicEventsCalendar(
+                CalendarGetEconomicEventsCalendarParams.builder()
+                    .country("country")
+                    .addImpact(CalendarGetEconomicEventsCalendarParams.Impact.NONE)
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .timestamp(
+                        CalendarGetEconomicEventsCalendarParams.Timestamp.builder()
+                            .gt("gt")
+                            .gte("gte")
+                            .lt("lt")
+                            .lte("lte")
+                            .build()
+                    )
+                    .build()
+            )
 
         response.validate()
     }

@@ -7,6 +7,8 @@ import com.clearstreet.api.core.RequestOptions
 import com.clearstreet.api.core.http.HttpResponseFor
 import com.clearstreet.api.models.v1.calendar.CalendarGetClockParams
 import com.clearstreet.api.models.v1.calendar.CalendarGetClockResponse
+import com.clearstreet.api.models.v1.calendar.CalendarGetEconomicEventsCalendarParams
+import com.clearstreet.api.models.v1.calendar.CalendarGetEconomicEventsCalendarResponse
 import com.clearstreet.api.models.v1.calendar.CalendarGetMarketHoursCalendarParams
 import com.clearstreet.api.models.v1.calendar.CalendarGetMarketHoursCalendarResponse
 import java.util.concurrent.CompletableFuture
@@ -45,6 +47,37 @@ interface CalendarServiceAsync {
     /** @see getClock */
     fun getClock(requestOptions: RequestOptions): CompletableFuture<CalendarGetClockResponse> =
         getClock(CalendarGetClockParams.none(), requestOptions)
+
+    /**
+     * Retrieves macroeconomic calendar events (e.g. CPI, jobs reports, central bank rate
+     * decisions), optionally filtered by country, impact, and event time range.
+     *
+     * Absent a `timestamp` lower bound, results default to events from the start of the previous
+     * trading day (America/New_York); absent an upper bound, results default through 7 days from
+     * today (America/New_York).
+     */
+    fun getEconomicEventsCalendar(): CompletableFuture<CalendarGetEconomicEventsCalendarResponse> =
+        getEconomicEventsCalendar(CalendarGetEconomicEventsCalendarParams.none())
+
+    /** @see getEconomicEventsCalendar */
+    fun getEconomicEventsCalendar(
+        params: CalendarGetEconomicEventsCalendarParams =
+            CalendarGetEconomicEventsCalendarParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<CalendarGetEconomicEventsCalendarResponse>
+
+    /** @see getEconomicEventsCalendar */
+    fun getEconomicEventsCalendar(
+        params: CalendarGetEconomicEventsCalendarParams =
+            CalendarGetEconomicEventsCalendarParams.none()
+    ): CompletableFuture<CalendarGetEconomicEventsCalendarResponse> =
+        getEconomicEventsCalendar(params, RequestOptions.none())
+
+    /** @see getEconomicEventsCalendar */
+    fun getEconomicEventsCalendar(
+        requestOptions: RequestOptions
+    ): CompletableFuture<CalendarGetEconomicEventsCalendarResponse> =
+        getEconomicEventsCalendar(CalendarGetEconomicEventsCalendarParams.none(), requestOptions)
 
     /**
      * Retrieves comprehensive trading hours including pre-market, regular, and after-hours
@@ -109,6 +142,37 @@ interface CalendarServiceAsync {
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<CalendarGetClockResponse>> =
             getClock(CalendarGetClockParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /v1/calendars/economic-events`, but is otherwise the
+         * same as [CalendarServiceAsync.getEconomicEventsCalendar].
+         */
+        fun getEconomicEventsCalendar():
+            CompletableFuture<HttpResponseFor<CalendarGetEconomicEventsCalendarResponse>> =
+            getEconomicEventsCalendar(CalendarGetEconomicEventsCalendarParams.none())
+
+        /** @see getEconomicEventsCalendar */
+        fun getEconomicEventsCalendar(
+            params: CalendarGetEconomicEventsCalendarParams =
+                CalendarGetEconomicEventsCalendarParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<CalendarGetEconomicEventsCalendarResponse>>
+
+        /** @see getEconomicEventsCalendar */
+        fun getEconomicEventsCalendar(
+            params: CalendarGetEconomicEventsCalendarParams =
+                CalendarGetEconomicEventsCalendarParams.none()
+        ): CompletableFuture<HttpResponseFor<CalendarGetEconomicEventsCalendarResponse>> =
+            getEconomicEventsCalendar(params, RequestOptions.none())
+
+        /** @see getEconomicEventsCalendar */
+        fun getEconomicEventsCalendar(
+            requestOptions: RequestOptions
+        ): CompletableFuture<HttpResponseFor<CalendarGetEconomicEventsCalendarResponse>> =
+            getEconomicEventsCalendar(
+                CalendarGetEconomicEventsCalendarParams.none(),
+                requestOptions,
+            )
 
         /**
          * Returns a raw HTTP response for `get /v1/calendars/market-hours`, but is otherwise the

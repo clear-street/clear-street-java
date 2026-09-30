@@ -421,18 +421,10 @@ private constructor(
                     put("underlying_instrument_ids", it.joinToString(","))
                 }
                 updatedAt?.let {
-                    it.gt().ifPresent {
-                        put("updated_at[gt]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
-                    }
-                    it.gte().ifPresent {
-                        put("updated_at[gte]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
-                    }
-                    it.lt().ifPresent {
-                        put("updated_at[lt]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
-                    }
-                    it.lte().ifPresent {
-                        put("updated_at[lte]", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
-                    }
+                    it.gt().ifPresent { put("updated_at[gt]", it) }
+                    it.gte().ifPresent { put("updated_at[gte]", it) }
+                    it.lt().ifPresent { put("updated_at[lt]", it) }
+                    it.lte().ifPresent { put("updated_at[lte]", it) }
                     it._additionalProperties().keys().forEach { key ->
                         it._additionalProperties().values(key).forEach { value ->
                             put("updated_at[$key]", value)
@@ -825,24 +817,49 @@ private constructor(
 
     class UpdatedAt
     private constructor(
-        private val gt: OffsetDateTime?,
-        private val gte: OffsetDateTime?,
-        private val lt: OffsetDateTime?,
-        private val lte: OffsetDateTime?,
+        private val gt: String?,
+        private val gte: String?,
+        private val lt: String?,
+        private val lte: String?,
         private val additionalProperties: QueryParams,
     ) {
 
-        /** **Alpha** — this parameter is experimental and may change or be removed at any time. */
-        fun gt(): Optional<OffsetDateTime> = Optional.ofNullable(gt)
+        /**
+         * Return only rows where `updated_at` is strictly after the given value. A bare
+         * `YYYY-MM-DD` date expands to the end of that day (UTC), so this matches from the start of
+         * the following day. See
+         * [Range filters](https://docs.clearstreet.com/guides/api-fundamentals#range-filters) for
+         * accepted formats, bare-date expansion, and combining bounds. Returns 400 if the resulting
+         * range is inverted.
+         */
+        fun gt(): Optional<String> = Optional.ofNullable(gt)
 
-        /** **Alpha** — this parameter is experimental and may change or be removed at any time. */
-        fun gte(): Optional<OffsetDateTime> = Optional.ofNullable(gte)
+        /**
+         * Return only rows where `updated_at` is on or after the given value. A bare `YYYY-MM-DD`
+         * date expands to the start of that day (UTC). See
+         * [Range filters](https://docs.clearstreet.com/guides/api-fundamentals#range-filters) for
+         * accepted formats, bare-date expansion, and combining bounds. Returns 400 if the resulting
+         * range is inverted.
+         */
+        fun gte(): Optional<String> = Optional.ofNullable(gte)
 
-        /** **Alpha** — this parameter is experimental and may change or be removed at any time. */
-        fun lt(): Optional<OffsetDateTime> = Optional.ofNullable(lt)
+        /**
+         * Return only rows where `updated_at` is strictly before the given value. A bare
+         * `YYYY-MM-DD` date expands to the start of that day (UTC). See
+         * [Range filters](https://docs.clearstreet.com/guides/api-fundamentals#range-filters) for
+         * accepted formats, bare-date expansion, and combining bounds. Returns 400 if the resulting
+         * range is inverted.
+         */
+        fun lt(): Optional<String> = Optional.ofNullable(lt)
 
-        /** **Alpha** — this parameter is experimental and may change or be removed at any time. */
-        fun lte(): Optional<OffsetDateTime> = Optional.ofNullable(lte)
+        /**
+         * Return only rows where `updated_at` is on or before the given value. A bare `YYYY-MM-DD`
+         * date expands to the end of that day (UTC), so this matches through the end of that day.
+         * See [Range filters](https://docs.clearstreet.com/guides/api-fundamentals#range-filters)
+         * for accepted formats, bare-date expansion, and combining bounds. Returns 400 if the
+         * resulting range is inverted.
+         */
+        fun lte(): Optional<String> = Optional.ofNullable(lte)
 
         /** Query params to send with the request. */
         fun _additionalProperties(): QueryParams = additionalProperties
@@ -858,10 +875,10 @@ private constructor(
         /** A builder for [UpdatedAt]. */
         class Builder internal constructor() {
 
-            private var gt: OffsetDateTime? = null
-            private var gte: OffsetDateTime? = null
-            private var lt: OffsetDateTime? = null
-            private var lte: OffsetDateTime? = null
+            private var gt: String? = null
+            private var gte: String? = null
+            private var lt: String? = null
+            private var lte: String? = null
             private var additionalProperties: QueryParams.Builder = QueryParams.builder()
 
             @JvmSynthetic
@@ -874,40 +891,54 @@ private constructor(
             }
 
             /**
-             * > **Alpha** — this parameter is experimental and may change or be removed at any
-             * > time.
+             * Return only rows where `updated_at` is strictly after the given value. A bare
+             * `YYYY-MM-DD` date expands to the end of that day (UTC), so this matches from the
+             * start of the following day. See
+             * [Range filters](https://docs.clearstreet.com/guides/api-fundamentals#range-filters)
+             * for accepted formats, bare-date expansion, and combining bounds. Returns 400 if the
+             * resulting range is inverted.
              */
-            fun gt(gt: OffsetDateTime?) = apply { this.gt = gt }
+            fun gt(gt: String?) = apply { this.gt = gt }
 
             /** Alias for calling [Builder.gt] with `gt.orElse(null)`. */
-            fun gt(gt: Optional<OffsetDateTime>) = gt(gt.getOrNull())
+            fun gt(gt: Optional<String>) = gt(gt.getOrNull())
 
             /**
-             * > **Alpha** — this parameter is experimental and may change or be removed at any
-             * > time.
+             * Return only rows where `updated_at` is on or after the given value. A bare
+             * `YYYY-MM-DD` date expands to the start of that day (UTC). See
+             * [Range filters](https://docs.clearstreet.com/guides/api-fundamentals#range-filters)
+             * for accepted formats, bare-date expansion, and combining bounds. Returns 400 if the
+             * resulting range is inverted.
              */
-            fun gte(gte: OffsetDateTime?) = apply { this.gte = gte }
+            fun gte(gte: String?) = apply { this.gte = gte }
 
             /** Alias for calling [Builder.gte] with `gte.orElse(null)`. */
-            fun gte(gte: Optional<OffsetDateTime>) = gte(gte.getOrNull())
+            fun gte(gte: Optional<String>) = gte(gte.getOrNull())
 
             /**
-             * > **Alpha** — this parameter is experimental and may change or be removed at any
-             * > time.
+             * Return only rows where `updated_at` is strictly before the given value. A bare
+             * `YYYY-MM-DD` date expands to the start of that day (UTC). See
+             * [Range filters](https://docs.clearstreet.com/guides/api-fundamentals#range-filters)
+             * for accepted formats, bare-date expansion, and combining bounds. Returns 400 if the
+             * resulting range is inverted.
              */
-            fun lt(lt: OffsetDateTime?) = apply { this.lt = lt }
+            fun lt(lt: String?) = apply { this.lt = lt }
 
             /** Alias for calling [Builder.lt] with `lt.orElse(null)`. */
-            fun lt(lt: Optional<OffsetDateTime>) = lt(lt.getOrNull())
+            fun lt(lt: Optional<String>) = lt(lt.getOrNull())
 
             /**
-             * > **Alpha** — this parameter is experimental and may change or be removed at any
-             * > time.
+             * Return only rows where `updated_at` is on or before the given value. A bare
+             * `YYYY-MM-DD` date expands to the end of that day (UTC), so this matches through the
+             * end of that day. See
+             * [Range filters](https://docs.clearstreet.com/guides/api-fundamentals#range-filters)
+             * for accepted formats, bare-date expansion, and combining bounds. Returns 400 if the
+             * resulting range is inverted.
              */
-            fun lte(lte: OffsetDateTime?) = apply { this.lte = lte }
+            fun lte(lte: String?) = apply { this.lte = lte }
 
             /** Alias for calling [Builder.lte] with `lte.orElse(null)`. */
-            fun lte(lte: Optional<OffsetDateTime>) = lte(lte.getOrNull())
+            fun lte(lte: Optional<String>) = lte(lte.getOrNull())
 
             fun additionalProperties(additionalProperties: QueryParams) = apply {
                 this.additionalProperties.clear()

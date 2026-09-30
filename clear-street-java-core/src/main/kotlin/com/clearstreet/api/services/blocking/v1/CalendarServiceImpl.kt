@@ -16,6 +16,8 @@ import com.clearstreet.api.core.http.parseable
 import com.clearstreet.api.core.prepare
 import com.clearstreet.api.models.v1.calendar.CalendarGetClockParams
 import com.clearstreet.api.models.v1.calendar.CalendarGetClockResponse
+import com.clearstreet.api.models.v1.calendar.CalendarGetEconomicEventsCalendarParams
+import com.clearstreet.api.models.v1.calendar.CalendarGetEconomicEventsCalendarResponse
 import com.clearstreet.api.models.v1.calendar.CalendarGetMarketHoursCalendarParams
 import com.clearstreet.api.models.v1.calendar.CalendarGetMarketHoursCalendarResponse
 import java.util.function.Consumer
@@ -39,6 +41,13 @@ class CalendarServiceImpl internal constructor(private val clientOptions: Client
     ): CalendarGetClockResponse =
         // get /v1/clock
         withRawResponse().getClock(params, requestOptions).parse()
+
+    override fun getEconomicEventsCalendar(
+        params: CalendarGetEconomicEventsCalendarParams,
+        requestOptions: RequestOptions,
+    ): CalendarGetEconomicEventsCalendarResponse =
+        // get /v1/calendars/economic-events
+        withRawResponse().getEconomicEventsCalendar(params, requestOptions).parse()
 
     override fun getMarketHoursCalendar(
         params: CalendarGetMarketHoursCalendarParams,
@@ -79,6 +88,34 @@ class CalendarServiceImpl internal constructor(private val clientOptions: Client
             return errorHandler.handle(response).parseable {
                 response
                     .use { getClockHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val getEconomicEventsCalendarHandler:
+            Handler<CalendarGetEconomicEventsCalendarResponse> =
+            jsonHandler<CalendarGetEconomicEventsCalendarResponse>(clientOptions.jsonMapper)
+
+        override fun getEconomicEventsCalendar(
+            params: CalendarGetEconomicEventsCalendarParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CalendarGetEconomicEventsCalendarResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "calendars", "economic-events")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getEconomicEventsCalendarHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

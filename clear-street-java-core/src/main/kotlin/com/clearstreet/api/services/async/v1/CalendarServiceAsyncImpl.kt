@@ -16,6 +16,8 @@ import com.clearstreet.api.core.http.parseable
 import com.clearstreet.api.core.prepareAsync
 import com.clearstreet.api.models.v1.calendar.CalendarGetClockParams
 import com.clearstreet.api.models.v1.calendar.CalendarGetClockResponse
+import com.clearstreet.api.models.v1.calendar.CalendarGetEconomicEventsCalendarParams
+import com.clearstreet.api.models.v1.calendar.CalendarGetEconomicEventsCalendarResponse
 import com.clearstreet.api.models.v1.calendar.CalendarGetMarketHoursCalendarParams
 import com.clearstreet.api.models.v1.calendar.CalendarGetMarketHoursCalendarResponse
 import java.util.concurrent.CompletableFuture
@@ -40,6 +42,13 @@ class CalendarServiceAsyncImpl internal constructor(private val clientOptions: C
     ): CompletableFuture<CalendarGetClockResponse> =
         // get /v1/clock
         withRawResponse().getClock(params, requestOptions).thenApply { it.parse() }
+
+    override fun getEconomicEventsCalendar(
+        params: CalendarGetEconomicEventsCalendarParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<CalendarGetEconomicEventsCalendarResponse> =
+        // get /v1/calendars/economic-events
+        withRawResponse().getEconomicEventsCalendar(params, requestOptions).thenApply { it.parse() }
 
     override fun getMarketHoursCalendar(
         params: CalendarGetMarketHoursCalendarParams,
@@ -82,6 +91,37 @@ class CalendarServiceAsyncImpl internal constructor(private val clientOptions: C
                     errorHandler.handle(response).parseable {
                         response
                             .use { getClockHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val getEconomicEventsCalendarHandler:
+            Handler<CalendarGetEconomicEventsCalendarResponse> =
+            jsonHandler<CalendarGetEconomicEventsCalendarResponse>(clientOptions.jsonMapper)
+
+        override fun getEconomicEventsCalendar(
+            params: CalendarGetEconomicEventsCalendarParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<CalendarGetEconomicEventsCalendarResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "calendars", "economic-events")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { getEconomicEventsCalendarHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
