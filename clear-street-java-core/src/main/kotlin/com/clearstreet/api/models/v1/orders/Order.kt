@@ -332,9 +332,9 @@ private constructor(
     fun extendedHours(): Optional<Boolean> = extendedHours.getOptional("extended_hours")
 
     /**
-     * Instrument identifier for the traded instrument. `null` when the order has no single
-     * resolvable instrument. When a null/undefined value is observed, it indicates it does not
-     * apply.
+     * Instrument identifier for the traded instrument. `null` when the order is a multileg strategy
+     * whose legs are reported individually in `legs[]`. When a null/undefined value is observed, it
+     * indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -342,8 +342,9 @@ private constructor(
     fun instrumentId(): Optional<String> = instrumentId.getOptional("instrument_id")
 
     /**
-     * Type of security. `null` when the order has no single resolvable instrument. When a
-     * null/undefined value is observed, it indicates it does not apply.
+     * Type of security. `null` when the order is a multileg strategy whose legs are reported
+     * individually in `legs[]`. When a null/undefined value is observed, it indicates it does not
+     * apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -404,8 +405,9 @@ private constructor(
     fun strategy(): Optional<Strategy> = strategy.getOptional("strategy")
 
     /**
-     * Trading symbol. `null` when the order has no single resolvable instrument. When a
-     * null/undefined value is observed, it indicates it does not apply.
+     * Trading symbol. `null` when the order is a multileg strategy whose legs are reported
+     * individually in `legs[]`. When a null/undefined value is observed, it indicates it does not
+     * apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -1150,9 +1152,9 @@ private constructor(
         }
 
         /**
-         * Instrument identifier for the traded instrument. `null` when the order has no single
-         * resolvable instrument. When a null/undefined value is observed, it indicates it does not
-         * apply.
+         * Instrument identifier for the traded instrument. `null` when the order is a multileg
+         * strategy whose legs are reported individually in `legs[]`. When a null/undefined value is
+         * observed, it indicates it does not apply.
          */
         fun instrumentId(instrumentId: String?) = instrumentId(JsonField.ofNullable(instrumentId))
 
@@ -1171,8 +1173,9 @@ private constructor(
         }
 
         /**
-         * Type of security. `null` when the order has no single resolvable instrument. When a
-         * null/undefined value is observed, it indicates it does not apply.
+         * Type of security. `null` when the order is a multileg strategy whose legs are reported
+         * individually in `legs[]`. When a null/undefined value is observed, it indicates it does
+         * not apply.
          */
         fun instrumentType(instrumentType: SecurityType?) =
             instrumentType(JsonField.ofNullable(instrumentType))
@@ -1297,8 +1300,9 @@ private constructor(
         fun strategy(strategy: JsonField<Strategy>) = apply { this.strategy = strategy }
 
         /**
-         * Trading symbol. `null` when the order has no single resolvable instrument. When a
-         * null/undefined value is observed, it indicates it does not apply.
+         * Trading symbol. `null` when the order is a multileg strategy whose legs are reported
+         * individually in `legs[]`. When a null/undefined value is observed, it indicates it does
+         * not apply.
          */
         fun symbol(symbol: String?) = symbol(JsonField.ofNullable(symbol))
 

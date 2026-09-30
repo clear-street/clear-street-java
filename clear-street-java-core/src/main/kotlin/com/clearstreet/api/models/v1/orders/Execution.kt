@@ -90,7 +90,8 @@ private constructor(
     fun orderId(): String = orderId.getRequired("order_id")
 
     /**
-     * Filled quantity.
+     * Filled quantity. For a strategy-level multileg fill this is the net strategy quantity, not a
+     * per-leg quantity.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -114,8 +115,9 @@ private constructor(
     fun transactionTime(): OffsetDateTime = transactionTime.getRequired("transaction_time")
 
     /**
-     * Unique instrument identifier. `null` when this fill has no single resolvable instrument. When
-     * a null/undefined value is observed, it indicates it does not apply.
+     * Unique instrument identifier. `null` when this is a strategy-level multileg fill whose legs
+     * are reported individually in `legs[]`. When a null/undefined value is observed, it indicates
+     * it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -132,8 +134,9 @@ private constructor(
     fun price(): Optional<String> = price.getOptional("price")
 
     /**
-     * Trading symbol. `null` when this fill has no single resolvable instrument. When a
-     * null/undefined value is observed, it indicates it does not apply.
+     * Trading symbol. `null` when this is a strategy-level multileg fill whose legs are reported
+     * individually in `legs[]`. When a null/undefined value is observed, it indicates it does not
+     * apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -341,7 +344,10 @@ private constructor(
          */
         fun orderId(orderId: JsonField<String>) = apply { this.orderId = orderId }
 
-        /** Filled quantity. */
+        /**
+         * Filled quantity. For a strategy-level multileg fill this is the net strategy quantity,
+         * not a per-leg quantity.
+         */
         fun quantity(quantity: String) = quantity(JsonField.of(quantity))
 
         /**
@@ -379,8 +385,9 @@ private constructor(
         }
 
         /**
-         * Unique instrument identifier. `null` when this fill has no single resolvable instrument.
-         * When a null/undefined value is observed, it indicates it does not apply.
+         * Unique instrument identifier. `null` when this is a strategy-level multileg fill whose
+         * legs are reported individually in `legs[]`. When a null/undefined value is observed, it
+         * indicates it does not apply.
          */
         fun instrumentId(instrumentId: String?) = instrumentId(JsonField.ofNullable(instrumentId))
 
@@ -416,8 +423,9 @@ private constructor(
         fun price(price: JsonField<String>) = apply { this.price = price }
 
         /**
-         * Trading symbol. `null` when this fill has no single resolvable instrument. When a
-         * null/undefined value is observed, it indicates it does not apply.
+         * Trading symbol. `null` when this is a strategy-level multileg fill whose legs are
+         * reported individually in `legs[]`. When a null/undefined value is observed, it indicates
+         * it does not apply.
          */
         fun symbol(symbol: String?) = symbol(JsonField.ofNullable(symbol))
 
