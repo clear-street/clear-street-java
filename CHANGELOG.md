@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.0](https://github.com/clear-street/clear-street-java/compare/v0.5.0...v0.6.0) (2026-10-01)
+
+
+### Features
+
+* **api:** api update ([7652f28](https://github.com/clear-street/clear-street-java/commit/7652f2894927e2505c37904530ca71b1d617feb8))
+* **api:** api update ([807f611](https://github.com/clear-street/clear-street-java/commit/807f611fd5debe61b1d09763a5d7cba0774a0318))
+* **api:** api update ([6c7af65](https://github.com/clear-street/clear-street-java/commit/6c7af654400202c785660310d06a3f3e11dd1cea))
+* **api:** api update ([b3ac7ca](https://github.com/clear-street/clear-street-java/commit/b3ac7ca46643774070e6c884f963c920900f1966))
+* **api:** api update ([4717f12](https://github.com/clear-street/clear-street-java/commit/4717f122aeccfaaa747dd61b378e599ad6516680))
+
 ## [0.5.0](https://github.com/clear-street/clear-street-java/compare/v0.4.0...v0.5.0) (2026-09-18)
 
 
