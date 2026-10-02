@@ -6,6 +6,7 @@ import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.models.v1.instrumentdata.marketdata.MarketDataGetDailySummariesParams
 import com.clearstreet.api.models.v1.instrumentdata.marketdata.MarketDataGetSnapshotsParams
+import java.time.LocalDate
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -40,7 +41,11 @@ internal class MarketDataServiceTest {
 
         val response =
             marketDataService.getSnapshots(
-                MarketDataGetSnapshotsParams.builder().addInstrumentId("x").build()
+                MarketDataGetSnapshotsParams.builder()
+                    .expiry(LocalDate.parse("2019-12-27"))
+                    .addInstrumentId("x")
+                    .underlyingInstrumentId("x")
+                    .build()
             )
 
         response.validate()

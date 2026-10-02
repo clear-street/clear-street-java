@@ -6,23 +6,45 @@ import com.clearstreet.api.core.Params
 import com.clearstreet.api.core.http.Headers
 import com.clearstreet.api.core.http.QueryParams
 import com.clearstreet.api.core.toImmutable
+import java.time.LocalDate
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Get market data snapshots for one or more securities. */
+/**
+ * Get market data snapshots for one or more securities.
+ *
+ * Two targeting modes, mutually exclusive: `instrument_ids` (1-100 ids), or
+ * `underlying_instrument_id` + `expiry` together, which resolves the underlier's option chain for
+ * that expiry and returns a snapshot for every contract in it (uncapped).
+ */
 class MarketDataGetSnapshotsParams
 private constructor(
+    private val expiry: LocalDate?,
     private val instrumentIds: List<String>?,
+    private val underlyingInstrumentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     /**
+     * Filter the option chain to contracts expiring on this date (YYYY-MM-DD). Must be provided
+     * together with `underlying_instrument_id`.
+     */
+    fun expiry(): Optional<LocalDate> = Optional.ofNullable(expiry)
+
+    /**
      * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
-     * Required; accepts 1 to 100 IDs. Duplicate resolved ids collapse to a single row.
+     * Accepts 1 to 100 IDs; duplicate resolved ids collapse to a single row. Required unless
+     * `underlying_instrument_id` and `expiry` are provided; mutually exclusive with that pair.
      */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
+
+    /**
+     * Instrument identifier or symbol of the underlying equity/index for an option chain. Must be
+     * provided together with `expiry`; mutually exclusive with `instrument_ids`.
+     */
+    fun underlyingInstrumentId(): Optional<String> = Optional.ofNullable(underlyingInstrumentId)
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -45,20 +67,34 @@ private constructor(
     /** A builder for [MarketDataGetSnapshotsParams]. */
     class Builder internal constructor() {
 
+        private var expiry: LocalDate? = null
         private var instrumentIds: MutableList<String>? = null
+        private var underlyingInstrumentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(marketDataGetSnapshotsParams: MarketDataGetSnapshotsParams) = apply {
+            expiry = marketDataGetSnapshotsParams.expiry
             instrumentIds = marketDataGetSnapshotsParams.instrumentIds?.toMutableList()
+            underlyingInstrumentId = marketDataGetSnapshotsParams.underlyingInstrumentId
             additionalHeaders = marketDataGetSnapshotsParams.additionalHeaders.toBuilder()
             additionalQueryParams = marketDataGetSnapshotsParams.additionalQueryParams.toBuilder()
         }
 
         /**
+         * Filter the option chain to contracts expiring on this date (YYYY-MM-DD). Must be provided
+         * together with `underlying_instrument_id`.
+         */
+        fun expiry(expiry: LocalDate?) = apply { this.expiry = expiry }
+
+        /** Alias for calling [Builder.expiry] with `expiry.orElse(null)`. */
+        fun expiry(expiry: Optional<LocalDate>) = expiry(expiry.getOrNull())
+
+        /**
          * Comma-separated instrument IDs (UUID) or symbols (equity tickers or OSI option symbols).
-         * Required; accepts 1 to 100 IDs. Duplicate resolved ids collapse to a single row.
+         * Accepts 1 to 100 IDs; duplicate resolved ids collapse to a single row. Required unless
+         * `underlying_instrument_id` and `expiry` are provided; mutually exclusive with that pair.
          */
         fun instrumentIds(instrumentIds: List<String>?) = apply {
             this.instrumentIds = instrumentIds?.toMutableList()
@@ -76,6 +112,21 @@ private constructor(
         fun addInstrumentId(instrumentId: String) = apply {
             instrumentIds = (instrumentIds ?: mutableListOf()).apply { add(instrumentId) }
         }
+
+        /**
+         * Instrument identifier or symbol of the underlying equity/index for an option chain. Must
+         * be provided together with `expiry`; mutually exclusive with `instrument_ids`.
+         */
+        fun underlyingInstrumentId(underlyingInstrumentId: String?) = apply {
+            this.underlyingInstrumentId = underlyingInstrumentId
+        }
+
+        /**
+         * Alias for calling [Builder.underlyingInstrumentId] with
+         * `underlyingInstrumentId.orElse(null)`.
+         */
+        fun underlyingInstrumentId(underlyingInstrumentId: Optional<String>) =
+            underlyingInstrumentId(underlyingInstrumentId.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -182,7 +233,9 @@ private constructor(
          */
         fun build(): MarketDataGetSnapshotsParams =
             MarketDataGetSnapshotsParams(
+                expiry,
                 instrumentIds?.toImmutable(),
+                underlyingInstrumentId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -193,7 +246,9 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
+                expiry?.let { put("expiry", it.toString()) }
                 instrumentIds?.let { put("instrument_ids", it.joinToString(",")) }
+                underlyingInstrumentId?.let { put("underlying_instrument_id", it) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -204,14 +259,22 @@ private constructor(
         }
 
         return other is MarketDataGetSnapshotsParams &&
+            expiry == other.expiry &&
             instrumentIds == other.instrumentIds &&
+            underlyingInstrumentId == other.underlyingInstrumentId &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(instrumentIds, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            expiry,
+            instrumentIds,
+            underlyingInstrumentId,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "MarketDataGetSnapshotsParams{instrumentIds=$instrumentIds, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "MarketDataGetSnapshotsParams{expiry=$expiry, instrumentIds=$instrumentIds, underlyingInstrumentId=$underlyingInstrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

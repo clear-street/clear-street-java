@@ -29,6 +29,7 @@ private constructor(
     private val company: JsonField<String>,
     private val exchange: JsonField<String>,
     private val marketCap: JsonField<String>,
+    private val offeringAmount: JsonField<String>,
     private val priceRange: JsonField<String>,
     private val shares: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -44,6 +45,9 @@ private constructor(
         @JsonProperty("company") @ExcludeMissing company: JsonField<String> = JsonMissing.of(),
         @JsonProperty("exchange") @ExcludeMissing exchange: JsonField<String> = JsonMissing.of(),
         @JsonProperty("market_cap") @ExcludeMissing marketCap: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("offering_amount")
+        @ExcludeMissing
+        offeringAmount: JsonField<String> = JsonMissing.of(),
         @JsonProperty("price_range")
         @ExcludeMissing
         priceRange: JsonField<String> = JsonMissing.of(),
@@ -55,6 +59,7 @@ private constructor(
         company,
         exchange,
         marketCap,
+        offeringAmount,
         priceRange,
         shares,
         mutableMapOf(),
@@ -105,13 +110,26 @@ private constructor(
     fun exchange(): Optional<String> = exchange.getOptional("exchange")
 
     /**
-     * IPO market cap. When a null/undefined value is observed, it indicates that there is no
+     * Deprecated: use `offering_amount`, which carries the same value. This is not a market
+     * capitalization. When a null/undefined value is observed, it indicates that there is no
      * available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
+    @Deprecated("deprecated")
     fun marketCap(): Optional<String> = marketCap.getOptional("market_cap")
+
+    /**
+     * IPO maximum aggregate offering value: all offered shares, including over-allotment
+     * (greenshoe) shares, at the top of the price range. This is an upper bound. It assumes full
+     * exercise of the over-allotment option and pricing at the top of the range. When a
+     * null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun offeringAmount(): Optional<String> = offeringAmount.getOptional("offering_amount")
 
     /**
      * IPO price range. When a null/undefined value is observed, it indicates that there is no
@@ -173,7 +191,19 @@ private constructor(
      *
      * Unlike [marketCap], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("market_cap") @ExcludeMissing fun _marketCap(): JsonField<String> = marketCap
+    @Deprecated("deprecated")
+    @JsonProperty("market_cap")
+    @ExcludeMissing
+    fun _marketCap(): JsonField<String> = marketCap
+
+    /**
+     * Returns the raw JSON value of [offeringAmount].
+     *
+     * Unlike [offeringAmount], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("offering_amount")
+    @ExcludeMissing
+    fun _offeringAmount(): JsonField<String> = offeringAmount
 
     /**
      * Returns the raw JSON value of [priceRange].
@@ -223,6 +253,7 @@ private constructor(
         private var company: JsonField<String> = JsonMissing.of()
         private var exchange: JsonField<String> = JsonMissing.of()
         private var marketCap: JsonField<String> = JsonMissing.of()
+        private var offeringAmount: JsonField<String> = JsonMissing.of()
         private var priceRange: JsonField<String> = JsonMissing.of()
         private var shares: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -235,6 +266,7 @@ private constructor(
             company = instrumentIpoEvent.company
             exchange = instrumentIpoEvent.exchange
             marketCap = instrumentIpoEvent.marketCap
+            offeringAmount = instrumentIpoEvent.offeringAmount
             priceRange = instrumentIpoEvent.priceRange
             shares = instrumentIpoEvent.shares
             additionalProperties = instrumentIpoEvent.additionalProperties.toMutableMap()
@@ -325,12 +357,15 @@ private constructor(
         fun exchange(exchange: JsonField<String>) = apply { this.exchange = exchange }
 
         /**
-         * IPO market cap. When a null/undefined value is observed, it indicates that there is no
+         * Deprecated: use `offering_amount`, which carries the same value. This is not a market
+         * capitalization. When a null/undefined value is observed, it indicates that there is no
          * available data.
          */
+        @Deprecated("deprecated")
         fun marketCap(marketCap: String?) = marketCap(JsonField.ofNullable(marketCap))
 
         /** Alias for calling [Builder.marketCap] with `marketCap.orElse(null)`. */
+        @Deprecated("deprecated")
         fun marketCap(marketCap: Optional<String>) = marketCap(marketCap.getOrNull())
 
         /**
@@ -340,7 +375,32 @@ private constructor(
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
+        @Deprecated("deprecated")
         fun marketCap(marketCap: JsonField<String>) = apply { this.marketCap = marketCap }
+
+        /**
+         * IPO maximum aggregate offering value: all offered shares, including over-allotment
+         * (greenshoe) shares, at the top of the price range. This is an upper bound. It assumes
+         * full exercise of the over-allotment option and pricing at the top of the range. When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun offeringAmount(offeringAmount: String?) =
+            offeringAmount(JsonField.ofNullable(offeringAmount))
+
+        /** Alias for calling [Builder.offeringAmount] with `offeringAmount.orElse(null)`. */
+        fun offeringAmount(offeringAmount: Optional<String>) =
+            offeringAmount(offeringAmount.getOrNull())
+
+        /**
+         * Sets [Builder.offeringAmount] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.offeringAmount] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun offeringAmount(offeringAmount: JsonField<String>) = apply {
+            this.offeringAmount = offeringAmount
+        }
 
         /**
          * IPO price range. When a null/undefined value is observed, it indicates that there is no
@@ -416,6 +476,7 @@ private constructor(
                 company,
                 exchange,
                 marketCap,
+                offeringAmount,
                 priceRange,
                 shares,
                 additionalProperties.toMutableMap(),
@@ -443,6 +504,7 @@ private constructor(
         company()
         exchange()
         marketCap()
+        offeringAmount()
         priceRange()
         shares()
         validated = true
@@ -469,6 +531,7 @@ private constructor(
             (if (company.asKnown().isPresent) 1 else 0) +
             (if (exchange.asKnown().isPresent) 1 else 0) +
             (if (marketCap.asKnown().isPresent) 1 else 0) +
+            (if (offeringAmount.asKnown().isPresent) 1 else 0) +
             (if (priceRange.asKnown().isPresent) 1 else 0) +
             (if (shares.asKnown().isPresent) 1 else 0)
 
@@ -484,6 +547,7 @@ private constructor(
             company == other.company &&
             exchange == other.exchange &&
             marketCap == other.marketCap &&
+            offeringAmount == other.offeringAmount &&
             priceRange == other.priceRange &&
             shares == other.shares &&
             additionalProperties == other.additionalProperties
@@ -497,6 +561,7 @@ private constructor(
             company,
             exchange,
             marketCap,
+            offeringAmount,
             priceRange,
             shares,
             additionalProperties,
@@ -506,5 +571,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentIpoEvent{date=$date, actions=$actions, announcedAt=$announcedAt, company=$company, exchange=$exchange, marketCap=$marketCap, priceRange=$priceRange, shares=$shares, additionalProperties=$additionalProperties}"
+        "InstrumentIpoEvent{date=$date, actions=$actions, announcedAt=$announcedAt, company=$company, exchange=$exchange, marketCap=$marketCap, offeringAmount=$offeringAmount, priceRange=$priceRange, shares=$shares, additionalProperties=$additionalProperties}"
 }

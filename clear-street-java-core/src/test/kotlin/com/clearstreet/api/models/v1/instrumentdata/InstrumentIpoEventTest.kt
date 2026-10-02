@@ -21,6 +21,7 @@ internal class InstrumentIpoEventTest {
                 .company("Apple Inc.")
                 .exchange("NASDAQ")
                 .marketCap("2500000000")
+                .offeringAmount("2500000000")
                 .priceRange("100.00 - 110.00")
                 .shares("1000000")
                 .build()
@@ -32,6 +33,7 @@ internal class InstrumentIpoEventTest {
         assertThat(instrumentIpoEvent.company()).contains("Apple Inc.")
         assertThat(instrumentIpoEvent.exchange()).contains("NASDAQ")
         assertThat(instrumentIpoEvent.marketCap()).contains("2500000000")
+        assertThat(instrumentIpoEvent.offeringAmount()).contains("2500000000")
         assertThat(instrumentIpoEvent.priceRange()).contains("100.00 - 110.00")
         assertThat(instrumentIpoEvent.shares()).contains("1000000")
     }
@@ -47,6 +49,7 @@ internal class InstrumentIpoEventTest {
                 .company("Apple Inc.")
                 .exchange("NASDAQ")
                 .marketCap("2500000000")
+                .offeringAmount("2500000000")
                 .priceRange("100.00 - 110.00")
                 .shares("1000000")
                 .build()

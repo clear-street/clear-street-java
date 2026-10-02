@@ -19,6 +19,7 @@ internal class InstrumentEventIpoItemTest {
                 .company("company")
                 .exchange("exchange")
                 .marketCap("market_cap")
+                .offeringAmount("offering_amount")
                 .priceRange("price_range")
                 .shares("shares")
                 .build()
@@ -29,6 +30,7 @@ internal class InstrumentEventIpoItemTest {
         assertThat(instrumentEventIpoItem.company()).contains("company")
         assertThat(instrumentEventIpoItem.exchange()).contains("exchange")
         assertThat(instrumentEventIpoItem.marketCap()).contains("market_cap")
+        assertThat(instrumentEventIpoItem.offeringAmount()).contains("offering_amount")
         assertThat(instrumentEventIpoItem.priceRange()).contains("price_range")
         assertThat(instrumentEventIpoItem.shares()).contains("shares")
     }
@@ -43,6 +45,7 @@ internal class InstrumentEventIpoItemTest {
                 .company("company")
                 .exchange("exchange")
                 .marketCap("market_cap")
+                .offeringAmount("offering_amount")
                 .priceRange("price_range")
                 .shares("shares")
                 .build()

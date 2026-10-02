@@ -51,7 +51,13 @@ interface MarketDataService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): MarketDataGetDailySummariesResponse
 
-    /** Get market data snapshots for one or more securities. */
+    /**
+     * Get market data snapshots for one or more securities.
+     *
+     * Two targeting modes, mutually exclusive: `instrument_ids` (1-100 ids), or
+     * `underlying_instrument_id` + `expiry` together, which resolves the underlier's option chain
+     * for that expiry and returns a snapshot for every contract in it (uncapped).
+     */
     fun getSnapshots(): MarketDataGetSnapshotsResponse =
         getSnapshots(MarketDataGetSnapshotsParams.none())
 
