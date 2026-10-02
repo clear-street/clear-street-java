@@ -32,7 +32,7 @@ import kotlin.jvm.optionals.getOrNull
 
 /**
  * Optional execution strategy controlling how the order is worked in the market. Omit to use
- * standard routing. One of `SOR`, `VWAP`, or `TWAP`.
+ * standard routing. One of `SOR`, `VWAP`, `TWAP`, or `DMA`.
  */
 @JsonDeserialize(using = OrderStrategy.Deserializer::class)
 @JsonSerialize(using = OrderStrategy.Serializer::class)
@@ -41,6 +41,7 @@ private constructor(
     private val type: Type? = null,
     private val unionMember1: UnionMember1? = null,
     private val unionMember2: UnionMember2? = null,
+    private val unionMember3: UnionMember3? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -56,11 +57,16 @@ private constructor(
     /** Time-Weighted Average Price. Spreads execution evenly across the execution window. */
     fun unionMember2(): Optional<UnionMember2> = Optional.ofNullable(unionMember2)
 
+    /** Direct Market Access. Routes the order straight to the named venue. */
+    fun unionMember3(): Optional<UnionMember3> = Optional.ofNullable(unionMember3)
+
     fun isType(): Boolean = type != null
 
     fun isUnionMember1(): Boolean = unionMember1 != null
 
     fun isUnionMember2(): Boolean = unionMember2 != null
+
+    fun isUnionMember3(): Boolean = unionMember3 != null
 
     /** Smart Order Router. Routes the order to the best available venue(s). */
     fun asType(): Type = type.getOrThrow("type")
@@ -73,6 +79,9 @@ private constructor(
 
     /** Time-Weighted Average Price. Spreads execution evenly across the execution window. */
     fun asUnionMember2(): UnionMember2 = unionMember2.getOrThrow("unionMember2")
+
+    /** Direct Market Access. Routes the order straight to the named venue. */
+    fun asUnionMember3(): UnionMember3 = unionMember3.getOrThrow("unionMember3")
 
     fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
@@ -110,6 +119,7 @@ private constructor(
             type != null -> visitor.visitType(type)
             unionMember1 != null -> visitor.visitUnionMember1(unionMember1)
             unionMember2 != null -> visitor.visitUnionMember2(unionMember2)
+            unionMember3 != null -> visitor.visitUnionMember3(unionMember3)
             else -> visitor.unknown(_json)
         }
 
@@ -141,6 +151,10 @@ private constructor(
                 override fun visitUnionMember2(unionMember2: UnionMember2) {
                     unionMember2.validate()
                 }
+
+                override fun visitUnionMember3(unionMember3: UnionMember3) {
+                    unionMember3.validate()
+                }
             }
         )
         validated = true
@@ -169,6 +183,8 @@ private constructor(
 
                 override fun visitUnionMember2(unionMember2: UnionMember2) = unionMember2.validity()
 
+                override fun visitUnionMember3(unionMember3: UnionMember3) = unionMember3.validity()
+
                 override fun unknown(json: JsonValue?) = 0
             }
         )
@@ -181,16 +197,18 @@ private constructor(
         return other is OrderStrategy &&
             type == other.type &&
             unionMember1 == other.unionMember1 &&
-            unionMember2 == other.unionMember2
+            unionMember2 == other.unionMember2 &&
+            unionMember3 == other.unionMember3
     }
 
-    override fun hashCode(): Int = Objects.hash(type, unionMember1, unionMember2)
+    override fun hashCode(): Int = Objects.hash(type, unionMember1, unionMember2, unionMember3)
 
     override fun toString(): String =
         when {
             type != null -> "OrderStrategy{type=$type}"
             unionMember1 != null -> "OrderStrategy{unionMember1=$unionMember1}"
             unionMember2 != null -> "OrderStrategy{unionMember2=$unionMember2}"
+            unionMember3 != null -> "OrderStrategy{unionMember3=$unionMember3}"
             _json != null -> "OrderStrategy{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid OrderStrategy")
         }
@@ -210,6 +228,10 @@ private constructor(
         /** Time-Weighted Average Price. Spreads execution evenly across the execution window. */
         @JvmStatic
         fun ofUnionMember2(unionMember2: UnionMember2) = OrderStrategy(unionMember2 = unionMember2)
+
+        /** Direct Market Access. Routes the order straight to the named venue. */
+        @JvmStatic
+        fun ofUnionMember3(unionMember3: UnionMember3) = OrderStrategy(unionMember3 = unionMember3)
     }
 
     /**
@@ -228,6 +250,9 @@ private constructor(
 
         /** Time-Weighted Average Price. Spreads execution evenly across the execution window. */
         fun visitUnionMember2(unionMember2: UnionMember2): T
+
+        /** Direct Market Access. Routes the order straight to the named venue. */
+        fun visitUnionMember3(unionMember3: UnionMember3): T
 
         /**
          * Maps an unknown variant of [OrderStrategy] to a value of type [T].
@@ -259,6 +284,9 @@ private constructor(
                         tryDeserialize(node, jacksonTypeRef<UnionMember2>())?.let {
                             OrderStrategy(unionMember2 = it, _json = json)
                         },
+                        tryDeserialize(node, jacksonTypeRef<UnionMember3>())?.let {
+                            OrderStrategy(unionMember3 = it, _json = json)
+                        },
                     )
                     .filterNotNull()
                     .allMaxBy { it.validity() }
@@ -286,6 +314,7 @@ private constructor(
                 value.type != null -> generator.writeObject(value.type)
                 value.unionMember1 != null -> generator.writeObject(value.unionMember1)
                 value.unionMember2 != null -> generator.writeObject(value.unionMember2)
+                value.unionMember3 != null -> generator.writeObject(value.unionMember3)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid OrderStrategy")
             }
@@ -1370,5 +1399,351 @@ private constructor(
 
         override fun toString() =
             "UnionMember2{type=$type, endAt=$endAt, startAt=$startAt, additionalProperties=$additionalProperties}"
+    }
+
+    /** Direct Market Access. Routes the order straight to the named venue. */
+    class UnionMember3
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val destination: JsonField<String>,
+        private val type: JsonField<Type>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("destination")
+            @ExcludeMissing
+            destination: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
+        ) : this(destination, type, mutableMapOf())
+
+        /**
+         * Venue code the order is routed to.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun destination(): String = destination.getRequired("destination")
+
+        /**
+         * Execution strategy type.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun type(): Type = type.getRequired("type")
+
+        /**
+         * Returns the raw JSON value of [destination].
+         *
+         * Unlike [destination], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("destination")
+        @ExcludeMissing
+        fun _destination(): JsonField<String> = destination
+
+        /**
+         * Returns the raw JSON value of [type].
+         *
+         * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [UnionMember3].
+             *
+             * The following fields are required:
+             * ```java
+             * .destination()
+             * .type()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [UnionMember3]. */
+        class Builder internal constructor() {
+
+            private var destination: JsonField<String>? = null
+            private var type: JsonField<Type>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(unionMember3: UnionMember3) = apply {
+                destination = unionMember3.destination
+                type = unionMember3.type
+                additionalProperties = unionMember3.additionalProperties.toMutableMap()
+            }
+
+            /** Venue code the order is routed to. */
+            fun destination(destination: String) = destination(JsonField.of(destination))
+
+            /**
+             * Sets [Builder.destination] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.destination] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun destination(destination: JsonField<String>) = apply {
+                this.destination = destination
+            }
+
+            /** Execution strategy type. */
+            fun type(type: Type) = type(JsonField.of(type))
+
+            /**
+             * Sets [Builder.type] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.type] with a well-typed [Type] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun type(type: JsonField<Type>) = apply { this.type = type }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [UnionMember3].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .destination()
+             * .type()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): UnionMember3 =
+                UnionMember3(
+                    checkRequired("destination", destination),
+                    checkRequired("type", type),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws ClearStreetInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): UnionMember3 = apply {
+            if (validated) {
+                return@apply
+            }
+
+            destination()
+            type().validate()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: ClearStreetInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (if (destination.asKnown().isPresent) 1 else 0) +
+                (type.asKnown().getOrNull()?.validity() ?: 0)
+
+        /** Execution strategy type. */
+        class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val DMA = of("DMA")
+
+                @JvmStatic fun of(value: String) = Type(JsonField.of(value))
+            }
+
+            /** An enum containing [Type]'s known values. */
+            enum class Known {
+                DMA
+            }
+
+            /**
+             * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Type] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                DMA,
+                /** An enum member indicating that [Type] was instantiated with an unknown value. */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    DMA -> Value.DMA
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws ClearStreetInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    DMA -> Known.DMA
+                    else -> throw ClearStreetInvalidDataException("Unknown Type: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws ClearStreetInvalidDataException if this class instance's value does not have
+             *   the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    ClearStreetInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws ClearStreetInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): Type = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: ClearStreetInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Type && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is UnionMember3 &&
+                destination == other.destination &&
+                type == other.type &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(destination, type, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "UnionMember3{destination=$destination, type=$type, additionalProperties=$additionalProperties}"
     }
 }

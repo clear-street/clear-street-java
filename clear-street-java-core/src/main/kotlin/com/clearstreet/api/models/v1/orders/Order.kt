@@ -2,6 +2,7 @@
 
 package com.clearstreet.api.models.v1.orders
 
+import com.clearstreet.api.core.Enum
 import com.clearstreet.api.core.ExcludeMissing
 import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.core.JsonMissing
@@ -1698,7 +1699,8 @@ private constructor(
     class Strategy
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val type: JsonField<String>,
+        private val type: JsonField<Type>,
+        private val destination: JsonField<String>,
         private val endAt: JsonField<OffsetDateTime>,
         private val startAt: JsonField<OffsetDateTime>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -1706,14 +1708,17 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("type") @ExcludeMissing type: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
+            @JsonProperty("destination")
+            @ExcludeMissing
+            destination: JsonField<String> = JsonMissing.of(),
             @JsonProperty("end_at")
             @ExcludeMissing
             endAt: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("start_at")
             @ExcludeMissing
             startAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        ) : this(type, endAt, startAt, mutableMapOf())
+        ) : this(type, destination, endAt, startAt, mutableMapOf())
 
         /**
          * Execution strategy type.
@@ -1721,7 +1726,15 @@ private constructor(
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun type(): String = type.getRequired("type")
+        fun type(): Type = type.getRequired("type")
+
+        /**
+         * Venue code the order is routed to. DMA only.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun destination(): Optional<String> = destination.getOptional("destination")
 
         /**
          * UTC timestamp (RFC 3339) at which execution ends.
@@ -1744,7 +1757,16 @@ private constructor(
          *
          * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<String> = type
+        @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
+
+        /**
+         * Returns the raw JSON value of [destination].
+         *
+         * Unlike [destination], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("destination")
+        @ExcludeMissing
+        fun _destination(): JsonField<String> = destination
 
         /**
          * Returns the raw JSON value of [endAt].
@@ -1790,7 +1812,8 @@ private constructor(
         /** A builder for [Strategy]. */
         class Builder internal constructor() {
 
-            private var type: JsonField<String>? = null
+            private var type: JsonField<Type>? = null
+            private var destination: JsonField<String> = JsonMissing.of()
             private var endAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var startAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -1798,22 +1821,37 @@ private constructor(
             @JvmSynthetic
             internal fun from(strategy: Strategy) = apply {
                 type = strategy.type
+                destination = strategy.destination
                 endAt = strategy.endAt
                 startAt = strategy.startAt
                 additionalProperties = strategy.additionalProperties.toMutableMap()
             }
 
             /** Execution strategy type. */
-            fun type(type: String) = type(JsonField.of(type))
+            fun type(type: Type) = type(JsonField.of(type))
 
             /**
              * Sets [Builder.type] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.type] with a well-typed [String] value instead. This
+             * You should usually call [Builder.type] with a well-typed [Type] value instead. This
              * method is primarily for setting the field to an undocumented or not yet supported
              * value.
              */
-            fun type(type: JsonField<String>) = apply { this.type = type }
+            fun type(type: JsonField<Type>) = apply { this.type = type }
+
+            /** Venue code the order is routed to. DMA only. */
+            fun destination(destination: String) = destination(JsonField.of(destination))
+
+            /**
+             * Sets [Builder.destination] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.destination] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun destination(destination: JsonField<String>) = apply {
+                this.destination = destination
+            }
 
             /** UTC timestamp (RFC 3339) at which execution ends. */
             fun endAt(endAt: OffsetDateTime) = endAt(JsonField.of(endAt))
@@ -1873,6 +1911,7 @@ private constructor(
             fun build(): Strategy =
                 Strategy(
                     checkRequired("type", type),
+                    destination,
                     endAt,
                     startAt,
                     additionalProperties.toMutableMap(),
@@ -1895,7 +1934,8 @@ private constructor(
                 return@apply
             }
 
-            type()
+            type().validate()
+            destination()
             endAt()
             startAt()
             validated = true
@@ -1917,9 +1957,160 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (if (type.asKnown().isPresent) 1 else 0) +
+            (type.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (destination.asKnown().isPresent) 1 else 0) +
                 (if (endAt.asKnown().isPresent) 1 else 0) +
                 (if (startAt.asKnown().isPresent) 1 else 0)
+
+        /** Execution strategy type. */
+        class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val SOR = of("SOR")
+
+                @JvmField val VWAP = of("VWAP")
+
+                @JvmField val TWAP = of("TWAP")
+
+                @JvmField val DMA = of("DMA")
+
+                @JvmStatic fun of(value: String) = Type(JsonField.of(value))
+            }
+
+            /** An enum containing [Type]'s known values. */
+            enum class Known {
+                SOR,
+                VWAP,
+                TWAP,
+                DMA,
+            }
+
+            /**
+             * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Type] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                SOR,
+                VWAP,
+                TWAP,
+                DMA,
+                /** An enum member indicating that [Type] was instantiated with an unknown value. */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    SOR -> Value.SOR
+                    VWAP -> Value.VWAP
+                    TWAP -> Value.TWAP
+                    DMA -> Value.DMA
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws ClearStreetInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    SOR -> Known.SOR
+                    VWAP -> Known.VWAP
+                    TWAP -> Known.TWAP
+                    DMA -> Known.DMA
+                    else -> throw ClearStreetInvalidDataException("Unknown Type: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws ClearStreetInvalidDataException if this class instance's value does not have
+             *   the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    ClearStreetInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws ClearStreetInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): Type = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: ClearStreetInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Type && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1928,19 +2119,20 @@ private constructor(
 
             return other is Strategy &&
                 type == other.type &&
+                destination == other.destination &&
                 endAt == other.endAt &&
                 startAt == other.startAt &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(type, endAt, startAt, additionalProperties)
+            Objects.hash(type, destination, endAt, startAt, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Strategy{type=$type, endAt=$endAt, startAt=$startAt, additionalProperties=$additionalProperties}"
+            "Strategy{type=$type, destination=$destination, endAt=$endAt, startAt=$startAt, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

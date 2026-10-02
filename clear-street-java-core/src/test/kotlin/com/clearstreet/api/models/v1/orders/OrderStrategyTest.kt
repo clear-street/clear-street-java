@@ -24,6 +24,7 @@ internal class OrderStrategyTest {
         assertThat(orderStrategy.type()).contains(type)
         assertThat(orderStrategy.unionMember1()).isEmpty
         assertThat(orderStrategy.unionMember2()).isEmpty
+        assertThat(orderStrategy.unionMember3()).isEmpty
     }
 
     @Test
@@ -57,6 +58,7 @@ internal class OrderStrategyTest {
         assertThat(orderStrategy.type()).isEmpty
         assertThat(orderStrategy.unionMember1()).contains(unionMember1)
         assertThat(orderStrategy.unionMember2()).isEmpty
+        assertThat(orderStrategy.unionMember3()).isEmpty
     }
 
     @Test
@@ -94,6 +96,7 @@ internal class OrderStrategyTest {
         assertThat(orderStrategy.type()).isEmpty
         assertThat(orderStrategy.unionMember1()).isEmpty
         assertThat(orderStrategy.unionMember2()).contains(unionMember2)
+        assertThat(orderStrategy.unionMember3()).isEmpty
     }
 
     @Test
@@ -105,6 +108,42 @@ internal class OrderStrategyTest {
                     .type(OrderStrategy.UnionMember2.Type.TWAP)
                     .endAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .startAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .build()
+            )
+
+        val roundtrippedOrderStrategy =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(orderStrategy),
+                jacksonTypeRef<OrderStrategy>(),
+            )
+
+        assertThat(roundtrippedOrderStrategy).isEqualTo(orderStrategy)
+    }
+
+    @Test
+    fun ofUnionMember3() {
+        val unionMember3 =
+            OrderStrategy.UnionMember3.builder()
+                .destination("destination")
+                .type(OrderStrategy.UnionMember3.Type.DMA)
+                .build()
+
+        val orderStrategy = OrderStrategy.ofUnionMember3(unionMember3)
+
+        assertThat(orderStrategy.type()).isEmpty
+        assertThat(orderStrategy.unionMember1()).isEmpty
+        assertThat(orderStrategy.unionMember2()).isEmpty
+        assertThat(orderStrategy.unionMember3()).contains(unionMember3)
+    }
+
+    @Test
+    fun ofUnionMember3Roundtrip() {
+        val jsonMapper = jsonMapper()
+        val orderStrategy =
+            OrderStrategy.ofUnionMember3(
+                OrderStrategy.UnionMember3.builder()
+                    .destination("destination")
+                    .type(OrderStrategy.UnionMember3.Type.DMA)
                     .build()
             )
 

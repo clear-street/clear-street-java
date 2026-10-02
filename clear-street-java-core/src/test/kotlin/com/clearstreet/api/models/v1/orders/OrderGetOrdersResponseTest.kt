@@ -67,7 +67,8 @@ internal class OrderGetOrdersResponseTest {
                         .stopPrice(null)
                         .strategy(
                             Order.Strategy.builder()
-                                .type("TWAP")
+                                .type(Order.Strategy.Type.TWAP)
+                                .destination("destination")
                                 .endAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .startAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .build()
@@ -137,7 +138,8 @@ internal class OrderGetOrdersResponseTest {
                     .stopPrice(null)
                     .strategy(
                         Order.Strategy.builder()
-                            .type("TWAP")
+                            .type(Order.Strategy.Type.TWAP)
+                            .destination("destination")
                             .endAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .startAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .build()
@@ -209,7 +211,8 @@ internal class OrderGetOrdersResponseTest {
                         .stopPrice(null)
                         .strategy(
                             Order.Strategy.builder()
-                                .type("TWAP")
+                                .type(Order.Strategy.Type.TWAP)
+                                .destination("destination")
                                 .endAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .startAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .build()

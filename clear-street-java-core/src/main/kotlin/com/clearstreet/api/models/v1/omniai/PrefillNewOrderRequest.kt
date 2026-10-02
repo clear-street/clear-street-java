@@ -221,9 +221,10 @@ private constructor(
     fun stopPrice(): Optional<String> = stopPrice.getOptional("stop_price")
 
     /**
-     * Optional execution strategy. One of `SOR`, `VWAP`, or `TWAP`. Defaults to `SOR`. `VWAP` and
-     * `TWAP` are supported only on `MARKET` and `LIMIT` orders with `DAY` time-in-force, and are
-     * not supported on OTC common-stock orders.
+     * Optional execution strategy. One of `SOR`, `VWAP`, `TWAP`, or `DMA`. Defaults to `SOR`, the
+     * only strategy OTC common-stock orders support. `VWAP` and `TWAP` are supported only on
+     * `MARKET` and `LIMIT` orders, and `DMA` only on `LIMIT` orders; all three require `DAY`
+     * time-in-force.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -682,9 +683,10 @@ private constructor(
         fun stopPrice(stopPrice: JsonField<String>) = apply { this.stopPrice = stopPrice }
 
         /**
-         * Optional execution strategy. One of `SOR`, `VWAP`, or `TWAP`. Defaults to `SOR`. `VWAP`
-         * and `TWAP` are supported only on `MARKET` and `LIMIT` orders with `DAY` time-in-force,
-         * and are not supported on OTC common-stock orders.
+         * Optional execution strategy. One of `SOR`, `VWAP`, `TWAP`, or `DMA`. Defaults to `SOR`,
+         * the only strategy OTC common-stock orders support. `VWAP` and `TWAP` are supported only
+         * on `MARKET` and `LIMIT` orders, and `DMA` only on `LIMIT` orders; all three require `DAY`
+         * time-in-force.
          */
         fun strategy(strategy: OrderStrategy?) = strategy(JsonField.ofNullable(strategy))
 
@@ -710,6 +712,10 @@ private constructor(
         /** Alias for calling [strategy] with `OrderStrategy.ofUnionMember2(unionMember2)`. */
         fun strategy(unionMember2: OrderStrategy.UnionMember2) =
             strategy(OrderStrategy.ofUnionMember2(unionMember2))
+
+        /** Alias for calling [strategy] with `OrderStrategy.ofUnionMember3(unionMember3)`. */
+        fun strategy(unionMember3: OrderStrategy.UnionMember3) =
+            strategy(OrderStrategy.ofUnionMember3(unionMember3))
 
         /**
          * Trading symbol. For equities, use the ticker symbol (e.g., "TSLA"). For options, use the
