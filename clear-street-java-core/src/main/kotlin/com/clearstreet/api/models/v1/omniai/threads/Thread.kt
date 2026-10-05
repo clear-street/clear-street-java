@@ -58,6 +58,8 @@ private constructor(
     fun title(): String = title.getRequired("title")
 
     /**
+     * Time of the last activity: a new message in the thread or a change to the thread.
+     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -172,6 +174,7 @@ private constructor(
          */
         fun title(title: JsonField<String>) = apply { this.title = title }
 
+        /** Time of the last activity: a new message in the thread or a change to the thread. */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
 
         /**
