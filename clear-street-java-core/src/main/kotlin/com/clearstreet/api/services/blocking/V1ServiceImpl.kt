@@ -13,6 +13,8 @@ import com.clearstreet.api.services.blocking.v1.InstrumentDataService
 import com.clearstreet.api.services.blocking.v1.InstrumentDataServiceImpl
 import com.clearstreet.api.services.blocking.v1.InstrumentService
 import com.clearstreet.api.services.blocking.v1.InstrumentServiceImpl
+import com.clearstreet.api.services.blocking.v1.LocateService
+import com.clearstreet.api.services.blocking.v1.LocateServiceImpl
 import com.clearstreet.api.services.blocking.v1.OmniAiService
 import com.clearstreet.api.services.blocking.v1.OmniAiServiceImpl
 import com.clearstreet.api.services.blocking.v1.OmniFeedService
@@ -46,6 +48,8 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
     }
 
     private val instruments: InstrumentService by lazy { InstrumentServiceImpl(clientOptions) }
+
+    private val locates: LocateService by lazy { LocateServiceImpl(clientOptions) }
 
     private val omniAi: OmniAiService by lazy { OmniAiServiceImpl(clientOptions) }
 
@@ -82,6 +86,9 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
     /** Retrieve core details and discovery endpoints for tradable instruments. */
     override fun instruments(): InstrumentService = instruments
+
+    /** Query locate requests, granted locates, and cached locate borrow rates. */
+    override fun locates(): LocateService = locates
 
     override fun omniAi(): OmniAiService = omniAi
 
@@ -133,6 +140,10 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
             InstrumentServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val locates: LocateService.WithRawResponse by lazy {
+            LocateServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val omniAi: OmniAiService.WithRawResponse by lazy {
             OmniAiServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -182,6 +193,9 @@ class V1ServiceImpl internal constructor(private val clientOptions: ClientOption
 
         /** Retrieve core details and discovery endpoints for tradable instruments. */
         override fun instruments(): InstrumentService.WithRawResponse = instruments
+
+        /** Query locate requests, granted locates, and cached locate borrow rates. */
+        override fun locates(): LocateService.WithRawResponse = locates
 
         override fun omniAi(): OmniAiService.WithRawResponse = omniAi
 

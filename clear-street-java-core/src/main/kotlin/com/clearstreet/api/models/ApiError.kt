@@ -25,7 +25,7 @@ class ApiError
 private constructor(
     private val code: JsonField<Int>,
     private val message: JsonField<String>,
-    private val details: JsonField<List<Detail>>,
+    private val details: JsonField<List<UnnamedSchemaWithArrayParent0>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -33,7 +33,9 @@ private constructor(
     private constructor(
         @JsonProperty("code") @ExcludeMissing code: JsonField<Int> = JsonMissing.of(),
         @JsonProperty("message") @ExcludeMissing message: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("details") @ExcludeMissing details: JsonField<List<Detail>> = JsonMissing.of(),
+        @JsonProperty("details")
+        @ExcludeMissing
+        details: JsonField<List<UnnamedSchemaWithArrayParent0>> = JsonMissing.of(),
     ) : this(code, message, details, mutableMapOf())
 
     /**
@@ -60,7 +62,7 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun details(): Optional<List<Detail>> = details.getOptional("details")
+    fun details(): Optional<List<UnnamedSchemaWithArrayParent0>> = details.getOptional("details")
 
     /**
      * Returns the raw JSON value of [code].
@@ -81,7 +83,9 @@ private constructor(
      *
      * Unlike [details], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("details") @ExcludeMissing fun _details(): JsonField<List<Detail>> = details
+    @JsonProperty("details")
+    @ExcludeMissing
+    fun _details(): JsonField<List<UnnamedSchemaWithArrayParent0>> = details
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -114,7 +118,7 @@ private constructor(
 
         private var code: JsonField<Int>? = null
         private var message: JsonField<String>? = null
-        private var details: JsonField<MutableList<Detail>>? = null
+        private var details: JsonField<MutableList<UnnamedSchemaWithArrayParent0>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -154,25 +158,25 @@ private constructor(
          * Additional error details, if any. This can include structured information such as field
          * violations or error metadata.
          */
-        fun details(details: List<Detail>) = details(JsonField.of(details))
+        fun details(details: List<UnnamedSchemaWithArrayParent0>) = details(JsonField.of(details))
 
         /**
          * Sets [Builder.details] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.details] with a well-typed `List<Detail>` value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.details] with a well-typed
+         * `List<UnnamedSchemaWithArrayParent0>` value instead. This method is primarily for setting
+         * the field to an undocumented or not yet supported value.
          */
-        fun details(details: JsonField<List<Detail>>) = apply {
+        fun details(details: JsonField<List<UnnamedSchemaWithArrayParent0>>) = apply {
             this.details = details.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [Detail] to [details].
+         * Adds a single [UnnamedSchemaWithArrayParent0] to [details].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addDetail(detail: Detail) = apply {
+        fun addDetail(detail: UnnamedSchemaWithArrayParent0) = apply {
             details =
                 (details ?: JsonField.of(mutableListOf())).also {
                     checkKnown("details", it).add(detail)
@@ -260,7 +264,7 @@ private constructor(
             (if (message.asKnown().isPresent) 1 else 0) +
             (details.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
-    class Detail
+    class UnnamedSchemaWithArrayParent0
     @JsonCreator
     private constructor(
         @com.fasterxml.jackson.annotation.JsonValue
@@ -275,19 +279,24 @@ private constructor(
 
         companion object {
 
-            /** Returns a mutable builder for constructing an instance of [Detail]. */
+            /**
+             * Returns a mutable builder for constructing an instance of
+             * [UnnamedSchemaWithArrayParent0].
+             */
             @JvmStatic fun builder() = Builder()
         }
 
-        /** A builder for [Detail]. */
+        /** A builder for [UnnamedSchemaWithArrayParent0]. */
         class Builder internal constructor() {
 
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
-            internal fun from(detail: Detail) = apply {
-                additionalProperties = detail.additionalProperties.toMutableMap()
-            }
+            internal fun from(unnamedSchemaWithArrayParent0: UnnamedSchemaWithArrayParent0) =
+                apply {
+                    additionalProperties =
+                        unnamedSchemaWithArrayParent0.additionalProperties.toMutableMap()
+                }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -309,11 +318,12 @@ private constructor(
             }
 
             /**
-             * Returns an immutable instance of [Detail].
+             * Returns an immutable instance of [UnnamedSchemaWithArrayParent0].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              */
-            fun build(): Detail = Detail(additionalProperties.toImmutable())
+            fun build(): UnnamedSchemaWithArrayParent0 =
+                UnnamedSchemaWithArrayParent0(additionalProperties.toImmutable())
         }
 
         private var validated: Boolean = false
@@ -327,7 +337,7 @@ private constructor(
          * @throws ClearStreetInvalidDataException if any value type in this object doesn't match
          *   its expected type.
          */
-        fun validate(): Detail = apply {
+        fun validate(): UnnamedSchemaWithArrayParent0 = apply {
             if (validated) {
                 return@apply
             }
@@ -358,14 +368,16 @@ private constructor(
                 return true
             }
 
-            return other is Detail && additionalProperties == other.additionalProperties
+            return other is UnnamedSchemaWithArrayParent0 &&
+                additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
 
         override fun hashCode(): Int = hashCode
 
-        override fun toString() = "Detail{additionalProperties=$additionalProperties}"
+        override fun toString() =
+            "UnnamedSchemaWithArrayParent0{additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

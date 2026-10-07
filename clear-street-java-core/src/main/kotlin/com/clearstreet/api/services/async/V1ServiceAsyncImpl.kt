@@ -13,6 +13,8 @@ import com.clearstreet.api.services.async.v1.InstrumentDataServiceAsync
 import com.clearstreet.api.services.async.v1.InstrumentDataServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.InstrumentServiceAsync
 import com.clearstreet.api.services.async.v1.InstrumentServiceAsyncImpl
+import com.clearstreet.api.services.async.v1.LocateServiceAsync
+import com.clearstreet.api.services.async.v1.LocateServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.OmniAiServiceAsync
 import com.clearstreet.api.services.async.v1.OmniAiServiceAsyncImpl
 import com.clearstreet.api.services.async.v1.OmniFeedServiceAsync
@@ -52,6 +54,8 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
         InstrumentServiceAsyncImpl(clientOptions)
     }
 
+    private val locates: LocateServiceAsync by lazy { LocateServiceAsyncImpl(clientOptions) }
+
     private val omniAi: OmniAiServiceAsync by lazy { OmniAiServiceAsyncImpl(clientOptions) }
 
     private val omniFeed: OmniFeedServiceAsync by lazy { OmniFeedServiceAsyncImpl(clientOptions) }
@@ -89,6 +93,9 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     /** Retrieve core details and discovery endpoints for tradable instruments. */
     override fun instruments(): InstrumentServiceAsync = instruments
+
+    /** Query locate requests, granted locates, and cached locate borrow rates. */
+    override fun locates(): LocateServiceAsync = locates
 
     override fun omniAi(): OmniAiServiceAsync = omniAi
 
@@ -140,6 +147,10 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             InstrumentServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val locates: LocateServiceAsync.WithRawResponse by lazy {
+            LocateServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val omniAi: OmniAiServiceAsync.WithRawResponse by lazy {
             OmniAiServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -189,6 +200,9 @@ class V1ServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
         /** Retrieve core details and discovery endpoints for tradable instruments. */
         override fun instruments(): InstrumentServiceAsync.WithRawResponse = instruments
+
+        /** Query locate requests, granted locates, and cached locate borrow rates. */
+        override fun locates(): LocateServiceAsync.WithRawResponse = locates
 
         override fun omniAi(): OmniAiServiceAsync.WithRawResponse = omniAi
 

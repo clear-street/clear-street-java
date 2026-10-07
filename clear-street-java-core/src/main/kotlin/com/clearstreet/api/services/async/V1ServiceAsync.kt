@@ -8,6 +8,7 @@ import com.clearstreet.api.services.async.v1.ApiVersionServiceAsync
 import com.clearstreet.api.services.async.v1.CalendarServiceAsync
 import com.clearstreet.api.services.async.v1.InstrumentDataServiceAsync
 import com.clearstreet.api.services.async.v1.InstrumentServiceAsync
+import com.clearstreet.api.services.async.v1.LocateServiceAsync
 import com.clearstreet.api.services.async.v1.OmniAiServiceAsync
 import com.clearstreet.api.services.async.v1.OmniFeedServiceAsync
 import com.clearstreet.api.services.async.v1.OrderServiceAsync
@@ -45,6 +46,9 @@ interface V1ServiceAsync {
 
     /** Retrieve core details and discovery endpoints for tradable instruments. */
     fun instruments(): InstrumentServiceAsync
+
+    /** Query locate requests, granted locates, and cached locate borrow rates. */
+    fun locates(): LocateServiceAsync
 
     fun omniAi(): OmniAiServiceAsync
 
@@ -97,6 +101,9 @@ interface V1ServiceAsync {
 
         /** Retrieve core details and discovery endpoints for tradable instruments. */
         fun instruments(): InstrumentServiceAsync.WithRawResponse
+
+        /** Query locate requests, granted locates, and cached locate borrow rates. */
+        fun locates(): LocateServiceAsync.WithRawResponse
 
         fun omniAi(): OmniAiServiceAsync.WithRawResponse
 

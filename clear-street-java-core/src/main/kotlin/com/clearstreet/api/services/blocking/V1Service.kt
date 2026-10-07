@@ -8,6 +8,7 @@ import com.clearstreet.api.services.blocking.v1.ApiVersionService
 import com.clearstreet.api.services.blocking.v1.CalendarService
 import com.clearstreet.api.services.blocking.v1.InstrumentDataService
 import com.clearstreet.api.services.blocking.v1.InstrumentService
+import com.clearstreet.api.services.blocking.v1.LocateService
 import com.clearstreet.api.services.blocking.v1.OmniAiService
 import com.clearstreet.api.services.blocking.v1.OmniFeedService
 import com.clearstreet.api.services.blocking.v1.OrderService
@@ -45,6 +46,9 @@ interface V1Service {
 
     /** Retrieve core details and discovery endpoints for tradable instruments. */
     fun instruments(): InstrumentService
+
+    /** Query locate requests, granted locates, and cached locate borrow rates. */
+    fun locates(): LocateService
 
     fun omniAi(): OmniAiService
 
@@ -97,6 +101,9 @@ interface V1Service {
 
         /** Retrieve core details and discovery endpoints for tradable instruments. */
         fun instruments(): InstrumentService.WithRawResponse
+
+        /** Query locate requests, granted locates, and cached locate borrow rates. */
+        fun locates(): LocateService.WithRawResponse
 
         fun omniAi(): OmniAiService.WithRawResponse
 
