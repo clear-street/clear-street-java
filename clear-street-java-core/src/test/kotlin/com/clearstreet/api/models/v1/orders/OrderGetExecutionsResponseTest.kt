@@ -6,7 +6,6 @@ import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
-import com.clearstreet.api.models.UnnamedSchemaWithArrayParent0
 import com.clearstreet.api.models.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
@@ -34,7 +33,7 @@ internal class OrderGetExecutionsResponseTest {
                         .code(400)
                         .message("Order quantity must be greater than zero")
                         .addDetail(
-                            UnnamedSchemaWithArrayParent0.builder()
+                            ApiError.Detail.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -74,7 +73,7 @@ internal class OrderGetExecutionsResponseTest {
                     .code(400)
                     .message("Order quantity must be greater than zero")
                     .addDetail(
-                        UnnamedSchemaWithArrayParent0.builder()
+                        ApiError.Detail.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
@@ -118,7 +117,7 @@ internal class OrderGetExecutionsResponseTest {
                         .code(400)
                         .message("Order quantity must be greater than zero")
                         .addDetail(
-                            UnnamedSchemaWithArrayParent0.builder()
+                            ApiError.Detail.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )

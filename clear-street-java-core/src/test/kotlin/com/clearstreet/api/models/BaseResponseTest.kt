@@ -29,7 +29,7 @@ internal class BaseResponseTest {
                         .code(400)
                         .message("Order quantity must be greater than zero")
                         .addDetail(
-                            UnnamedSchemaWithArrayParent0.builder()
+                            ApiError.Detail.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )
@@ -54,7 +54,7 @@ internal class BaseResponseTest {
                     .code(400)
                     .message("Order quantity must be greater than zero")
                     .addDetail(
-                        UnnamedSchemaWithArrayParent0.builder()
+                        ApiError.Detail.builder()
                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                             .build()
                     )
@@ -82,7 +82,7 @@ internal class BaseResponseTest {
                         .code(400)
                         .message("Order quantity must be greater than zero")
                         .addDetail(
-                            UnnamedSchemaWithArrayParent0.builder()
+                            ApiError.Detail.builder()
                                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                                 .build()
                         )

@@ -18,7 +18,7 @@ internal class ApiErrorTest {
                 .code(400)
                 .message("Order quantity must be greater than zero")
                 .addDetail(
-                    UnnamedSchemaWithArrayParent0.builder()
+                    ApiError.Detail.builder()
                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                         .build()
                 )
@@ -28,7 +28,7 @@ internal class ApiErrorTest {
         assertThat(apiError.message()).isEqualTo("Order quantity must be greater than zero")
         assertThat(apiError.details().getOrNull())
             .containsExactly(
-                UnnamedSchemaWithArrayParent0.builder()
+                ApiError.Detail.builder()
                     .putAdditionalProperty("foo", JsonValue.from("bar"))
                     .build()
             )
@@ -42,7 +42,7 @@ internal class ApiErrorTest {
                 .code(400)
                 .message("Order quantity must be greater than zero")
                 .addDetail(
-                    UnnamedSchemaWithArrayParent0.builder()
+                    ApiError.Detail.builder()
                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                         .build()
                 )
