@@ -11,7 +11,6 @@ import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.BaseResponse
 import com.clearstreet.api.models.ResponseMetadata
-import com.clearstreet.api.models.v1.privatemarkets.companies.CompanyDetail
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator

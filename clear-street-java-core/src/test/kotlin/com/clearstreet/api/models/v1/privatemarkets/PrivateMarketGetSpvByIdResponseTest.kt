@@ -9,11 +9,6 @@ import com.clearstreet.api.models.ResponseMetadata
 import com.clearstreet.api.models.v1.privatemarkets.offerings.Currency
 import com.clearstreet.api.models.v1.privatemarkets.offerings.SpvStatus
 import com.clearstreet.api.models.v1.privatemarkets.offerings.ValuationBasis
-import com.clearstreet.api.models.v1.privatemarkets.spvs.ChargedBy
-import com.clearstreet.api.models.v1.privatemarkets.spvs.FeeFrequency
-import com.clearstreet.api.models.v1.privatemarkets.spvs.FeeType
-import com.clearstreet.api.models.v1.privatemarkets.spvs.SpvDetail
-import com.clearstreet.api.models.v1.privatemarkets.spvs.SpvFeeTermResource
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
