@@ -65,7 +65,8 @@ private constructor(
     fun gamma(): String = gamma.getRequired("gamma")
 
     /**
-     * Implied volatility, annualized (`0.20` == 20%).
+     * Implied volatility. Temporarily withheld: always `0`. Do not use this value; it is not a
+     * market implied volatility.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -250,7 +251,10 @@ private constructor(
          */
         fun gamma(gamma: JsonField<String>) = apply { this.gamma = gamma }
 
-        /** Implied volatility, annualized (`0.20` == 20%). */
+        /**
+         * Implied volatility. Temporarily withheld: always `0`. Do not use this value; it is not a
+         * market implied volatility.
+         */
         fun iv(iv: String) = iv(JsonField.of(iv))
 
         /**
