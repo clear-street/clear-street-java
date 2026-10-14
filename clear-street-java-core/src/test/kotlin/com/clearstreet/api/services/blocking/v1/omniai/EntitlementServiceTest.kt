@@ -6,7 +6,9 @@ import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.models.v1.omniai.EntitlementCode
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsParams
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementStatusParams
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementOptOutEntitlementsParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -64,6 +66,23 @@ internal class EntitlementServiceTest {
     }
 
     @Test
+    fun getEntitlementStatus() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val entitlementService = client.v1().omniAi().entitlements()
+
+        val response =
+            entitlementService.getEntitlementStatus(
+                EntitlementGetEntitlementStatusParams.builder().accountId(0L).build()
+            )
+
+        response.validate()
+    }
+
+    @Test
     fun getEntitlements() {
         val client =
             ClearStreetOkHttpClient.builder()
@@ -75,6 +94,27 @@ internal class EntitlementServiceTest {
         val response =
             entitlementService.getEntitlements(
                 EntitlementGetEntitlementsParams.builder().accountId(0L).build()
+            )
+
+        response.validate()
+    }
+
+    @Test
+    fun optOutEntitlements() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val entitlementService = client.v1().omniAi().entitlements()
+
+        val response =
+            entitlementService.optOutEntitlements(
+                EntitlementOptOutEntitlementsParams.builder()
+                    .addAccountId(100019L)
+                    .addAccountId(100021L)
+                    .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                    .build()
             )
 
         response.validate()

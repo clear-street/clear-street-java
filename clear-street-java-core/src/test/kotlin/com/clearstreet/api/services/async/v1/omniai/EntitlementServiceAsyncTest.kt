@@ -6,7 +6,9 @@ import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clearstreet.api.models.v1.omniai.EntitlementCode
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementCreateEntitlementsParams
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementStatusParams
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementOptOutEntitlementsParams
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -67,6 +69,24 @@ internal class EntitlementServiceAsyncTest {
     }
 
     @Test
+    fun getEntitlementStatus() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val entitlementServiceAsync = client.v1().omniAi().entitlements()
+
+        val responseFuture =
+            entitlementServiceAsync.getEntitlementStatus(
+                EntitlementGetEntitlementStatusParams.builder().accountId(0L).build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Test
     fun getEntitlements() {
         val client =
             ClearStreetOkHttpClientAsync.builder()
@@ -78,6 +98,28 @@ internal class EntitlementServiceAsyncTest {
         val responseFuture =
             entitlementServiceAsync.getEntitlements(
                 EntitlementGetEntitlementsParams.builder().accountId(0L).build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Test
+    fun optOutEntitlements() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val entitlementServiceAsync = client.v1().omniAi().entitlements()
+
+        val responseFuture =
+            entitlementServiceAsync.optOutEntitlements(
+                EntitlementOptOutEntitlementsParams.builder()
+                    .addAccountId(100019L)
+                    .addAccountId(100021L)
+                    .addEntitlementCode(EntitlementCode.OMNI_ACCOUNT_DATA)
+                    .build()
             )
 
         val response = responseFuture.get()

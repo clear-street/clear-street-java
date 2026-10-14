@@ -11,7 +11,12 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Revoke one entitlement grant by id. */
+/**
+ * Revoke one entitlement grant by id.
+ *
+ * Deprecated -- use `POST /omni-ai/entitlements/opt-out`.
+ */
+@Deprecated("deprecated")
 class EntitlementDeleteEntitlementParams
 private constructor(
     private val entitlementId: String?,

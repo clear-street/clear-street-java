@@ -15,10 +15,14 @@ import com.clearstreet.api.core.http.HttpResponse.Handler
 import com.clearstreet.api.core.http.HttpResponseFor
 import com.clearstreet.api.core.http.parseable
 import com.clearstreet.api.core.prepare
+import com.clearstreet.api.models.v1.locates.LocateGetLocateByIdParams
+import com.clearstreet.api.models.v1.locates.LocateGetLocateByIdResponse
 import com.clearstreet.api.models.v1.locates.LocateGetLocateRateByIdParams
 import com.clearstreet.api.models.v1.locates.LocateGetLocateRateByIdResponse
 import com.clearstreet.api.models.v1.locates.LocateGetLocateRatesParams
 import com.clearstreet.api.models.v1.locates.LocateGetLocateRatesResponse
+import com.clearstreet.api.models.v1.locates.LocateGetLocatesParams
+import com.clearstreet.api.models.v1.locates.LocateGetLocatesResponse
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -35,6 +39,13 @@ class LocateServiceImpl internal constructor(private val clientOptions: ClientOp
     override fun withOptions(modifier: Consumer<ClientOptions.Builder>): LocateService =
         LocateServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
+    override fun getLocateById(
+        params: LocateGetLocateByIdParams,
+        requestOptions: RequestOptions,
+    ): LocateGetLocateByIdResponse =
+        // get /v1/accounts/{account_id}/locates/{id}
+        withRawResponse().getLocateById(params, requestOptions).parse()
+
     override fun getLocateRateById(
         params: LocateGetLocateRateByIdParams,
         requestOptions: RequestOptions,
@@ -49,6 +60,13 @@ class LocateServiceImpl internal constructor(private val clientOptions: ClientOp
         // get /v1/locates/rates
         withRawResponse().getLocateRates(params, requestOptions).parse()
 
+    override fun getLocates(
+        params: LocateGetLocatesParams,
+        requestOptions: RequestOptions,
+    ): LocateGetLocatesResponse =
+        // get /v1/accounts/{account_id}/locates
+        withRawResponse().getLocates(params, requestOptions).parse()
+
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         LocateService.WithRawResponse {
 
@@ -61,6 +79,42 @@ class LocateServiceImpl internal constructor(private val clientOptions: ClientOp
             LocateServiceImpl.WithRawResponseImpl(
                 clientOptions.toBuilder().apply(modifier::accept).build()
             )
+
+        private val getLocateByIdHandler: Handler<LocateGetLocateByIdResponse> =
+            jsonHandler<LocateGetLocateByIdResponse>(clientOptions.jsonMapper)
+
+        override fun getLocateById(
+            params: LocateGetLocateByIdParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<LocateGetLocateByIdResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "v1",
+                        "accounts",
+                        params._pathParam(0),
+                        "locates",
+                        params._pathParam(1),
+                    )
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getLocateByIdHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
 
         private val getLocateRateByIdHandler: Handler<LocateGetLocateRateByIdResponse> =
             jsonHandler<LocateGetLocateRateByIdResponse>(clientOptions.jsonMapper)
@@ -111,6 +165,36 @@ class LocateServiceImpl internal constructor(private val clientOptions: ClientOp
             return errorHandler.handle(response).parseable {
                 response
                     .use { getLocateRatesHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val getLocatesHandler: Handler<LocateGetLocatesResponse> =
+            jsonHandler<LocateGetLocatesResponse>(clientOptions.jsonMapper)
+
+        override fun getLocates(
+            params: LocateGetLocatesParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<LocateGetLocatesResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("accountId", params.accountId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "accounts", params._pathParam(0), "locates")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getLocatesHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

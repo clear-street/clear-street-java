@@ -9,7 +9,13 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** List caller's active entitlement grants. */
+/**
+ * List caller's active entitlement grants.
+ *
+ * Deprecated -- use `GET /omni-ai/entitlement-status`; this lists explicit grants only and omits
+ * accounts that are enabled by default.
+ */
+@Deprecated("deprecated")
 class EntitlementGetEntitlementsParams
 private constructor(
     private val accountId: Long?,

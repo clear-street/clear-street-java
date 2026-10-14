@@ -11,8 +11,12 @@ import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementDeleteEntitl
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementResponse
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementAgreementsParams
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementAgreementsResponse
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementStatusParams
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementStatusResponse
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsResponse
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementOptOutEntitlementsParams
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementOptOutEntitlementsResponse
 import com.google.errorprone.annotations.MustBeClosed
 import java.util.function.Consumer
 
@@ -47,11 +51,17 @@ interface EntitlementService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): EntitlementCreateEntitlementsResponse
 
-    /** Revoke one entitlement grant by id. */
+    /**
+     * Revoke one entitlement grant by id.
+     *
+     * Deprecated -- use `POST /omni-ai/entitlements/opt-out`.
+     */
+    @Deprecated("deprecated")
     fun deleteEntitlement(entitlementId: String): EntitlementDeleteEntitlementResponse =
         deleteEntitlement(entitlementId, EntitlementDeleteEntitlementParams.none())
 
     /** @see deleteEntitlement */
+    @Deprecated("deprecated")
     fun deleteEntitlement(
         entitlementId: String,
         params: EntitlementDeleteEntitlementParams = EntitlementDeleteEntitlementParams.none(),
@@ -60,6 +70,7 @@ interface EntitlementService {
         deleteEntitlement(params.toBuilder().entitlementId(entitlementId).build(), requestOptions)
 
     /** @see deleteEntitlement */
+    @Deprecated("deprecated")
     fun deleteEntitlement(
         entitlementId: String,
         params: EntitlementDeleteEntitlementParams = EntitlementDeleteEntitlementParams.none(),
@@ -67,17 +78,20 @@ interface EntitlementService {
         deleteEntitlement(entitlementId, params, RequestOptions.none())
 
     /** @see deleteEntitlement */
+    @Deprecated("deprecated")
     fun deleteEntitlement(
         params: EntitlementDeleteEntitlementParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): EntitlementDeleteEntitlementResponse
 
     /** @see deleteEntitlement */
+    @Deprecated("deprecated")
     fun deleteEntitlement(
         params: EntitlementDeleteEntitlementParams
     ): EntitlementDeleteEntitlementResponse = deleteEntitlement(params, RequestOptions.none())
 
     /** @see deleteEntitlement */
+    @Deprecated("deprecated")
     fun deleteEntitlement(
         entitlementId: String,
         requestOptions: RequestOptions,
@@ -108,24 +122,73 @@ interface EntitlementService {
     ): EntitlementGetEntitlementAgreementsResponse =
         getEntitlementAgreements(EntitlementGetEntitlementAgreementsParams.none(), requestOptions)
 
-    /** List caller's active entitlement grants. */
+    /**
+     * Whether each entitlement is enabled, per account. Accounts with no recorded choice are
+     * enabled by default. Without `account_id`, covers every account the caller can access.
+     */
+    fun getEntitlementStatus(): EntitlementGetEntitlementStatusResponse =
+        getEntitlementStatus(EntitlementGetEntitlementStatusParams.none())
+
+    /** @see getEntitlementStatus */
+    fun getEntitlementStatus(
+        params: EntitlementGetEntitlementStatusParams =
+            EntitlementGetEntitlementStatusParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): EntitlementGetEntitlementStatusResponse
+
+    /** @see getEntitlementStatus */
+    fun getEntitlementStatus(
+        params: EntitlementGetEntitlementStatusParams = EntitlementGetEntitlementStatusParams.none()
+    ): EntitlementGetEntitlementStatusResponse = getEntitlementStatus(params, RequestOptions.none())
+
+    /** @see getEntitlementStatus */
+    fun getEntitlementStatus(
+        requestOptions: RequestOptions
+    ): EntitlementGetEntitlementStatusResponse =
+        getEntitlementStatus(EntitlementGetEntitlementStatusParams.none(), requestOptions)
+
+    /**
+     * List caller's active entitlement grants.
+     *
+     * Deprecated -- use `GET /omni-ai/entitlement-status`; this lists explicit grants only and
+     * omits accounts that are enabled by default.
+     */
+    @Deprecated("deprecated")
     fun getEntitlements(): EntitlementGetEntitlementsResponse =
         getEntitlements(EntitlementGetEntitlementsParams.none())
 
     /** @see getEntitlements */
+    @Deprecated("deprecated")
     fun getEntitlements(
         params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): EntitlementGetEntitlementsResponse
 
     /** @see getEntitlements */
+    @Deprecated("deprecated")
     fun getEntitlements(
         params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none()
     ): EntitlementGetEntitlementsResponse = getEntitlements(params, RequestOptions.none())
 
     /** @see getEntitlements */
+    @Deprecated("deprecated")
     fun getEntitlements(requestOptions: RequestOptions): EntitlementGetEntitlementsResponse =
         getEntitlements(EntitlementGetEntitlementsParams.none(), requestOptions)
+
+    /**
+     * Turn off one-or-more entitlements for the given accounts. Idempotent: accounts that are
+     * already opted out are left as they are. To turn an entitlement back on, sign the agreement
+     * with `POST /omni-ai/entitlements`.
+     */
+    fun optOutEntitlements(
+        params: EntitlementOptOutEntitlementsParams
+    ): EntitlementOptOutEntitlementsResponse = optOutEntitlements(params, RequestOptions.none())
+
+    /** @see optOutEntitlements */
+    fun optOutEntitlements(
+        params: EntitlementOptOutEntitlementsParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): EntitlementOptOutEntitlementsResponse
 
     /**
      * A view of [EntitlementService] that provides access to raw HTTP responses for each method.
@@ -162,6 +225,7 @@ interface EntitlementService {
          * Returns a raw HTTP response for `delete /v1/omni-ai/entitlements/{entitlement_id}`, but
          * is otherwise the same as [EntitlementService.deleteEntitlement].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun deleteEntitlement(
             entitlementId: String
@@ -169,6 +233,7 @@ interface EntitlementService {
             deleteEntitlement(entitlementId, EntitlementDeleteEntitlementParams.none())
 
         /** @see deleteEntitlement */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun deleteEntitlement(
             entitlementId: String,
@@ -181,6 +246,7 @@ interface EntitlementService {
             )
 
         /** @see deleteEntitlement */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun deleteEntitlement(
             entitlementId: String,
@@ -189,6 +255,7 @@ interface EntitlementService {
             deleteEntitlement(entitlementId, params, RequestOptions.none())
 
         /** @see deleteEntitlement */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun deleteEntitlement(
             params: EntitlementDeleteEntitlementParams,
@@ -196,6 +263,7 @@ interface EntitlementService {
         ): HttpResponseFor<EntitlementDeleteEntitlementResponse>
 
         /** @see deleteEntitlement */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun deleteEntitlement(
             params: EntitlementDeleteEntitlementParams
@@ -203,6 +271,7 @@ interface EntitlementService {
             deleteEntitlement(params, RequestOptions.none())
 
         /** @see deleteEntitlement */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun deleteEntitlement(
             entitlementId: String,
@@ -250,14 +319,47 @@ interface EntitlementService {
             )
 
         /**
+         * Returns a raw HTTP response for `get /v1/omni-ai/entitlement-status`, but is otherwise
+         * the same as [EntitlementService.getEntitlementStatus].
+         */
+        @MustBeClosed
+        fun getEntitlementStatus(): HttpResponseFor<EntitlementGetEntitlementStatusResponse> =
+            getEntitlementStatus(EntitlementGetEntitlementStatusParams.none())
+
+        /** @see getEntitlementStatus */
+        @MustBeClosed
+        fun getEntitlementStatus(
+            params: EntitlementGetEntitlementStatusParams =
+                EntitlementGetEntitlementStatusParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<EntitlementGetEntitlementStatusResponse>
+
+        /** @see getEntitlementStatus */
+        @MustBeClosed
+        fun getEntitlementStatus(
+            params: EntitlementGetEntitlementStatusParams =
+                EntitlementGetEntitlementStatusParams.none()
+        ): HttpResponseFor<EntitlementGetEntitlementStatusResponse> =
+            getEntitlementStatus(params, RequestOptions.none())
+
+        /** @see getEntitlementStatus */
+        @MustBeClosed
+        fun getEntitlementStatus(
+            requestOptions: RequestOptions
+        ): HttpResponseFor<EntitlementGetEntitlementStatusResponse> =
+            getEntitlementStatus(EntitlementGetEntitlementStatusParams.none(), requestOptions)
+
+        /**
          * Returns a raw HTTP response for `get /v1/omni-ai/entitlements`, but is otherwise the same
          * as [EntitlementService.getEntitlements].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun getEntitlements(): HttpResponseFor<EntitlementGetEntitlementsResponse> =
             getEntitlements(EntitlementGetEntitlementsParams.none())
 
         /** @see getEntitlements */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun getEntitlements(
             params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none(),
@@ -265,6 +367,7 @@ interface EntitlementService {
         ): HttpResponseFor<EntitlementGetEntitlementsResponse>
 
         /** @see getEntitlements */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun getEntitlements(
             params: EntitlementGetEntitlementsParams = EntitlementGetEntitlementsParams.none()
@@ -272,10 +375,28 @@ interface EntitlementService {
             getEntitlements(params, RequestOptions.none())
 
         /** @see getEntitlements */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun getEntitlements(
             requestOptions: RequestOptions
         ): HttpResponseFor<EntitlementGetEntitlementsResponse> =
             getEntitlements(EntitlementGetEntitlementsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /v1/omni-ai/entitlements/opt-out`, but is otherwise
+         * the same as [EntitlementService.optOutEntitlements].
+         */
+        @MustBeClosed
+        fun optOutEntitlements(
+            params: EntitlementOptOutEntitlementsParams
+        ): HttpResponseFor<EntitlementOptOutEntitlementsResponse> =
+            optOutEntitlements(params, RequestOptions.none())
+
+        /** @see optOutEntitlements */
+        @MustBeClosed
+        fun optOutEntitlements(
+            params: EntitlementOptOutEntitlementsParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<EntitlementOptOutEntitlementsResponse>
     }
 }

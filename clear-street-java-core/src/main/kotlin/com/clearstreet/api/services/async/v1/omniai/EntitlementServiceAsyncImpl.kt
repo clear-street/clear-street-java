@@ -22,8 +22,12 @@ import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementDeleteEntitl
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementDeleteEntitlementResponse
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementAgreementsParams
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementAgreementsResponse
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementStatusParams
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementStatusResponse
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsParams
 import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementGetEntitlementsResponse
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementOptOutEntitlementsParams
+import com.clearstreet.api.models.v1.omniai.entitlements.EntitlementOptOutEntitlementsResponse
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
@@ -53,6 +57,7 @@ class EntitlementServiceAsyncImpl internal constructor(private val clientOptions
         // post /v1/omni-ai/entitlements
         withRawResponse().createEntitlements(params, requestOptions).thenApply { it.parse() }
 
+    @Deprecated("deprecated")
     override fun deleteEntitlement(
         params: EntitlementDeleteEntitlementParams,
         requestOptions: RequestOptions,
@@ -67,12 +72,27 @@ class EntitlementServiceAsyncImpl internal constructor(private val clientOptions
         // get /v1/omni-ai/entitlement-agreements
         withRawResponse().getEntitlementAgreements(params, requestOptions).thenApply { it.parse() }
 
+    override fun getEntitlementStatus(
+        params: EntitlementGetEntitlementStatusParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<EntitlementGetEntitlementStatusResponse> =
+        // get /v1/omni-ai/entitlement-status
+        withRawResponse().getEntitlementStatus(params, requestOptions).thenApply { it.parse() }
+
+    @Deprecated("deprecated")
     override fun getEntitlements(
         params: EntitlementGetEntitlementsParams,
         requestOptions: RequestOptions,
     ): CompletableFuture<EntitlementGetEntitlementsResponse> =
         // get /v1/omni-ai/entitlements
         withRawResponse().getEntitlements(params, requestOptions).thenApply { it.parse() }
+
+    override fun optOutEntitlements(
+        params: EntitlementOptOutEntitlementsParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<EntitlementOptOutEntitlementsResponse> =
+        // post /v1/omni-ai/entitlements/opt-out
+        withRawResponse().optOutEntitlements(params, requestOptions).thenApply { it.parse() }
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         EntitlementServiceAsync.WithRawResponse {
@@ -121,6 +141,7 @@ class EntitlementServiceAsyncImpl internal constructor(private val clientOptions
         private val deleteEntitlementHandler: Handler<EntitlementDeleteEntitlementResponse> =
             jsonHandler<EntitlementDeleteEntitlementResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun deleteEntitlement(
             params: EntitlementDeleteEntitlementParams,
             requestOptions: RequestOptions,
@@ -183,9 +204,40 @@ class EntitlementServiceAsyncImpl internal constructor(private val clientOptions
                 }
         }
 
+        private val getEntitlementStatusHandler: Handler<EntitlementGetEntitlementStatusResponse> =
+            jsonHandler<EntitlementGetEntitlementStatusResponse>(clientOptions.jsonMapper)
+
+        override fun getEntitlementStatus(
+            params: EntitlementGetEntitlementStatusParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<EntitlementGetEntitlementStatusResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "omni-ai", "entitlement-status")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { getEntitlementStatusHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
         private val getEntitlementsHandler: Handler<EntitlementGetEntitlementsResponse> =
             jsonHandler<EntitlementGetEntitlementsResponse>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun getEntitlements(
             params: EntitlementGetEntitlementsParams,
             requestOptions: RequestOptions,
@@ -204,6 +256,37 @@ class EntitlementServiceAsyncImpl internal constructor(private val clientOptions
                     errorHandler.handle(response).parseable {
                         response
                             .use { getEntitlementsHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val optOutEntitlementsHandler: Handler<EntitlementOptOutEntitlementsResponse> =
+            jsonHandler<EntitlementOptOutEntitlementsResponse>(clientOptions.jsonMapper)
+
+        override fun optOutEntitlements(
+            params: EntitlementOptOutEntitlementsParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<EntitlementOptOutEntitlementsResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "omni-ai", "entitlements", "opt-out")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { optOutEntitlementsHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
