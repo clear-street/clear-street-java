@@ -21,6 +21,7 @@ private constructor(
     private val initialMarginRequirement: JsonField<String>,
     private val maintenanceMarginRequirement: JsonField<String>,
     private val marketValue: JsonField<String>,
+    private val overnightMarginRequirement: JsonField<String>,
     private val underlyingInstrumentId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -36,6 +37,9 @@ private constructor(
         @JsonProperty("market_value")
         @ExcludeMissing
         marketValue: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("overnight_margin_requirement")
+        @ExcludeMissing
+        overnightMarginRequirement: JsonField<String> = JsonMissing.of(),
         @JsonProperty("underlying_instrument_id")
         @ExcludeMissing
         underlyingInstrumentId: JsonField<String> = JsonMissing.of(),
@@ -43,6 +47,7 @@ private constructor(
         initialMarginRequirement,
         maintenanceMarginRequirement,
         marketValue,
+        overnightMarginRequirement,
         underlyingInstrumentId,
         mutableMapOf(),
     )
@@ -72,6 +77,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun marketValue(): String = marketValue.getRequired("market_value")
+
+    /**
+     * Overnight margin requirement attributable to this underlying.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun overnightMarginRequirement(): String =
+        overnightMarginRequirement.getRequired("overnight_margin_requirement")
 
     /**
      * UUID of the underlying security contributing to margin requirement.
@@ -112,6 +126,16 @@ private constructor(
     fun _marketValue(): JsonField<String> = marketValue
 
     /**
+     * Returns the raw JSON value of [overnightMarginRequirement].
+     *
+     * Unlike [overnightMarginRequirement], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("overnight_margin_requirement")
+    @ExcludeMissing
+    fun _overnightMarginRequirement(): JsonField<String> = overnightMarginRequirement
+
+    /**
      * Returns the raw JSON value of [underlyingInstrumentId].
      *
      * Unlike [underlyingInstrumentId], this method doesn't throw if the JSON field has an
@@ -143,6 +167,7 @@ private constructor(
          * .initialMarginRequirement()
          * .maintenanceMarginRequirement()
          * .marketValue()
+         * .overnightMarginRequirement()
          * .underlyingInstrumentId()
          * ```
          */
@@ -155,6 +180,7 @@ private constructor(
         private var initialMarginRequirement: JsonField<String>? = null
         private var maintenanceMarginRequirement: JsonField<String>? = null
         private var marketValue: JsonField<String>? = null
+        private var overnightMarginRequirement: JsonField<String>? = null
         private var underlyingInstrumentId: JsonField<String>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -163,6 +189,7 @@ private constructor(
             initialMarginRequirement = marginTopContributor.initialMarginRequirement
             maintenanceMarginRequirement = marginTopContributor.maintenanceMarginRequirement
             marketValue = marginTopContributor.marketValue
+            overnightMarginRequirement = marginTopContributor.overnightMarginRequirement
             underlyingInstrumentId = marginTopContributor.underlyingInstrumentId
             additionalProperties = marginTopContributor.additionalProperties.toMutableMap()
         }
@@ -209,6 +236,21 @@ private constructor(
          */
         fun marketValue(marketValue: JsonField<String>) = apply { this.marketValue = marketValue }
 
+        /** Overnight margin requirement attributable to this underlying. */
+        fun overnightMarginRequirement(overnightMarginRequirement: String) =
+            overnightMarginRequirement(JsonField.of(overnightMarginRequirement))
+
+        /**
+         * Sets [Builder.overnightMarginRequirement] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.overnightMarginRequirement] with a well-typed [String]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun overnightMarginRequirement(overnightMarginRequirement: JsonField<String>) = apply {
+            this.overnightMarginRequirement = overnightMarginRequirement
+        }
+
         /** UUID of the underlying security contributing to margin requirement. */
         fun underlyingInstrumentId(underlyingInstrumentId: String) =
             underlyingInstrumentId(JsonField.of(underlyingInstrumentId))
@@ -253,6 +295,7 @@ private constructor(
          * .initialMarginRequirement()
          * .maintenanceMarginRequirement()
          * .marketValue()
+         * .overnightMarginRequirement()
          * .underlyingInstrumentId()
          * ```
          *
@@ -263,6 +306,7 @@ private constructor(
                 checkRequired("initialMarginRequirement", initialMarginRequirement),
                 checkRequired("maintenanceMarginRequirement", maintenanceMarginRequirement),
                 checkRequired("marketValue", marketValue),
+                checkRequired("overnightMarginRequirement", overnightMarginRequirement),
                 checkRequired("underlyingInstrumentId", underlyingInstrumentId),
                 additionalProperties.toMutableMap(),
             )
@@ -286,6 +330,7 @@ private constructor(
         initialMarginRequirement()
         maintenanceMarginRequirement()
         marketValue()
+        overnightMarginRequirement()
         underlyingInstrumentId()
         validated = true
     }
@@ -308,6 +353,7 @@ private constructor(
         (if (initialMarginRequirement.asKnown().isPresent) 1 else 0) +
             (if (maintenanceMarginRequirement.asKnown().isPresent) 1 else 0) +
             (if (marketValue.asKnown().isPresent) 1 else 0) +
+            (if (overnightMarginRequirement.asKnown().isPresent) 1 else 0) +
             (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
@@ -319,6 +365,7 @@ private constructor(
             initialMarginRequirement == other.initialMarginRequirement &&
             maintenanceMarginRequirement == other.maintenanceMarginRequirement &&
             marketValue == other.marketValue &&
+            overnightMarginRequirement == other.overnightMarginRequirement &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
             additionalProperties == other.additionalProperties
     }
@@ -328,6 +375,7 @@ private constructor(
             initialMarginRequirement,
             maintenanceMarginRequirement,
             marketValue,
+            overnightMarginRequirement,
             underlyingInstrumentId,
             additionalProperties,
         )
@@ -336,5 +384,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "MarginTopContributor{initialMarginRequirement=$initialMarginRequirement, maintenanceMarginRequirement=$maintenanceMarginRequirement, marketValue=$marketValue, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
+        "MarginTopContributor{initialMarginRequirement=$initialMarginRequirement, maintenanceMarginRequirement=$maintenanceMarginRequirement, marketValue=$marketValue, overnightMarginRequirement=$overnightMarginRequirement, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
 }

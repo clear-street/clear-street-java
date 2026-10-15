@@ -28,6 +28,8 @@ private constructor(
     private val maintenanceMarginExcess: JsonField<String>,
     private val maintenanceMarginRequirement: JsonField<String>,
     private val overnightDetails: JsonField<MarginSessionDetails>,
+    private val overnightMarginExcess: JsonField<String>,
+    private val overnightMarginRequirement: JsonField<String>,
     private val topContributors: JsonField<List<MarginTopContributor>>,
     private val usage: JsonField<MarginDetailsUsage>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -53,6 +55,12 @@ private constructor(
         @JsonProperty("overnight_details")
         @ExcludeMissing
         overnightDetails: JsonField<MarginSessionDetails> = JsonMissing.of(),
+        @JsonProperty("overnight_margin_excess")
+        @ExcludeMissing
+        overnightMarginExcess: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("overnight_margin_requirement")
+        @ExcludeMissing
+        overnightMarginRequirement: JsonField<String> = JsonMissing.of(),
         @JsonProperty("top_contributors")
         @ExcludeMissing
         topContributors: JsonField<List<MarginTopContributor>> = JsonMissing.of(),
@@ -66,6 +74,8 @@ private constructor(
         maintenanceMarginExcess,
         maintenanceMarginRequirement,
         overnightDetails,
+        overnightMarginExcess,
+        overnightMarginRequirement,
         topContributors,
         usage,
         mutableMapOf(),
@@ -121,6 +131,24 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun overnightDetails(): MarginSessionDetails = overnightDetails.getRequired("overnight_details")
+
+    /**
+     * The difference between equity and the overnight margin requirement.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun overnightMarginExcess(): String =
+        overnightMarginExcess.getRequired("overnight_margin_excess")
+
+    /**
+     * The amount of equity required to hold current positions overnight.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun overnightMarginRequirement(): String =
+        overnightMarginRequirement.getRequired("overnight_margin_requirement")
 
     /**
      * Optional top margin contributors, returned only when explicitly requested.
@@ -200,6 +228,26 @@ private constructor(
     fun _overnightDetails(): JsonField<MarginSessionDetails> = overnightDetails
 
     /**
+     * Returns the raw JSON value of [overnightMarginExcess].
+     *
+     * Unlike [overnightMarginExcess], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("overnight_margin_excess")
+    @ExcludeMissing
+    fun _overnightMarginExcess(): JsonField<String> = overnightMarginExcess
+
+    /**
+     * Returns the raw JSON value of [overnightMarginRequirement].
+     *
+     * Unlike [overnightMarginRequirement], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("overnight_margin_requirement")
+    @ExcludeMissing
+    fun _overnightMarginRequirement(): JsonField<String> = overnightMarginRequirement
+
+    /**
      * Returns the raw JSON value of [topContributors].
      *
      * Unlike [topContributors], this method doesn't throw if the JSON field has an unexpected type.
@@ -240,6 +288,8 @@ private constructor(
          * .maintenanceMarginExcess()
          * .maintenanceMarginRequirement()
          * .overnightDetails()
+         * .overnightMarginExcess()
+         * .overnightMarginRequirement()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -254,6 +304,8 @@ private constructor(
         private var maintenanceMarginExcess: JsonField<String>? = null
         private var maintenanceMarginRequirement: JsonField<String>? = null
         private var overnightDetails: JsonField<MarginSessionDetails>? = null
+        private var overnightMarginExcess: JsonField<String>? = null
+        private var overnightMarginRequirement: JsonField<String>? = null
         private var topContributors: JsonField<MutableList<MarginTopContributor>>? = null
         private var usage: JsonField<MarginDetailsUsage> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -266,6 +318,8 @@ private constructor(
             maintenanceMarginExcess = marginDetails.maintenanceMarginExcess
             maintenanceMarginRequirement = marginDetails.maintenanceMarginRequirement
             overnightDetails = marginDetails.overnightDetails
+            overnightMarginExcess = marginDetails.overnightMarginExcess
+            overnightMarginRequirement = marginDetails.overnightMarginRequirement
             topContributors = marginDetails.topContributors.map { it.toMutableList() }
             usage = marginDetails.usage
             additionalProperties = marginDetails.additionalProperties.toMutableMap()
@@ -361,6 +415,36 @@ private constructor(
             this.overnightDetails = overnightDetails
         }
 
+        /** The difference between equity and the overnight margin requirement. */
+        fun overnightMarginExcess(overnightMarginExcess: String) =
+            overnightMarginExcess(JsonField.of(overnightMarginExcess))
+
+        /**
+         * Sets [Builder.overnightMarginExcess] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.overnightMarginExcess] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun overnightMarginExcess(overnightMarginExcess: JsonField<String>) = apply {
+            this.overnightMarginExcess = overnightMarginExcess
+        }
+
+        /** The amount of equity required to hold current positions overnight. */
+        fun overnightMarginRequirement(overnightMarginRequirement: String) =
+            overnightMarginRequirement(JsonField.of(overnightMarginRequirement))
+
+        /**
+         * Sets [Builder.overnightMarginRequirement] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.overnightMarginRequirement] with a well-typed [String]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun overnightMarginRequirement(overnightMarginRequirement: JsonField<String>) = apply {
+            this.overnightMarginRequirement = overnightMarginRequirement
+        }
+
         /** Optional top margin contributors, returned only when explicitly requested. */
         fun topContributors(topContributors: List<MarginTopContributor>) =
             topContributors(JsonField.of(topContributors))
@@ -438,6 +522,8 @@ private constructor(
          * .maintenanceMarginExcess()
          * .maintenanceMarginRequirement()
          * .overnightDetails()
+         * .overnightMarginExcess()
+         * .overnightMarginRequirement()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -450,6 +536,8 @@ private constructor(
                 checkRequired("maintenanceMarginExcess", maintenanceMarginExcess),
                 checkRequired("maintenanceMarginRequirement", maintenanceMarginRequirement),
                 checkRequired("overnightDetails", overnightDetails),
+                checkRequired("overnightMarginExcess", overnightMarginExcess),
+                checkRequired("overnightMarginRequirement", overnightMarginRequirement),
                 (topContributors ?: JsonMissing.of()).map { it.toImmutable() },
                 usage,
                 additionalProperties.toMutableMap(),
@@ -477,6 +565,8 @@ private constructor(
         maintenanceMarginExcess()
         maintenanceMarginRequirement()
         overnightDetails().validate()
+        overnightMarginExcess()
+        overnightMarginRequirement()
         topContributors().ifPresent { it.forEach { it.validate() } }
         usage().ifPresent { it.validate() }
         validated = true
@@ -503,6 +593,8 @@ private constructor(
             (if (maintenanceMarginExcess.asKnown().isPresent) 1 else 0) +
             (if (maintenanceMarginRequirement.asKnown().isPresent) 1 else 0) +
             (overnightDetails.asKnown().getOrNull()?.validity() ?: 0) +
+            (if (overnightMarginExcess.asKnown().isPresent) 1 else 0) +
+            (if (overnightMarginRequirement.asKnown().isPresent) 1 else 0) +
             (topContributors.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (usage.asKnown().getOrNull()?.validity() ?: 0)
 
@@ -518,6 +610,8 @@ private constructor(
             maintenanceMarginExcess == other.maintenanceMarginExcess &&
             maintenanceMarginRequirement == other.maintenanceMarginRequirement &&
             overnightDetails == other.overnightDetails &&
+            overnightMarginExcess == other.overnightMarginExcess &&
+            overnightMarginRequirement == other.overnightMarginRequirement &&
             topContributors == other.topContributors &&
             usage == other.usage &&
             additionalProperties == other.additionalProperties
@@ -531,6 +625,8 @@ private constructor(
             maintenanceMarginExcess,
             maintenanceMarginRequirement,
             overnightDetails,
+            overnightMarginExcess,
+            overnightMarginRequirement,
             topContributors,
             usage,
             additionalProperties,
@@ -540,5 +636,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "MarginDetails{initialMarginExcess=$initialMarginExcess, initialMarginRequirement=$initialMarginRequirement, intradayDetails=$intradayDetails, maintenanceMarginExcess=$maintenanceMarginExcess, maintenanceMarginRequirement=$maintenanceMarginRequirement, overnightDetails=$overnightDetails, topContributors=$topContributors, usage=$usage, additionalProperties=$additionalProperties}"
+        "MarginDetails{initialMarginExcess=$initialMarginExcess, initialMarginRequirement=$initialMarginRequirement, intradayDetails=$intradayDetails, maintenanceMarginExcess=$maintenanceMarginExcess, maintenanceMarginRequirement=$maintenanceMarginRequirement, overnightDetails=$overnightDetails, overnightMarginExcess=$overnightMarginExcess, overnightMarginRequirement=$overnightMarginRequirement, topContributors=$topContributors, usage=$usage, additionalProperties=$additionalProperties}"
 }

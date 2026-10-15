@@ -87,11 +87,14 @@ internal class AccountGetAccountBalancesResponseTest {
                                         .multiplier("2")
                                         .build()
                                 )
+                                .overnightMarginExcess("60000.00")
+                                .overnightMarginRequirement("40000.00")
                                 .addTopContributor(
                                     MarginTopContributor.builder()
                                         .initialMarginRequirement("25000.00")
                                         .maintenanceMarginRequirement("15000.00")
                                         .marketValue("50000.00")
+                                        .overnightMarginRequirement("20000.00")
                                         .underlyingInstrumentId(
                                             "a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8"
                                         )
@@ -184,11 +187,14 @@ internal class AccountGetAccountBalancesResponseTest {
                                     .multiplier("2")
                                     .build()
                             )
+                            .overnightMarginExcess("60000.00")
+                            .overnightMarginRequirement("40000.00")
                             .addTopContributor(
                                 MarginTopContributor.builder()
                                     .initialMarginRequirement("25000.00")
                                     .maintenanceMarginRequirement("15000.00")
                                     .marketValue("50000.00")
+                                    .overnightMarginRequirement("20000.00")
                                     .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
                                     .build()
                             )
@@ -281,11 +287,14 @@ internal class AccountGetAccountBalancesResponseTest {
                                         .multiplier("2")
                                         .build()
                                 )
+                                .overnightMarginExcess("60000.00")
+                                .overnightMarginRequirement("40000.00")
                                 .addTopContributor(
                                     MarginTopContributor.builder()
                                         .initialMarginRequirement("25000.00")
                                         .maintenanceMarginRequirement("15000.00")
                                         .marketValue("50000.00")
+                                        .overnightMarginRequirement("20000.00")
                                         .underlyingInstrumentId(
                                             "a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8"
                                         )

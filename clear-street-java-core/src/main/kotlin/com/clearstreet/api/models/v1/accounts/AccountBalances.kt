@@ -134,7 +134,7 @@ private constructor(
     /**
      * The total buying power available in the account: base buying power plus the open order
      * adjustment, where base buying power is maintenance margin excess times the multiplier for
-     * intraday and initial margin excess times the multiplier for overnight.
+     * intraday and overnight margin excess times the multiplier for overnight.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -588,7 +588,7 @@ private constructor(
         /**
          * The total buying power available in the account: base buying power plus the open order
          * adjustment, where base buying power is maintenance margin excess times the multiplier for
-         * intraday and initial margin excess times the multiplier for overnight.
+         * intraday and overnight margin excess times the multiplier for overnight.
          */
         fun buyingPower(buyingPower: String) = buyingPower(JsonField.of(buyingPower))
 

@@ -16,12 +16,14 @@ internal class MarginTopContributorTest {
                 .initialMarginRequirement("25000.00")
                 .maintenanceMarginRequirement("15000.00")
                 .marketValue("50000.00")
+                .overnightMarginRequirement("20000.00")
                 .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
                 .build()
 
         assertThat(marginTopContributor.initialMarginRequirement()).isEqualTo("25000.00")
         assertThat(marginTopContributor.maintenanceMarginRequirement()).isEqualTo("15000.00")
         assertThat(marginTopContributor.marketValue()).isEqualTo("50000.00")
+        assertThat(marginTopContributor.overnightMarginRequirement()).isEqualTo("20000.00")
         assertThat(marginTopContributor.underlyingInstrumentId())
             .isEqualTo("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
     }
@@ -34,6 +36,7 @@ internal class MarginTopContributorTest {
                 .initialMarginRequirement("25000.00")
                 .maintenanceMarginRequirement("15000.00")
                 .marketValue("50000.00")
+                .overnightMarginRequirement("20000.00")
                 .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
                 .build()
 
