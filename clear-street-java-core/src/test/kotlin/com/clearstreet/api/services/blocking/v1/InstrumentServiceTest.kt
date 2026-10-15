@@ -81,6 +81,7 @@ internal class InstrumentServiceTest {
                     .isSettleOnOpen(true)
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .root("root")
                     .underlier("underlier")
                     .underlyingInstrumentId("x")
                     .build()

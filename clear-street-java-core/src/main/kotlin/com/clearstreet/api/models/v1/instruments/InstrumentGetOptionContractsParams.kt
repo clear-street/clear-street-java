@@ -19,7 +19,7 @@ import kotlin.jvm.optionals.getOrNull
  * List options contracts.
  *
  * Returns options contracts with options-specific metadata. Exactly one identifier must be
- * provided: `underlier`/`underlying_instrument_id` (list all contracts for that underlier) or
+ * provided: `root`/`underlying_instrument_id` (list all contracts for that underlier) or
  * `contract_ids` (look up specific contracts directly). `expiry`/`contract_type` apply as filters
  * in either case.
  */
@@ -31,6 +31,7 @@ private constructor(
     private val isSettleOnOpen: Boolean?,
     private val pageSize: Long?,
     private val pageToken: String?,
+    private val root: String?,
     private val underlier: String?,
     private val underlyingInstrumentId: String?,
     private val additionalHeaders: Headers,
@@ -39,8 +40,8 @@ private constructor(
 
     /**
      * Comma-separated contract instrument IDs (UUID) or OSI option symbols to look up directly,
-     * bypassing underlier expansion. Mutually exclusive with underlier/underlying_instrument_id; up
-     * to 100 values.
+     * bypassing underlier expansion. Mutually exclusive with root/underlying_instrument_id; up to
+     * 100 values.
      */
     fun contractIds(): Optional<List<String>> = Optional.ofNullable(contractIds)
 
@@ -65,7 +66,13 @@ private constructor(
      */
     fun pageToken(): Optional<String> = Optional.ofNullable(pageToken)
 
-    /** Underlier symbol (e.g., AAPL, SPX) */
+    /**
+     * OSI option root symbol (e.g., AAPL, SPXW). Index roots also include their weekly series
+     * (e.g., SPX includes SPXW).
+     */
+    fun root(): Optional<String> = Optional.ofNullable(root)
+
+    /** Deprecated: use `root`. If both are sent, the values must match. */
     fun underlier(): Optional<String> = Optional.ofNullable(underlier)
 
     /** Instrument identifier or symbol of the underlying equity/index */
@@ -99,6 +106,7 @@ private constructor(
         private var isSettleOnOpen: Boolean? = null
         private var pageSize: Long? = null
         private var pageToken: String? = null
+        private var root: String? = null
         private var underlier: String? = null
         private var underlyingInstrumentId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -113,6 +121,7 @@ private constructor(
                 isSettleOnOpen = instrumentGetOptionContractsParams.isSettleOnOpen
                 pageSize = instrumentGetOptionContractsParams.pageSize
                 pageToken = instrumentGetOptionContractsParams.pageToken
+                root = instrumentGetOptionContractsParams.root
                 underlier = instrumentGetOptionContractsParams.underlier
                 underlyingInstrumentId = instrumentGetOptionContractsParams.underlyingInstrumentId
                 additionalHeaders = instrumentGetOptionContractsParams.additionalHeaders.toBuilder()
@@ -122,8 +131,8 @@ private constructor(
 
         /**
          * Comma-separated contract instrument IDs (UUID) or OSI option symbols to look up directly,
-         * bypassing underlier expansion. Mutually exclusive with
-         * underlier/underlying_instrument_id; up to 100 values.
+         * bypassing underlier expansion. Mutually exclusive with root/underlying_instrument_id; up
+         * to 100 values.
          */
         fun contractIds(contractIds: List<String>?) = apply {
             this.contractIds = contractIds?.toMutableList()
@@ -195,7 +204,16 @@ private constructor(
         /** Alias for calling [Builder.pageToken] with `pageToken.orElse(null)`. */
         fun pageToken(pageToken: Optional<String>) = pageToken(pageToken.getOrNull())
 
-        /** Underlier symbol (e.g., AAPL, SPX) */
+        /**
+         * OSI option root symbol (e.g., AAPL, SPXW). Index roots also include their weekly series
+         * (e.g., SPX includes SPXW).
+         */
+        fun root(root: String?) = apply { this.root = root }
+
+        /** Alias for calling [Builder.root] with `root.orElse(null)`. */
+        fun root(root: Optional<String>) = root(root.getOrNull())
+
+        /** Deprecated: use `root`. If both are sent, the values must match. */
         fun underlier(underlier: String?) = apply { this.underlier = underlier }
 
         /** Alias for calling [Builder.underlier] with `underlier.orElse(null)`. */
@@ -324,6 +342,7 @@ private constructor(
                 isSettleOnOpen,
                 pageSize,
                 pageToken,
+                root,
                 underlier,
                 underlyingInstrumentId,
                 additionalHeaders.build(),
@@ -342,6 +361,7 @@ private constructor(
                 isSettleOnOpen?.let { put("is_settle_on_open", it.toString()) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
+                root?.let { put("root", it) }
                 underlier?.let { put("underlier", it) }
                 underlyingInstrumentId?.let { put("underlying_instrument_id", it) }
                 putAll(additionalQueryParams)
@@ -500,6 +520,7 @@ private constructor(
             isSettleOnOpen == other.isSettleOnOpen &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
+            root == other.root &&
             underlier == other.underlier &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
             additionalHeaders == other.additionalHeaders &&
@@ -514,6 +535,7 @@ private constructor(
             isSettleOnOpen,
             pageSize,
             pageToken,
+            root,
             underlier,
             underlyingInstrumentId,
             additionalHeaders,
@@ -521,5 +543,5 @@ private constructor(
         )
 
     override fun toString() =
-        "InstrumentGetOptionContractsParams{contractIds=$contractIds, contractType=$contractType, expiry=$expiry, isSettleOnOpen=$isSettleOnOpen, pageSize=$pageSize, pageToken=$pageToken, underlier=$underlier, underlyingInstrumentId=$underlyingInstrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentGetOptionContractsParams{contractIds=$contractIds, contractType=$contractType, expiry=$expiry, isSettleOnOpen=$isSettleOnOpen, pageSize=$pageSize, pageToken=$pageToken, root=$root, underlier=$underlier, underlyingInstrumentId=$underlyingInstrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
