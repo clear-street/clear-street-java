@@ -36,6 +36,7 @@ internal class InstrumentCoreTest {
                 .notionalAdv("15815250000")
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
+                .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                 .addTickRule(
                     TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
                 )
@@ -62,6 +63,7 @@ internal class InstrumentCoreTest {
         assertThat(instrumentCore.notionalAdv()).contains("15815250000")
         assertThat(instrumentCore.previousClose()).contains("210.87")
         assertThat(instrumentCore.shortMarginRate()).contains("0.25")
+        assertThat(instrumentCore.shortableAttribute()).contains(ShortableAttribute.EASY_TO_BORROW)
         assertThat(instrumentCore.tickRules().getOrNull())
             .containsExactly(
                 TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
@@ -94,6 +96,7 @@ internal class InstrumentCoreTest {
                 .notionalAdv("15815250000")
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
+                .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                 .addTickRule(
                     TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
                 )

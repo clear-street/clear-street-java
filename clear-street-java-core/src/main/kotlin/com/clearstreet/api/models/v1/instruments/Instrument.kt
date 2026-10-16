@@ -48,6 +48,7 @@ private constructor(
     private val optionsExpiryDates: JsonField<List<LocalDate>>,
     private val previousClose: JsonField<String>,
     private val shortMarginRate: JsonField<String>,
+    private val shortableAttribute: JsonField<ShortableAttribute>,
     private val tickRules: JsonField<List<TickRule>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -109,6 +110,9 @@ private constructor(
         @JsonProperty("short_margin_rate")
         @ExcludeMissing
         shortMarginRate: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("shortable_attribute")
+        @ExcludeMissing
+        shortableAttribute: JsonField<ShortableAttribute> = JsonMissing.of(),
         @JsonProperty("tick_rules")
         @ExcludeMissing
         tickRules: JsonField<List<TickRule>> = JsonMissing.of(),
@@ -136,6 +140,7 @@ private constructor(
         optionsExpiryDates,
         previousClose,
         shortMarginRate,
+        shortableAttribute,
         tickRules,
         mutableMapOf(),
     )
@@ -349,6 +354,20 @@ private constructor(
     fun shortMarginRate(): Optional<String> = shortMarginRate.getOptional("short_margin_rate")
 
     /**
+     * How readily the instrument can be shorted: `EASY_TO_BORROW`, `HARD_TO_BORROW`, or
+     * `NOT_SHORTABLE`. Easy-to-borrow instruments can be shorted without a locate. A hard-to-borrow
+     * instrument is not easy to borrow but has locate inventory remaining and a float at or above
+     * the minimum for short sales; anything else is not shortable. Omitted for instruments that are
+     * not tradable equities. When a null/undefined value is observed, it indicates it does not
+     * apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun shortableAttribute(): Optional<ShortableAttribute> =
+        shortableAttribute.getOptional("shortable_attribute")
+
+    /**
      * Price bands this instrument quotes on, ascending. Absent when we have no schedule for it,
      * which includes an option whose penny-program status our reference data never supplied.
      *
@@ -557,6 +576,16 @@ private constructor(
     fun _shortMarginRate(): JsonField<String> = shortMarginRate
 
     /**
+     * Returns the raw JSON value of [shortableAttribute].
+     *
+     * Unlike [shortableAttribute], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("shortable_attribute")
+    @ExcludeMissing
+    fun _shortableAttribute(): JsonField<ShortableAttribute> = shortableAttribute
+
+    /**
      * Returns the raw JSON value of [tickRules].
      *
      * Unlike [tickRules], this method doesn't throw if the JSON field has an unexpected type.
@@ -628,6 +657,7 @@ private constructor(
         private var optionsExpiryDates: JsonField<MutableList<LocalDate>>? = null
         private var previousClose: JsonField<String> = JsonMissing.of()
         private var shortMarginRate: JsonField<String> = JsonMissing.of()
+        private var shortableAttribute: JsonField<ShortableAttribute> = JsonMissing.of()
         private var tickRules: JsonField<MutableList<TickRule>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -657,6 +687,7 @@ private constructor(
             optionsExpiryDates = instrument.optionsExpiryDates.map { it.toMutableList() }
             previousClose = instrument.previousClose
             shortMarginRate = instrument.shortMarginRate
+            shortableAttribute = instrument.shortableAttribute
             tickRules = instrument.tickRules.map { it.toMutableList() }
             additionalProperties = instrument.additionalProperties.toMutableMap()
         }
@@ -1090,6 +1121,34 @@ private constructor(
         }
 
         /**
+         * How readily the instrument can be shorted: `EASY_TO_BORROW`, `HARD_TO_BORROW`, or
+         * `NOT_SHORTABLE`. Easy-to-borrow instruments can be shorted without a locate. A
+         * hard-to-borrow instrument is not easy to borrow but has locate inventory remaining and a
+         * float at or above the minimum for short sales; anything else is not shortable. Omitted
+         * for instruments that are not tradable equities. When a null/undefined value is observed,
+         * it indicates it does not apply.
+         */
+        fun shortableAttribute(shortableAttribute: ShortableAttribute?) =
+            shortableAttribute(JsonField.ofNullable(shortableAttribute))
+
+        /**
+         * Alias for calling [Builder.shortableAttribute] with `shortableAttribute.orElse(null)`.
+         */
+        fun shortableAttribute(shortableAttribute: Optional<ShortableAttribute>) =
+            shortableAttribute(shortableAttribute.getOrNull())
+
+        /**
+         * Sets [Builder.shortableAttribute] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.shortableAttribute] with a well-typed
+         * [ShortableAttribute] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun shortableAttribute(shortableAttribute: JsonField<ShortableAttribute>) = apply {
+            this.shortableAttribute = shortableAttribute
+        }
+
+        /**
          * Price bands this instrument quotes on, ascending. Absent when we have no schedule for it,
          * which includes an option whose penny-program status our reference data never supplied.
          */
@@ -1186,6 +1245,7 @@ private constructor(
                 (optionsExpiryDates ?: JsonMissing.of()).map { it.toImmutable() },
                 previousClose,
                 shortMarginRate,
+                shortableAttribute,
                 (tickRules ?: JsonMissing.of()).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
@@ -1229,6 +1289,7 @@ private constructor(
         optionsExpiryDates()
         previousClose()
         shortMarginRate()
+        shortableAttribute().ifPresent { it.validate() }
         tickRules().ifPresent { it.forEach { it.validate() } }
         validated = true
     }
@@ -1272,6 +1333,7 @@ private constructor(
             (optionsExpiryDates.asKnown().getOrNull()?.size ?: 0) +
             (if (previousClose.asKnown().isPresent) 1 else 0) +
             (if (shortMarginRate.asKnown().isPresent) 1 else 0) +
+            (shortableAttribute.asKnown().getOrNull()?.validity() ?: 0) +
             (tickRules.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
     override fun equals(other: Any?): Boolean {
@@ -1303,6 +1365,7 @@ private constructor(
             optionsExpiryDates == other.optionsExpiryDates &&
             previousClose == other.previousClose &&
             shortMarginRate == other.shortMarginRate &&
+            shortableAttribute == other.shortableAttribute &&
             tickRules == other.tickRules &&
             additionalProperties == other.additionalProperties
     }
@@ -1332,6 +1395,7 @@ private constructor(
             optionsExpiryDates,
             previousClose,
             shortMarginRate,
+            shortableAttribute,
             tickRules,
             additionalProperties,
         )
@@ -1340,5 +1404,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Instrument{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, caxAdjustedPreviousClose=$caxAdjustedPreviousClose, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, optionsContractExpiryDates=$optionsContractExpiryDates, optionsExpiryDates=$optionsExpiryDates, previousClose=$previousClose, shortMarginRate=$shortMarginRate, tickRules=$tickRules, additionalProperties=$additionalProperties}"
+        "Instrument{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, caxAdjustedPreviousClose=$caxAdjustedPreviousClose, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, optionsContractExpiryDates=$optionsContractExpiryDates, optionsExpiryDates=$optionsExpiryDates, previousClose=$previousClose, shortMarginRate=$shortMarginRate, shortableAttribute=$shortableAttribute, tickRules=$tickRules, additionalProperties=$additionalProperties}"
 }

@@ -70,6 +70,7 @@ internal class InstrumentGetInstrumentByIdResponseTest {
                         .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                         .previousClose("210.87")
                         .shortMarginRate("0.25")
+                        .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                         .addTickRule(
                             TickRule.builder()
                                 .startPrice("3.00")
@@ -136,6 +137,7 @@ internal class InstrumentGetInstrumentByIdResponseTest {
                     .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                     .previousClose("210.87")
                     .shortMarginRate("0.25")
+                    .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                     .addTickRule(
                         TickRule.builder()
                             .startPrice("3.00")
@@ -204,6 +206,7 @@ internal class InstrumentGetInstrumentByIdResponseTest {
                         .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                         .previousClose("210.87")
                         .shortMarginRate("0.25")
+                        .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                         .addTickRule(
                             TickRule.builder()
                                 .startPrice("3.00")

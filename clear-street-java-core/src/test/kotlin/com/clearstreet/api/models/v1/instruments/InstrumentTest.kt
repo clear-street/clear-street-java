@@ -45,6 +45,7 @@ internal class InstrumentTest {
                 .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
+                .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                 .addTickRule(
                     TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
                 )
@@ -81,6 +82,7 @@ internal class InstrumentTest {
             .containsExactly(LocalDate.parse("2019-12-27"))
         assertThat(instrument.previousClose()).contains("210.87")
         assertThat(instrument.shortMarginRate()).contains("0.25")
+        assertThat(instrument.shortableAttribute()).contains(ShortableAttribute.EASY_TO_BORROW)
         assertThat(instrument.tickRules().getOrNull())
             .containsExactly(
                 TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
@@ -121,6 +123,7 @@ internal class InstrumentTest {
                 .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                 .previousClose("210.87")
                 .shortMarginRate("0.25")
+                .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                 .addTickRule(
                     TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
                 )

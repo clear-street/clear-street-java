@@ -61,6 +61,7 @@ internal class InstrumentSearchInstrumentsResponseTest {
                         .notionalAdv("15815250000")
                         .previousClose("210.87")
                         .shortMarginRate("0.25")
+                        .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                         .addTickRule(
                             TickRule.builder()
                                 .startPrice("3.00")
@@ -119,6 +120,7 @@ internal class InstrumentSearchInstrumentsResponseTest {
                     .notionalAdv("15815250000")
                     .previousClose("210.87")
                     .shortMarginRate("0.25")
+                    .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                     .addTickRule(
                         TickRule.builder()
                             .startPrice("3.00")
@@ -179,6 +181,7 @@ internal class InstrumentSearchInstrumentsResponseTest {
                         .notionalAdv("15815250000")
                         .previousClose("210.87")
                         .shortMarginRate("0.25")
+                        .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                         .addTickRule(
                             TickRule.builder()
                                 .startPrice("3.00")

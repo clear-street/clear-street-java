@@ -6,6 +6,7 @@ import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.v1.SecurityType
 import com.clearstreet.api.models.v1.instruments.Instrument
 import com.clearstreet.api.models.v1.instruments.OptionExpiryDate
+import com.clearstreet.api.models.v1.instruments.ShortableAttribute
 import com.clearstreet.api.models.v1.instruments.TickRule
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
@@ -53,6 +54,7 @@ internal class WatchlistItemEntryTest {
                         .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                         .previousClose("210.87")
                         .shortMarginRate("0.25")
+                        .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                         .addTickRule(
                             TickRule.builder()
                                 .startPrice("3.00")
@@ -100,6 +102,7 @@ internal class WatchlistItemEntryTest {
                     .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                     .previousClose("210.87")
                     .shortMarginRate("0.25")
+                    .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                     .addTickRule(
                         TickRule.builder()
                             .startPrice("3.00")
@@ -150,6 +153,7 @@ internal class WatchlistItemEntryTest {
                         .addOptionsExpiryDate(LocalDate.parse("2019-12-27"))
                         .previousClose("210.87")
                         .shortMarginRate("0.25")
+                        .shortableAttribute(ShortableAttribute.EASY_TO_BORROW)
                         .addTickRule(
                             TickRule.builder()
                                 .startPrice("3.00")
