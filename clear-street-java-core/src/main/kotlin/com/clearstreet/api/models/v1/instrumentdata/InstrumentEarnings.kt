@@ -23,6 +23,7 @@ class InstrumentEarnings
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val date: JsonField<LocalDate>,
+    private val transcriptAvailable: JsonField<Boolean>,
     private val epsActual: JsonField<String>,
     private val epsEstimate: JsonField<String>,
     private val epsSurprisePercent: JsonField<String>,
@@ -36,6 +37,9 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("date") @ExcludeMissing date: JsonField<LocalDate> = JsonMissing.of(),
+        @JsonProperty("transcript_available")
+        @ExcludeMissing
+        transcriptAvailable: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("eps_actual") @ExcludeMissing epsActual: JsonField<String> = JsonMissing.of(),
         @JsonProperty("eps_estimate")
         @ExcludeMissing
@@ -57,6 +61,7 @@ private constructor(
         revenueSurprisePercent: JsonField<String> = JsonMissing.of(),
     ) : this(
         date,
+        transcriptAvailable,
         epsActual,
         epsEstimate,
         epsSurprisePercent,
@@ -74,6 +79,16 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun date(): LocalDate = date.getRequired("date")
+
+    /**
+     * True when an earnings call transcript exists for this event. Fetch it with `GET
+     * /v1/instruments/{instrument_id}/earnings-transcripts?event_date=<date>`, where `<date>` is
+     * this event's `date`.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun transcriptAvailable(): Boolean = transcriptAvailable.getRequired("transcript_available")
 
     /**
      * The actual earnings per share (EPS) for the period When a null/undefined value is observed,
@@ -146,6 +161,16 @@ private constructor(
      * Unlike [date], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("date") @ExcludeMissing fun _date(): JsonField<LocalDate> = date
+
+    /**
+     * Returns the raw JSON value of [transcriptAvailable].
+     *
+     * Unlike [transcriptAvailable], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("transcript_available")
+    @ExcludeMissing
+    fun _transcriptAvailable(): JsonField<Boolean> = transcriptAvailable
 
     /**
      * Returns the raw JSON value of [epsActual].
@@ -230,6 +255,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .date()
+         * .transcriptAvailable()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -239,6 +265,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var date: JsonField<LocalDate>? = null
+        private var transcriptAvailable: JsonField<Boolean>? = null
         private var epsActual: JsonField<String> = JsonMissing.of()
         private var epsEstimate: JsonField<String> = JsonMissing.of()
         private var epsSurprisePercent: JsonField<String> = JsonMissing.of()
@@ -251,6 +278,7 @@ private constructor(
         @JvmSynthetic
         internal fun from(instrumentEarnings: InstrumentEarnings) = apply {
             date = instrumentEarnings.date
+            transcriptAvailable = instrumentEarnings.transcriptAvailable
             epsActual = instrumentEarnings.epsActual
             epsEstimate = instrumentEarnings.epsEstimate
             epsSurprisePercent = instrumentEarnings.epsSurprisePercent
@@ -271,6 +299,25 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun date(date: JsonField<LocalDate>) = apply { this.date = date }
+
+        /**
+         * True when an earnings call transcript exists for this event. Fetch it with `GET
+         * /v1/instruments/{instrument_id}/earnings-transcripts?event_date=<date>`, where `<date>`
+         * is this event's `date`.
+         */
+        fun transcriptAvailable(transcriptAvailable: Boolean) =
+            transcriptAvailable(JsonField.of(transcriptAvailable))
+
+        /**
+         * Sets [Builder.transcriptAvailable] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.transcriptAvailable] with a well-typed [Boolean] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun transcriptAvailable(transcriptAvailable: JsonField<Boolean>) = apply {
+            this.transcriptAvailable = transcriptAvailable
+        }
 
         /**
          * The actual earnings per share (EPS) for the period When a null/undefined value is
@@ -446,6 +493,7 @@ private constructor(
          * The following fields are required:
          * ```java
          * .date()
+         * .transcriptAvailable()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -453,6 +501,7 @@ private constructor(
         fun build(): InstrumentEarnings =
             InstrumentEarnings(
                 checkRequired("date", date),
+                checkRequired("transcriptAvailable", transcriptAvailable),
                 epsActual,
                 epsEstimate,
                 epsSurprisePercent,
@@ -480,6 +529,7 @@ private constructor(
         }
 
         date()
+        transcriptAvailable()
         epsActual()
         epsEstimate()
         epsSurprisePercent()
@@ -506,6 +556,7 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (if (date.asKnown().isPresent) 1 else 0) +
+            (if (transcriptAvailable.asKnown().isPresent) 1 else 0) +
             (if (epsActual.asKnown().isPresent) 1 else 0) +
             (if (epsEstimate.asKnown().isPresent) 1 else 0) +
             (if (epsSurprisePercent.asKnown().isPresent) 1 else 0) +
@@ -521,6 +572,7 @@ private constructor(
 
         return other is InstrumentEarnings &&
             date == other.date &&
+            transcriptAvailable == other.transcriptAvailable &&
             epsActual == other.epsActual &&
             epsEstimate == other.epsEstimate &&
             epsSurprisePercent == other.epsSurprisePercent &&
@@ -534,6 +586,7 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             date,
+            transcriptAvailable,
             epsActual,
             epsEstimate,
             epsSurprisePercent,
@@ -548,5 +601,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentEarnings{date=$date, epsActual=$epsActual, epsEstimate=$epsEstimate, epsSurprisePercent=$epsSurprisePercent, reportTime=$reportTime, revenueActual=$revenueActual, revenueEstimate=$revenueEstimate, revenueSurprisePercent=$revenueSurprisePercent, additionalProperties=$additionalProperties}"
+        "InstrumentEarnings{date=$date, transcriptAvailable=$transcriptAvailable, epsActual=$epsActual, epsEstimate=$epsEstimate, epsSurprisePercent=$epsSurprisePercent, reportTime=$reportTime, revenueActual=$revenueActual, revenueEstimate=$revenueEstimate, revenueSurprisePercent=$revenueSurprisePercent, additionalProperties=$additionalProperties}"
 }

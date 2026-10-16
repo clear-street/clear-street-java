@@ -23,6 +23,8 @@ import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentB
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentBalanceSheetStatementsResponse
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentCashFlowStatementsParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentCashFlowStatementsResponse
+import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEarningsTranscriptsParams
+import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEarningsTranscriptsResponse
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEventsParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEventsResponse
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentFundamentalsParams
@@ -86,6 +88,13 @@ class InstrumentDataServiceImpl internal constructor(private val clientOptions: 
     ): InstrumentDataGetInstrumentCashFlowStatementsResponse =
         // get /v1/instruments/{instrument_id}/cash-flow-statements
         withRawResponse().getInstrumentCashFlowStatements(params, requestOptions).parse()
+
+    override fun getInstrumentEarningsTranscripts(
+        params: InstrumentDataGetInstrumentEarningsTranscriptsParams,
+        requestOptions: RequestOptions,
+    ): InstrumentDataGetInstrumentEarningsTranscriptsResponse =
+        // get /v1/instruments/{instrument_id}/earnings-transcripts
+        withRawResponse().getInstrumentEarningsTranscripts(params, requestOptions).parse()
 
     override fun getInstrumentEvents(
         params: InstrumentDataGetInstrumentEventsParams,
@@ -259,6 +268,44 @@ class InstrumentDataServiceImpl internal constructor(private val clientOptions: 
             return errorHandler.handle(response).parseable {
                 response
                     .use { getInstrumentCashFlowStatementsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val getInstrumentEarningsTranscriptsHandler:
+            Handler<InstrumentDataGetInstrumentEarningsTranscriptsResponse> =
+            jsonHandler<InstrumentDataGetInstrumentEarningsTranscriptsResponse>(
+                clientOptions.jsonMapper
+            )
+
+        override fun getInstrumentEarningsTranscripts(
+            params: InstrumentDataGetInstrumentEarningsTranscriptsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<InstrumentDataGetInstrumentEarningsTranscriptsResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("instrumentId", params.instrumentId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "v1",
+                        "instruments",
+                        params._pathParam(0),
+                        "earnings-transcripts",
+                    )
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getInstrumentEarningsTranscriptsHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

@@ -37,6 +37,7 @@ internal class InstrumentAllEventsDataTest {
                                 .earningsEventData(
                                     InstrumentEarnings.builder()
                                         .date(LocalDate.parse("2025-07-25"))
+                                        .transcriptAvailable(true)
                                         .epsActual("1.35")
                                         .epsEstimate("1.30")
                                         .epsSurprisePercent("3.8")
@@ -100,6 +101,7 @@ internal class InstrumentAllEventsDataTest {
                             .earningsEventData(
                                 InstrumentEarnings.builder()
                                     .date(LocalDate.parse("2025-07-25"))
+                                    .transcriptAvailable(true)
                                     .epsActual("1.35")
                                     .epsEstimate("1.30")
                                     .epsSurprisePercent("3.8")
@@ -165,6 +167,7 @@ internal class InstrumentAllEventsDataTest {
                                 .earningsEventData(
                                     InstrumentEarnings.builder()
                                         .date(LocalDate.parse("2025-07-25"))
+                                        .transcriptAvailable(true)
                                         .epsActual("1.35")
                                         .epsEstimate("1.30")
                                         .epsSurprisePercent("3.8")

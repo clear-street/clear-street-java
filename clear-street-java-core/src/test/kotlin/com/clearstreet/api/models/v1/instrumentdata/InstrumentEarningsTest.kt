@@ -15,6 +15,7 @@ internal class InstrumentEarningsTest {
         val instrumentEarnings =
             InstrumentEarnings.builder()
                 .date(LocalDate.parse("2025-07-25"))
+                .transcriptAvailable(true)
                 .epsActual("1.35")
                 .epsEstimate("1.30")
                 .epsSurprisePercent("3.8")
@@ -25,6 +26,7 @@ internal class InstrumentEarningsTest {
                 .build()
 
         assertThat(instrumentEarnings.date()).isEqualTo(LocalDate.parse("2025-07-25"))
+        assertThat(instrumentEarnings.transcriptAvailable()).isEqualTo(true)
         assertThat(instrumentEarnings.epsActual()).contains("1.35")
         assertThat(instrumentEarnings.epsEstimate()).contains("1.30")
         assertThat(instrumentEarnings.epsSurprisePercent()).contains("3.8")
@@ -40,6 +42,7 @@ internal class InstrumentEarningsTest {
         val instrumentEarnings =
             InstrumentEarnings.builder()
                 .date(LocalDate.parse("2025-07-25"))
+                .transcriptAvailable(true)
                 .epsActual("1.35")
                 .epsEstimate("1.30")
                 .epsSurprisePercent("3.8")

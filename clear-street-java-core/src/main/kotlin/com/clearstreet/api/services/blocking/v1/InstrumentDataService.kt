@@ -13,6 +13,8 @@ import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentB
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentBalanceSheetStatementsResponse
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentCashFlowStatementsParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentCashFlowStatementsResponse
+import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEarningsTranscriptsParams
+import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEarningsTranscriptsResponse
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEventsParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEventsResponse
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentFundamentalsParams
@@ -256,6 +258,69 @@ interface InstrumentDataService {
         getInstrumentCashFlowStatements(
             instrumentId,
             InstrumentDataGetInstrumentCashFlowStatementsParams.none(),
+            requestOptions,
+        )
+
+    /**
+     * Retrieves earnings call transcripts for a specific instrument, newest fiscal period first.
+     *
+     * Defaults: `page_size` is 1 and is capped at 5, because each transcript is large. Send
+     * `event_date` with the `date` of an earnings event from the events endpoints to fetch that
+     * event's transcript. The `date.gt`, `date.gte`, `date.lt`, and `date.lte` filters compare the
+     * call date itself. An instrument without transcripts returns an empty list.
+     *
+     * Pagination metadata does not include `total_items` or `total_pages` for this endpoint. Use
+     * `next_page_token` to detect whether more results exist. The token does not carry filters:
+     * send the same filters with every page request.
+     */
+    fun getInstrumentEarningsTranscripts(
+        instrumentId: String
+    ): InstrumentDataGetInstrumentEarningsTranscriptsResponse =
+        getInstrumentEarningsTranscripts(
+            instrumentId,
+            InstrumentDataGetInstrumentEarningsTranscriptsParams.none(),
+        )
+
+    /** @see getInstrumentEarningsTranscripts */
+    fun getInstrumentEarningsTranscripts(
+        instrumentId: String,
+        params: InstrumentDataGetInstrumentEarningsTranscriptsParams =
+            InstrumentDataGetInstrumentEarningsTranscriptsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): InstrumentDataGetInstrumentEarningsTranscriptsResponse =
+        getInstrumentEarningsTranscripts(
+            params.toBuilder().instrumentId(instrumentId).build(),
+            requestOptions,
+        )
+
+    /** @see getInstrumentEarningsTranscripts */
+    fun getInstrumentEarningsTranscripts(
+        instrumentId: String,
+        params: InstrumentDataGetInstrumentEarningsTranscriptsParams =
+            InstrumentDataGetInstrumentEarningsTranscriptsParams.none(),
+    ): InstrumentDataGetInstrumentEarningsTranscriptsResponse =
+        getInstrumentEarningsTranscripts(instrumentId, params, RequestOptions.none())
+
+    /** @see getInstrumentEarningsTranscripts */
+    fun getInstrumentEarningsTranscripts(
+        params: InstrumentDataGetInstrumentEarningsTranscriptsParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): InstrumentDataGetInstrumentEarningsTranscriptsResponse
+
+    /** @see getInstrumentEarningsTranscripts */
+    fun getInstrumentEarningsTranscripts(
+        params: InstrumentDataGetInstrumentEarningsTranscriptsParams
+    ): InstrumentDataGetInstrumentEarningsTranscriptsResponse =
+        getInstrumentEarningsTranscripts(params, RequestOptions.none())
+
+    /** @see getInstrumentEarningsTranscripts */
+    fun getInstrumentEarningsTranscripts(
+        instrumentId: String,
+        requestOptions: RequestOptions,
+    ): InstrumentDataGetInstrumentEarningsTranscriptsResponse =
+        getInstrumentEarningsTranscripts(
+            instrumentId,
+            InstrumentDataGetInstrumentEarningsTranscriptsParams.none(),
             requestOptions,
         )
 
@@ -660,6 +725,68 @@ interface InstrumentDataService {
             getInstrumentCashFlowStatements(
                 instrumentId,
                 InstrumentDataGetInstrumentCashFlowStatementsParams.none(),
+                requestOptions,
+            )
+
+        /**
+         * Returns a raw HTTP response for `get
+         * /v1/instruments/{instrument_id}/earnings-transcripts`, but is otherwise the same as
+         * [InstrumentDataService.getInstrumentEarningsTranscripts].
+         */
+        @MustBeClosed
+        fun getInstrumentEarningsTranscripts(
+            instrumentId: String
+        ): HttpResponseFor<InstrumentDataGetInstrumentEarningsTranscriptsResponse> =
+            getInstrumentEarningsTranscripts(
+                instrumentId,
+                InstrumentDataGetInstrumentEarningsTranscriptsParams.none(),
+            )
+
+        /** @see getInstrumentEarningsTranscripts */
+        @MustBeClosed
+        fun getInstrumentEarningsTranscripts(
+            instrumentId: String,
+            params: InstrumentDataGetInstrumentEarningsTranscriptsParams =
+                InstrumentDataGetInstrumentEarningsTranscriptsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<InstrumentDataGetInstrumentEarningsTranscriptsResponse> =
+            getInstrumentEarningsTranscripts(
+                params.toBuilder().instrumentId(instrumentId).build(),
+                requestOptions,
+            )
+
+        /** @see getInstrumentEarningsTranscripts */
+        @MustBeClosed
+        fun getInstrumentEarningsTranscripts(
+            instrumentId: String,
+            params: InstrumentDataGetInstrumentEarningsTranscriptsParams =
+                InstrumentDataGetInstrumentEarningsTranscriptsParams.none(),
+        ): HttpResponseFor<InstrumentDataGetInstrumentEarningsTranscriptsResponse> =
+            getInstrumentEarningsTranscripts(instrumentId, params, RequestOptions.none())
+
+        /** @see getInstrumentEarningsTranscripts */
+        @MustBeClosed
+        fun getInstrumentEarningsTranscripts(
+            params: InstrumentDataGetInstrumentEarningsTranscriptsParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<InstrumentDataGetInstrumentEarningsTranscriptsResponse>
+
+        /** @see getInstrumentEarningsTranscripts */
+        @MustBeClosed
+        fun getInstrumentEarningsTranscripts(
+            params: InstrumentDataGetInstrumentEarningsTranscriptsParams
+        ): HttpResponseFor<InstrumentDataGetInstrumentEarningsTranscriptsResponse> =
+            getInstrumentEarningsTranscripts(params, RequestOptions.none())
+
+        /** @see getInstrumentEarningsTranscripts */
+        @MustBeClosed
+        fun getInstrumentEarningsTranscripts(
+            instrumentId: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<InstrumentDataGetInstrumentEarningsTranscriptsResponse> =
+            getInstrumentEarningsTranscripts(
+                instrumentId,
+                InstrumentDataGetInstrumentEarningsTranscriptsParams.none(),
                 requestOptions,
             )
 

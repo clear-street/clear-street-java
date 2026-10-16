@@ -30,6 +30,7 @@ internal class InstrumentEventsDataTest {
                 .addEarning(
                     InstrumentEarnings.builder()
                         .date(LocalDate.parse("2024-10-31"))
+                        .transcriptAvailable(true)
                         .epsActual("1.64")
                         .epsEstimate("1.60")
                         .epsSurprisePercent("2.5")
@@ -81,6 +82,7 @@ internal class InstrumentEventsDataTest {
             .containsExactly(
                 InstrumentEarnings.builder()
                     .date(LocalDate.parse("2024-10-31"))
+                    .transcriptAvailable(true)
                     .epsActual("1.64")
                     .epsEstimate("1.60")
                     .epsSurprisePercent("2.5")
@@ -138,6 +140,7 @@ internal class InstrumentEventsDataTest {
                 .addEarning(
                     InstrumentEarnings.builder()
                         .date(LocalDate.parse("2024-10-31"))
+                        .transcriptAvailable(true)
                         .epsActual("1.64")
                         .epsEstimate("1.60")
                         .epsSurprisePercent("2.5")

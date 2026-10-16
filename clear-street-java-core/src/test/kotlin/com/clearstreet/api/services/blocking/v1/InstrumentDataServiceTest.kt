@@ -9,6 +9,7 @@ import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetAllInstrume
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentAnalystConsensusParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentBalanceSheetStatementsParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentCashFlowStatementsParams
+import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEarningsTranscriptsParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEventsParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentIncomeStatementsParams
 import java.time.LocalDate
@@ -103,6 +104,38 @@ internal class InstrumentDataServiceTest {
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .toDate("to_date")
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Test
+    fun getInstrumentEarningsTranscripts() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val instrumentDataService = client.v1().instrumentData()
+
+        val response =
+            instrumentDataService.getInstrumentEarningsTranscripts(
+                InstrumentDataGetInstrumentEarningsTranscriptsParams.builder()
+                    .instrumentId("x")
+                    .date(
+                        InstrumentDataGetInstrumentEarningsTranscriptsParams.Date.builder()
+                            .gt("gt")
+                            .gte("gte")
+                            .lt("lt")
+                            .lte("lte")
+                            .build()
+                    )
+                    .eventDate(LocalDate.parse("2019-12-27"))
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .period(InstrumentDataGetInstrumentEarningsTranscriptsParams.Period.Q1)
+                    .year(0)
                     .build()
             )
 

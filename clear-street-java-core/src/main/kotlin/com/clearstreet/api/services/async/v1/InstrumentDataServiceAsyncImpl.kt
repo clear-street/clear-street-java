@@ -23,6 +23,8 @@ import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentB
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentBalanceSheetStatementsResponse
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentCashFlowStatementsParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentCashFlowStatementsResponse
+import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEarningsTranscriptsParams
+import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEarningsTranscriptsResponse
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEventsParams
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentEventsResponse
 import com.clearstreet.api.models.v1.instrumentdata.InstrumentDataGetInstrumentFundamentalsParams
@@ -95,6 +97,15 @@ internal constructor(private val clientOptions: ClientOptions) : InstrumentDataS
     ): CompletableFuture<InstrumentDataGetInstrumentCashFlowStatementsResponse> =
         // get /v1/instruments/{instrument_id}/cash-flow-statements
         withRawResponse().getInstrumentCashFlowStatements(params, requestOptions).thenApply {
+            it.parse()
+        }
+
+    override fun getInstrumentEarningsTranscripts(
+        params: InstrumentDataGetInstrumentEarningsTranscriptsParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<InstrumentDataGetInstrumentEarningsTranscriptsResponse> =
+        // get /v1/instruments/{instrument_id}/earnings-transcripts
+        withRawResponse().getInstrumentEarningsTranscripts(params, requestOptions).thenApply {
             it.parse()
         }
 
@@ -287,6 +298,49 @@ internal constructor(private val clientOptions: ClientOptions) : InstrumentDataS
                     errorHandler.handle(response).parseable {
                         response
                             .use { getInstrumentCashFlowStatementsHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val getInstrumentEarningsTranscriptsHandler:
+            Handler<InstrumentDataGetInstrumentEarningsTranscriptsResponse> =
+            jsonHandler<InstrumentDataGetInstrumentEarningsTranscriptsResponse>(
+                clientOptions.jsonMapper
+            )
+
+        override fun getInstrumentEarningsTranscripts(
+            params: InstrumentDataGetInstrumentEarningsTranscriptsParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<
+            HttpResponseFor<InstrumentDataGetInstrumentEarningsTranscriptsResponse>
+        > {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("instrumentId", params.instrumentId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments(
+                        "v1",
+                        "instruments",
+                        params._pathParam(0),
+                        "earnings-transcripts",
+                    )
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { getInstrumentEarningsTranscriptsHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()
