@@ -21,6 +21,7 @@ class TradingSessions
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val afterHours: JsonField<SessionSchedule>,
+    private val maintenance: JsonField<SessionSchedule>,
     private val overnight: JsonField<SessionSchedule>,
     private val preMarket: JsonField<SessionSchedule>,
     private val regular: JsonField<SessionSchedule>,
@@ -32,6 +33,9 @@ private constructor(
         @JsonProperty("after_hours")
         @ExcludeMissing
         afterHours: JsonField<SessionSchedule> = JsonMissing.of(),
+        @JsonProperty("maintenance")
+        @ExcludeMissing
+        maintenance: JsonField<SessionSchedule> = JsonMissing.of(),
         @JsonProperty("overnight")
         @ExcludeMissing
         overnight: JsonField<SessionSchedule> = JsonMissing.of(),
@@ -41,7 +45,7 @@ private constructor(
         @JsonProperty("regular")
         @ExcludeMissing
         regular: JsonField<SessionSchedule> = JsonMissing.of(),
-    ) : this(afterHours, overnight, preMarket, regular, mutableMapOf())
+    ) : this(afterHours, maintenance, overnight, preMarket, regular, mutableMapOf())
 
     /**
      * After-hours session schedule, null if not available When a null/undefined value is observed,
@@ -51,6 +55,16 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun afterHours(): Optional<SessionSchedule> = afterHours.getOptional("after_hours")
+
+    /**
+     * Scheduled maintenance window. The market is closed inside it, even when it falls within
+     * another session. Null if none is scheduled for the day. When a null/undefined value is
+     * observed, it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun maintenance(): Optional<SessionSchedule> = maintenance.getOptional("maintenance")
 
     /**
      * Overnight session schedule (prior evening through early morning), null if not available When
@@ -87,6 +101,15 @@ private constructor(
     @JsonProperty("after_hours")
     @ExcludeMissing
     fun _afterHours(): JsonField<SessionSchedule> = afterHours
+
+    /**
+     * Returns the raw JSON value of [maintenance].
+     *
+     * Unlike [maintenance], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("maintenance")
+    @ExcludeMissing
+    fun _maintenance(): JsonField<SessionSchedule> = maintenance
 
     /**
      * Returns the raw JSON value of [overnight].
@@ -135,6 +158,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var afterHours: JsonField<SessionSchedule> = JsonMissing.of()
+        private var maintenance: JsonField<SessionSchedule> = JsonMissing.of()
         private var overnight: JsonField<SessionSchedule> = JsonMissing.of()
         private var preMarket: JsonField<SessionSchedule> = JsonMissing.of()
         private var regular: JsonField<SessionSchedule> = JsonMissing.of()
@@ -143,6 +167,7 @@ private constructor(
         @JvmSynthetic
         internal fun from(tradingSessions: TradingSessions) = apply {
             afterHours = tradingSessions.afterHours
+            maintenance = tradingSessions.maintenance
             overnight = tradingSessions.overnight
             preMarket = tradingSessions.preMarket
             regular = tradingSessions.regular
@@ -167,6 +192,29 @@ private constructor(
          */
         fun afterHours(afterHours: JsonField<SessionSchedule>) = apply {
             this.afterHours = afterHours
+        }
+
+        /**
+         * Scheduled maintenance window. The market is closed inside it, even when it falls within
+         * another session. Null if none is scheduled for the day. When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
+        fun maintenance(maintenance: SessionSchedule?) =
+            maintenance(JsonField.ofNullable(maintenance))
+
+        /** Alias for calling [Builder.maintenance] with `maintenance.orElse(null)`. */
+        fun maintenance(maintenance: Optional<SessionSchedule>) =
+            maintenance(maintenance.getOrNull())
+
+        /**
+         * Sets [Builder.maintenance] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maintenance] with a well-typed [SessionSchedule] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun maintenance(maintenance: JsonField<SessionSchedule>) = apply {
+            this.maintenance = maintenance
         }
 
         /**
@@ -250,6 +298,7 @@ private constructor(
         fun build(): TradingSessions =
             TradingSessions(
                 afterHours,
+                maintenance,
                 overnight,
                 preMarket,
                 regular,
@@ -273,6 +322,7 @@ private constructor(
         }
 
         afterHours().ifPresent { it.validate() }
+        maintenance().ifPresent { it.validate() }
         overnight().ifPresent { it.validate() }
         preMarket().ifPresent { it.validate() }
         regular().ifPresent { it.validate() }
@@ -295,6 +345,7 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (afterHours.asKnown().getOrNull()?.validity() ?: 0) +
+            (maintenance.asKnown().getOrNull()?.validity() ?: 0) +
             (overnight.asKnown().getOrNull()?.validity() ?: 0) +
             (preMarket.asKnown().getOrNull()?.validity() ?: 0) +
             (regular.asKnown().getOrNull()?.validity() ?: 0)
@@ -306,6 +357,7 @@ private constructor(
 
         return other is TradingSessions &&
             afterHours == other.afterHours &&
+            maintenance == other.maintenance &&
             overnight == other.overnight &&
             preMarket == other.preMarket &&
             regular == other.regular &&
@@ -313,11 +365,11 @@ private constructor(
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(afterHours, overnight, preMarket, regular, additionalProperties)
+        Objects.hash(afterHours, maintenance, overnight, preMarket, regular, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "TradingSessions{afterHours=$afterHours, overnight=$overnight, preMarket=$preMarket, regular=$regular, additionalProperties=$additionalProperties}"
+        "TradingSessions{afterHours=$afterHours, maintenance=$maintenance, overnight=$overnight, preMarket=$preMarket, regular=$regular, additionalProperties=$additionalProperties}"
 }

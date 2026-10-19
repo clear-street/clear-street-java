@@ -28,7 +28,10 @@ private constructor(
     /** The date to query market hours for (YYYY-MM-DD). Defaults to today. */
     fun date(): Optional<String> = Optional.ofNullable(date)
 
-    /** Market type to query (us_equities, us_options). If omitted, returns all markets. */
+    /**
+     * Market type to query (us_equities, us_options, us_event_contracts). If omitted, returns
+     * us_equities and us_options.
+     */
     fun market(): Optional<Market> = Optional.ofNullable(market)
 
     /** Additional headers to send with the request. */
@@ -75,7 +78,10 @@ private constructor(
         /** Alias for calling [Builder.date] with `date.orElse(null)`. */
         fun date(date: Optional<String>) = date(date.getOrNull())
 
-        /** Market type to query (us_equities, us_options). If omitted, returns all markets. */
+        /**
+         * Market type to query (us_equities, us_options, us_event_contracts). If omitted, returns
+         * us_equities and us_options.
+         */
         fun market(market: Market?) = apply { this.market = market }
 
         /** Alias for calling [Builder.market] with `market.orElse(null)`. */
@@ -204,7 +210,10 @@ private constructor(
             }
             .build()
 
-    /** Market type to query (us_equities, us_options). If omitted, returns all markets. */
+    /**
+     * Market type to query (us_equities, us_options, us_event_contracts). If omitted, returns
+     * us_equities and us_options.
+     */
     class Market @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
@@ -223,6 +232,8 @@ private constructor(
 
             @JvmField val US_OPTIONS = of("us_options")
 
+            @JvmField val US_EVENT_CONTRACTS = of("us_event_contracts")
+
             @JvmStatic fun of(value: String) = Market(JsonField.of(value))
         }
 
@@ -230,6 +241,7 @@ private constructor(
         enum class Known {
             US_EQUITIES,
             US_OPTIONS,
+            US_EVENT_CONTRACTS,
         }
 
         /**
@@ -244,6 +256,7 @@ private constructor(
         enum class Value {
             US_EQUITIES,
             US_OPTIONS,
+            US_EVENT_CONTRACTS,
             /** An enum member indicating that [Market] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -259,6 +272,7 @@ private constructor(
             when (this) {
                 US_EQUITIES -> Value.US_EQUITIES
                 US_OPTIONS -> Value.US_OPTIONS
+                US_EVENT_CONTRACTS -> Value.US_EVENT_CONTRACTS
                 else -> Value._UNKNOWN
             }
 
@@ -275,6 +289,7 @@ private constructor(
             when (this) {
                 US_EQUITIES -> Known.US_EQUITIES
                 US_OPTIONS -> Known.US_OPTIONS
+                US_EVENT_CONTRACTS -> Known.US_EVENT_CONTRACTS
                 else -> throw ClearStreetInvalidDataException("Unknown Market: $value")
             }
 

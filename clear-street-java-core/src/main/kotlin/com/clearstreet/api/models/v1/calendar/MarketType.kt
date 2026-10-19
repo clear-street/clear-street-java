@@ -25,6 +25,8 @@ class MarketType @JsonCreator private constructor(private val value: JsonField<S
 
         @JvmField val US_OPTIONS = of("us_options")
 
+        @JvmField val US_EVENT_CONTRACTS = of("us_event_contracts")
+
         @JvmStatic fun of(value: String) = MarketType(JsonField.of(value))
     }
 
@@ -32,6 +34,7 @@ class MarketType @JsonCreator private constructor(private val value: JsonField<S
     enum class Known {
         US_EQUITIES,
         US_OPTIONS,
+        US_EVENT_CONTRACTS,
     }
 
     /**
@@ -46,6 +49,7 @@ class MarketType @JsonCreator private constructor(private val value: JsonField<S
     enum class Value {
         US_EQUITIES,
         US_OPTIONS,
+        US_EVENT_CONTRACTS,
         /** An enum member indicating that [MarketType] was instantiated with an unknown value. */
         _UNKNOWN,
     }
@@ -61,6 +65,7 @@ class MarketType @JsonCreator private constructor(private val value: JsonField<S
         when (this) {
             US_EQUITIES -> Value.US_EQUITIES
             US_OPTIONS -> Value.US_OPTIONS
+            US_EVENT_CONTRACTS -> Value.US_EVENT_CONTRACTS
             else -> Value._UNKNOWN
         }
 
@@ -77,6 +82,7 @@ class MarketType @JsonCreator private constructor(private val value: JsonField<S
         when (this) {
             US_EQUITIES -> Known.US_EQUITIES
             US_OPTIONS -> Known.US_OPTIONS
+            US_EVENT_CONTRACTS -> Known.US_EVENT_CONTRACTS
             else -> throw ClearStreetInvalidDataException("Unknown MarketType: $value")
         }
 
