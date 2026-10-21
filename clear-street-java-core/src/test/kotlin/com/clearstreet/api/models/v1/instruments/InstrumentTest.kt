@@ -34,6 +34,7 @@ internal class InstrumentTest {
                 .instrumentType(SecurityType.COMMON_STOCK)
                 .longMarginRate("0.25")
                 .name("Apple Inc.")
+                .addNotShortableReason(NotShortableReason.INSUFFICIENT_LOCATE_INVENTORY)
                 .notionalAdv("15815250000")
                 .addOptionsContractExpiryDate(
                     OptionExpiryDate.builder()
@@ -69,6 +70,8 @@ internal class InstrumentTest {
         assertThat(instrument.instrumentType()).contains(SecurityType.COMMON_STOCK)
         assertThat(instrument.longMarginRate()).contains("0.25")
         assertThat(instrument.name()).contains("Apple Inc.")
+        assertThat(instrument.notShortableReasons().getOrNull())
+            .containsExactly(NotShortableReason.INSUFFICIENT_LOCATE_INVENTORY)
         assertThat(instrument.notionalAdv()).contains("15815250000")
         assertThat(instrument.optionsContractExpiryDates().getOrNull())
             .containsExactly(
@@ -112,6 +115,7 @@ internal class InstrumentTest {
                 .instrumentType(SecurityType.COMMON_STOCK)
                 .longMarginRate("0.25")
                 .name("Apple Inc.")
+                .addNotShortableReason(NotShortableReason.INSUFFICIENT_LOCATE_INVENTORY)
                 .notionalAdv("15815250000")
                 .addOptionsContractExpiryDate(
                     OptionExpiryDate.builder()

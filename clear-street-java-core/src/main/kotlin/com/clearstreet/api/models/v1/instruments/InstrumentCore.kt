@@ -41,6 +41,7 @@ private constructor(
     private val instrumentType: JsonField<SecurityType>,
     private val longMarginRate: JsonField<String>,
     private val name: JsonField<String>,
+    private val notShortableReasons: JsonField<List<NotShortableReason>>,
     private val notionalAdv: JsonField<String>,
     private val previousClose: JsonField<String>,
     private val shortMarginRate: JsonField<String>,
@@ -91,6 +92,9 @@ private constructor(
         @ExcludeMissing
         longMarginRate: JsonField<String> = JsonMissing.of(),
         @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("not_shortable_reasons")
+        @ExcludeMissing
+        notShortableReasons: JsonField<List<NotShortableReason>> = JsonMissing.of(),
         @JsonProperty("notional_adv")
         @ExcludeMissing
         notionalAdv: JsonField<String> = JsonMissing.of(),
@@ -125,6 +129,7 @@ private constructor(
         instrumentType,
         longMarginRate,
         name,
+        notShortableReasons,
         notionalAdv,
         previousClose,
         shortMarginRate,
@@ -288,6 +293,17 @@ private constructor(
     fun name(): Optional<String> = name.getOptional("name")
 
     /**
+     * Why the instrument is `NOT_SHORTABLE`: every reason that applies, using the same codes as the
+     * `type` of the equivalent order-preview errors. Omitted unless `shortable_attribute` is
+     * `NOT_SHORTABLE`. When a null/undefined value is observed, it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun notShortableReasons(): Optional<List<NotShortableReason>> =
+        notShortableReasons.getOptional("not_shortable_reasons")
+
+    /**
      * Notional average daily volume (ADV multiplied by the cax-adjusted close when present, the raw
      * previous close otherwise). When a null/undefined value is observed, it indicates that there
      * is no available data.
@@ -318,10 +334,9 @@ private constructor(
     /**
      * How readily the instrument can be shorted: `EASY_TO_BORROW`, `HARD_TO_BORROW`, or
      * `NOT_SHORTABLE`. Easy-to-borrow instruments can be shorted without a locate. A hard-to-borrow
-     * instrument is not easy to borrow but has locate inventory remaining and a float at or above
-     * the minimum for short sales; anything else is not shortable. Omitted for instruments that are
-     * not tradable equities. When a null/undefined value is observed, it indicates it does not
-     * apply.
+     * instrument is not easy to borrow but has locate inventory remaining and supports short
+     * selling; anything else is not shortable. Omitted for instruments that are not tradable
+     * equities. When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -489,6 +504,16 @@ private constructor(
     @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
 
     /**
+     * Returns the raw JSON value of [notShortableReasons].
+     *
+     * Unlike [notShortableReasons], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("not_shortable_reasons")
+    @ExcludeMissing
+    fun _notShortableReasons(): JsonField<List<NotShortableReason>> = notShortableReasons
+
+    /**
      * Returns the raw JSON value of [notionalAdv].
      *
      * Unlike [notionalAdv], this method doesn't throw if the JSON field has an unexpected type.
@@ -592,6 +617,7 @@ private constructor(
         private var instrumentType: JsonField<SecurityType> = JsonMissing.of()
         private var longMarginRate: JsonField<String> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
+        private var notShortableReasons: JsonField<MutableList<NotShortableReason>>? = null
         private var notionalAdv: JsonField<String> = JsonMissing.of()
         private var previousClose: JsonField<String> = JsonMissing.of()
         private var shortMarginRate: JsonField<String> = JsonMissing.of()
@@ -619,6 +645,7 @@ private constructor(
             instrumentType = instrumentCore.instrumentType
             longMarginRate = instrumentCore.longMarginRate
             name = instrumentCore.name
+            notShortableReasons = instrumentCore.notShortableReasons.map { it.toMutableList() }
             notionalAdv = instrumentCore.notionalAdv
             previousClose = instrumentCore.previousClose
             shortMarginRate = instrumentCore.shortMarginRate
@@ -907,6 +934,44 @@ private constructor(
         fun name(name: JsonField<String>) = apply { this.name = name }
 
         /**
+         * Why the instrument is `NOT_SHORTABLE`: every reason that applies, using the same codes as
+         * the `type` of the equivalent order-preview errors. Omitted unless `shortable_attribute`
+         * is `NOT_SHORTABLE`. When a null/undefined value is observed, it indicates it does not
+         * apply.
+         */
+        fun notShortableReasons(notShortableReasons: List<NotShortableReason>?) =
+            notShortableReasons(JsonField.ofNullable(notShortableReasons))
+
+        /**
+         * Alias for calling [Builder.notShortableReasons] with `notShortableReasons.orElse(null)`.
+         */
+        fun notShortableReasons(notShortableReasons: Optional<List<NotShortableReason>>) =
+            notShortableReasons(notShortableReasons.getOrNull())
+
+        /**
+         * Sets [Builder.notShortableReasons] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.notShortableReasons] with a well-typed
+         * `List<NotShortableReason>` value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
+         */
+        fun notShortableReasons(notShortableReasons: JsonField<List<NotShortableReason>>) = apply {
+            this.notShortableReasons = notShortableReasons.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [NotShortableReason] to [notShortableReasons].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addNotShortableReason(notShortableReason: NotShortableReason) = apply {
+            notShortableReasons =
+                (notShortableReasons ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("notShortableReasons", it).add(notShortableReason)
+                }
+        }
+
+        /**
          * Notional average daily volume (ADV multiplied by the cax-adjusted close when present, the
          * raw previous close otherwise). When a null/undefined value is observed, it indicates that
          * there is no available data.
@@ -972,10 +1037,10 @@ private constructor(
         /**
          * How readily the instrument can be shorted: `EASY_TO_BORROW`, `HARD_TO_BORROW`, or
          * `NOT_SHORTABLE`. Easy-to-borrow instruments can be shorted without a locate. A
-         * hard-to-borrow instrument is not easy to borrow but has locate inventory remaining and a
-         * float at or above the minimum for short sales; anything else is not shortable. Omitted
-         * for instruments that are not tradable equities. When a null/undefined value is observed,
-         * it indicates it does not apply.
+         * hard-to-borrow instrument is not easy to borrow but has locate inventory remaining and
+         * supports short selling; anything else is not shortable. Omitted for instruments that are
+         * not tradable equities. When a null/undefined value is observed, it indicates it does not
+         * apply.
          */
         fun shortableAttribute(shortableAttribute: ShortableAttribute?) =
             shortableAttribute(JsonField.ofNullable(shortableAttribute))
@@ -1089,6 +1154,7 @@ private constructor(
                 instrumentType,
                 longMarginRate,
                 name,
+                (notShortableReasons ?: JsonMissing.of()).map { it.toImmutable() },
                 notionalAdv,
                 previousClose,
                 shortMarginRate,
@@ -1131,6 +1197,7 @@ private constructor(
         instrumentType().ifPresent { it.validate() }
         longMarginRate()
         name()
+        notShortableReasons().ifPresent { it.forEach { it.validate() } }
         notionalAdv()
         previousClose()
         shortMarginRate()
@@ -1172,6 +1239,7 @@ private constructor(
             (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (longMarginRate.asKnown().isPresent) 1 else 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
+            (notShortableReasons.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (notionalAdv.asKnown().isPresent) 1 else 0) +
             (if (previousClose.asKnown().isPresent) 1 else 0) +
             (if (shortMarginRate.asKnown().isPresent) 1 else 0) +
@@ -1202,6 +1270,7 @@ private constructor(
             instrumentType == other.instrumentType &&
             longMarginRate == other.longMarginRate &&
             name == other.name &&
+            notShortableReasons == other.notShortableReasons &&
             notionalAdv == other.notionalAdv &&
             previousClose == other.previousClose &&
             shortMarginRate == other.shortMarginRate &&
@@ -1230,6 +1299,7 @@ private constructor(
             instrumentType,
             longMarginRate,
             name,
+            notShortableReasons,
             notionalAdv,
             previousClose,
             shortMarginRate,
@@ -1242,5 +1312,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, caxAdjustedPreviousClose=$caxAdjustedPreviousClose, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, shortableAttribute=$shortableAttribute, tickRules=$tickRules, additionalProperties=$additionalProperties}"
+        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, caxAdjustedPreviousClose=$caxAdjustedPreviousClose, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notShortableReasons=$notShortableReasons, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, shortableAttribute=$shortableAttribute, tickRules=$tickRules, additionalProperties=$additionalProperties}"
 }

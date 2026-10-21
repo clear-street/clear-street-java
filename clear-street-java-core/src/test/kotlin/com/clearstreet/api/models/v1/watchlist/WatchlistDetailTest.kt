@@ -5,6 +5,7 @@ package com.clearstreet.api.models.v1.watchlist
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.v1.SecurityType
 import com.clearstreet.api.models.v1.instruments.Instrument
+import com.clearstreet.api.models.v1.instruments.NotShortableReason
 import com.clearstreet.api.models.v1.instruments.OptionExpiryDate
 import com.clearstreet.api.models.v1.instruments.ShortableAttribute
 import com.clearstreet.api.models.v1.instruments.TickRule
@@ -47,6 +48,9 @@ internal class WatchlistDetailTest {
                                 .instrumentType(SecurityType.COMMON_STOCK)
                                 .longMarginRate("0.25")
                                 .name("Apple Inc.")
+                                .addNotShortableReason(
+                                    NotShortableReason.INSUFFICIENT_LOCATE_INVENTORY
+                                )
                                 .notionalAdv("15815250000")
                                 .addOptionsContractExpiryDate(
                                     OptionExpiryDate.builder()
@@ -102,6 +106,7 @@ internal class WatchlistDetailTest {
                             .instrumentType(SecurityType.COMMON_STOCK)
                             .longMarginRate("0.25")
                             .name("Apple Inc.")
+                            .addNotShortableReason(NotShortableReason.INSUFFICIENT_LOCATE_INVENTORY)
                             .notionalAdv("15815250000")
                             .addOptionsContractExpiryDate(
                                 OptionExpiryDate.builder()
@@ -160,6 +165,9 @@ internal class WatchlistDetailTest {
                                 .instrumentType(SecurityType.COMMON_STOCK)
                                 .longMarginRate("0.25")
                                 .name("Apple Inc.")
+                                .addNotShortableReason(
+                                    NotShortableReason.INSUFFICIENT_LOCATE_INVENTORY
+                                )
                                 .notionalAdv("15815250000")
                                 .addOptionsContractExpiryDate(
                                     OptionExpiryDate.builder()
