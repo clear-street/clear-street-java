@@ -14,9 +14,11 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Get market data snapshots for one or more securities.
  *
- * Two targeting modes, mutually exclusive: `instrument_ids` (1-100 ids), or
+ * Three targeting modes, mutually exclusive: `instrument_ids` (1-100 ids),
  * `underlying_instrument_id` + `expiry` together, which resolves the underlier's option chain for
- * that expiry and returns a snapshot for every contract in it (uncapped).
+ * that expiry and returns a snapshot for every contract in it (uncapped), or `event_codes` (1-100
+ * event tickers), which returns a snapshot for every market in those events in any status
+ * (uncapped). Unknown event codes are ignored.
  */
 class MarketDataGetSnapshotsParams
 private constructor(
