@@ -3,6 +3,7 @@
 package com.clearstreet.api.models.v1.instruments
 
 import com.clearstreet.api.core.jsonMapper
+import com.clearstreet.api.models.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -36,6 +37,7 @@ internal class OptionsContractTest {
                     TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
                 )
                 .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                 .build()
 
         assertThat(optionsContract.id()).isEqualTo("b6f4b5e2-94a8-4fe4-9a85-2b4a81d30cc5")
@@ -61,6 +63,7 @@ internal class OptionsContractTest {
             )
         assertThat(optionsContract.underlyingInstrumentId())
             .contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(optionsContract.underlyingInstrumentType()).contains(SecurityType.COMMON_STOCK)
     }
 
     @Test
@@ -88,6 +91,7 @@ internal class OptionsContractTest {
                     TickRule.builder().startPrice("3.00").tickSize("0.10").endPrice("10.00").build()
                 )
                 .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                 .build()
 
         val roundtrippedOptionsContract =

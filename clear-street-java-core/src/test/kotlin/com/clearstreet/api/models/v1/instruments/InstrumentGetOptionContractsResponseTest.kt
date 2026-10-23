@@ -6,6 +6,7 @@ import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
+import com.clearstreet.api.models.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -65,6 +66,7 @@ internal class InstrumentGetOptionContractsResponseTest {
                                 .build()
                         )
                         .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                         .build()
                 )
                 .build()
@@ -119,6 +121,7 @@ internal class InstrumentGetOptionContractsResponseTest {
                             .build()
                     )
                     .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                     .build()
             )
     }
@@ -175,6 +178,7 @@ internal class InstrumentGetOptionContractsResponseTest {
                                 .build()
                         )
                         .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .underlyingInstrumentType(SecurityType.COMMON_STOCK)
                         .build()
                 )
                 .build()

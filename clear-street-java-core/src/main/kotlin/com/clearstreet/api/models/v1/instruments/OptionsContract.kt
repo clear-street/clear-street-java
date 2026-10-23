@@ -10,6 +10,7 @@ import com.clearstreet.api.core.checkKnown
 import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.toImmutable
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
+import com.clearstreet.api.models.v1.SecurityType
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -43,6 +44,7 @@ private constructor(
     private val openInterest: JsonField<Long>,
     private val tickRules: JsonField<List<TickRule>>,
     private val underlyingInstrumentId: JsonField<String>,
+    private val underlyingInstrumentType: JsonField<SecurityType>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -92,6 +94,9 @@ private constructor(
         @JsonProperty("underlying_instrument_id")
         @ExcludeMissing
         underlyingInstrumentId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("underlying_instrument_type")
+        @ExcludeMissing
+        underlyingInstrumentType: JsonField<SecurityType> = JsonMissing.of(),
     ) : this(
         id,
         contractType,
@@ -111,6 +116,7 @@ private constructor(
         openInterest,
         tickRules,
         underlyingInstrumentId,
+        underlyingInstrumentType,
         mutableMapOf(),
     )
 
@@ -266,6 +272,16 @@ private constructor(
         underlyingInstrumentId.getOptional("underlying_instrument_id")
 
     /**
+     * Type of the underlying instrument, alongside `underlying_instrument_id` When a null/undefined
+     * value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun underlyingInstrumentType(): Optional<SecurityType> =
+        underlyingInstrumentType.getOptional("underlying_instrument_type")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -415,6 +431,16 @@ private constructor(
     @ExcludeMissing
     fun _underlyingInstrumentId(): JsonField<String> = underlyingInstrumentId
 
+    /**
+     * Returns the raw JSON value of [underlyingInstrumentType].
+     *
+     * Unlike [underlyingInstrumentType], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("underlying_instrument_type")
+    @ExcludeMissing
+    fun _underlyingInstrumentType(): JsonField<SecurityType> = underlyingInstrumentType
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -473,6 +499,7 @@ private constructor(
         private var openInterest: JsonField<Long> = JsonMissing.of()
         private var tickRules: JsonField<MutableList<TickRule>>? = null
         private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
+        private var underlyingInstrumentType: JsonField<SecurityType> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -495,6 +522,7 @@ private constructor(
             openInterest = optionsContract.openInterest
             tickRules = optionsContract.tickRules.map { it.toMutableList() }
             underlyingInstrumentId = optionsContract.underlyingInstrumentId
+            underlyingInstrumentType = optionsContract.underlyingInstrumentType
             additionalProperties = optionsContract.additionalProperties.toMutableMap()
         }
 
@@ -791,6 +819,31 @@ private constructor(
             this.underlyingInstrumentId = underlyingInstrumentId
         }
 
+        /**
+         * Type of the underlying instrument, alongside `underlying_instrument_id` When a
+         * null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun underlyingInstrumentType(underlyingInstrumentType: SecurityType?) =
+            underlyingInstrumentType(JsonField.ofNullable(underlyingInstrumentType))
+
+        /**
+         * Alias for calling [Builder.underlyingInstrumentType] with
+         * `underlyingInstrumentType.orElse(null)`.
+         */
+        fun underlyingInstrumentType(underlyingInstrumentType: Optional<SecurityType>) =
+            underlyingInstrumentType(underlyingInstrumentType.getOrNull())
+
+        /**
+         * Sets [Builder.underlyingInstrumentType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.underlyingInstrumentType] with a well-typed
+         * [SecurityType] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun underlyingInstrumentType(underlyingInstrumentType: JsonField<SecurityType>) = apply {
+            this.underlyingInstrumentType = underlyingInstrumentType
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -854,6 +907,7 @@ private constructor(
                 openInterest,
                 (tickRules ?: JsonMissing.of()).map { it.toImmutable() },
                 underlyingInstrumentId,
+                underlyingInstrumentType,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -891,6 +945,7 @@ private constructor(
         openInterest()
         tickRules().ifPresent { it.forEach { it.validate() } }
         underlyingInstrumentId()
+        underlyingInstrumentType().ifPresent { it.validate() }
         validated = true
     }
 
@@ -926,7 +981,8 @@ private constructor(
             (if (lastTradeCutoff.asKnown().isPresent) 1 else 0) +
             (if (openInterest.asKnown().isPresent) 1 else 0) +
             (tickRules.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-            (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0)
+            (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0) +
+            (underlyingInstrumentType.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -952,6 +1008,7 @@ private constructor(
             openInterest == other.openInterest &&
             tickRules == other.tickRules &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
+            underlyingInstrumentType == other.underlyingInstrumentType &&
             additionalProperties == other.additionalProperties
     }
 
@@ -975,6 +1032,7 @@ private constructor(
             openInterest,
             tickRules,
             underlyingInstrumentId,
+            underlyingInstrumentType,
             additionalProperties,
         )
     }
@@ -982,5 +1040,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OptionsContract{id=$id, contractType=$contractType, currency=$currency, exchange=$exchange, exerciseStyle=$exerciseStyle, expiry=$expiry, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isTradable=$isTradable, listingType=$listingType, multiplier=$multiplier, strikePrice=$strikePrice, symbol=$symbol, isSettleOnOpen=$isSettleOnOpen, lastTradeCutoff=$lastTradeCutoff, openInterest=$openInterest, tickRules=$tickRules, underlyingInstrumentId=$underlyingInstrumentId, additionalProperties=$additionalProperties}"
+        "OptionsContract{id=$id, contractType=$contractType, currency=$currency, exchange=$exchange, exerciseStyle=$exerciseStyle, expiry=$expiry, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isTradable=$isTradable, listingType=$listingType, multiplier=$multiplier, strikePrice=$strikePrice, symbol=$symbol, isSettleOnOpen=$isSettleOnOpen, lastTradeCutoff=$lastTradeCutoff, openInterest=$openInterest, tickRules=$tickRules, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
 }
