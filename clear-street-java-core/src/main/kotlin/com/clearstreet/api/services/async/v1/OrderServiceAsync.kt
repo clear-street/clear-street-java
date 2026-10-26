@@ -15,6 +15,8 @@ import com.clearstreet.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clearstreet.api.models.v1.orders.OrderGetOrderByIdResponse
 import com.clearstreet.api.models.v1.orders.OrderGetOrdersParams
 import com.clearstreet.api.models.v1.orders.OrderGetOrdersResponse
+import com.clearstreet.api.models.v1.orders.OrderPreviewOrdersParams
+import com.clearstreet.api.models.v1.orders.OrderPreviewOrdersResponse
 import com.clearstreet.api.models.v1.orders.OrderReplaceOrderParams
 import com.clearstreet.api.models.v1.orders.OrderReplaceOrderResponse
 import com.clearstreet.api.models.v1.orders.OrderSubmitOrdersParams
@@ -208,6 +210,45 @@ interface OrderServiceAsync {
         requestOptions: RequestOptions,
     ): CompletableFuture<OrderGetOrdersResponse> =
         getOrders(accountId, OrderGetOrdersParams.none(), requestOptions)
+
+    /**
+     * Preview the impact of orders without submitting them. For each order the engine evaluates
+     * every pre-trade risk check and projects the account's balances and positions as if the order
+     * were fully filled — at the limit price for limit orders and at the current reference price
+     * for market orders. Orders are evaluated independently: they do not see each other's projected
+     * fills. Nothing is submitted and no account state changes.
+     *
+     * The response carries one result per requested order, in request order. When the request
+     * contains more than one order, every order must carry a unique `id`, which is echoed on its
+     * result. An order that cannot be previewed gets an `error` on its own result without affecting
+     * the rest of the batch; the response is still `200 OK` — per-order outcomes live only in the
+     * rows, and non-2xx statuses are reserved for request-level failures (invalid batch,
+     * authorization, engine unavailable).
+     */
+    fun previewOrders(
+        accountId: Long,
+        params: OrderPreviewOrdersParams,
+    ): CompletableFuture<OrderPreviewOrdersResponse> =
+        previewOrders(accountId, params, RequestOptions.none())
+
+    /** @see previewOrders */
+    fun previewOrders(
+        accountId: Long,
+        params: OrderPreviewOrdersParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<OrderPreviewOrdersResponse> =
+        previewOrders(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+    /** @see previewOrders */
+    fun previewOrders(
+        params: OrderPreviewOrdersParams
+    ): CompletableFuture<OrderPreviewOrdersResponse> = previewOrders(params, RequestOptions.none())
+
+    /** @see previewOrders */
+    fun previewOrders(
+        params: OrderPreviewOrdersParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<OrderPreviewOrdersResponse>
 
     /** Replace an order with new parameters */
     fun replaceOrder(
@@ -459,6 +500,36 @@ interface OrderServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<OrderGetOrdersResponse>> =
             getOrders(accountId, OrderGetOrdersParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /v1/accounts/{account_id}/orders/preview`, but is
+         * otherwise the same as [OrderServiceAsync.previewOrders].
+         */
+        fun previewOrders(
+            accountId: Long,
+            params: OrderPreviewOrdersParams,
+        ): CompletableFuture<HttpResponseFor<OrderPreviewOrdersResponse>> =
+            previewOrders(accountId, params, RequestOptions.none())
+
+        /** @see previewOrders */
+        fun previewOrders(
+            accountId: Long,
+            params: OrderPreviewOrdersParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<OrderPreviewOrdersResponse>> =
+            previewOrders(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+        /** @see previewOrders */
+        fun previewOrders(
+            params: OrderPreviewOrdersParams
+        ): CompletableFuture<HttpResponseFor<OrderPreviewOrdersResponse>> =
+            previewOrders(params, RequestOptions.none())
+
+        /** @see previewOrders */
+        fun previewOrders(
+            params: OrderPreviewOrdersParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<OrderPreviewOrdersResponse>>
 
         /**
          * Returns a raw HTTP response for `patch /v1/accounts/{account_id}/orders/{order_id}`, but

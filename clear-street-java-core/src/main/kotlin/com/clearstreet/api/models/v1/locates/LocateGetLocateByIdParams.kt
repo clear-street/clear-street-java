@@ -11,8 +11,6 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * > **Beta** — this endpoint may change before general availability.
- *
  * Fetch one locate by id, matched against the locate request id, locate id, and client request id,
  * across all days in force.
  */

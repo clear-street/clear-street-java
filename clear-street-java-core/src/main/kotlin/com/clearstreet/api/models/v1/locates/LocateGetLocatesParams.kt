@@ -16,8 +16,6 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * > **Beta** — this endpoint may change before general availability.
- *
  * List locates for the account on one effective date, which defaults to today's New York calendar
  * date. Filter by comma-separated statuses and instrument ids or symbols.
  */

@@ -10,6 +10,7 @@ import com.clearstreet.api.models.v1.orders.OrderCancelOpenOrderParams
 import com.clearstreet.api.models.v1.orders.OrderGetExecutionsParams
 import com.clearstreet.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clearstreet.api.models.v1.orders.OrderGetOrdersParams
+import com.clearstreet.api.models.v1.orders.OrderPreviewOrdersParams
 import com.clearstreet.api.models.v1.orders.OrderReplaceOrderParams
 import com.clearstreet.api.models.v1.orders.OrderStrategy
 import com.clearstreet.api.models.v1.orders.OrderSubmitOrdersParams
@@ -138,6 +139,73 @@ internal class OrderServiceTest {
                             .gte("gte")
                             .lt("lt")
                             .lte("lte")
+                            .build()
+                    )
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Test
+    fun previewOrders() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val orderService = client.v1().orders()
+
+        val response =
+            orderService.previewOrders(
+                OrderPreviewOrdersParams.builder()
+                    .accountId(0L)
+                    .addPreview(
+                        NewOrderRequest.builder()
+                            .orderType(RequestOrderType.LIMIT)
+                            .quantity("100")
+                            .side(Side.BUY)
+                            .timeInForce(RequestTimeInForce.DAY)
+                            .id("preview-1")
+                            .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
+                            .extendedHours(true)
+                            .instrumentId("x")
+                            .limitOffset("0.50")
+                            .limitPrice("100.00")
+                            .positionIntent(RequestPositionEffect.OPEN)
+                            .stopPrice("52.00")
+                            .strategy(
+                                OrderStrategy.Type.builder()
+                                    .type(OrderStrategy.Type.InnerType.SOR)
+                                    .build()
+                            )
+                            .symbol("AAPL")
+                            .trailingOffset("2.00")
+                            .trailingOffsetType(TrailingOffsetType.PRICE)
+                            .build()
+                    )
+                    .addPreview(
+                        NewOrderRequest.builder()
+                            .orderType(RequestOrderType.LIMIT)
+                            .quantity("10")
+                            .side(Side.BUY)
+                            .timeInForce(RequestTimeInForce.DAY)
+                            .id("preview-2")
+                            .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
+                            .extendedHours(true)
+                            .instrumentId("x")
+                            .limitOffset("0.50")
+                            .limitPrice("250.00")
+                            .positionIntent(RequestPositionEffect.OPEN)
+                            .stopPrice("52.00")
+                            .strategy(
+                                OrderStrategy.Type.builder()
+                                    .type(OrderStrategy.Type.InnerType.SOR)
+                                    .build()
+                            )
+                            .symbol("TSLA")
+                            .trailingOffset("2.00")
+                            .trailingOffsetType(TrailingOffsetType.PRICE)
                             .build()
                     )
                     .build()

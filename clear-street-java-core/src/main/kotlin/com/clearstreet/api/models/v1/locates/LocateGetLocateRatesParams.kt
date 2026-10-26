@@ -10,8 +10,6 @@ import com.clearstreet.api.core.toImmutable
 import java.util.Objects
 
 /**
- * > **Beta** — this endpoint may change before general availability.
- *
  * Fetch the cached locate borrow rates for up to 1,000 instruments. The response returns one row
  * per requested instrument, in request order. Each row carries either the `rate` or an `error` — a
  * `404` when the instrument is unknown or has no cached rate. The status is `207` when any row has

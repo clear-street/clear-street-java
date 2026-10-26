@@ -26,6 +26,8 @@ import com.clearstreet.api.models.v1.orders.OrderGetOrderByIdParams
 import com.clearstreet.api.models.v1.orders.OrderGetOrderByIdResponse
 import com.clearstreet.api.models.v1.orders.OrderGetOrdersParams
 import com.clearstreet.api.models.v1.orders.OrderGetOrdersResponse
+import com.clearstreet.api.models.v1.orders.OrderPreviewOrdersParams
+import com.clearstreet.api.models.v1.orders.OrderPreviewOrdersResponse
 import com.clearstreet.api.models.v1.orders.OrderReplaceOrderParams
 import com.clearstreet.api.models.v1.orders.OrderReplaceOrderResponse
 import com.clearstreet.api.models.v1.orders.OrderSubmitOrdersParams
@@ -80,6 +82,13 @@ class OrderServiceImpl internal constructor(private val clientOptions: ClientOpt
     ): OrderGetOrdersResponse =
         // get /v1/accounts/{account_id}/orders
         withRawResponse().getOrders(params, requestOptions).parse()
+
+    override fun previewOrders(
+        params: OrderPreviewOrdersParams,
+        requestOptions: RequestOptions,
+    ): OrderPreviewOrdersResponse =
+        // post /v1/accounts/{account_id}/orders/preview
+        withRawResponse().previewOrders(params, requestOptions).parse()
 
     override fun replaceOrder(
         params: OrderReplaceOrderParams,
@@ -264,6 +273,37 @@ class OrderServiceImpl internal constructor(private val clientOptions: ClientOpt
             return errorHandler.handle(response).parseable {
                 response
                     .use { getOrdersHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val previewOrdersHandler: Handler<OrderPreviewOrdersResponse> =
+            jsonHandler<OrderPreviewOrdersResponse>(clientOptions.jsonMapper)
+
+        override fun previewOrders(
+            params: OrderPreviewOrdersParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<OrderPreviewOrdersResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("accountId", params.accountId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "accounts", params._pathParam(0), "orders", "preview")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { previewOrdersHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

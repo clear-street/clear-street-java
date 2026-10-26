@@ -10,8 +10,6 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * > **Beta** — this endpoint may change before general availability.
- *
  * Fetch the cached locate borrow rate for one instrument. Rates refresh periodically; `404` means
  * no rate is currently cached for the instrument.
  */
