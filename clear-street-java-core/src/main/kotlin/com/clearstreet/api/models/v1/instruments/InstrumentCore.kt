@@ -345,8 +345,9 @@ private constructor(
         shortableAttribute.getOptional("shortable_attribute")
 
     /**
-     * Price bands this instrument quotes on, ascending. Absent when we have no schedule for it,
-     * which includes an option whose penny-program status our reference data never supplied.
+     * Price bands this instrument quotes on, ascending. A price outside every band is not valid.
+     * Absent when we have no schedule for it, which includes an option whose penny-program status
+     * our reference data never supplied.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -1063,8 +1064,9 @@ private constructor(
         }
 
         /**
-         * Price bands this instrument quotes on, ascending. Absent when we have no schedule for it,
-         * which includes an option whose penny-program status our reference data never supplied.
+         * Price bands this instrument quotes on, ascending. A price outside every band is not
+         * valid. Absent when we have no schedule for it, which includes an option whose
+         * penny-program status our reference data never supplied.
          */
         fun tickRules(tickRules: List<TickRule>) = tickRules(JsonField.of(tickRules))
 

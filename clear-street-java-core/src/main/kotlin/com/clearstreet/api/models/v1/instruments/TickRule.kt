@@ -57,7 +57,7 @@ private constructor(
     fun tickSize(): String = tickSize.getRequired("tick_size")
 
     /**
-     * Upper bound of the band, exclusive. Absent on the last band, which runs to infinity. When a
+     * Upper bound of the band, exclusive. Absent when the band runs to infinity. When a
      * null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -152,8 +152,8 @@ private constructor(
         fun tickSize(tickSize: JsonField<String>) = apply { this.tickSize = tickSize }
 
         /**
-         * Upper bound of the band, exclusive. Absent on the last band, which runs to infinity. When
-         * a null/undefined value is observed, it indicates it does not apply.
+         * Upper bound of the band, exclusive. Absent when the band runs to infinity. When a
+         * null/undefined value is observed, it indicates it does not apply.
          */
         fun endPrice(endPrice: String?) = endPrice(JsonField.ofNullable(endPrice))
 
