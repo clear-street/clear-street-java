@@ -37,7 +37,6 @@ internal class OrderTest {
                 .instrumentType(SecurityType.COMMON_STOCK)
                 .limitOffset("0.50")
                 .limitPrice("48.00")
-                .queueState(QueueState.AWAITING_RELEASE)
                 .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                 .stopPrice(null)
                 .strategy(
@@ -83,7 +82,6 @@ internal class OrderTest {
         assertThat(order.instrumentType()).contains(SecurityType.COMMON_STOCK)
         assertThat(order.limitOffset()).contains("0.50")
         assertThat(order.limitPrice()).contains("48.00")
-        assertThat(order.queueState()).contains(QueueState.AWAITING_RELEASE)
         assertThat(order.releasesAt())
             .contains(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
         assertThat(order.stopPrice()).isEmpty
@@ -134,7 +132,6 @@ internal class OrderTest {
                 .instrumentType(SecurityType.COMMON_STOCK)
                 .limitOffset("0.50")
                 .limitPrice("48.00")
-                .queueState(QueueState.AWAITING_RELEASE)
                 .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                 .stopPrice(null)
                 .strategy(

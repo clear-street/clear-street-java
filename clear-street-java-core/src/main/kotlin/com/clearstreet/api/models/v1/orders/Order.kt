@@ -52,7 +52,6 @@ private constructor(
     private val instrumentType: JsonField<SecurityType>,
     private val limitOffset: JsonField<String>,
     private val limitPrice: JsonField<String>,
-    private val queueState: JsonField<QueueState>,
     private val releasesAt: JsonField<OffsetDateTime>,
     private val stopPrice: JsonField<String>,
     private val strategy: JsonField<Strategy>,
@@ -121,9 +120,6 @@ private constructor(
         @JsonProperty("limit_price")
         @ExcludeMissing
         limitPrice: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("queue_state")
-        @ExcludeMissing
-        queueState: JsonField<QueueState> = JsonMissing.of(),
         @JsonProperty("releases_at")
         @ExcludeMissing
         releasesAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -176,7 +172,6 @@ private constructor(
         instrumentType,
         limitOffset,
         limitPrice,
-        queueState,
         releasesAt,
         stopPrice,
         strategy,
@@ -369,15 +364,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun limitPrice(): Optional<String> = limitPrice.getOptional("limit_price")
-
-    /**
-     * Parent order queue state, present when the order is awaiting release or released. When a
-     * null/undefined value is observed, it indicates it does not apply.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun queueState(): Optional<QueueState> = queueState.getOptional("queue_state")
 
     /**
      * Scheduled release time for orders awaiting release. When a null/undefined value is observed,
@@ -669,15 +655,6 @@ private constructor(
     @JsonProperty("limit_price") @ExcludeMissing fun _limitPrice(): JsonField<String> = limitPrice
 
     /**
-     * Returns the raw JSON value of [queueState].
-     *
-     * Unlike [queueState], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("queue_state")
-    @ExcludeMissing
-    fun _queueState(): JsonField<QueueState> = queueState
-
-    /**
      * Returns the raw JSON value of [releasesAt].
      *
      * Unlike [releasesAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -845,7 +822,6 @@ private constructor(
         private var instrumentType: JsonField<SecurityType> = JsonMissing.of()
         private var limitOffset: JsonField<String> = JsonMissing.of()
         private var limitPrice: JsonField<String> = JsonMissing.of()
-        private var queueState: JsonField<QueueState> = JsonMissing.of()
         private var releasesAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var stopPrice: JsonField<String> = JsonMissing.of()
         private var strategy: JsonField<Strategy> = JsonMissing.of()
@@ -883,7 +859,6 @@ private constructor(
             instrumentType = order.instrumentType
             limitOffset = order.limitOffset
             limitPrice = order.limitPrice
-            queueState = order.queueState
             releasesAt = order.releasesAt
             stopPrice = order.stopPrice
             strategy = order.strategy
@@ -1233,24 +1208,6 @@ private constructor(
         fun limitPrice(limitPrice: JsonField<String>) = apply { this.limitPrice = limitPrice }
 
         /**
-         * Parent order queue state, present when the order is awaiting release or released. When a
-         * null/undefined value is observed, it indicates it does not apply.
-         */
-        fun queueState(queueState: QueueState?) = queueState(JsonField.ofNullable(queueState))
-
-        /** Alias for calling [Builder.queueState] with `queueState.orElse(null)`. */
-        fun queueState(queueState: Optional<QueueState>) = queueState(queueState.getOrNull())
-
-        /**
-         * Sets [Builder.queueState] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.queueState] with a well-typed [QueueState] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun queueState(queueState: JsonField<QueueState>) = apply { this.queueState = queueState }
-
-        /**
          * Scheduled release time for orders awaiting release. When a null/undefined value is
          * observed, it indicates it does not apply.
          */
@@ -1576,7 +1533,6 @@ private constructor(
                 instrumentType,
                 limitOffset,
                 limitPrice,
-                queueState,
                 releasesAt,
                 stopPrice,
                 strategy,
@@ -1629,7 +1585,6 @@ private constructor(
         instrumentType().ifPresent { it.validate() }
         limitOffset()
         limitPrice()
-        queueState().ifPresent { it.validate() }
         releasesAt()
         stopPrice()
         strategy().ifPresent { it.validate() }
@@ -1681,7 +1636,6 @@ private constructor(
             (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
             (if (limitOffset.asKnown().isPresent) 1 else 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
-            (queueState.asKnown().getOrNull()?.validity() ?: 0) +
             (if (releasesAt.asKnown().isPresent) 1 else 0) +
             (if (stopPrice.asKnown().isPresent) 1 else 0) +
             (strategy.asKnown().getOrNull()?.validity() ?: 0) +
@@ -2162,7 +2116,6 @@ private constructor(
             instrumentType == other.instrumentType &&
             limitOffset == other.limitOffset &&
             limitPrice == other.limitPrice &&
-            queueState == other.queueState &&
             releasesAt == other.releasesAt &&
             stopPrice == other.stopPrice &&
             strategy == other.strategy &&
@@ -2201,7 +2154,6 @@ private constructor(
             instrumentType,
             limitOffset,
             limitPrice,
-            queueState,
             releasesAt,
             stopPrice,
             strategy,
@@ -2221,5 +2173,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, instrumentType=$instrumentType, limitOffset=$limitOffset, limitPrice=$limitPrice, queueState=$queueState, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, instrumentType=$instrumentType, limitOffset=$limitOffset, limitPrice=$limitPrice, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
 }

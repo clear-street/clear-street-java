@@ -10,7 +10,6 @@ import com.clearstreet.api.models.v1.SecurityType
 import com.clearstreet.api.models.v1.orders.Order
 import com.clearstreet.api.models.v1.orders.OrderStatus
 import com.clearstreet.api.models.v1.orders.OrderType
-import com.clearstreet.api.models.v1.orders.QueueState
 import com.clearstreet.api.models.v1.orders.Side
 import com.clearstreet.api.models.v1.orders.TimeInForce
 import com.clearstreet.api.models.v1.orders.TrailingOffsetType
@@ -69,7 +68,6 @@ internal class PositionClosePositionsResponseTest {
                         .instrumentType(SecurityType.COMMON_STOCK)
                         .limitOffset("0.50")
                         .limitPrice("48.00")
-                        .queueState(QueueState.AWAITING_RELEASE)
                         .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                         .stopPrice(null)
                         .strategy(
@@ -140,7 +138,6 @@ internal class PositionClosePositionsResponseTest {
                     .instrumentType(SecurityType.COMMON_STOCK)
                     .limitOffset("0.50")
                     .limitPrice("48.00")
-                    .queueState(QueueState.AWAITING_RELEASE)
                     .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                     .stopPrice(null)
                     .strategy(
@@ -213,7 +210,6 @@ internal class PositionClosePositionsResponseTest {
                         .instrumentType(SecurityType.COMMON_STOCK)
                         .limitOffset("0.50")
                         .limitPrice("48.00")
-                        .queueState(QueueState.AWAITING_RELEASE)
                         .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                         .stopPrice(null)
                         .strategy(

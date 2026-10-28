@@ -62,7 +62,6 @@ internal class OrderCancelOpenOrderResponseTest {
                         .instrumentType(SecurityType.COMMON_STOCK)
                         .limitOffset("0.50")
                         .limitPrice("48.00")
-                        .queueState(QueueState.AWAITING_RELEASE)
                         .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                         .stopPrice(null)
                         .strategy(
@@ -133,7 +132,6 @@ internal class OrderCancelOpenOrderResponseTest {
                     .instrumentType(SecurityType.COMMON_STOCK)
                     .limitOffset("0.50")
                     .limitPrice("48.00")
-                    .queueState(QueueState.AWAITING_RELEASE)
                     .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                     .stopPrice(null)
                     .strategy(
@@ -206,7 +204,6 @@ internal class OrderCancelOpenOrderResponseTest {
                         .instrumentType(SecurityType.COMMON_STOCK)
                         .limitOffset("0.50")
                         .limitPrice("48.00")
-                        .queueState(QueueState.AWAITING_RELEASE)
                         .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
                         .stopPrice(null)
                         .strategy(
