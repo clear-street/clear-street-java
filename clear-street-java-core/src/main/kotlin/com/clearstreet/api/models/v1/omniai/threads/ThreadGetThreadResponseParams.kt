@@ -10,10 +10,10 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Look up the currently active response without knowing its `response_id`. Use this endpoint when
- * reopening a thread whose assistant turn may still be in progress.
- *
- * An idle owned thread returns HTTP 200 with `data: null`.
+ * Returns the running response, or else the next queued response. Poll it while a thread is open to
+ * follow every response in order, including answers that start without a request: a response with
+ * no `user_message_id` presents a background result, such as a subagent's report. Refresh messages
+ * when any response ends. An idle owned thread returns HTTP 200 with `data: null`.
  */
 class ThreadGetThreadResponseParams
 private constructor(

@@ -77,6 +77,10 @@ private constructor(
     /**
      * Immutable terminal outcome for a finalized assistant message.
      *
+     * `steered`: the message is complete as written; the user sent a newer message before it
+     * finished. `merged`: the message has no content, and a later answer covers its turn. Hide
+     * `merged` messages.
+     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -276,7 +280,13 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
-        /** Immutable terminal outcome for a finalized assistant message. */
+        /**
+         * Immutable terminal outcome for a finalized assistant message.
+         *
+         * `steered`: the message is complete as written; the user sent a newer message before it
+         * finished. `merged`: the message has no content, and a later answer covers its turn. Hide
+         * `merged` messages.
+         */
         fun outcome(outcome: MessageOutcome) = outcome(JsonField.of(outcome))
 
         /**

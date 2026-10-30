@@ -24,10 +24,10 @@ private constructor(
     private val id: JsonField<String>,
     private val status: JsonField<ResponseStatus>,
     private val threadId: JsonField<String>,
-    private val userMessageId: JsonField<String>,
     private val content: JsonField<ResponseContent>,
     private val error: JsonField<ErrorStatus>,
     private val outputMessageId: JsonField<String>,
+    private val userMessageId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -38,9 +38,6 @@ private constructor(
         @ExcludeMissing
         status: JsonField<ResponseStatus> = JsonMissing.of(),
         @JsonProperty("thread_id") @ExcludeMissing threadId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("user_message_id")
-        @ExcludeMissing
-        userMessageId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("content")
         @ExcludeMissing
         content: JsonField<ResponseContent> = JsonMissing.of(),
@@ -48,7 +45,10 @@ private constructor(
         @JsonProperty("output_message_id")
         @ExcludeMissing
         outputMessageId: JsonField<String> = JsonMissing.of(),
-    ) : this(id, status, threadId, userMessageId, content, error, outputMessageId, mutableMapOf())
+        @JsonProperty("user_message_id")
+        @ExcludeMissing
+        userMessageId: JsonField<String> = JsonMissing.of(),
+    ) : this(id, status, threadId, content, error, outputMessageId, userMessageId, mutableMapOf())
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -58,6 +58,11 @@ private constructor(
 
     /**
      * Dynamic lifecycle status for a pollable response.
+     *
+     * `succeeded`, `failed`, `canceled`, `steered` and `merged` are terminal. `steered`: the
+     * response ended as written because the user sent a newer message, and a later response in the
+     * thread continues the work. `merged`: the response ended without text, and a later response
+     * answers its message. Treat an unknown status as terminal.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -69,12 +74,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun threadId(): String = threadId.getRequired("thread_id")
-
-    /**
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun userMessageId(): String = userMessageId.getRequired("user_message_id")
 
     /**
      * When a null/undefined value is observed, it indicates that there is no available data.
@@ -101,6 +100,17 @@ private constructor(
     fun outputMessageId(): Optional<String> = outputMessageId.getOptional("output_message_id")
 
     /**
+     * The user message this response answers. Omitted when the response presents a background
+     * result, such as a subagent's report, and answers no user message; its output message then
+     * appears in the thread without a preceding request. When a null/undefined value is observed,
+     * it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun userMessageId(): Optional<String> = userMessageId.getOptional("user_message_id")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -120,15 +130,6 @@ private constructor(
      * Unlike [threadId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("thread_id") @ExcludeMissing fun _threadId(): JsonField<String> = threadId
-
-    /**
-     * Returns the raw JSON value of [userMessageId].
-     *
-     * Unlike [userMessageId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("user_message_id")
-    @ExcludeMissing
-    fun _userMessageId(): JsonField<String> = userMessageId
 
     /**
      * Returns the raw JSON value of [content].
@@ -153,6 +154,15 @@ private constructor(
     @ExcludeMissing
     fun _outputMessageId(): JsonField<String> = outputMessageId
 
+    /**
+     * Returns the raw JSON value of [userMessageId].
+     *
+     * Unlike [userMessageId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("user_message_id")
+    @ExcludeMissing
+    fun _userMessageId(): JsonField<String> = userMessageId
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -175,7 +185,6 @@ private constructor(
          * .id()
          * .status()
          * .threadId()
-         * .userMessageId()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -187,10 +196,10 @@ private constructor(
         private var id: JsonField<String>? = null
         private var status: JsonField<ResponseStatus>? = null
         private var threadId: JsonField<String>? = null
-        private var userMessageId: JsonField<String>? = null
         private var content: JsonField<ResponseContent> = JsonMissing.of()
         private var error: JsonField<ErrorStatus> = JsonMissing.of()
         private var outputMessageId: JsonField<String> = JsonMissing.of()
+        private var userMessageId: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -198,10 +207,10 @@ private constructor(
             id = response.id
             status = response.status
             threadId = response.threadId
-            userMessageId = response.userMessageId
             content = response.content
             error = response.error
             outputMessageId = response.outputMessageId
+            userMessageId = response.userMessageId
             additionalProperties = response.additionalProperties.toMutableMap()
         }
 
@@ -215,7 +224,14 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        /** Dynamic lifecycle status for a pollable response. */
+        /**
+         * Dynamic lifecycle status for a pollable response.
+         *
+         * `succeeded`, `failed`, `canceled`, `steered` and `merged` are terminal. `steered`: the
+         * response ended as written because the user sent a newer message, and a later response in
+         * the thread continues the work. `merged`: the response ended without text, and a later
+         * response answers its message. Treat an unknown status as terminal.
+         */
         fun status(status: ResponseStatus) = status(JsonField.of(status))
 
         /**
@@ -236,19 +252,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun threadId(threadId: JsonField<String>) = apply { this.threadId = threadId }
-
-        fun userMessageId(userMessageId: String) = userMessageId(JsonField.of(userMessageId))
-
-        /**
-         * Sets [Builder.userMessageId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.userMessageId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun userMessageId(userMessageId: JsonField<String>) = apply {
-            this.userMessageId = userMessageId
-        }
 
         /**
          * When a null/undefined value is observed, it indicates that there is no available data.
@@ -301,6 +304,30 @@ private constructor(
             this.outputMessageId = outputMessageId
         }
 
+        /**
+         * The user message this response answers. Omitted when the response presents a background
+         * result, such as a subagent's report, and answers no user message; its output message then
+         * appears in the thread without a preceding request. When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
+        fun userMessageId(userMessageId: String?) =
+            userMessageId(JsonField.ofNullable(userMessageId))
+
+        /** Alias for calling [Builder.userMessageId] with `userMessageId.orElse(null)`. */
+        fun userMessageId(userMessageId: Optional<String>) =
+            userMessageId(userMessageId.getOrNull())
+
+        /**
+         * Sets [Builder.userMessageId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.userMessageId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun userMessageId(userMessageId: JsonField<String>) = apply {
+            this.userMessageId = userMessageId
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -330,7 +357,6 @@ private constructor(
          * .id()
          * .status()
          * .threadId()
-         * .userMessageId()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -340,10 +366,10 @@ private constructor(
                 checkRequired("id", id),
                 checkRequired("status", status),
                 checkRequired("threadId", threadId),
-                checkRequired("userMessageId", userMessageId),
                 content,
                 error,
                 outputMessageId,
+                userMessageId,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -366,10 +392,10 @@ private constructor(
         id()
         status().validate()
         threadId()
-        userMessageId()
         content().ifPresent { it.validate() }
         error().ifPresent { it.validate() }
         outputMessageId()
+        userMessageId()
         validated = true
     }
 
@@ -391,10 +417,10 @@ private constructor(
         (if (id.asKnown().isPresent) 1 else 0) +
             (status.asKnown().getOrNull()?.validity() ?: 0) +
             (if (threadId.asKnown().isPresent) 1 else 0) +
-            (if (userMessageId.asKnown().isPresent) 1 else 0) +
             (content.asKnown().getOrNull()?.validity() ?: 0) +
             (error.asKnown().getOrNull()?.validity() ?: 0) +
-            (if (outputMessageId.asKnown().isPresent) 1 else 0)
+            (if (outputMessageId.asKnown().isPresent) 1 else 0) +
+            (if (userMessageId.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -405,10 +431,10 @@ private constructor(
             id == other.id &&
             status == other.status &&
             threadId == other.threadId &&
-            userMessageId == other.userMessageId &&
             content == other.content &&
             error == other.error &&
             outputMessageId == other.outputMessageId &&
+            userMessageId == other.userMessageId &&
             additionalProperties == other.additionalProperties
     }
 
@@ -417,10 +443,10 @@ private constructor(
             id,
             status,
             threadId,
-            userMessageId,
             content,
             error,
             outputMessageId,
+            userMessageId,
             additionalProperties,
         )
     }
@@ -428,5 +454,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Response{id=$id, status=$status, threadId=$threadId, userMessageId=$userMessageId, content=$content, error=$error, outputMessageId=$outputMessageId, additionalProperties=$additionalProperties}"
+        "Response{id=$id, status=$status, threadId=$threadId, content=$content, error=$error, outputMessageId=$outputMessageId, userMessageId=$userMessageId, additionalProperties=$additionalProperties}"
 }

@@ -44,8 +44,12 @@ interface ThreadServiceAsync {
      * Append a user message to an existing thread and start an assistant response. Poll the
      * returned `response_id` via `GET /omni-ai/responses/{response_id}` for assistant output.
      *
-     * Only one response may be active per thread. Wait for it to reach a terminal status before
-     * submitting another turn; otherwise this endpoint returns 409.
+     * A message sent while another response is active is accepted, and its response is `queued`.
+     * Omni reads the message at the next safe point of the active response. The active response
+     * then ends `steered` if it showed text, or `merged` if it did not, and the response for the
+     * newest message answers everything sent so far. Earlier queued responses that it answers also
+     * end `merged`. Some requests, such as research, do not steer: their responses, and the
+     * responses for messages sent after them, start in order after the earlier responses end.
      *
      * The first accepted selected-account message links an unlinked thread. A linked thread keeps
      * its account regardless of omission or another selection. A changed scope also returns 409
@@ -103,8 +107,14 @@ interface ThreadServiceAsync {
      * latest page by default, in chronological order within each page. Use the returned page token
      * to navigate history.
      *
-     * In-progress assistant output is not included. Poll `GET /omni-ai/responses/{response_id}`
-     * until the response reaches a terminal status, then read its finalized message here.
+     * In-progress assistant output is not included. Poll `GET
+     * /omni-ai/threads/{thread_id}/response` and refresh messages when a response ends to read its
+     * finalized message here. Some answers start without a request: a response with no
+     * `user_message_id` presents a background result, such as a subagent's report, so keep polling
+     * the thread response while the thread is open rather than only after sending a message.
+     *
+     * Hide assistant messages with outcome `merged`. They have no content, and a later answer
+     * covers their turn.
      */
     fun getMessages(threadId: String): CompletableFuture<ThreadGetMessagesResponse> =
         getMessages(threadId, ThreadGetMessagesParams.none())
@@ -184,10 +194,11 @@ interface ThreadServiceAsync {
         getThreadById(threadId, ThreadGetThreadByIdParams.none(), requestOptions)
 
     /**
-     * Look up the currently active response without knowing its `response_id`. Use this endpoint
-     * when reopening a thread whose assistant turn may still be in progress.
-     *
-     * An idle owned thread returns HTTP 200 with `data: null`.
+     * Returns the running response, or else the next queued response. Poll it while a thread is
+     * open to follow every response in order, including answers that start without a request: a
+     * response with no `user_message_id` presents a background result, such as a subagent's report.
+     * Refresh messages when any response ends. An idle owned thread returns HTTP 200 with `data:
+     * null`.
      */
     fun getThreadResponse(threadId: String): CompletableFuture<ThreadGetThreadResponseResponse> =
         getThreadResponse(threadId, ThreadGetThreadResponseParams.none())

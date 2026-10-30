@@ -7,7 +7,12 @@ import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/** Immutable terminal outcome for a finalized assistant message. */
+/**
+ * Immutable terminal outcome for a finalized assistant message.
+ *
+ * `steered`: the message is complete as written; the user sent a newer message before it finished.
+ * `merged`: the message has no content, and a later answer covers its turn. Hide `merged` messages.
+ */
 class MessageOutcome @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
     /**
@@ -27,6 +32,10 @@ class MessageOutcome @JsonCreator private constructor(private val value: JsonFie
 
         @JvmField val CANCELED = of("canceled")
 
+        @JvmField val STEERED = of("steered")
+
+        @JvmField val MERGED = of("merged")
+
         @JvmStatic fun of(value: String) = MessageOutcome(JsonField.of(value))
     }
 
@@ -35,6 +44,8 @@ class MessageOutcome @JsonCreator private constructor(private val value: JsonFie
         COMPLETED,
         ERRORED,
         CANCELED,
+        STEERED,
+        MERGED,
     }
 
     /**
@@ -50,6 +61,8 @@ class MessageOutcome @JsonCreator private constructor(private val value: JsonFie
         COMPLETED,
         ERRORED,
         CANCELED,
+        STEERED,
+        MERGED,
         /**
          * An enum member indicating that [MessageOutcome] was instantiated with an unknown value.
          */
@@ -68,6 +81,8 @@ class MessageOutcome @JsonCreator private constructor(private val value: JsonFie
             COMPLETED -> Value.COMPLETED
             ERRORED -> Value.ERRORED
             CANCELED -> Value.CANCELED
+            STEERED -> Value.STEERED
+            MERGED -> Value.MERGED
             else -> Value._UNKNOWN
         }
 
@@ -85,6 +100,8 @@ class MessageOutcome @JsonCreator private constructor(private val value: JsonFie
             COMPLETED -> Known.COMPLETED
             ERRORED -> Known.ERRORED
             CANCELED -> Known.CANCELED
+            STEERED -> Known.STEERED
+            MERGED -> Known.MERGED
             else -> throw ClearStreetInvalidDataException("Unknown MessageOutcome: $value")
         }
 

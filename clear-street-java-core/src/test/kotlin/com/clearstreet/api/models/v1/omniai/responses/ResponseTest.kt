@@ -17,7 +17,6 @@ internal class ResponseTest {
                 .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .status(ResponseStatus.QUEUED)
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .content(
                     ResponseContent.builder()
                         .addPart(
@@ -36,12 +35,12 @@ internal class ResponseTest {
                         .build()
                 )
                 .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         assertThat(response.id()).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(response.status()).isEqualTo(ResponseStatus.QUEUED)
         assertThat(response.threadId()).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-        assertThat(response.userMessageId()).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(response.content())
             .contains(
                 ResponseContent.builder()
@@ -62,6 +61,7 @@ internal class ResponseTest {
                     .build()
             )
         assertThat(response.outputMessageId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(response.userMessageId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
     }
 
     @Test
@@ -72,7 +72,6 @@ internal class ResponseTest {
                 .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .status(ResponseStatus.QUEUED)
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .content(
                     ResponseContent.builder()
                         .addPart(
@@ -91,6 +90,7 @@ internal class ResponseTest {
                         .build()
                 )
                 .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
         val roundtrippedResponse =

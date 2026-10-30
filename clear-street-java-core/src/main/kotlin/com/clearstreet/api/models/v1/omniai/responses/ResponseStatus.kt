@@ -7,7 +7,14 @@ import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.fasterxml.jackson.annotation.JsonCreator
 
-/** Dynamic lifecycle status for a pollable response. */
+/**
+ * Dynamic lifecycle status for a pollable response.
+ *
+ * `succeeded`, `failed`, `canceled`, `steered` and `merged` are terminal. `steered`: the response
+ * ended as written because the user sent a newer message, and a later response in the thread
+ * continues the work. `merged`: the response ended without text, and a later response answers its
+ * message. Treat an unknown status as terminal.
+ */
 class ResponseStatus @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
     /**
@@ -31,6 +38,10 @@ class ResponseStatus @JsonCreator private constructor(private val value: JsonFie
 
         @JvmField val CANCELED = of("canceled")
 
+        @JvmField val STEERED = of("steered")
+
+        @JvmField val MERGED = of("merged")
+
         @JvmStatic fun of(value: String) = ResponseStatus(JsonField.of(value))
     }
 
@@ -41,6 +52,8 @@ class ResponseStatus @JsonCreator private constructor(private val value: JsonFie
         SUCCEEDED,
         FAILED,
         CANCELED,
+        STEERED,
+        MERGED,
     }
 
     /**
@@ -58,6 +71,8 @@ class ResponseStatus @JsonCreator private constructor(private val value: JsonFie
         SUCCEEDED,
         FAILED,
         CANCELED,
+        STEERED,
+        MERGED,
         /**
          * An enum member indicating that [ResponseStatus] was instantiated with an unknown value.
          */
@@ -78,6 +93,8 @@ class ResponseStatus @JsonCreator private constructor(private val value: JsonFie
             SUCCEEDED -> Value.SUCCEEDED
             FAILED -> Value.FAILED
             CANCELED -> Value.CANCELED
+            STEERED -> Value.STEERED
+            MERGED -> Value.MERGED
             else -> Value._UNKNOWN
         }
 
@@ -97,6 +114,8 @@ class ResponseStatus @JsonCreator private constructor(private val value: JsonFie
             SUCCEEDED -> Known.SUCCEEDED
             FAILED -> Known.FAILED
             CANCELED -> Known.CANCELED
+            STEERED -> Known.STEERED
+            MERGED -> Known.MERGED
             else -> throw ClearStreetInvalidDataException("Unknown ResponseStatus: $value")
         }
 

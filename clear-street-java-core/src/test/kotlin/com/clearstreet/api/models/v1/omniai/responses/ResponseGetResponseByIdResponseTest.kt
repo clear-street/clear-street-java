@@ -42,7 +42,6 @@ internal class ResponseGetResponseByIdResponseTest {
                         .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .status(ResponseStatus.QUEUED)
                         .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .content(
                             ResponseContent.builder()
                                 .addPart(
@@ -61,6 +60,7 @@ internal class ResponseGetResponseByIdResponseTest {
                                 .build()
                         )
                         .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()
@@ -94,7 +94,6 @@ internal class ResponseGetResponseByIdResponseTest {
                     .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .status(ResponseStatus.QUEUED)
                     .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                    .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .content(
                         ResponseContent.builder()
                             .addPart(
@@ -113,6 +112,7 @@ internal class ResponseGetResponseByIdResponseTest {
                             .build()
                     )
                     .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
     }
@@ -148,7 +148,6 @@ internal class ResponseGetResponseByIdResponseTest {
                         .id("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .status(ResponseStatus.QUEUED)
                         .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                        .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .content(
                             ResponseContent.builder()
                                 .addPart(
@@ -167,6 +166,7 @@ internal class ResponseGetResponseByIdResponseTest {
                                 .build()
                         )
                         .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
                 .build()

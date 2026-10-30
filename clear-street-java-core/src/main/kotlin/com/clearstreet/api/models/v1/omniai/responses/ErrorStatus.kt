@@ -33,6 +33,9 @@ private constructor(
     ) : this(code, message, details, mutableMapOf())
 
     /**
+     * `FAILED`, or `execution_interrupted` when Omni lost the worker running the response; partial
+     * content is kept; send the message again.
+     *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -110,6 +113,10 @@ private constructor(
             additionalProperties = errorStatus.additionalProperties.toMutableMap()
         }
 
+        /**
+         * `FAILED`, or `execution_interrupted` when Omni lost the worker running the response;
+         * partial content is kept; send the message again.
+         */
         fun code(code: String) = code(JsonField.of(code))
 
         /**

@@ -12,9 +12,13 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Cancel a queued or running response. Cancellation is idempotent after the response becomes
- * terminal. A canceled turn still produces a finalized assistant message with outcome `canceled` in
- * the thread history.
+ * Cancel a queued or running response. Canceling a running response (Stop) also cancels every
+ * queued response in the thread that answers a user message. Canceling a queued response (withdraw)
+ * cancels only that response; the running response and other queued responses continue.
+ * Cancellation is idempotent after the response becomes terminal. Each canceled response still
+ * produces a finalized assistant message with outcome `canceled` in the thread history. Canceling a
+ * response that ended `steered` or `merged` stops the response that continues its work, with the
+ * same effect as Stop.
  *
  * Authorization uses the linked account before any cancellation.
  */

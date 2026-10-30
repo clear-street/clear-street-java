@@ -27,8 +27,12 @@ import kotlin.jvm.optionals.getOrNull
  * Append a user message to an existing thread and start an assistant response. Poll the returned
  * `response_id` via `GET /omni-ai/responses/{response_id}` for assistant output.
  *
- * Only one response may be active per thread. Wait for it to reach a terminal status before
- * submitting another turn; otherwise this endpoint returns 409.
+ * A message sent while another response is active is accepted, and its response is `queued`. Omni
+ * reads the message at the next safe point of the active response. The active response then ends
+ * `steered` if it showed text, or `merged` if it did not, and the response for the newest message
+ * answers everything sent so far. Earlier queued responses that it answers also end `merged`. Some
+ * requests, such as research, do not steer: their responses, and the responses for messages sent
+ * after them, start in order after the earlier responses end.
  *
  * The first accepted selected-account message links an unlinked thread. A linked thread keeps its
  * account regardless of omission or another selection. A changed scope also returns 409 without

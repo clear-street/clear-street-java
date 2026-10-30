@@ -33,9 +33,13 @@ interface ResponseService {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): ResponseService
 
     /**
-     * Cancel a queued or running response. Cancellation is idempotent after the response becomes
-     * terminal. A canceled turn still produces a finalized assistant message with outcome
-     * `canceled` in the thread history.
+     * Cancel a queued or running response. Canceling a running response (Stop) also cancels every
+     * queued response in the thread that answers a user message. Canceling a queued response
+     * (withdraw) cancels only that response; the running response and other queued responses
+     * continue. Cancellation is idempotent after the response becomes terminal. Each canceled
+     * response still produces a finalized assistant message with outcome `canceled` in the thread
+     * history. Canceling a response that ended `steered` or `merged` stops the response that
+     * continues its work, with the same effect as Stop.
      *
      * Authorization uses the linked account before any cancellation.
      */
@@ -76,11 +80,14 @@ interface ResponseService {
     /**
      * Poll the current snapshot of an in-progress or completed assistant response. While its status
      * is `queued` or `running`, content may be partial and include thinking parts. Continue polling
-     * until it becomes `succeeded`, `failed`, or `canceled`.
+     * until it becomes `succeeded`, `failed`, `canceled`, `steered`, or `merged`. Treat an unknown
+     * status as terminal. On `steered` or `merged`, poll `GET
+     * /omni-ai/threads/{thread_id}/response` at once for the response that continues the work.
      *
      * Once terminal, the finalized message is available through `GET
-     * /omni-ai/threads/{thread_id}/messages`. Authorization uses the current parent thread account,
-     * including for responses created before the account link.
+     * /omni-ai/threads/{thread_id}/messages`; refresh messages when a response ends. Authorization
+     * uses the current parent thread account, including for responses created before the account
+     * link.
      */
     fun getResponseById(responseId: String): ResponseGetResponseByIdResponse =
         getResponseById(responseId, ResponseGetResponseByIdParams.none())

@@ -14,8 +14,14 @@ import kotlin.jvm.optionals.getOrNull
  * page by default, in chronological order within each page. Use the returned page token to navigate
  * history.
  *
- * In-progress assistant output is not included. Poll `GET /omni-ai/responses/{response_id}` until
- * the response reaches a terminal status, then read its finalized message here.
+ * In-progress assistant output is not included. Poll `GET /omni-ai/threads/{thread_id}/response`
+ * and refresh messages when a response ends to read its finalized message here. Some answers start
+ * without a request: a response with no `user_message_id` presents a background result, such as a
+ * subagent's report, so keep polling the thread response while the thread is open rather than only
+ * after sending a message.
+ *
+ * Hide assistant messages with outcome `merged`. They have no content, and a later answer covers
+ * their turn.
  */
 class ThreadGetMessagesParams
 private constructor(
