@@ -32,8 +32,9 @@ private constructor(
     ) : this(maxNotional, mutableMapOf())
 
     /**
-     * The maximum notional value available to the account When a null/undefined value is observed,
-     * it indicates that there is no available data.
+     * The maximum notional value available to the account. On update, a value must be 0 or greater,
+     * and `null` clears the limit. When a null/undefined value is observed, it indicates that there
+     * is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -80,8 +81,9 @@ private constructor(
         }
 
         /**
-         * The maximum notional value available to the account When a null/undefined value is
-         * observed, it indicates that there is no available data.
+         * The maximum notional value available to the account. On update, a value must be 0 or
+         * greater, and `null` clears the limit. When a null/undefined value is observed, it
+         * indicates that there is no available data.
          */
         fun maxNotional(maxNotional: String?) = maxNotional(JsonField.ofNullable(maxNotional))
 
