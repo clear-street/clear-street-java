@@ -17,8 +17,8 @@ import kotlin.jvm.optionals.getOrNull
  * cancels only that response; the running response and other queued responses continue.
  * Cancellation is idempotent after the response becomes terminal. Each canceled response still
  * produces a finalized assistant message with outcome `canceled` in the thread history. Canceling a
- * response that ended `steered` or `merged` stops the response that continues its work, with the
- * same effect as Stop.
+ * response that ended `steered` or `merged` follows its `continued_in_response_id` and stops the
+ * response that continues its work, with the same effect as Stop.
  *
  * Authorization uses the linked account before any cancellation.
  */

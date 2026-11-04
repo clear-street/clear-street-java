@@ -27,6 +27,7 @@ internal class ResponseTest {
                         )
                         .build()
                 )
+                .continuedInResponseId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .error(
                     ErrorStatus.builder()
                         .code("code")
@@ -35,6 +36,7 @@ internal class ResponseTest {
                         .build()
                 )
                 .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .outputMessageSeq(0L)
                 .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 
@@ -52,6 +54,8 @@ internal class ResponseTest {
                     )
                     .build()
             )
+        assertThat(response.continuedInResponseId())
+            .contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(response.error())
             .contains(
                 ErrorStatus.builder()
@@ -61,6 +65,7 @@ internal class ResponseTest {
                     .build()
             )
         assertThat(response.outputMessageId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(response.outputMessageSeq()).contains(0L)
         assertThat(response.userMessageId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
     }
 
@@ -82,6 +87,7 @@ internal class ResponseTest {
                         )
                         .build()
                 )
+                .continuedInResponseId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .error(
                     ErrorStatus.builder()
                         .code("code")
@@ -90,6 +96,7 @@ internal class ResponseTest {
                         .build()
                 )
                 .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .outputMessageSeq(0L)
                 .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .build()
 

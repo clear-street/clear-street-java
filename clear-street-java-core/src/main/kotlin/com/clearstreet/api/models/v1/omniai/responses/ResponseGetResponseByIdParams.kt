@@ -13,8 +13,8 @@ import kotlin.jvm.optionals.getOrNull
  * Poll the current snapshot of an in-progress or completed assistant response. While its status is
  * `queued` or `running`, content may be partial and include thinking parts. Continue polling until
  * it becomes `succeeded`, `failed`, `canceled`, `steered`, or `merged`. Treat an unknown status as
- * terminal. On `steered` or `merged`, poll `GET /omni-ai/threads/{thread_id}/response` at once for
- * the response that continues the work.
+ * terminal. On `steered` or `merged`, poll the response in `continued_in_response_id` at once: it
+ * continues the work.
  *
  * Once terminal, the finalized message is available through `GET
  * /omni-ai/threads/{thread_id}/messages`; refresh messages when a response ends. Authorization uses

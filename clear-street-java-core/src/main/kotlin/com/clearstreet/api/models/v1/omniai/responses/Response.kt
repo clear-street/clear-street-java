@@ -25,8 +25,10 @@ private constructor(
     private val status: JsonField<ResponseStatus>,
     private val threadId: JsonField<String>,
     private val content: JsonField<ResponseContent>,
+    private val continuedInResponseId: JsonField<String>,
     private val error: JsonField<ErrorStatus>,
     private val outputMessageId: JsonField<String>,
+    private val outputMessageSeq: JsonField<Long>,
     private val userMessageId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -41,14 +43,31 @@ private constructor(
         @JsonProperty("content")
         @ExcludeMissing
         content: JsonField<ResponseContent> = JsonMissing.of(),
+        @JsonProperty("continued_in_response_id")
+        @ExcludeMissing
+        continuedInResponseId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("error") @ExcludeMissing error: JsonField<ErrorStatus> = JsonMissing.of(),
         @JsonProperty("output_message_id")
         @ExcludeMissing
         outputMessageId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("output_message_seq")
+        @ExcludeMissing
+        outputMessageSeq: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("user_message_id")
         @ExcludeMissing
         userMessageId: JsonField<String> = JsonMissing.of(),
-    ) : this(id, status, threadId, content, error, outputMessageId, userMessageId, mutableMapOf())
+    ) : this(
+        id,
+        status,
+        threadId,
+        content,
+        continuedInResponseId,
+        error,
+        outputMessageId,
+        outputMessageSeq,
+        userMessageId,
+        mutableMapOf(),
+    )
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -84,6 +103,18 @@ private constructor(
     fun content(): Optional<ResponseContent> = content.getOptional("content")
 
     /**
+     * The response that continues the work of this response. Present only when `status` is
+     * `steered` or `merged`. Follow it to keep showing the answer. To stop that work, cancel it, or
+     * cancel this response: the server follows the link. When a null/undefined value is observed,
+     * it indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun continuedInResponseId(): Optional<String> =
+        continuedInResponseId.getOptional("continued_in_response_id")
+
+    /**
      * When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -98,6 +129,17 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun outputMessageId(): Optional<String> = outputMessageId.getOptional("output_message_id")
+
+    /**
+     * The `seq` the output message has in the thread's message list. Present once the output
+     * message exists. Omitted while the response is `queued`. Use it to place a response that is
+     * still in progress among the listed messages. When a null/undefined value is observed, it
+     * indicates it does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun outputMessageSeq(): Optional<Long> = outputMessageSeq.getOptional("output_message_seq")
 
     /**
      * The user message this response answers. Omitted when the response presents a background
@@ -139,6 +181,16 @@ private constructor(
     @JsonProperty("content") @ExcludeMissing fun _content(): JsonField<ResponseContent> = content
 
     /**
+     * Returns the raw JSON value of [continuedInResponseId].
+     *
+     * Unlike [continuedInResponseId], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("continued_in_response_id")
+    @ExcludeMissing
+    fun _continuedInResponseId(): JsonField<String> = continuedInResponseId
+
+    /**
      * Returns the raw JSON value of [error].
      *
      * Unlike [error], this method doesn't throw if the JSON field has an unexpected type.
@@ -153,6 +205,16 @@ private constructor(
     @JsonProperty("output_message_id")
     @ExcludeMissing
     fun _outputMessageId(): JsonField<String> = outputMessageId
+
+    /**
+     * Returns the raw JSON value of [outputMessageSeq].
+     *
+     * Unlike [outputMessageSeq], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("output_message_seq")
+    @ExcludeMissing
+    fun _outputMessageSeq(): JsonField<Long> = outputMessageSeq
 
     /**
      * Returns the raw JSON value of [userMessageId].
@@ -197,8 +259,10 @@ private constructor(
         private var status: JsonField<ResponseStatus>? = null
         private var threadId: JsonField<String>? = null
         private var content: JsonField<ResponseContent> = JsonMissing.of()
+        private var continuedInResponseId: JsonField<String> = JsonMissing.of()
         private var error: JsonField<ErrorStatus> = JsonMissing.of()
         private var outputMessageId: JsonField<String> = JsonMissing.of()
+        private var outputMessageSeq: JsonField<Long> = JsonMissing.of()
         private var userMessageId: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -208,8 +272,10 @@ private constructor(
             status = response.status
             threadId = response.threadId
             content = response.content
+            continuedInResponseId = response.continuedInResponseId
             error = response.error
             outputMessageId = response.outputMessageId
+            outputMessageSeq = response.outputMessageSeq
             userMessageId = response.userMessageId
             additionalProperties = response.additionalProperties.toMutableMap()
         }
@@ -270,6 +336,33 @@ private constructor(
          */
         fun content(content: JsonField<ResponseContent>) = apply { this.content = content }
 
+        /**
+         * The response that continues the work of this response. Present only when `status` is
+         * `steered` or `merged`. Follow it to keep showing the answer. To stop that work, cancel
+         * it, or cancel this response: the server follows the link. When a null/undefined value is
+         * observed, it indicates it does not apply.
+         */
+        fun continuedInResponseId(continuedInResponseId: String?) =
+            continuedInResponseId(JsonField.ofNullable(continuedInResponseId))
+
+        /**
+         * Alias for calling [Builder.continuedInResponseId] with
+         * `continuedInResponseId.orElse(null)`.
+         */
+        fun continuedInResponseId(continuedInResponseId: Optional<String>) =
+            continuedInResponseId(continuedInResponseId.getOrNull())
+
+        /**
+         * Sets [Builder.continuedInResponseId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.continuedInResponseId] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun continuedInResponseId(continuedInResponseId: JsonField<String>) = apply {
+            this.continuedInResponseId = continuedInResponseId
+        }
+
         /** When a null/undefined value is observed, it indicates it does not apply. */
         fun error(error: ErrorStatus?) = error(JsonField.ofNullable(error))
 
@@ -302,6 +395,37 @@ private constructor(
          */
         fun outputMessageId(outputMessageId: JsonField<String>) = apply {
             this.outputMessageId = outputMessageId
+        }
+
+        /**
+         * The `seq` the output message has in the thread's message list. Present once the output
+         * message exists. Omitted while the response is `queued`. Use it to place a response that
+         * is still in progress among the listed messages. When a null/undefined value is observed,
+         * it indicates it does not apply.
+         */
+        fun outputMessageSeq(outputMessageSeq: Long?) =
+            outputMessageSeq(JsonField.ofNullable(outputMessageSeq))
+
+        /**
+         * Alias for [Builder.outputMessageSeq].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun outputMessageSeq(outputMessageSeq: Long) = outputMessageSeq(outputMessageSeq as Long?)
+
+        /** Alias for calling [Builder.outputMessageSeq] with `outputMessageSeq.orElse(null)`. */
+        fun outputMessageSeq(outputMessageSeq: Optional<Long>) =
+            outputMessageSeq(outputMessageSeq.getOrNull())
+
+        /**
+         * Sets [Builder.outputMessageSeq] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.outputMessageSeq] with a well-typed [Long] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun outputMessageSeq(outputMessageSeq: JsonField<Long>) = apply {
+            this.outputMessageSeq = outputMessageSeq
         }
 
         /**
@@ -367,8 +491,10 @@ private constructor(
                 checkRequired("status", status),
                 checkRequired("threadId", threadId),
                 content,
+                continuedInResponseId,
                 error,
                 outputMessageId,
+                outputMessageSeq,
                 userMessageId,
                 additionalProperties.toMutableMap(),
             )
@@ -393,8 +519,10 @@ private constructor(
         status().validate()
         threadId()
         content().ifPresent { it.validate() }
+        continuedInResponseId()
         error().ifPresent { it.validate() }
         outputMessageId()
+        outputMessageSeq()
         userMessageId()
         validated = true
     }
@@ -418,8 +546,10 @@ private constructor(
             (status.asKnown().getOrNull()?.validity() ?: 0) +
             (if (threadId.asKnown().isPresent) 1 else 0) +
             (content.asKnown().getOrNull()?.validity() ?: 0) +
+            (if (continuedInResponseId.asKnown().isPresent) 1 else 0) +
             (error.asKnown().getOrNull()?.validity() ?: 0) +
             (if (outputMessageId.asKnown().isPresent) 1 else 0) +
+            (if (outputMessageSeq.asKnown().isPresent) 1 else 0) +
             (if (userMessageId.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
@@ -432,8 +562,10 @@ private constructor(
             status == other.status &&
             threadId == other.threadId &&
             content == other.content &&
+            continuedInResponseId == other.continuedInResponseId &&
             error == other.error &&
             outputMessageId == other.outputMessageId &&
+            outputMessageSeq == other.outputMessageSeq &&
             userMessageId == other.userMessageId &&
             additionalProperties == other.additionalProperties
     }
@@ -444,8 +576,10 @@ private constructor(
             status,
             threadId,
             content,
+            continuedInResponseId,
             error,
             outputMessageId,
+            outputMessageSeq,
             userMessageId,
             additionalProperties,
         )
@@ -454,5 +588,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Response{id=$id, status=$status, threadId=$threadId, content=$content, error=$error, outputMessageId=$outputMessageId, userMessageId=$userMessageId, additionalProperties=$additionalProperties}"
+        "Response{id=$id, status=$status, threadId=$threadId, content=$content, continuedInResponseId=$continuedInResponseId, error=$error, outputMessageId=$outputMessageId, outputMessageSeq=$outputMessageSeq, userMessageId=$userMessageId, additionalProperties=$additionalProperties}"
 }

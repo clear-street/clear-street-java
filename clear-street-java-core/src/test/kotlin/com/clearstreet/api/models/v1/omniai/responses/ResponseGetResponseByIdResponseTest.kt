@@ -52,6 +52,7 @@ internal class ResponseGetResponseByIdResponseTest {
                                 )
                                 .build()
                         )
+                        .continuedInResponseId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .error(
                             ErrorStatus.builder()
                                 .code("code")
@@ -60,6 +61,7 @@ internal class ResponseGetResponseByIdResponseTest {
                                 .build()
                         )
                         .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .outputMessageSeq(0L)
                         .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
@@ -104,6 +106,7 @@ internal class ResponseGetResponseByIdResponseTest {
                             )
                             .build()
                     )
+                    .continuedInResponseId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .error(
                         ErrorStatus.builder()
                             .code("code")
@@ -112,6 +115,7 @@ internal class ResponseGetResponseByIdResponseTest {
                             .build()
                     )
                     .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .outputMessageSeq(0L)
                     .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .build()
             )
@@ -158,6 +162,7 @@ internal class ResponseGetResponseByIdResponseTest {
                                 )
                                 .build()
                         )
+                        .continuedInResponseId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .error(
                             ErrorStatus.builder()
                                 .code("code")
@@ -166,6 +171,7 @@ internal class ResponseGetResponseByIdResponseTest {
                                 .build()
                         )
                         .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .outputMessageSeq(0L)
                         .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .build()
                 )
