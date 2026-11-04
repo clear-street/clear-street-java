@@ -42,6 +42,7 @@ private constructor(
     private val marginDetails: JsonField<MarginDetails>,
     private val multiplier: JsonField<String>,
     private val shortMarketValue: JsonField<String>,
+    private val sma: JsonField<AccountBalancesSma>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -98,6 +99,7 @@ private constructor(
         @JsonProperty("short_market_value")
         @ExcludeMissing
         shortMarketValue: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("sma") @ExcludeMissing sma: JsonField<AccountBalancesSma> = JsonMissing.of(),
     ) : this(
         accountId,
         buyingPower,
@@ -120,6 +122,7 @@ private constructor(
         marginDetails,
         multiplier,
         shortMarketValue,
+        sma,
         mutableMapOf(),
     )
 
@@ -298,6 +301,17 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun shortMarketValue(): Optional<String> = shortMarketValue.getOptional("short_market_value")
+
+    /**
+     * The intraday special memorandum account (SMA) of the account holder. Omitted when no SMA is
+     * available for the current trade date, or when the account holder has more than one open
+     * account. When a null/undefined value is observed, it indicates that there is no available
+     * data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun sma(): Optional<AccountBalancesSma> = sma.getOptional("sma")
 
     /**
      * Returns the raw JSON value of [accountId].
@@ -480,6 +494,13 @@ private constructor(
     @ExcludeMissing
     fun _shortMarketValue(): JsonField<String> = shortMarketValue
 
+    /**
+     * Returns the raw JSON value of [sma].
+     *
+     * Unlike [sma], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("sma") @ExcludeMissing fun _sma(): JsonField<AccountBalancesSma> = sma
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -546,6 +567,7 @@ private constructor(
         private var marginDetails: JsonField<MarginDetails> = JsonMissing.of()
         private var multiplier: JsonField<String> = JsonMissing.of()
         private var shortMarketValue: JsonField<String> = JsonMissing.of()
+        private var sma: JsonField<AccountBalancesSma> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -571,6 +593,7 @@ private constructor(
             marginDetails = accountBalances.marginDetails
             multiplier = accountBalances.multiplier
             shortMarketValue = accountBalances.shortMarketValue
+            sma = accountBalances.sma
             additionalProperties = accountBalances.additionalProperties.toMutableMap()
         }
 
@@ -882,6 +905,26 @@ private constructor(
             this.shortMarketValue = shortMarketValue
         }
 
+        /**
+         * The intraday special memorandum account (SMA) of the account holder. Omitted when no SMA
+         * is available for the current trade date, or when the account holder has more than one
+         * open account. When a null/undefined value is observed, it indicates that there is no
+         * available data.
+         */
+        fun sma(sma: AccountBalancesSma?) = sma(JsonField.ofNullable(sma))
+
+        /** Alias for calling [Builder.sma] with `sma.orElse(null)`. */
+        fun sma(sma: Optional<AccountBalancesSma>) = sma(sma.getOrNull())
+
+        /**
+         * Sets [Builder.sma] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.sma] with a well-typed [AccountBalancesSma] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun sma(sma: JsonField<AccountBalancesSma>) = apply { this.sma = sma }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -953,6 +996,7 @@ private constructor(
                 marginDetails,
                 multiplier,
                 shortMarketValue,
+                sma,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -993,6 +1037,7 @@ private constructor(
         marginDetails().ifPresent { it.validate() }
         multiplier()
         shortMarketValue()
+        sma().ifPresent { it.validate() }
         validated = true
     }
 
@@ -1031,7 +1076,8 @@ private constructor(
             (if (withdrawableCash.asKnown().isPresent) 1 else 0) +
             (marginDetails.asKnown().getOrNull()?.validity() ?: 0) +
             (if (multiplier.asKnown().isPresent) 1 else 0) +
-            (if (shortMarketValue.asKnown().isPresent) 1 else 0)
+            (if (shortMarketValue.asKnown().isPresent) 1 else 0) +
+            (sma.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -1060,6 +1106,7 @@ private constructor(
             marginDetails == other.marginDetails &&
             multiplier == other.multiplier &&
             shortMarketValue == other.shortMarketValue &&
+            sma == other.sma &&
             additionalProperties == other.additionalProperties
     }
 
@@ -1086,6 +1133,7 @@ private constructor(
             marginDetails,
             multiplier,
             shortMarketValue,
+            sma,
             additionalProperties,
         )
     }
@@ -1093,5 +1141,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyChange=$dailyChange, dailyPnl=$dailyPnl, dailyRealizedPnl=$dailyRealizedPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unrealizedPnl=$unrealizedPnl, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, shortMarketValue=$shortMarketValue, additionalProperties=$additionalProperties}"
+        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyChange=$dailyChange, dailyPnl=$dailyPnl, dailyRealizedPnl=$dailyRealizedPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unrealizedPnl=$unrealizedPnl, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, shortMarketValue=$shortMarketValue, sma=$sma, additionalProperties=$additionalProperties}"
 }

@@ -5,6 +5,7 @@ package com.clearstreet.api.models.v1.accounts
 import com.clearstreet.api.core.jsonMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -79,6 +80,12 @@ internal class AccountBalancesTest {
                 )
                 .multiplier("2")
                 .shortMarketValue("10000.00")
+                .sma(
+                    AccountBalancesSma.builder()
+                        .asof(OffsetDateTime.parse("2026-10-30T15:30:00.000000000Z"))
+                        .value("12500.00")
+                        .build()
+                )
                 .build()
 
         assertThat(accountBalances.accountId()).isEqualTo(19816L)
@@ -146,6 +153,13 @@ internal class AccountBalancesTest {
             )
         assertThat(accountBalances.multiplier()).contains("2")
         assertThat(accountBalances.shortMarketValue()).contains("10000.00")
+        assertThat(accountBalances.sma())
+            .contains(
+                AccountBalancesSma.builder()
+                    .asof(OffsetDateTime.parse("2026-10-30T15:30:00.000000000Z"))
+                    .value("12500.00")
+                    .build()
+            )
     }
 
     @Test
@@ -218,6 +232,12 @@ internal class AccountBalancesTest {
                 )
                 .multiplier("2")
                 .shortMarketValue("10000.00")
+                .sma(
+                    AccountBalancesSma.builder()
+                        .asof(OffsetDateTime.parse("2026-10-30T15:30:00.000000000Z"))
+                        .value("12500.00")
+                        .build()
+                )
                 .build()
 
         val roundtrippedAccountBalances =

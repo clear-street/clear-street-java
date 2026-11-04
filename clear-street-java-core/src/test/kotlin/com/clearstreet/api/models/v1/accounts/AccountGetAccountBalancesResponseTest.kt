@@ -8,6 +8,7 @@ import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -110,6 +111,12 @@ internal class AccountGetAccountBalancesResponseTest {
                         )
                         .multiplier("2")
                         .shortMarketValue("10000.00")
+                        .sma(
+                            AccountBalancesSma.builder()
+                                .asof(OffsetDateTime.parse("2026-10-30T15:30:00.000000000Z"))
+                                .value("12500.00")
+                                .build()
+                        )
                         .build()
                 )
                 .build()
@@ -208,6 +215,12 @@ internal class AccountGetAccountBalancesResponseTest {
                     )
                     .multiplier("2")
                     .shortMarketValue("10000.00")
+                    .sma(
+                        AccountBalancesSma.builder()
+                            .asof(OffsetDateTime.parse("2026-10-30T15:30:00.000000000Z"))
+                            .value("12500.00")
+                            .build()
+                    )
                     .build()
             )
     }
@@ -310,6 +323,12 @@ internal class AccountGetAccountBalancesResponseTest {
                         )
                         .multiplier("2")
                         .shortMarketValue("10000.00")
+                        .sma(
+                            AccountBalancesSma.builder()
+                                .asof(OffsetDateTime.parse("2026-10-30T15:30:00.000000000Z"))
+                                .value("12500.00")
+                                .build()
+                        )
                         .build()
                 )
                 .build()
