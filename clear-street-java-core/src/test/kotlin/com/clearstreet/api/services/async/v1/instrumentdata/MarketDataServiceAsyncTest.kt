@@ -43,6 +43,7 @@ internal class MarketDataServiceAsyncTest {
         val responseFuture =
             marketDataServiceAsync.getSnapshots(
                 MarketDataGetSnapshotsParams.builder()
+                    .addEventCode("string")
                     .expiry(LocalDate.parse("2019-12-27"))
                     .addInstrumentId("x")
                     .underlyingInstrumentId("x")

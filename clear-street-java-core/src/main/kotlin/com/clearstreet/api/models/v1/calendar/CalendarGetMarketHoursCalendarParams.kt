@@ -28,10 +28,7 @@ private constructor(
     /** The date to query market hours for (YYYY-MM-DD). Defaults to today. */
     fun date(): Optional<String> = Optional.ofNullable(date)
 
-    /**
-     * Market type to query (us_equities, us_options, us_event_contracts). If omitted, returns
-     * us_equities and us_options.
-     */
+    /** Market type to query. If omitted, returns us_equities and us_options. */
     fun market(): Optional<Market> = Optional.ofNullable(market)
 
     /** Additional headers to send with the request. */
@@ -78,10 +75,7 @@ private constructor(
         /** Alias for calling [Builder.date] with `date.orElse(null)`. */
         fun date(date: Optional<String>) = date(date.getOrNull())
 
-        /**
-         * Market type to query (us_equities, us_options, us_event_contracts). If omitted, returns
-         * us_equities and us_options.
-         */
+        /** Market type to query. If omitted, returns us_equities and us_options. */
         fun market(market: Market?) = apply { this.market = market }
 
         /** Alias for calling [Builder.market] with `market.orElse(null)`. */
@@ -210,10 +204,7 @@ private constructor(
             }
             .build()
 
-    /**
-     * Market type to query (us_equities, us_options, us_event_contracts). If omitted, returns
-     * us_equities and us_options.
-     */
+    /** Market type to query. If omitted, returns us_equities and us_options. */
     class Market @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**

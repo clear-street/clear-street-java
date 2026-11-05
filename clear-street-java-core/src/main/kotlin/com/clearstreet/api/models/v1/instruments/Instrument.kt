@@ -373,8 +373,7 @@ private constructor(
      * How readily the instrument can be shorted: `EASY_TO_BORROW`, `HARD_TO_BORROW`, or
      * `NOT_SHORTABLE`. Easy-to-borrow instruments can be shorted without a locate. A hard-to-borrow
      * instrument is not easy to borrow but has locate inventory remaining and supports short
-     * selling; anything else is not shortable. Omitted for instruments that are neither tradable
-     * equities nor event contracts. Event contracts are always `NOT_SHORTABLE`. When a
+     * selling; anything else is not shortable. Omitted for instruments it does not apply to. When a
      * null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -1191,9 +1190,8 @@ private constructor(
          * How readily the instrument can be shorted: `EASY_TO_BORROW`, `HARD_TO_BORROW`, or
          * `NOT_SHORTABLE`. Easy-to-borrow instruments can be shorted without a locate. A
          * hard-to-borrow instrument is not easy to borrow but has locate inventory remaining and
-         * supports short selling; anything else is not shortable. Omitted for instruments that are
-         * neither tradable equities nor event contracts. Event contracts are always
-         * `NOT_SHORTABLE`. When a null/undefined value is observed, it indicates it does not apply.
+         * supports short selling; anything else is not shortable. Omitted for instruments it does
+         * not apply to. When a null/undefined value is observed, it indicates it does not apply.
          */
         fun shortableAttribute(shortableAttribute: ShortableAttribute?) =
             shortableAttribute(JsonField.ofNullable(shortableAttribute))

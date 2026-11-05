@@ -29,6 +29,8 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
 
         @JvmField val CASH = of("CASH")
 
+        @JvmField val EVENT_CONTRACT = of("EVENT_CONTRACT")
+
         @JvmStatic fun of(value: String) = SecurityType(JsonField.of(value))
     }
 
@@ -38,6 +40,7 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
         INDEX,
         OPTION,
         CASH,
+        EVENT_CONTRACT,
     }
 
     /**
@@ -54,6 +57,7 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
         INDEX,
         OPTION,
         CASH,
+        EVENT_CONTRACT,
         /** An enum member indicating that [SecurityType] was instantiated with an unknown value. */
         _UNKNOWN,
     }
@@ -71,6 +75,7 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
             INDEX -> Value.INDEX
             OPTION -> Value.OPTION
             CASH -> Value.CASH
+            EVENT_CONTRACT -> Value.EVENT_CONTRACT
             else -> Value._UNKNOWN
         }
 
@@ -89,6 +94,7 @@ class SecurityType @JsonCreator private constructor(private val value: JsonField
             INDEX -> Known.INDEX
             OPTION -> Known.OPTION
             CASH -> Known.CASH
+            EVENT_CONTRACT -> Known.EVENT_CONTRACT
             else -> throw ClearStreetInvalidDataException("Unknown SecurityType: $value")
         }
 

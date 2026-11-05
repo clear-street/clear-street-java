@@ -326,6 +326,8 @@ private constructor(
 
             @JvmField val CASH = of("CASH")
 
+            @JvmField val EVENT_CONTRACT = of("EVENT_CONTRACT")
+
             @JvmStatic fun of(value: String) = InstrumentType(JsonField.of(value))
         }
 
@@ -335,6 +337,7 @@ private constructor(
             INDEX,
             OPTION,
             CASH,
+            EVENT_CONTRACT,
         }
 
         /**
@@ -351,6 +354,7 @@ private constructor(
             INDEX,
             OPTION,
             CASH,
+            EVENT_CONTRACT,
             /**
              * An enum member indicating that [InstrumentType] was instantiated with an unknown
              * value.
@@ -371,6 +375,7 @@ private constructor(
                 INDEX -> Value.INDEX
                 OPTION -> Value.OPTION
                 CASH -> Value.CASH
+                EVENT_CONTRACT -> Value.EVENT_CONTRACT
                 else -> Value._UNKNOWN
             }
 
@@ -389,6 +394,7 @@ private constructor(
                 INDEX -> Known.INDEX
                 OPTION -> Known.OPTION
                 CASH -> Known.CASH
+                EVENT_CONTRACT -> Known.EVENT_CONTRACT
                 else -> throw ClearStreetInvalidDataException("Unknown InstrumentType: $value")
             }
 

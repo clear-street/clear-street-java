@@ -110,6 +110,9 @@ internal class AccountGetAccountBalancesResponseTest {
                                 .build()
                         )
                         .multiplier("2")
+                        .predictionMarket(
+                            PredictionMarketBalances.builder().buyingPower("55.00").build()
+                        )
                         .shortMarketValue("10000.00")
                         .sma(
                             AccountBalancesSma.builder()
@@ -214,6 +217,9 @@ internal class AccountGetAccountBalancesResponseTest {
                             .build()
                     )
                     .multiplier("2")
+                    .predictionMarket(
+                        PredictionMarketBalances.builder().buyingPower("55.00").build()
+                    )
                     .shortMarketValue("10000.00")
                     .sma(
                         AccountBalancesSma.builder()
@@ -322,6 +328,9 @@ internal class AccountGetAccountBalancesResponseTest {
                                 .build()
                         )
                         .multiplier("2")
+                        .predictionMarket(
+                            PredictionMarketBalances.builder().buyingPower("55.00").build()
+                        )
                         .shortMarketValue("10000.00")
                         .sma(
                             AccountBalancesSma.builder()

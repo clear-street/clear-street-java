@@ -14,20 +14,29 @@ import kotlin.jvm.optionals.getOrNull
 /**
  * Get market data snapshots for one or more securities.
  *
- * Three targeting modes, mutually exclusive: `instrument_ids` (1-100 ids),
+ * Targeting modes are mutually exclusive: `instrument_ids` (1-100 ids), or
  * `underlying_instrument_id` + `expiry` together, which resolves the underlier's option chain for
- * that expiry and returns a snapshot for every contract in it (uncapped), or `event_codes` (1-100
- * event tickers), which returns a snapshot for every market in those events in any status
- * (uncapped). Unknown event codes are ignored.
+ * that expiry and returns a snapshot for every contract in it (uncapped).
  */
 class MarketDataGetSnapshotsParams
 private constructor(
+    private val eventCodes: List<String>?,
     private val expiry: LocalDate?,
     private val instrumentIds: List<String>?,
     private val underlyingInstrumentId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
+
+    /**
+     * > **Alpha** — this parameter is experimental and may change or be removed at any time.
+     *
+     * Comma-separated event tickers. Returns a snapshot for every market in those events, in any
+     * status, with no cap on the number of markets. Accepts 1 to 100 codes; unknown codes are
+     * ignored. Mutually exclusive with `instrument_ids` and with `underlying_instrument_id` and
+     * `expiry`.
+     */
+    fun eventCodes(): Optional<List<String>> = Optional.ofNullable(eventCodes)
 
     /**
      * Filter the option chain to contracts expiring on this date (YYYY-MM-DD). Must be provided
@@ -69,6 +78,7 @@ private constructor(
     /** A builder for [MarketDataGetSnapshotsParams]. */
     class Builder internal constructor() {
 
+        private var eventCodes: MutableList<String>? = null
         private var expiry: LocalDate? = null
         private var instrumentIds: MutableList<String>? = null
         private var underlyingInstrumentId: String? = null
@@ -77,11 +87,36 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(marketDataGetSnapshotsParams: MarketDataGetSnapshotsParams) = apply {
+            eventCodes = marketDataGetSnapshotsParams.eventCodes?.toMutableList()
             expiry = marketDataGetSnapshotsParams.expiry
             instrumentIds = marketDataGetSnapshotsParams.instrumentIds?.toMutableList()
             underlyingInstrumentId = marketDataGetSnapshotsParams.underlyingInstrumentId
             additionalHeaders = marketDataGetSnapshotsParams.additionalHeaders.toBuilder()
             additionalQueryParams = marketDataGetSnapshotsParams.additionalQueryParams.toBuilder()
+        }
+
+        /**
+         * > **Alpha** — this parameter is experimental and may change or be removed at any time.
+         *
+         * Comma-separated event tickers. Returns a snapshot for every market in those events, in
+         * any status, with no cap on the number of markets. Accepts 1 to 100 codes; unknown codes
+         * are ignored. Mutually exclusive with `instrument_ids` and with `underlying_instrument_id`
+         * and `expiry`.
+         */
+        fun eventCodes(eventCodes: List<String>?) = apply {
+            this.eventCodes = eventCodes?.toMutableList()
+        }
+
+        /** Alias for calling [Builder.eventCodes] with `eventCodes.orElse(null)`. */
+        fun eventCodes(eventCodes: Optional<List<String>>) = eventCodes(eventCodes.getOrNull())
+
+        /**
+         * Adds a single [String] to [eventCodes].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addEventCode(eventCode: String) = apply {
+            eventCodes = (eventCodes ?: mutableListOf()).apply { add(eventCode) }
         }
 
         /**
@@ -235,6 +270,7 @@ private constructor(
          */
         fun build(): MarketDataGetSnapshotsParams =
             MarketDataGetSnapshotsParams(
+                eventCodes?.toImmutable(),
                 expiry,
                 instrumentIds?.toImmutable(),
                 underlyingInstrumentId,
@@ -248,6 +284,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
+                eventCodes?.let { put("event_codes", it.joinToString(",")) }
                 expiry?.let { put("expiry", it.toString()) }
                 instrumentIds?.let { put("instrument_ids", it.joinToString(",")) }
                 underlyingInstrumentId?.let { put("underlying_instrument_id", it) }
@@ -261,6 +298,7 @@ private constructor(
         }
 
         return other is MarketDataGetSnapshotsParams &&
+            eventCodes == other.eventCodes &&
             expiry == other.expiry &&
             instrumentIds == other.instrumentIds &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
@@ -270,6 +308,7 @@ private constructor(
 
     override fun hashCode(): Int =
         Objects.hash(
+            eventCodes,
             expiry,
             instrumentIds,
             underlyingInstrumentId,
@@ -278,5 +317,5 @@ private constructor(
         )
 
     override fun toString() =
-        "MarketDataGetSnapshotsParams{expiry=$expiry, instrumentIds=$instrumentIds, underlyingInstrumentId=$underlyingInstrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "MarketDataGetSnapshotsParams{eventCodes=$eventCodes, expiry=$expiry, instrumentIds=$instrumentIds, underlyingInstrumentId=$underlyingInstrumentId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

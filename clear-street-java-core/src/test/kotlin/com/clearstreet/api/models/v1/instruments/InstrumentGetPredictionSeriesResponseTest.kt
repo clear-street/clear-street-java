@@ -1,0 +1,120 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.clearstreet.api.models.v1.instruments
+
+import com.clearstreet.api.core.JsonValue
+import com.clearstreet.api.core.jsonMapper
+import com.clearstreet.api.models.ApiError
+import com.clearstreet.api.models.ResponseMetadata
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+
+internal class InstrumentGetPredictionSeriesResponseTest {
+
+    @Test
+    fun create() {
+        val instrumentGetPredictionSeriesResponse =
+            InstrumentGetPredictionSeriesResponse.builder()
+                .metadata(
+                    ResponseMetadata.builder()
+                        .requestId("request_id")
+                        .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
+                        .pageNumber(1)
+                        .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
+                        .totalItems(42L)
+                        .totalPages(5)
+                        .build()
+                )
+                .error(
+                    ApiError.builder()
+                        .code(400)
+                        .message("Order quantity must be greater than zero")
+                        .addDetail(
+                            ApiError.Detail.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .build()
+                )
+                .data(
+                    PredictionSeriesList.builder()
+                        .addSeries(PredictionSeries.builder().code("KXPRESPERSON").build())
+                        .build()
+                )
+                .build()
+
+        assertThat(instrumentGetPredictionSeriesResponse.metadata())
+            .isEqualTo(
+                ResponseMetadata.builder()
+                    .requestId("request_id")
+                    .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .pageNumber(1)
+                    .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .totalItems(42L)
+                    .totalPages(5)
+                    .build()
+            )
+        assertThat(instrumentGetPredictionSeriesResponse.error())
+            .contains(
+                ApiError.builder()
+                    .code(400)
+                    .message("Order quantity must be greater than zero")
+                    .addDetail(
+                        ApiError.Detail.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("bar"))
+                            .build()
+                    )
+                    .build()
+            )
+        assertThat(instrumentGetPredictionSeriesResponse.data())
+            .isEqualTo(
+                PredictionSeriesList.builder()
+                    .addSeries(PredictionSeries.builder().code("KXPRESPERSON").build())
+                    .build()
+            )
+    }
+
+    @Test
+    fun roundtrip() {
+        val jsonMapper = jsonMapper()
+        val instrumentGetPredictionSeriesResponse =
+            InstrumentGetPredictionSeriesResponse.builder()
+                .metadata(
+                    ResponseMetadata.builder()
+                        .requestId("request_id")
+                        .nextPageToken("U3RhaW5sZXNzIHJvY2tz")
+                        .pageNumber(1)
+                        .previousPageToken("U3RhaW5sZXNzIHJvY2tz")
+                        .totalItems(42L)
+                        .totalPages(5)
+                        .build()
+                )
+                .error(
+                    ApiError.builder()
+                        .code(400)
+                        .message("Order quantity must be greater than zero")
+                        .addDetail(
+                            ApiError.Detail.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .build()
+                )
+                .data(
+                    PredictionSeriesList.builder()
+                        .addSeries(PredictionSeries.builder().code("KXPRESPERSON").build())
+                        .build()
+                )
+                .build()
+
+        val roundtrippedInstrumentGetPredictionSeriesResponse =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(instrumentGetPredictionSeriesResponse),
+                jacksonTypeRef<InstrumentGetPredictionSeriesResponse>(),
+            )
+
+        assertThat(roundtrippedInstrumentGetPredictionSeriesResponse)
+            .isEqualTo(instrumentGetPredictionSeriesResponse)
+    }
+}

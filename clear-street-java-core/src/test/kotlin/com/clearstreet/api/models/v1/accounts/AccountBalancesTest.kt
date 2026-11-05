@@ -79,6 +79,7 @@ internal class AccountBalancesTest {
                         .build()
                 )
                 .multiplier("2")
+                .predictionMarket(PredictionMarketBalances.builder().buyingPower("55.00").build())
                 .shortMarketValue("10000.00")
                 .sma(
                     AccountBalancesSma.builder()
@@ -152,6 +153,8 @@ internal class AccountBalancesTest {
                     .build()
             )
         assertThat(accountBalances.multiplier()).contains("2")
+        assertThat(accountBalances.predictionMarket())
+            .contains(PredictionMarketBalances.builder().buyingPower("55.00").build())
         assertThat(accountBalances.shortMarketValue()).contains("10000.00")
         assertThat(accountBalances.sma())
             .contains(
@@ -231,6 +234,7 @@ internal class AccountBalancesTest {
                         .build()
                 )
                 .multiplier("2")
+                .predictionMarket(PredictionMarketBalances.builder().buyingPower("55.00").build())
                 .shortMarketValue("10000.00")
                 .sma(
                     AccountBalancesSma.builder()

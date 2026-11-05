@@ -42,6 +42,7 @@ internal class MarketDataServiceTest {
         val response =
             marketDataService.getSnapshots(
                 MarketDataGetSnapshotsParams.builder()
+                    .addEventCode("string")
                     .expiry(LocalDate.parse("2019-12-27"))
                     .addInstrumentId("x")
                     .underlyingInstrumentId("x")

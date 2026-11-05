@@ -41,6 +41,7 @@ private constructor(
     private val withdrawableCash: JsonField<String>,
     private val marginDetails: JsonField<MarginDetails>,
     private val multiplier: JsonField<String>,
+    private val predictionMarket: JsonField<PredictionMarketBalances>,
     private val shortMarketValue: JsonField<String>,
     private val sma: JsonField<AccountBalancesSma>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -96,6 +97,9 @@ private constructor(
         @JsonProperty("multiplier")
         @ExcludeMissing
         multiplier: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("prediction_market")
+        @ExcludeMissing
+        predictionMarket: JsonField<PredictionMarketBalances> = JsonMissing.of(),
         @JsonProperty("short_market_value")
         @ExcludeMissing
         shortMarketValue: JsonField<String> = JsonMissing.of(),
@@ -121,6 +125,7 @@ private constructor(
         withdrawableCash,
         marginDetails,
         multiplier,
+        predictionMarket,
         shortMarketValue,
         sma,
         mutableMapOf(),
@@ -292,6 +297,15 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun multiplier(): Optional<String> = multiplier.getOptional("multiplier")
+
+    /**
+     * Prediction-market buying power in the same currency as the account balances.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun predictionMarket(): Optional<PredictionMarketBalances> =
+        predictionMarket.getOptional("prediction_market")
 
     /**
      * The total market value of all short positions. When null/undefined, the value should be
@@ -485,6 +499,16 @@ private constructor(
     @JsonProperty("multiplier") @ExcludeMissing fun _multiplier(): JsonField<String> = multiplier
 
     /**
+     * Returns the raw JSON value of [predictionMarket].
+     *
+     * Unlike [predictionMarket], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("prediction_market")
+    @ExcludeMissing
+    fun _predictionMarket(): JsonField<PredictionMarketBalances> = predictionMarket
+
+    /**
      * Returns the raw JSON value of [shortMarketValue].
      *
      * Unlike [shortMarketValue], this method doesn't throw if the JSON field has an unexpected
@@ -566,6 +590,7 @@ private constructor(
         private var withdrawableCash: JsonField<String>? = null
         private var marginDetails: JsonField<MarginDetails> = JsonMissing.of()
         private var multiplier: JsonField<String> = JsonMissing.of()
+        private var predictionMarket: JsonField<PredictionMarketBalances> = JsonMissing.of()
         private var shortMarketValue: JsonField<String> = JsonMissing.of()
         private var sma: JsonField<AccountBalancesSma> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -592,6 +617,7 @@ private constructor(
             withdrawableCash = accountBalances.withdrawableCash
             marginDetails = accountBalances.marginDetails
             multiplier = accountBalances.multiplier
+            predictionMarket = accountBalances.predictionMarket
             shortMarketValue = accountBalances.shortMarketValue
             sma = accountBalances.sma
             additionalProperties = accountBalances.additionalProperties.toMutableMap()
@@ -883,6 +909,21 @@ private constructor(
          */
         fun multiplier(multiplier: JsonField<String>) = apply { this.multiplier = multiplier }
 
+        /** Prediction-market buying power in the same currency as the account balances. */
+        fun predictionMarket(predictionMarket: PredictionMarketBalances) =
+            predictionMarket(JsonField.of(predictionMarket))
+
+        /**
+         * Sets [Builder.predictionMarket] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.predictionMarket] with a well-typed
+         * [PredictionMarketBalances] value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
+         */
+        fun predictionMarket(predictionMarket: JsonField<PredictionMarketBalances>) = apply {
+            this.predictionMarket = predictionMarket
+        }
+
         /**
          * The total market value of all short positions. When null/undefined, the value should be
          * assumed to be zero. The field is omitted to simplify the response.
@@ -995,6 +1036,7 @@ private constructor(
                 checkRequired("withdrawableCash", withdrawableCash),
                 marginDetails,
                 multiplier,
+                predictionMarket,
                 shortMarketValue,
                 sma,
                 additionalProperties.toMutableMap(),
@@ -1036,6 +1078,7 @@ private constructor(
         withdrawableCash()
         marginDetails().ifPresent { it.validate() }
         multiplier()
+        predictionMarket().ifPresent { it.validate() }
         shortMarketValue()
         sma().ifPresent { it.validate() }
         validated = true
@@ -1076,6 +1119,7 @@ private constructor(
             (if (withdrawableCash.asKnown().isPresent) 1 else 0) +
             (marginDetails.asKnown().getOrNull()?.validity() ?: 0) +
             (if (multiplier.asKnown().isPresent) 1 else 0) +
+            (predictionMarket.asKnown().getOrNull()?.validity() ?: 0) +
             (if (shortMarketValue.asKnown().isPresent) 1 else 0) +
             (sma.asKnown().getOrNull()?.validity() ?: 0)
 
@@ -1105,6 +1149,7 @@ private constructor(
             withdrawableCash == other.withdrawableCash &&
             marginDetails == other.marginDetails &&
             multiplier == other.multiplier &&
+            predictionMarket == other.predictionMarket &&
             shortMarketValue == other.shortMarketValue &&
             sma == other.sma &&
             additionalProperties == other.additionalProperties
@@ -1132,6 +1177,7 @@ private constructor(
             withdrawableCash,
             marginDetails,
             multiplier,
+            predictionMarket,
             shortMarketValue,
             sma,
             additionalProperties,
@@ -1141,5 +1187,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyChange=$dailyChange, dailyPnl=$dailyPnl, dailyRealizedPnl=$dailyRealizedPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unrealizedPnl=$unrealizedPnl, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, shortMarketValue=$shortMarketValue, sma=$sma, additionalProperties=$additionalProperties}"
+        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyChange=$dailyChange, dailyPnl=$dailyPnl, dailyRealizedPnl=$dailyRealizedPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unrealizedPnl=$unrealizedPnl, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, predictionMarket=$predictionMarket, shortMarketValue=$shortMarketValue, sma=$sma, additionalProperties=$additionalProperties}"
 }

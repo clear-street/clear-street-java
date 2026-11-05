@@ -21,6 +21,14 @@ import com.clearstreet.api.models.v1.instruments.InstrumentGetInstrumentsParams
 import com.clearstreet.api.models.v1.instruments.InstrumentGetInstrumentsResponse
 import com.clearstreet.api.models.v1.instruments.InstrumentGetOptionContractsParams
 import com.clearstreet.api.models.v1.instruments.InstrumentGetOptionContractsResponse
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionCategoriesParams
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionCategoriesResponse
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionEventsParams
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionEventsResponse
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionMarketsParams
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionMarketsResponse
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionSeriesParams
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionSeriesResponse
 import com.clearstreet.api.models.v1.instruments.InstrumentSearchInstrumentsParams
 import com.clearstreet.api.models.v1.instruments.InstrumentSearchInstrumentsResponse
 import java.util.concurrent.CompletableFuture
@@ -60,6 +68,34 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
     ): CompletableFuture<InstrumentGetOptionContractsResponse> =
         // get /v1/instruments/options/contracts
         withRawResponse().getOptionContracts(params, requestOptions).thenApply { it.parse() }
+
+    override fun getPredictionCategories(
+        params: InstrumentGetPredictionCategoriesParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<InstrumentGetPredictionCategoriesResponse> =
+        // get /v1/instruments/predictions/categories
+        withRawResponse().getPredictionCategories(params, requestOptions).thenApply { it.parse() }
+
+    override fun getPredictionEvents(
+        params: InstrumentGetPredictionEventsParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<InstrumentGetPredictionEventsResponse> =
+        // get /v1/instruments/predictions/events
+        withRawResponse().getPredictionEvents(params, requestOptions).thenApply { it.parse() }
+
+    override fun getPredictionMarkets(
+        params: InstrumentGetPredictionMarketsParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<InstrumentGetPredictionMarketsResponse> =
+        // get /v1/instruments/predictions/markets
+        withRawResponse().getPredictionMarkets(params, requestOptions).thenApply { it.parse() }
+
+    override fun getPredictionSeries(
+        params: InstrumentGetPredictionSeriesParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<InstrumentGetPredictionSeriesResponse> =
+        // get /v1/instruments/predictions/series
+        withRawResponse().getPredictionSeries(params, requestOptions).thenApply { it.parse() }
 
     override fun searchInstruments(
         params: InstrumentSearchInstrumentsParams,
@@ -165,6 +201,127 @@ class InstrumentServiceAsyncImpl internal constructor(private val clientOptions:
                     errorHandler.handle(response).parseable {
                         response
                             .use { getOptionContractsHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val getPredictionCategoriesHandler:
+            Handler<InstrumentGetPredictionCategoriesResponse> =
+            jsonHandler<InstrumentGetPredictionCategoriesResponse>(clientOptions.jsonMapper)
+
+        override fun getPredictionCategories(
+            params: InstrumentGetPredictionCategoriesParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<InstrumentGetPredictionCategoriesResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "instruments", "predictions", "categories")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { getPredictionCategoriesHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val getPredictionEventsHandler: Handler<InstrumentGetPredictionEventsResponse> =
+            jsonHandler<InstrumentGetPredictionEventsResponse>(clientOptions.jsonMapper)
+
+        override fun getPredictionEvents(
+            params: InstrumentGetPredictionEventsParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<InstrumentGetPredictionEventsResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "instruments", "predictions", "events")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { getPredictionEventsHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val getPredictionMarketsHandler: Handler<InstrumentGetPredictionMarketsResponse> =
+            jsonHandler<InstrumentGetPredictionMarketsResponse>(clientOptions.jsonMapper)
+
+        override fun getPredictionMarkets(
+            params: InstrumentGetPredictionMarketsParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<InstrumentGetPredictionMarketsResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "instruments", "predictions", "markets")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { getPredictionMarketsHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val getPredictionSeriesHandler: Handler<InstrumentGetPredictionSeriesResponse> =
+            jsonHandler<InstrumentGetPredictionSeriesResponse>(clientOptions.jsonMapper)
+
+        override fun getPredictionSeries(
+            params: InstrumentGetPredictionSeriesParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<InstrumentGetPredictionSeriesResponse>> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "instruments", "predictions", "series")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { getPredictionSeriesHandler.handle(it) }
                             .also {
                                 if (requestOptions.responseValidation!!) {
                                     it.validate()

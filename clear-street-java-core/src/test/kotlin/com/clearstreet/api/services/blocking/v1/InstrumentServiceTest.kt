@@ -7,6 +7,9 @@ import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClient
 import com.clearstreet.api.models.v1.instruments.InstrumentGetInstrumentByIdParams
 import com.clearstreet.api.models.v1.instruments.InstrumentGetInstrumentsParams
 import com.clearstreet.api.models.v1.instruments.InstrumentGetOptionContractsParams
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionEventsParams
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionMarketsParams
+import com.clearstreet.api.models.v1.instruments.InstrumentGetPredictionSeriesParams
 import com.clearstreet.api.models.v1.instruments.InstrumentSearchInstrumentsParams
 import java.time.LocalDate
 import org.junit.jupiter.api.Test
@@ -84,6 +87,108 @@ internal class InstrumentServiceTest {
                     .root("root")
                     .underlier("underlier")
                     .underlyingInstrumentId("x")
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Test
+    fun getPredictionCategories() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val instrumentService = client.v1().instruments()
+
+        val response = instrumentService.getPredictionCategories()
+
+        response.validate()
+    }
+
+    @Test
+    fun getPredictionEvents() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val instrumentService = client.v1().instruments()
+
+        val response =
+            instrumentService.getPredictionEvents(
+                InstrumentGetPredictionEventsParams.builder()
+                    .categories("categories")
+                    .closeAt(
+                        InstrumentGetPredictionEventsParams.CloseAt.builder()
+                            .gt("gt")
+                            .gte("gte")
+                            .lt("lt")
+                            .lte("lte")
+                            .build()
+                    )
+                    .includeMarkets(true)
+                    .includeSettled(true)
+                    .marketIds("market_ids")
+                    .openAt(
+                        InstrumentGetPredictionEventsParams.OpenAt.builder()
+                            .gt("gt")
+                            .gte("gte")
+                            .lt("lt")
+                            .lte("lte")
+                            .build()
+                    )
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .search("search")
+                    .seriesCodes("series_codes")
+                    .sortBy(InstrumentGetPredictionEventsParams.SortBy.OPEN_AT)
+                    .sortDirection(InstrumentGetPredictionEventsParams.SortDirection.ASC)
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Test
+    fun getPredictionMarkets() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val instrumentService = client.v1().instruments()
+
+        val response =
+            instrumentService.getPredictionMarkets(
+                InstrumentGetPredictionMarketsParams.builder()
+                    .eventCode("event_code")
+                    .marketIds("market_ids")
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .statuses("statuses")
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Test
+    fun getPredictionSeries() {
+        val client =
+            ClearStreetOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val instrumentService = client.v1().instruments()
+
+        val response =
+            instrumentService.getPredictionSeries(
+                InstrumentGetPredictionSeriesParams.builder()
+                    .categories("categories")
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .build()
             )
 

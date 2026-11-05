@@ -12,6 +12,7 @@ internal class MarketDataGetSnapshotsParamsTest {
     @Test
     fun create() {
         MarketDataGetSnapshotsParams.builder()
+            .addEventCode("string")
             .expiry(LocalDate.parse("2019-12-27"))
             .addInstrumentId("x")
             .underlyingInstrumentId("x")
@@ -22,6 +23,7 @@ internal class MarketDataGetSnapshotsParamsTest {
     fun queryParams() {
         val params =
             MarketDataGetSnapshotsParams.builder()
+                .addEventCode("string")
                 .expiry(LocalDate.parse("2019-12-27"))
                 .addInstrumentId("x")
                 .underlyingInstrumentId("x")
@@ -32,6 +34,7 @@ internal class MarketDataGetSnapshotsParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
+                    .put("event_codes", listOf("string").joinToString(","))
                     .put("expiry", "2019-12-27")
                     .put("instrument_ids", listOf("x").joinToString(","))
                     .put("underlying_instrument_id", "x")
