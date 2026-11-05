@@ -19,6 +19,7 @@ class PositionGetPositionsParams
 private constructor(
     private val accountId: Long?,
     private val instrumentIds: List<String>?,
+    private val instrumentType: InstrumentType?,
     private val pageSize: Long?,
     private val pageToken: String?,
     private val sortBy: SortBy?,
@@ -31,6 +32,9 @@ private constructor(
 
     /** Comma-separated instrument identifiers */
     fun instrumentIds(): Optional<List<String>> = Optional.ofNullable(instrumentIds)
+
+    /** Instrument type filter (e.g., COMMON_STOCK, OPTION) */
+    fun instrumentType(): Optional<InstrumentType> = Optional.ofNullable(instrumentType)
 
     /** The number of items to return per page. Only used when page_token is not provided. */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
@@ -70,6 +74,7 @@ private constructor(
 
         private var accountId: Long? = null
         private var instrumentIds: MutableList<String>? = null
+        private var instrumentType: InstrumentType? = null
         private var pageSize: Long? = null
         private var pageToken: String? = null
         private var sortBy: SortBy? = null
@@ -81,6 +86,7 @@ private constructor(
         internal fun from(positionGetPositionsParams: PositionGetPositionsParams) = apply {
             accountId = positionGetPositionsParams.accountId
             instrumentIds = positionGetPositionsParams.instrumentIds?.toMutableList()
+            instrumentType = positionGetPositionsParams.instrumentType
             pageSize = positionGetPositionsParams.pageSize
             pageToken = positionGetPositionsParams.pageToken
             sortBy = positionGetPositionsParams.sortBy
@@ -118,6 +124,15 @@ private constructor(
         fun addInstrumentId(instrumentId: String) = apply {
             instrumentIds = (instrumentIds ?: mutableListOf()).apply { add(instrumentId) }
         }
+
+        /** Instrument type filter (e.g., COMMON_STOCK, OPTION) */
+        fun instrumentType(instrumentType: InstrumentType?) = apply {
+            this.instrumentType = instrumentType
+        }
+
+        /** Alias for calling [Builder.instrumentType] with `instrumentType.orElse(null)`. */
+        fun instrumentType(instrumentType: Optional<InstrumentType>) =
+            instrumentType(instrumentType.getOrNull())
 
         /** The number of items to return per page. Only used when page_token is not provided. */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
@@ -263,6 +278,7 @@ private constructor(
             PositionGetPositionsParams(
                 accountId,
                 instrumentIds?.toImmutable(),
+                instrumentType,
                 pageSize,
                 pageToken,
                 sortBy,
@@ -284,6 +300,7 @@ private constructor(
         QueryParams.builder()
             .apply {
                 instrumentIds?.let { put("instrument_ids", it.joinToString(",")) }
+                instrumentType?.let { put("instrument_type", it.toString()) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
                 sortBy?.let { put("sort_by", it.toString()) }
@@ -291,6 +308,159 @@ private constructor(
                 putAll(additionalQueryParams)
             }
             .build()
+
+    /** Instrument type filter (e.g., COMMON_STOCK, OPTION) */
+    class InstrumentType @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val COMMON_STOCK = of("COMMON_STOCK")
+
+            @JvmField val INDEX = of("INDEX")
+
+            @JvmField val OPTION = of("OPTION")
+
+            @JvmField val CASH = of("CASH")
+
+            @JvmStatic fun of(value: String) = InstrumentType(JsonField.of(value))
+        }
+
+        /** An enum containing [InstrumentType]'s known values. */
+        enum class Known {
+            COMMON_STOCK,
+            INDEX,
+            OPTION,
+            CASH,
+        }
+
+        /**
+         * An enum containing [InstrumentType]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [InstrumentType] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            COMMON_STOCK,
+            INDEX,
+            OPTION,
+            CASH,
+            /**
+             * An enum member indicating that [InstrumentType] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                COMMON_STOCK -> Value.COMMON_STOCK
+                INDEX -> Value.INDEX
+                OPTION -> Value.OPTION
+                CASH -> Value.CASH
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws ClearStreetInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                COMMON_STOCK -> Known.COMMON_STOCK
+                INDEX -> Known.INDEX
+                OPTION -> Known.OPTION
+                CASH -> Known.CASH
+                else -> throw ClearStreetInvalidDataException("Unknown InstrumentType: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws ClearStreetInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow {
+                ClearStreetInvalidDataException("Value is not a String")
+            }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws ClearStreetInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): InstrumentType = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: ClearStreetInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is InstrumentType && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     /** Field to sort by */
     class SortBy @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -614,6 +784,7 @@ private constructor(
         return other is PositionGetPositionsParams &&
             accountId == other.accountId &&
             instrumentIds == other.instrumentIds &&
+            instrumentType == other.instrumentType &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
             sortBy == other.sortBy &&
@@ -626,6 +797,7 @@ private constructor(
         Objects.hash(
             accountId,
             instrumentIds,
+            instrumentType,
             pageSize,
             pageToken,
             sortBy,
@@ -635,5 +807,5 @@ private constructor(
         )
 
     override fun toString() =
-        "PositionGetPositionsParams{accountId=$accountId, instrumentIds=$instrumentIds, pageSize=$pageSize, pageToken=$pageToken, sortBy=$sortBy, sortDirection=$sortDirection, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "PositionGetPositionsParams{accountId=$accountId, instrumentIds=$instrumentIds, instrumentType=$instrumentType, pageSize=$pageSize, pageToken=$pageToken, sortBy=$sortBy, sortDirection=$sortDirection, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

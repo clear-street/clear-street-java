@@ -110,6 +110,7 @@ internal class PositionServiceTest {
                 PositionGetPositionsParams.builder()
                     .accountId(0L)
                     .addInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .instrumentType(PositionGetPositionsParams.InstrumentType.COMMON_STOCK)
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .sortBy(PositionGetPositionsParams.SortBy.SYMBOL)
