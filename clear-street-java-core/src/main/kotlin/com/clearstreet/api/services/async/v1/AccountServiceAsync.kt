@@ -11,6 +11,8 @@ import com.clearstreet.api.models.v1.accounts.AccountGetAccountByIdParams
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountByIdResponse
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountsResponse
+import com.clearstreet.api.models.v1.accounts.AccountGetNonTradeActivitiesParams
+import com.clearstreet.api.models.v1.accounts.AccountGetNonTradeActivitiesResponse
 import com.clearstreet.api.models.v1.accounts.AccountGetPortfolioHistoryParams
 import com.clearstreet.api.models.v1.accounts.AccountGetPortfolioHistoryResponse
 import com.clearstreet.api.models.v1.accounts.AccountPatchAccountByIdParams
@@ -138,6 +140,46 @@ interface AccountServiceAsync {
     /** @see getAccounts */
     fun getAccounts(requestOptions: RequestOptions): CompletableFuture<AccountGetAccountsResponse> =
         getAccounts(AccountGetAccountsParams.none(), requestOptions)
+
+    /** Results are paginated. */
+    fun getNonTradeActivities(
+        accountId: Long
+    ): CompletableFuture<AccountGetNonTradeActivitiesResponse> =
+        getNonTradeActivities(accountId, AccountGetNonTradeActivitiesParams.none())
+
+    /** @see getNonTradeActivities */
+    fun getNonTradeActivities(
+        accountId: Long,
+        params: AccountGetNonTradeActivitiesParams = AccountGetNonTradeActivitiesParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<AccountGetNonTradeActivitiesResponse> =
+        getNonTradeActivities(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+    /** @see getNonTradeActivities */
+    fun getNonTradeActivities(
+        accountId: Long,
+        params: AccountGetNonTradeActivitiesParams = AccountGetNonTradeActivitiesParams.none(),
+    ): CompletableFuture<AccountGetNonTradeActivitiesResponse> =
+        getNonTradeActivities(accountId, params, RequestOptions.none())
+
+    /** @see getNonTradeActivities */
+    fun getNonTradeActivities(
+        params: AccountGetNonTradeActivitiesParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<AccountGetNonTradeActivitiesResponse>
+
+    /** @see getNonTradeActivities */
+    fun getNonTradeActivities(
+        params: AccountGetNonTradeActivitiesParams
+    ): CompletableFuture<AccountGetNonTradeActivitiesResponse> =
+        getNonTradeActivities(params, RequestOptions.none())
+
+    /** @see getNonTradeActivities */
+    fun getNonTradeActivities(
+        accountId: Long,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<AccountGetNonTradeActivitiesResponse> =
+        getNonTradeActivities(accountId, AccountGetNonTradeActivitiesParams.none(), requestOptions)
 
     /** Retrieves daily portfolio history for the specified account. */
     fun getPortfolioHistory(
@@ -328,6 +370,53 @@ interface AccountServiceAsync {
             requestOptions: RequestOptions
         ): CompletableFuture<HttpResponseFor<AccountGetAccountsResponse>> =
             getAccounts(AccountGetAccountsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /v1/accounts/{account_id}/non-trade-activities`, but
+         * is otherwise the same as [AccountServiceAsync.getNonTradeActivities].
+         */
+        fun getNonTradeActivities(
+            accountId: Long
+        ): CompletableFuture<HttpResponseFor<AccountGetNonTradeActivitiesResponse>> =
+            getNonTradeActivities(accountId, AccountGetNonTradeActivitiesParams.none())
+
+        /** @see getNonTradeActivities */
+        fun getNonTradeActivities(
+            accountId: Long,
+            params: AccountGetNonTradeActivitiesParams = AccountGetNonTradeActivitiesParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<AccountGetNonTradeActivitiesResponse>> =
+            getNonTradeActivities(params.toBuilder().accountId(accountId).build(), requestOptions)
+
+        /** @see getNonTradeActivities */
+        fun getNonTradeActivities(
+            accountId: Long,
+            params: AccountGetNonTradeActivitiesParams = AccountGetNonTradeActivitiesParams.none(),
+        ): CompletableFuture<HttpResponseFor<AccountGetNonTradeActivitiesResponse>> =
+            getNonTradeActivities(accountId, params, RequestOptions.none())
+
+        /** @see getNonTradeActivities */
+        fun getNonTradeActivities(
+            params: AccountGetNonTradeActivitiesParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<AccountGetNonTradeActivitiesResponse>>
+
+        /** @see getNonTradeActivities */
+        fun getNonTradeActivities(
+            params: AccountGetNonTradeActivitiesParams
+        ): CompletableFuture<HttpResponseFor<AccountGetNonTradeActivitiesResponse>> =
+            getNonTradeActivities(params, RequestOptions.none())
+
+        /** @see getNonTradeActivities */
+        fun getNonTradeActivities(
+            accountId: Long,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<AccountGetNonTradeActivitiesResponse>> =
+            getNonTradeActivities(
+                accountId,
+                AccountGetNonTradeActivitiesParams.none(),
+                requestOptions,
+            )
 
         /**
          * Returns a raw HTTP response for `get /v1/accounts/{account_id}/portfolio-history`, but is

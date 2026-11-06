@@ -6,6 +6,7 @@ import com.clearstreet.api.TestServerExtension
 import com.clearstreet.api.client.okhttp.ClearStreetOkHttpClientAsync
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountBalancesParams
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams
+import com.clearstreet.api.models.v1.accounts.AccountGetNonTradeActivitiesParams
 import com.clearstreet.api.models.v1.accounts.AccountGetPortfolioHistoryParams
 import com.clearstreet.api.models.v1.accounts.AccountPatchAccountByIdParams
 import com.clearstreet.api.models.v1.accounts.RiskSettings
@@ -66,6 +67,28 @@ internal class AccountServiceAsyncTest {
                 AccountGetAccountsParams.builder()
                     .accountId("account_id")
                     .accountName("account_name")
+                    .pageSize(1L)
+                    .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .build()
+            )
+
+        val response = responseFuture.get()
+        response.validate()
+    }
+
+    @Test
+    fun getNonTradeActivities() {
+        val client =
+            ClearStreetOkHttpClientAsync.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .apiKey("My API Key")
+                .build()
+        val accountServiceAsync = client.v1().accounts()
+
+        val responseFuture =
+            accountServiceAsync.getNonTradeActivities(
+                AccountGetNonTradeActivitiesParams.builder()
+                    .accountId(0L)
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
                     .build()

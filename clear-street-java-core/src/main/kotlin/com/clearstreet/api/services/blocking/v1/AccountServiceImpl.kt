@@ -22,6 +22,8 @@ import com.clearstreet.api.models.v1.accounts.AccountGetAccountByIdParams
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountByIdResponse
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams
 import com.clearstreet.api.models.v1.accounts.AccountGetAccountsResponse
+import com.clearstreet.api.models.v1.accounts.AccountGetNonTradeActivitiesParams
+import com.clearstreet.api.models.v1.accounts.AccountGetNonTradeActivitiesResponse
 import com.clearstreet.api.models.v1.accounts.AccountGetPortfolioHistoryParams
 import com.clearstreet.api.models.v1.accounts.AccountGetPortfolioHistoryResponse
 import com.clearstreet.api.models.v1.accounts.AccountPatchAccountByIdParams
@@ -62,6 +64,13 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
     ): AccountGetAccountsResponse =
         // get /v1/accounts
         withRawResponse().getAccounts(params, requestOptions).parse()
+
+    override fun getNonTradeActivities(
+        params: AccountGetNonTradeActivitiesParams,
+        requestOptions: RequestOptions,
+    ): AccountGetNonTradeActivitiesResponse =
+        // get /v1/accounts/{account_id}/non-trade-activities
+        withRawResponse().getNonTradeActivities(params, requestOptions).parse()
 
     override fun getPortfolioHistory(
         params: AccountGetPortfolioHistoryParams,
@@ -169,6 +178,36 @@ class AccountServiceImpl internal constructor(private val clientOptions: ClientO
             return errorHandler.handle(response).parseable {
                 response
                     .use { getAccountsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val getNonTradeActivitiesHandler: Handler<AccountGetNonTradeActivitiesResponse> =
+            jsonHandler<AccountGetNonTradeActivitiesResponse>(clientOptions.jsonMapper)
+
+        override fun getNonTradeActivities(
+            params: AccountGetNonTradeActivitiesParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<AccountGetNonTradeActivitiesResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("accountId", params.accountId().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "accounts", params._pathParam(0), "non-trade-activities")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { getNonTradeActivitiesHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
