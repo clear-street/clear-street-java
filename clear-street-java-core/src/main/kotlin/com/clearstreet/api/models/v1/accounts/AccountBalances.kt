@@ -24,6 +24,7 @@ private constructor(
     private val accountId: JsonField<Long>,
     private val buyingPower: JsonField<String>,
     private val currency: JsonField<String>,
+    private val currentSession: JsonField<MarginSession>,
     private val dailyChange: JsonField<String>,
     private val dailyPnl: JsonField<String>,
     private val dailyRealizedPnl: JsonField<String>,
@@ -54,6 +55,9 @@ private constructor(
         @ExcludeMissing
         buyingPower: JsonField<String> = JsonMissing.of(),
         @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("current_session")
+        @ExcludeMissing
+        currentSession: JsonField<MarginSession> = JsonMissing.of(),
         @JsonProperty("daily_change")
         @ExcludeMissing
         dailyChange: JsonField<String> = JsonMissing.of(),
@@ -108,6 +112,7 @@ private constructor(
         accountId,
         buyingPower,
         currency,
+        currentSession,
         dailyChange,
         dailyPnl,
         dailyRealizedPnl,
@@ -156,6 +161,16 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun currency(): String = currency.getRequired("currency")
+
+    /**
+     * The session whose values the engine is applying to these balances. `buying_power`,
+     * `multiplier`, and `margin_details.usage` reflect this session. A closed market reports
+     * `overnight`.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun currentSession(): MarginSession = currentSession.getRequired("current_session")
 
     /**
      * Difference between current equity and start-of-day equity.
@@ -349,6 +364,15 @@ private constructor(
      * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
+
+    /**
+     * Returns the raw JSON value of [currentSession].
+     *
+     * Unlike [currentSession], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("current_session")
+    @ExcludeMissing
+    fun _currentSession(): JsonField<MarginSession> = currentSession
 
     /**
      * Returns the raw JSON value of [dailyChange].
@@ -547,6 +571,7 @@ private constructor(
          * .accountId()
          * .buyingPower()
          * .currency()
+         * .currentSession()
          * .dailyChange()
          * .dailyPnl()
          * .dailyRealizedPnl()
@@ -573,6 +598,7 @@ private constructor(
         private var accountId: JsonField<Long>? = null
         private var buyingPower: JsonField<String>? = null
         private var currency: JsonField<String>? = null
+        private var currentSession: JsonField<MarginSession>? = null
         private var dailyChange: JsonField<String>? = null
         private var dailyPnl: JsonField<String>? = null
         private var dailyRealizedPnl: JsonField<String>? = null
@@ -600,6 +626,7 @@ private constructor(
             accountId = accountBalances.accountId
             buyingPower = accountBalances.buyingPower
             currency = accountBalances.currency
+            currentSession = accountBalances.currentSession
             dailyChange = accountBalances.dailyChange
             dailyPnl = accountBalances.dailyPnl
             dailyRealizedPnl = accountBalances.dailyRealizedPnl
@@ -660,6 +687,25 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun currency(currency: JsonField<String>) = apply { this.currency = currency }
+
+        /**
+         * The session whose values the engine is applying to these balances. `buying_power`,
+         * `multiplier`, and `margin_details.usage` reflect this session. A closed market reports
+         * `overnight`.
+         */
+        fun currentSession(currentSession: MarginSession) =
+            currentSession(JsonField.of(currentSession))
+
+        /**
+         * Sets [Builder.currentSession] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.currentSession] with a well-typed [MarginSession] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun currentSession(currentSession: JsonField<MarginSession>) = apply {
+            this.currentSession = currentSession
+        }
 
         /** Difference between current equity and start-of-day equity. */
         fun dailyChange(dailyChange: String) = dailyChange(JsonField.of(dailyChange))
@@ -995,6 +1041,7 @@ private constructor(
          * .accountId()
          * .buyingPower()
          * .currency()
+         * .currentSession()
          * .dailyChange()
          * .dailyPnl()
          * .dailyRealizedPnl()
@@ -1019,6 +1066,7 @@ private constructor(
                 checkRequired("accountId", accountId),
                 checkRequired("buyingPower", buyingPower),
                 checkRequired("currency", currency),
+                checkRequired("currentSession", currentSession),
                 checkRequired("dailyChange", dailyChange),
                 checkRequired("dailyPnl", dailyPnl),
                 checkRequired("dailyRealizedPnl", dailyRealizedPnl),
@@ -1061,6 +1109,7 @@ private constructor(
         accountId()
         buyingPower()
         currency()
+        currentSession().validate()
         dailyChange()
         dailyPnl()
         dailyRealizedPnl()
@@ -1102,6 +1151,7 @@ private constructor(
         (if (accountId.asKnown().isPresent) 1 else 0) +
             (if (buyingPower.asKnown().isPresent) 1 else 0) +
             (if (currency.asKnown().isPresent) 1 else 0) +
+            (currentSession.asKnown().getOrNull()?.validity() ?: 0) +
             (if (dailyChange.asKnown().isPresent) 1 else 0) +
             (if (dailyPnl.asKnown().isPresent) 1 else 0) +
             (if (dailyRealizedPnl.asKnown().isPresent) 1 else 0) +
@@ -1132,6 +1182,7 @@ private constructor(
             accountId == other.accountId &&
             buyingPower == other.buyingPower &&
             currency == other.currency &&
+            currentSession == other.currentSession &&
             dailyChange == other.dailyChange &&
             dailyPnl == other.dailyPnl &&
             dailyRealizedPnl == other.dailyRealizedPnl &&
@@ -1160,6 +1211,7 @@ private constructor(
             accountId,
             buyingPower,
             currency,
+            currentSession,
             dailyChange,
             dailyPnl,
             dailyRealizedPnl,
@@ -1187,5 +1239,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, dailyChange=$dailyChange, dailyPnl=$dailyPnl, dailyRealizedPnl=$dailyRealizedPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unrealizedPnl=$unrealizedPnl, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, predictionMarket=$predictionMarket, shortMarketValue=$shortMarketValue, sma=$sma, additionalProperties=$additionalProperties}"
+        "AccountBalances{accountId=$accountId, buyingPower=$buyingPower, currency=$currency, currentSession=$currentSession, dailyChange=$dailyChange, dailyPnl=$dailyPnl, dailyRealizedPnl=$dailyRealizedPnl, dailyUnrealizedPnl=$dailyUnrealizedPnl, equity=$equity, longMarketValue=$longMarketValue, marginType=$marginType, openOrderAdjustment=$openOrderAdjustment, settledCash=$settledCash, sod=$sod, tradeCash=$tradeCash, unrealizedPnl=$unrealizedPnl, unsettledCredits=$unsettledCredits, unsettledDebits=$unsettledDebits, withdrawableCash=$withdrawableCash, marginDetails=$marginDetails, multiplier=$multiplier, predictionMarket=$predictionMarket, shortMarketValue=$shortMarketValue, sma=$sma, additionalProperties=$additionalProperties}"
 }
