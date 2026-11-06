@@ -68,6 +68,7 @@ internal class ThreadGetThreadResponseResponseTest {
                         .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .outputMessageSeq(0L)
                         .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .userMessageSeq(0L)
                         .build()
                 )
                 .build()
@@ -122,6 +123,7 @@ internal class ThreadGetThreadResponseResponseTest {
                     .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                     .outputMessageSeq(0L)
                     .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .userMessageSeq(0L)
                     .build()
             )
     }
@@ -178,6 +180,7 @@ internal class ThreadGetThreadResponseResponseTest {
                         .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .outputMessageSeq(0L)
                         .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .userMessageSeq(0L)
                         .build()
                 )
                 .build()

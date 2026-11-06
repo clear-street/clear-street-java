@@ -16,6 +16,7 @@ internal class CreateThreadResponseTest {
                 .responseId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .userMessageSeq(0L)
                 .build()
 
         assertThat(createThreadResponse.responseId())
@@ -24,6 +25,7 @@ internal class CreateThreadResponseTest {
             .isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(createThreadResponse.userMessageId())
             .isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(createThreadResponse.userMessageSeq()).isEqualTo(0L)
     }
 
     @Test
@@ -34,6 +36,7 @@ internal class CreateThreadResponseTest {
                 .responseId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .threadId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .userMessageSeq(0L)
                 .build()
 
         val roundtrippedCreateThreadResponse =

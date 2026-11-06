@@ -22,6 +22,7 @@ private constructor(
     private val responseId: JsonField<String>,
     private val threadId: JsonField<String>,
     private val userMessageId: JsonField<String>,
+    private val userMessageSeq: JsonField<Long>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -34,7 +35,10 @@ private constructor(
         @JsonProperty("user_message_id")
         @ExcludeMissing
         userMessageId: JsonField<String> = JsonMissing.of(),
-    ) : this(responseId, threadId, userMessageId, mutableMapOf())
+        @JsonProperty("user_message_seq")
+        @ExcludeMissing
+        userMessageSeq: JsonField<Long> = JsonMissing.of(),
+    ) : this(responseId, threadId, userMessageId, userMessageSeq, mutableMapOf())
 
     /**
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
@@ -53,6 +57,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun userMessageId(): String = userMessageId.getRequired("user_message_id")
+
+    /**
+     * The `seq` the user message has in the thread's message list. Always present. Use it to place
+     * the sent prompt among the listed messages before a list refresh includes it.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun userMessageSeq(): Long = userMessageSeq.getRequired("user_message_seq")
 
     /**
      * Returns the raw JSON value of [responseId].
@@ -77,6 +90,15 @@ private constructor(
     @ExcludeMissing
     fun _userMessageId(): JsonField<String> = userMessageId
 
+    /**
+     * Returns the raw JSON value of [userMessageSeq].
+     *
+     * Unlike [userMessageSeq], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("user_message_seq")
+    @ExcludeMissing
+    fun _userMessageSeq(): JsonField<Long> = userMessageSeq
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -99,6 +121,7 @@ private constructor(
          * .responseId()
          * .threadId()
          * .userMessageId()
+         * .userMessageSeq()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -110,6 +133,7 @@ private constructor(
         private var responseId: JsonField<String>? = null
         private var threadId: JsonField<String>? = null
         private var userMessageId: JsonField<String>? = null
+        private var userMessageSeq: JsonField<Long>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -117,6 +141,7 @@ private constructor(
             responseId = createMessageResponse.responseId
             threadId = createMessageResponse.threadId
             userMessageId = createMessageResponse.userMessageId
+            userMessageSeq = createMessageResponse.userMessageSeq
             additionalProperties = createMessageResponse.additionalProperties.toMutableMap()
         }
 
@@ -154,6 +179,23 @@ private constructor(
             this.userMessageId = userMessageId
         }
 
+        /**
+         * The `seq` the user message has in the thread's message list. Always present. Use it to
+         * place the sent prompt among the listed messages before a list refresh includes it.
+         */
+        fun userMessageSeq(userMessageSeq: Long) = userMessageSeq(JsonField.of(userMessageSeq))
+
+        /**
+         * Sets [Builder.userMessageSeq] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.userMessageSeq] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun userMessageSeq(userMessageSeq: JsonField<Long>) = apply {
+            this.userMessageSeq = userMessageSeq
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -183,6 +225,7 @@ private constructor(
          * .responseId()
          * .threadId()
          * .userMessageId()
+         * .userMessageSeq()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -192,6 +235,7 @@ private constructor(
                 checkRequired("responseId", responseId),
                 checkRequired("threadId", threadId),
                 checkRequired("userMessageId", userMessageId),
+                checkRequired("userMessageSeq", userMessageSeq),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -214,6 +258,7 @@ private constructor(
         responseId()
         threadId()
         userMessageId()
+        userMessageSeq()
         validated = true
     }
 
@@ -234,7 +279,8 @@ private constructor(
     internal fun validity(): Int =
         (if (responseId.asKnown().isPresent) 1 else 0) +
             (if (threadId.asKnown().isPresent) 1 else 0) +
-            (if (userMessageId.asKnown().isPresent) 1 else 0)
+            (if (userMessageId.asKnown().isPresent) 1 else 0) +
+            (if (userMessageSeq.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -245,15 +291,16 @@ private constructor(
             responseId == other.responseId &&
             threadId == other.threadId &&
             userMessageId == other.userMessageId &&
+            userMessageSeq == other.userMessageSeq &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(responseId, threadId, userMessageId, additionalProperties)
+        Objects.hash(responseId, threadId, userMessageId, userMessageSeq, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CreateMessageResponse{responseId=$responseId, threadId=$threadId, userMessageId=$userMessageId, additionalProperties=$additionalProperties}"
+        "CreateMessageResponse{responseId=$responseId, threadId=$threadId, userMessageId=$userMessageId, userMessageSeq=$userMessageSeq, additionalProperties=$additionalProperties}"
 }

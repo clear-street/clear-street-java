@@ -30,6 +30,7 @@ private constructor(
     private val outputMessageId: JsonField<String>,
     private val outputMessageSeq: JsonField<Long>,
     private val userMessageId: JsonField<String>,
+    private val userMessageSeq: JsonField<Long>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -56,6 +57,9 @@ private constructor(
         @JsonProperty("user_message_id")
         @ExcludeMissing
         userMessageId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("user_message_seq")
+        @ExcludeMissing
+        userMessageSeq: JsonField<Long> = JsonMissing.of(),
     ) : this(
         id,
         status,
@@ -66,6 +70,7 @@ private constructor(
         outputMessageId,
         outputMessageSeq,
         userMessageId,
+        userMessageSeq,
         mutableMapOf(),
     )
 
@@ -153,6 +158,17 @@ private constructor(
     fun userMessageId(): Optional<String> = userMessageId.getOptional("user_message_id")
 
     /**
+     * The `seq` the user message has in the thread's message list. Present exactly when
+     * `user_message_id` is present. Use it to place the sent prompt among the listed messages
+     * before a list refresh includes it. When a null/undefined value is observed, it indicates it
+     * does not apply.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun userMessageSeq(): Optional<Long> = userMessageSeq.getOptional("user_message_seq")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -225,6 +241,15 @@ private constructor(
     @ExcludeMissing
     fun _userMessageId(): JsonField<String> = userMessageId
 
+    /**
+     * Returns the raw JSON value of [userMessageSeq].
+     *
+     * Unlike [userMessageSeq], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("user_message_seq")
+    @ExcludeMissing
+    fun _userMessageSeq(): JsonField<Long> = userMessageSeq
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -264,6 +289,7 @@ private constructor(
         private var outputMessageId: JsonField<String> = JsonMissing.of()
         private var outputMessageSeq: JsonField<Long> = JsonMissing.of()
         private var userMessageId: JsonField<String> = JsonMissing.of()
+        private var userMessageSeq: JsonField<Long> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -277,6 +303,7 @@ private constructor(
             outputMessageId = response.outputMessageId
             outputMessageSeq = response.outputMessageSeq
             userMessageId = response.userMessageId
+            userMessageSeq = response.userMessageSeq
             additionalProperties = response.additionalProperties.toMutableMap()
         }
 
@@ -452,6 +479,37 @@ private constructor(
             this.userMessageId = userMessageId
         }
 
+        /**
+         * The `seq` the user message has in the thread's message list. Present exactly when
+         * `user_message_id` is present. Use it to place the sent prompt among the listed messages
+         * before a list refresh includes it. When a null/undefined value is observed, it indicates
+         * it does not apply.
+         */
+        fun userMessageSeq(userMessageSeq: Long?) =
+            userMessageSeq(JsonField.ofNullable(userMessageSeq))
+
+        /**
+         * Alias for [Builder.userMessageSeq].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun userMessageSeq(userMessageSeq: Long) = userMessageSeq(userMessageSeq as Long?)
+
+        /** Alias for calling [Builder.userMessageSeq] with `userMessageSeq.orElse(null)`. */
+        fun userMessageSeq(userMessageSeq: Optional<Long>) =
+            userMessageSeq(userMessageSeq.getOrNull())
+
+        /**
+         * Sets [Builder.userMessageSeq] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.userMessageSeq] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun userMessageSeq(userMessageSeq: JsonField<Long>) = apply {
+            this.userMessageSeq = userMessageSeq
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -496,6 +554,7 @@ private constructor(
                 outputMessageId,
                 outputMessageSeq,
                 userMessageId,
+                userMessageSeq,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -524,6 +583,7 @@ private constructor(
         outputMessageId()
         outputMessageSeq()
         userMessageId()
+        userMessageSeq()
         validated = true
     }
 
@@ -550,7 +610,8 @@ private constructor(
             (error.asKnown().getOrNull()?.validity() ?: 0) +
             (if (outputMessageId.asKnown().isPresent) 1 else 0) +
             (if (outputMessageSeq.asKnown().isPresent) 1 else 0) +
-            (if (userMessageId.asKnown().isPresent) 1 else 0)
+            (if (userMessageId.asKnown().isPresent) 1 else 0) +
+            (if (userMessageSeq.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -567,6 +628,7 @@ private constructor(
             outputMessageId == other.outputMessageId &&
             outputMessageSeq == other.outputMessageSeq &&
             userMessageId == other.userMessageId &&
+            userMessageSeq == other.userMessageSeq &&
             additionalProperties == other.additionalProperties
     }
 
@@ -581,6 +643,7 @@ private constructor(
             outputMessageId,
             outputMessageSeq,
             userMessageId,
+            userMessageSeq,
             additionalProperties,
         )
     }
@@ -588,5 +651,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Response{id=$id, status=$status, threadId=$threadId, content=$content, continuedInResponseId=$continuedInResponseId, error=$error, outputMessageId=$outputMessageId, outputMessageSeq=$outputMessageSeq, userMessageId=$userMessageId, additionalProperties=$additionalProperties}"
+        "Response{id=$id, status=$status, threadId=$threadId, content=$content, continuedInResponseId=$continuedInResponseId, error=$error, outputMessageId=$outputMessageId, outputMessageSeq=$outputMessageSeq, userMessageId=$userMessageId, userMessageSeq=$userMessageSeq, additionalProperties=$additionalProperties}"
 }

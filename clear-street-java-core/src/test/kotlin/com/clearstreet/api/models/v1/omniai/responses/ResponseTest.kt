@@ -38,6 +38,7 @@ internal class ResponseTest {
                 .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .outputMessageSeq(0L)
                 .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .userMessageSeq(0L)
                 .build()
 
         assertThat(response.id()).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
@@ -67,6 +68,7 @@ internal class ResponseTest {
         assertThat(response.outputMessageId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
         assertThat(response.outputMessageSeq()).contains(0L)
         assertThat(response.userMessageId()).contains("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(response.userMessageSeq()).contains(0L)
     }
 
     @Test
@@ -98,6 +100,7 @@ internal class ResponseTest {
                 .outputMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                 .outputMessageSeq(0L)
                 .userMessageId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .userMessageSeq(0L)
                 .build()
 
         val roundtrippedResponse =
