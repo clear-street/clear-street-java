@@ -33,8 +33,8 @@ private constructor(
 
     /**
      * The maximum notional value available to the account. On update, a value must be 0 or greater,
-     * and `null` clears the limit. When a null/undefined value is observed, it indicates that there
-     * is no available data.
+     * `null` clears the limit, and omitting the field leaves the limit unchanged. When a
+     * null/undefined value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -82,8 +82,8 @@ private constructor(
 
         /**
          * The maximum notional value available to the account. On update, a value must be 0 or
-         * greater, and `null` clears the limit. When a null/undefined value is observed, it
-         * indicates that there is no available data.
+         * greater, `null` clears the limit, and omitting the field leaves the limit unchanged. When
+         * a null/undefined value is observed, it indicates that there is no available data.
          */
         fun maxNotional(maxNotional: String?) = maxNotional(JsonField.ofNullable(maxNotional))
 
