@@ -10,7 +10,9 @@ import com.clearstreet.api.core.checkKnown
 import com.clearstreet.api.core.checkRequired
 import com.clearstreet.api.core.toImmutable
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
-import com.clearstreet.api.models.v1.screener.ScreenerFilter
+import com.clearstreet.api.models.v1.screener.FieldRef
+import com.clearstreet.api.models.v1.screener.SearchFilter
+import com.clearstreet.api.models.v1.screener.SortSpec
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -20,16 +22,20 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Action to open a stock screener with filters. */
+/**
+ * Action to open a stock screener with filters.
+ *
+ * `filters`, `sorts` and `columns` use the same shapes as the `POST /saved-screeners` request body,
+ * so a client can save the screener the user is looking at by forwarding them unchanged.
+ */
 class OpenScreenerAction
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val filters: JsonField<List<ScreenerFilter>>,
-    private val columns: JsonField<List<String>>,
+    private val filters: JsonField<List<SearchFilter>>,
+    private val columns: JsonField<List<FieldRef>>,
     private val itemId: JsonField<String>,
     private val pageSize: JsonField<Int>,
-    private val sortBy: JsonField<String>,
-    private val sortDirection: JsonField<String>,
+    private val sorts: JsonField<List<SortSpec>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -37,34 +43,31 @@ private constructor(
     private constructor(
         @JsonProperty("filters")
         @ExcludeMissing
-        filters: JsonField<List<ScreenerFilter>> = JsonMissing.of(),
+        filters: JsonField<List<SearchFilter>> = JsonMissing.of(),
         @JsonProperty("columns")
         @ExcludeMissing
-        columns: JsonField<List<String>> = JsonMissing.of(),
+        columns: JsonField<List<FieldRef>> = JsonMissing.of(),
         @JsonProperty("item_id") @ExcludeMissing itemId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("page_size") @ExcludeMissing pageSize: JsonField<Int> = JsonMissing.of(),
-        @JsonProperty("sort_by") @ExcludeMissing sortBy: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("sort_direction")
-        @ExcludeMissing
-        sortDirection: JsonField<String> = JsonMissing.of(),
-    ) : this(filters, columns, itemId, pageSize, sortBy, sortDirection, mutableMapOf())
+        @JsonProperty("sorts") @ExcludeMissing sorts: JsonField<List<SortSpec>> = JsonMissing.of(),
+    ) : this(filters, columns, itemId, pageSize, sorts, mutableMapOf())
 
     /**
-     * Filter criteria for the screener
+     * Filter criteria for the screener.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun filters(): List<ScreenerFilter> = filters.getRequired("filters")
+    fun filters(): List<SearchFilter> = filters.getRequired("filters")
 
     /**
-     * Optional field/column selection for screener results. When a null/undefined value is
-     * observed, it indicates it does not apply.
+     * Optional field/column selection for screener results. Absent means the default column set.
+     * When a null/undefined value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun columns(): Optional<List<String>> = columns.getOptional("columns")
+    fun columns(): Optional<List<FieldRef>> = columns.getOptional("columns")
 
     /**
      * Interaction-tracking identity. Absent on messages created before tracking. When a
@@ -84,38 +87,27 @@ private constructor(
     fun pageSize(): Optional<Int> = pageSize.getOptional("page_size")
 
     /**
-     * Optional sort field for screener rows. When a null/undefined value is observed, it indicates
-     * it does not apply.
+     * Optional sort specification. Absent means the screener's default order. When a null/undefined
+     * value is observed, it indicates it does not apply.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun sortBy(): Optional<String> = sortBy.getOptional("sort_by")
-
-    /**
-     * Optional sort direction (`ASC` or `DESC`). When a null/undefined value is observed, it
-     * indicates it does not apply.
-     *
-     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun sortDirection(): Optional<String> = sortDirection.getOptional("sort_direction")
+    fun sorts(): Optional<List<SortSpec>> = sorts.getOptional("sorts")
 
     /**
      * Returns the raw JSON value of [filters].
      *
      * Unlike [filters], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("filters")
-    @ExcludeMissing
-    fun _filters(): JsonField<List<ScreenerFilter>> = filters
+    @JsonProperty("filters") @ExcludeMissing fun _filters(): JsonField<List<SearchFilter>> = filters
 
     /**
      * Returns the raw JSON value of [columns].
      *
      * Unlike [columns], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("columns") @ExcludeMissing fun _columns(): JsonField<List<String>> = columns
+    @JsonProperty("columns") @ExcludeMissing fun _columns(): JsonField<List<FieldRef>> = columns
 
     /**
      * Returns the raw JSON value of [itemId].
@@ -132,20 +124,11 @@ private constructor(
     @JsonProperty("page_size") @ExcludeMissing fun _pageSize(): JsonField<Int> = pageSize
 
     /**
-     * Returns the raw JSON value of [sortBy].
+     * Returns the raw JSON value of [sorts].
      *
-     * Unlike [sortBy], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [sorts], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("sort_by") @ExcludeMissing fun _sortBy(): JsonField<String> = sortBy
-
-    /**
-     * Returns the raw JSON value of [sortDirection].
-     *
-     * Unlike [sortDirection], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("sort_direction")
-    @ExcludeMissing
-    fun _sortDirection(): JsonField<String> = sortDirection
+    @JsonProperty("sorts") @ExcludeMissing fun _sorts(): JsonField<List<SortSpec>> = sorts
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -175,12 +158,11 @@ private constructor(
     /** A builder for [OpenScreenerAction]. */
     class Builder internal constructor() {
 
-        private var filters: JsonField<MutableList<ScreenerFilter>>? = null
-        private var columns: JsonField<MutableList<String>>? = null
+        private var filters: JsonField<MutableList<SearchFilter>>? = null
+        private var columns: JsonField<MutableList<FieldRef>>? = null
         private var itemId: JsonField<String> = JsonMissing.of()
         private var pageSize: JsonField<Int> = JsonMissing.of()
-        private var sortBy: JsonField<String> = JsonMissing.of()
-        private var sortDirection: JsonField<String> = JsonMissing.of()
+        private var sorts: JsonField<MutableList<SortSpec>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -189,31 +171,30 @@ private constructor(
             columns = openScreenerAction.columns.map { it.toMutableList() }
             itemId = openScreenerAction.itemId
             pageSize = openScreenerAction.pageSize
-            sortBy = openScreenerAction.sortBy
-            sortDirection = openScreenerAction.sortDirection
+            sorts = openScreenerAction.sorts.map { it.toMutableList() }
             additionalProperties = openScreenerAction.additionalProperties.toMutableMap()
         }
 
-        /** Filter criteria for the screener */
-        fun filters(filters: List<ScreenerFilter>) = filters(JsonField.of(filters))
+        /** Filter criteria for the screener. */
+        fun filters(filters: List<SearchFilter>) = filters(JsonField.of(filters))
 
         /**
          * Sets [Builder.filters] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.filters] with a well-typed `List<ScreenerFilter>` value
+         * You should usually call [Builder.filters] with a well-typed `List<SearchFilter>` value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun filters(filters: JsonField<List<ScreenerFilter>>) = apply {
+        fun filters(filters: JsonField<List<SearchFilter>>) = apply {
             this.filters = filters.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [ScreenerFilter] to [filters].
+         * Adds a single [SearchFilter] to [filters].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addFilter(filter: ScreenerFilter) = apply {
+        fun addFilter(filter: SearchFilter) = apply {
             filters =
                 (filters ?: JsonField.of(mutableListOf())).also {
                     checkKnown("filters", it).add(filter)
@@ -221,31 +202,31 @@ private constructor(
         }
 
         /**
-         * Optional field/column selection for screener results. When a null/undefined value is
-         * observed, it indicates it does not apply.
+         * Optional field/column selection for screener results. Absent means the default column
+         * set. When a null/undefined value is observed, it indicates it does not apply.
          */
-        fun columns(columns: List<String>?) = columns(JsonField.ofNullable(columns))
+        fun columns(columns: List<FieldRef>?) = columns(JsonField.ofNullable(columns))
 
         /** Alias for calling [Builder.columns] with `columns.orElse(null)`. */
-        fun columns(columns: Optional<List<String>>) = columns(columns.getOrNull())
+        fun columns(columns: Optional<List<FieldRef>>) = columns(columns.getOrNull())
 
         /**
          * Sets [Builder.columns] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.columns] with a well-typed `List<String>` value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.columns] with a well-typed `List<FieldRef>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun columns(columns: JsonField<List<String>>) = apply {
+        fun columns(columns: JsonField<List<FieldRef>>) = apply {
             this.columns = columns.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [String] to [columns].
+         * Adds a single [FieldRef] to [columns].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addColumn(column: String) = apply {
+        fun addColumn(column: FieldRef) = apply {
             columns =
                 (columns ?: JsonField.of(mutableListOf())).also {
                     checkKnown("columns", it).add(column)
@@ -294,42 +275,33 @@ private constructor(
         fun pageSize(pageSize: JsonField<Int>) = apply { this.pageSize = pageSize }
 
         /**
-         * Optional sort field for screener rows. When a null/undefined value is observed, it
-         * indicates it does not apply.
+         * Optional sort specification. Absent means the screener's default order. When a
+         * null/undefined value is observed, it indicates it does not apply.
          */
-        fun sortBy(sortBy: String?) = sortBy(JsonField.ofNullable(sortBy))
+        fun sorts(sorts: List<SortSpec>?) = sorts(JsonField.ofNullable(sorts))
 
-        /** Alias for calling [Builder.sortBy] with `sortBy.orElse(null)`. */
-        fun sortBy(sortBy: Optional<String>) = sortBy(sortBy.getOrNull())
+        /** Alias for calling [Builder.sorts] with `sorts.orElse(null)`. */
+        fun sorts(sorts: Optional<List<SortSpec>>) = sorts(sorts.getOrNull())
 
         /**
-         * Sets [Builder.sortBy] to an arbitrary JSON value.
+         * Sets [Builder.sorts] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.sortBy] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun sortBy(sortBy: JsonField<String>) = apply { this.sortBy = sortBy }
-
-        /**
-         * Optional sort direction (`ASC` or `DESC`). When a null/undefined value is observed, it
-         * indicates it does not apply.
-         */
-        fun sortDirection(sortDirection: String?) =
-            sortDirection(JsonField.ofNullable(sortDirection))
-
-        /** Alias for calling [Builder.sortDirection] with `sortDirection.orElse(null)`. */
-        fun sortDirection(sortDirection: Optional<String>) =
-            sortDirection(sortDirection.getOrNull())
-
-        /**
-         * Sets [Builder.sortDirection] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.sortDirection] with a well-typed [String] value instead.
+         * You should usually call [Builder.sorts] with a well-typed `List<SortSpec>` value instead.
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun sortDirection(sortDirection: JsonField<String>) = apply {
-            this.sortDirection = sortDirection
+        fun sorts(sorts: JsonField<List<SortSpec>>) = apply {
+            this.sorts = sorts.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [SortSpec] to [sorts].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addSort(sort: SortSpec) = apply {
+            sorts =
+                (sorts ?: JsonField.of(mutableListOf())).also { checkKnown("sorts", it).add(sort) }
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -369,8 +341,7 @@ private constructor(
                 (columns ?: JsonMissing.of()).map { it.toImmutable() },
                 itemId,
                 pageSize,
-                sortBy,
-                sortDirection,
+                (sorts ?: JsonMissing.of()).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
     }
@@ -391,11 +362,10 @@ private constructor(
         }
 
         filters().forEach { it.validate() }
-        columns()
+        columns().ifPresent { it.forEach { it.validate() } }
         itemId()
         pageSize()
-        sortBy()
-        sortDirection()
+        sorts().ifPresent { it.forEach { it.validate() } }
         validated = true
     }
 
@@ -415,11 +385,10 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (filters.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
-            (columns.asKnown().getOrNull()?.size ?: 0) +
+            (columns.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (itemId.asKnown().isPresent) 1 else 0) +
             (if (pageSize.asKnown().isPresent) 1 else 0) +
-            (if (sortBy.asKnown().isPresent) 1 else 0) +
-            (if (sortDirection.asKnown().isPresent) 1 else 0)
+            (sorts.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -431,25 +400,16 @@ private constructor(
             columns == other.columns &&
             itemId == other.itemId &&
             pageSize == other.pageSize &&
-            sortBy == other.sortBy &&
-            sortDirection == other.sortDirection &&
+            sorts == other.sorts &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(
-            filters,
-            columns,
-            itemId,
-            pageSize,
-            sortBy,
-            sortDirection,
-            additionalProperties,
-        )
+        Objects.hash(filters, columns, itemId, pageSize, sorts, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OpenScreenerAction{filters=$filters, columns=$columns, itemId=$itemId, pageSize=$pageSize, sortBy=$sortBy, sortDirection=$sortDirection, additionalProperties=$additionalProperties}"
+        "OpenScreenerAction{filters=$filters, columns=$columns, itemId=$itemId, pageSize=$pageSize, sorts=$sorts, additionalProperties=$additionalProperties}"
 }

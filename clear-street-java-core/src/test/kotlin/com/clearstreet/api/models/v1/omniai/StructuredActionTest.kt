@@ -5,13 +5,26 @@ package com.clearstreet.api.models.v1.omniai
 import com.clearstreet.api.core.JsonValue
 import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
+import com.clearstreet.api.models.v1.SortDirection
 import com.clearstreet.api.models.v1.orders.OrderStrategy
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestPositionEffect
 import com.clearstreet.api.models.v1.orders.RequestTimeInForce
 import com.clearstreet.api.models.v1.orders.Side
 import com.clearstreet.api.models.v1.orders.TrailingOffsetType
-import com.clearstreet.api.models.v1.screener.ScreenerFilter
+import com.clearstreet.api.models.v1.screener.FieldLookback
+import com.clearstreet.api.models.v1.screener.FieldPeriod
+import com.clearstreet.api.models.v1.screener.FieldRef
+import com.clearstreet.api.models.v1.screener.FieldType
+import com.clearstreet.api.models.v1.screener.FilterOpSpec
+import com.clearstreet.api.models.v1.screener.FilterOperator
+import com.clearstreet.api.models.v1.screener.FilterValue
+import com.clearstreet.api.models.v1.screener.Modifier
+import com.clearstreet.api.models.v1.screener.ModifierOp
+import com.clearstreet.api.models.v1.screener.OperatorArg
+import com.clearstreet.api.models.v1.screener.SearchFilter
+import com.clearstreet.api.models.v1.screener.SortSpec
+import com.clearstreet.api.models.v1.screener.Variable
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -171,24 +184,102 @@ internal class StructuredActionTest {
                 .openScreener(
                     OpenScreenerAction.builder()
                         .addFilter(
-                            ScreenerFilter.builder()
-                                .field("sector")
-                                .operator("eq")
-                                .value(JsonValue.from("Technology"))
+                            SearchFilter.builder()
+                                .left(
+                                    FieldRef.builder()
+                                        .name("sector")
+                                        .lookback(FieldLookback.ONE_DAY)
+                                        .period(FieldPeriod.QUARTER)
+                                        .valueType(FieldType.DECIMAL)
+                                        .build()
+                                )
+                                .op(
+                                    FilterOpSpec.builder()
+                                        .name(FilterOperator.EQUAL)
+                                        .addArg(OperatorArg.LEFT_INCLUSIVE)
+                                        .build()
+                                )
+                                .addRight(
+                                    FilterValue.builder()
+                                        .value("Technology")
+                                        .variable(
+                                            Variable.builder()
+                                                .name("today")
+                                                .lookback(FieldLookback.ONE_DAY)
+                                                .modifier(
+                                                    Modifier.builder()
+                                                        .addArg(30.0)
+                                                        .addArg("DAY")
+                                                        .name(ModifierOp.SUBTRACT)
+                                                        .build()
+                                                )
+                                                .period(FieldPeriod.QUARTER)
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .build()
                         )
                         .addFilter(
-                            ScreenerFilter.builder()
-                                .field("market_cap")
-                                .operator("gte")
-                                .value(JsonValue.from(10000000000))
+                            SearchFilter.builder()
+                                .left(
+                                    FieldRef.builder()
+                                        .name("market_cap")
+                                        .lookback(FieldLookback.ONE_DAY)
+                                        .period(FieldPeriod.QUARTER)
+                                        .valueType(FieldType.DECIMAL)
+                                        .build()
+                                )
+                                .op(
+                                    FilterOpSpec.builder()
+                                        .name(FilterOperator.GREATER_OR_EQUAL)
+                                        .addArg(OperatorArg.LEFT_INCLUSIVE)
+                                        .build()
+                                )
+                                .addRight(
+                                    FilterValue.builder()
+                                        .value("10000000000")
+                                        .variable(
+                                            Variable.builder()
+                                                .name("today")
+                                                .lookback(FieldLookback.ONE_DAY)
+                                                .modifier(
+                                                    Modifier.builder()
+                                                        .addArg(30.0)
+                                                        .addArg("DAY")
+                                                        .name(ModifierOp.SUBTRACT)
+                                                        .build()
+                                                )
+                                                .period(FieldPeriod.QUARTER)
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .build()
                         )
-                        .addColumn("string")
+                        .addColumn(
+                            FieldRef.builder()
+                                .name("market_cap")
+                                .lookback(FieldLookback.ONE_DAY)
+                                .period(FieldPeriod.QUARTER)
+                                .valueType(FieldType.DECIMAL)
+                                .build()
+                        )
                         .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                         .pageSize(0)
-                        .sortBy("sort_by")
-                        .sortDirection("sort_direction")
+                        .addSort(
+                            SortSpec.builder()
+                                .field(
+                                    FieldRef.builder()
+                                        .name("market_cap")
+                                        .lookback(FieldLookback.ONE_DAY)
+                                        .period(FieldPeriod.QUARTER)
+                                        .valueType(FieldType.DECIMAL)
+                                        .build()
+                                )
+                                .direction(SortDirection.DESC)
+                                .build()
+                        )
                         .build()
                 )
                 .build()
@@ -210,24 +301,102 @@ internal class StructuredActionTest {
                     .openScreener(
                         OpenScreenerAction.builder()
                             .addFilter(
-                                ScreenerFilter.builder()
-                                    .field("sector")
-                                    .operator("eq")
-                                    .value(JsonValue.from("Technology"))
+                                SearchFilter.builder()
+                                    .left(
+                                        FieldRef.builder()
+                                            .name("sector")
+                                            .lookback(FieldLookback.ONE_DAY)
+                                            .period(FieldPeriod.QUARTER)
+                                            .valueType(FieldType.DECIMAL)
+                                            .build()
+                                    )
+                                    .op(
+                                        FilterOpSpec.builder()
+                                            .name(FilterOperator.EQUAL)
+                                            .addArg(OperatorArg.LEFT_INCLUSIVE)
+                                            .build()
+                                    )
+                                    .addRight(
+                                        FilterValue.builder()
+                                            .value("Technology")
+                                            .variable(
+                                                Variable.builder()
+                                                    .name("today")
+                                                    .lookback(FieldLookback.ONE_DAY)
+                                                    .modifier(
+                                                        Modifier.builder()
+                                                            .addArg(30.0)
+                                                            .addArg("DAY")
+                                                            .name(ModifierOp.SUBTRACT)
+                                                            .build()
+                                                    )
+                                                    .period(FieldPeriod.QUARTER)
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .build()
                             )
                             .addFilter(
-                                ScreenerFilter.builder()
-                                    .field("market_cap")
-                                    .operator("gte")
-                                    .value(JsonValue.from(10000000000))
+                                SearchFilter.builder()
+                                    .left(
+                                        FieldRef.builder()
+                                            .name("market_cap")
+                                            .lookback(FieldLookback.ONE_DAY)
+                                            .period(FieldPeriod.QUARTER)
+                                            .valueType(FieldType.DECIMAL)
+                                            .build()
+                                    )
+                                    .op(
+                                        FilterOpSpec.builder()
+                                            .name(FilterOperator.GREATER_OR_EQUAL)
+                                            .addArg(OperatorArg.LEFT_INCLUSIVE)
+                                            .build()
+                                    )
+                                    .addRight(
+                                        FilterValue.builder()
+                                            .value("10000000000")
+                                            .variable(
+                                                Variable.builder()
+                                                    .name("today")
+                                                    .lookback(FieldLookback.ONE_DAY)
+                                                    .modifier(
+                                                        Modifier.builder()
+                                                            .addArg(30.0)
+                                                            .addArg("DAY")
+                                                            .name(ModifierOp.SUBTRACT)
+                                                            .build()
+                                                    )
+                                                    .period(FieldPeriod.QUARTER)
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .build()
                             )
-                            .addColumn("string")
+                            .addColumn(
+                                FieldRef.builder()
+                                    .name("market_cap")
+                                    .lookback(FieldLookback.ONE_DAY)
+                                    .period(FieldPeriod.QUARTER)
+                                    .valueType(FieldType.DECIMAL)
+                                    .build()
+                            )
                             .itemId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
                             .pageSize(0)
-                            .sortBy("sort_by")
-                            .sortDirection("sort_direction")
+                            .addSort(
+                                SortSpec.builder()
+                                    .field(
+                                        FieldRef.builder()
+                                            .name("market_cap")
+                                            .lookback(FieldLookback.ONE_DAY)
+                                            .period(FieldPeriod.QUARTER)
+                                            .valueType(FieldType.DECIMAL)
+                                            .build()
+                                    )
+                                    .direction(SortDirection.DESC)
+                                    .build()
+                            )
                             .build()
                     )
                     .build()
