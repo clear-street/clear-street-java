@@ -26,8 +26,9 @@ import kotlin.jvm.optionals.getOrNull
  * - Unresolvable `instrument_id` → all other fields `None` (including `symbol`).
  * - Resolvable `instrument_id` with no realtime cache entry → `symbol` populated,
  *   OHLV/`trade_date`/`open_interest` `None`.
- * - `trade_date` reflects the session the OHLV represents (today during trading hours, the last
- *   trading date during weekends/holidays).
+ * - `trade_date` is the session of the newest of the open, high and low values (today during
+ *   trading hours, the last trading date during weekends/holidays, the prior session before the
+ *   session's first trade).
  * - `open_interest` is populated for options only; `None` for equities and indices.
  * - `not_applicable` is a non-optional `bool`, always serialized: `true` for instrument types with
  *   no daily summary by definition (e.g. an index, whose OHLV/`trade_date` are `None`), `false`
@@ -117,8 +118,9 @@ private constructor(
     fun notApplicable(): Optional<Boolean> = notApplicable.getOptional("not_applicable")
 
     /**
-     * Opening price for the session. When a null/undefined value is observed, it indicates that
-     * there is no available data.
+     * Opening price for the session. For US equities, this is the listing exchange's official
+     * opening print. It is absent after the session's first trade until that print arrives. When a
+     * null/undefined value is observed, it indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -351,8 +353,9 @@ private constructor(
         }
 
         /**
-         * Opening price for the session. When a null/undefined value is observed, it indicates that
-         * there is no available data.
+         * Opening price for the session. For US equities, this is the listing exchange's official
+         * opening print. It is absent after the session's first trade until that print arrives.
+         * When a null/undefined value is observed, it indicates that there is no available data.
          */
         fun open(open: String?) = open(JsonField.ofNullable(open))
 

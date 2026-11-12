@@ -137,9 +137,9 @@ private constructor(
     fun low(): Optional<String> = low.getOptional("low")
 
     /**
-     * Session date the open/high/low values represent, US/Eastern. May trail the current session
-     * until the upstream feed rolls. When a null/undefined value is observed, it indicates that
-     * there is no available data.
+     * Session date of the newest of the open, high and low values, US/Eastern. Before the session's
+     * first trade, it is the prior session's date. When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -147,9 +147,11 @@ private constructor(
     fun ohlvDate(): Optional<LocalDate> = ohlvDate.getOptional("ohlv_date")
 
     /**
-     * Session opening price, from the day's OHLC bar. Absent when `ohlv_applicable` is `false`, or
-     * when the bar has not loaded yet. When a null/undefined value is observed, it indicates that
-     * there is no available data.
+     * Session opening price. For US equities, this is the listing exchange's official opening
+     * print. It is absent after the session's first trade until that print arrives. Before the
+     * session's first trade, it is the prior session's open. Absent when `ohlv_applicable` is
+     * `false`, or when the bar has not loaded yet. When a null/undefined value is observed, it
+     * indicates that there is no available data.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -443,9 +445,9 @@ private constructor(
         fun low(low: JsonField<String>) = apply { this.low = low }
 
         /**
-         * Session date the open/high/low values represent, US/Eastern. May trail the current
-         * session until the upstream feed rolls. When a null/undefined value is observed, it
-         * indicates that there is no available data.
+         * Session date of the newest of the open, high and low values, US/Eastern. Before the
+         * session's first trade, it is the prior session's date. When a null/undefined value is
+         * observed, it indicates that there is no available data.
          */
         fun ohlvDate(ohlvDate: LocalDate?) = ohlvDate(JsonField.ofNullable(ohlvDate))
 
@@ -462,9 +464,11 @@ private constructor(
         fun ohlvDate(ohlvDate: JsonField<LocalDate>) = apply { this.ohlvDate = ohlvDate }
 
         /**
-         * Session opening price, from the day's OHLC bar. Absent when `ohlv_applicable` is `false`,
-         * or when the bar has not loaded yet. When a null/undefined value is observed, it indicates
-         * that there is no available data.
+         * Session opening price. For US equities, this is the listing exchange's official opening
+         * print. It is absent after the session's first trade until that print arrives. Before the
+         * session's first trade, it is the prior session's open. Absent when `ohlv_applicable` is
+         * `false`, or when the bar has not loaded yet. When a null/undefined value is observed, it
+         * indicates that there is no available data.
          */
         fun open(open: String?) = open(JsonField.ofNullable(open))
 
