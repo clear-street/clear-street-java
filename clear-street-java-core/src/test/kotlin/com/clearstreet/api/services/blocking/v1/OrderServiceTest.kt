@@ -126,6 +126,7 @@ internal class OrderServiceTest {
                     .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .addInstrumentId("x")
                     .instrumentType(OrderGetOrdersParams.InstrumentType.COMMON_STOCK)
+                    .isMultiLeg(true)
                     .addOrderId("string")
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")

@@ -8,8 +8,10 @@ import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
 import com.clearstreet.api.models.v1.SecurityType
 import com.clearstreet.api.models.v1.orders.Order
+import com.clearstreet.api.models.v1.orders.OrderLeg
 import com.clearstreet.api.models.v1.orders.OrderStatus
 import com.clearstreet.api.models.v1.orders.OrderType
+import com.clearstreet.api.models.v1.orders.RequestPositionEffect
 import com.clearstreet.api.models.v1.orders.Side
 import com.clearstreet.api.models.v1.orders.TimeInForce
 import com.clearstreet.api.models.v1.orders.TrailingOffsetType
@@ -66,6 +68,19 @@ internal class PositionClosePositionResponseTest {
                         .extendedHours(false)
                         .instrumentId("d4d5d6d7-e4e5-f4f5-a4a5-a6a7a8a9aaab")
                         .instrumentType(SecurityType.COMMON_STOCK)
+                        .addLeg(
+                            OrderLeg.builder()
+                                .ratio("ratio")
+                                .side(Side.BUY)
+                                .averageFillPrice("average_fill_price")
+                                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                                .instrumentType(SecurityType.COMMON_STOCK)
+                                .positionEffect(RequestPositionEffect.OPEN)
+                                .symbol("symbol")
+                                .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                                .underlyingInstrumentType(SecurityType.COMMON_STOCK)
+                                .build()
+                        )
                         .limitOffset("0.50")
                         .limitPrice("48.00")
                         .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
@@ -136,6 +151,19 @@ internal class PositionClosePositionResponseTest {
                     .extendedHours(false)
                     .instrumentId("d4d5d6d7-e4e5-f4f5-a4a5-a6a7a8a9aaab")
                     .instrumentType(SecurityType.COMMON_STOCK)
+                    .addLeg(
+                        OrderLeg.builder()
+                            .ratio("ratio")
+                            .side(Side.BUY)
+                            .averageFillPrice("average_fill_price")
+                            .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                            .instrumentType(SecurityType.COMMON_STOCK)
+                            .positionEffect(RequestPositionEffect.OPEN)
+                            .symbol("symbol")
+                            .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                            .underlyingInstrumentType(SecurityType.COMMON_STOCK)
+                            .build()
+                    )
                     .limitOffset("0.50")
                     .limitPrice("48.00")
                     .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))
@@ -208,6 +236,19 @@ internal class PositionClosePositionResponseTest {
                         .extendedHours(false)
                         .instrumentId("d4d5d6d7-e4e5-f4f5-a4a5-a6a7a8a9aaab")
                         .instrumentType(SecurityType.COMMON_STOCK)
+                        .addLeg(
+                            OrderLeg.builder()
+                                .ratio("ratio")
+                                .side(Side.BUY)
+                                .averageFillPrice("average_fill_price")
+                                .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                                .instrumentType(SecurityType.COMMON_STOCK)
+                                .positionEffect(RequestPositionEffect.OPEN)
+                                .symbol("symbol")
+                                .underlyingInstrumentId("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8")
+                                .underlyingInstrumentType(SecurityType.COMMON_STOCK)
+                                .build()
+                        )
                         .limitOffset("0.50")
                         .limitPrice("48.00")
                         .releasesAt(OffsetDateTime.parse("2025-10-31T14:30:00.000000000Z"))

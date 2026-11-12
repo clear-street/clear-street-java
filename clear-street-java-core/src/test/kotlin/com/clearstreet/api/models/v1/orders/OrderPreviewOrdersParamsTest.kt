@@ -146,46 +146,54 @@ internal class OrderPreviewOrdersParamsTest {
 
         assertThat(body)
             .containsExactly(
-                NewOrderRequest.builder()
-                    .orderType(RequestOrderType.LIMIT)
-                    .quantity("100")
-                    .side(Side.BUY)
-                    .timeInForce(RequestTimeInForce.DAY)
-                    .id("preview-1")
-                    .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
-                    .extendedHours(true)
-                    .instrumentId("x")
-                    .limitOffset("0.50")
-                    .limitPrice("100.00")
-                    .positionIntent(RequestPositionEffect.OPEN)
-                    .stopPrice("52.00")
-                    .strategy(
-                        OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
-                    )
-                    .symbol("AAPL")
-                    .trailingOffset("2.00")
-                    .trailingOffsetType(TrailingOffsetType.PRICE)
-                    .build(),
-                NewOrderRequest.builder()
-                    .orderType(RequestOrderType.LIMIT)
-                    .quantity("10")
-                    .side(Side.BUY)
-                    .timeInForce(RequestTimeInForce.DAY)
-                    .id("preview-2")
-                    .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
-                    .extendedHours(true)
-                    .instrumentId("x")
-                    .limitOffset("0.50")
-                    .limitPrice("250.00")
-                    .positionIntent(RequestPositionEffect.OPEN)
-                    .stopPrice("52.00")
-                    .strategy(
-                        OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
-                    )
-                    .symbol("TSLA")
-                    .trailingOffset("2.00")
-                    .trailingOffsetType(TrailingOffsetType.PRICE)
-                    .build(),
+                OrderPreviewOrdersParams.Preview.ofNewOrderRequest(
+                    NewOrderRequest.builder()
+                        .orderType(RequestOrderType.LIMIT)
+                        .quantity("100")
+                        .side(Side.BUY)
+                        .timeInForce(RequestTimeInForce.DAY)
+                        .id("preview-1")
+                        .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
+                        .extendedHours(true)
+                        .instrumentId("x")
+                        .limitOffset("0.50")
+                        .limitPrice("100.00")
+                        .positionIntent(RequestPositionEffect.OPEN)
+                        .stopPrice("52.00")
+                        .strategy(
+                            OrderStrategy.Type.builder()
+                                .type(OrderStrategy.Type.InnerType.SOR)
+                                .build()
+                        )
+                        .symbol("AAPL")
+                        .trailingOffset("2.00")
+                        .trailingOffsetType(TrailingOffsetType.PRICE)
+                        .build()
+                ),
+                OrderPreviewOrdersParams.Preview.ofNewOrderRequest(
+                    NewOrderRequest.builder()
+                        .orderType(RequestOrderType.LIMIT)
+                        .quantity("10")
+                        .side(Side.BUY)
+                        .timeInForce(RequestTimeInForce.DAY)
+                        .id("preview-2")
+                        .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
+                        .extendedHours(true)
+                        .instrumentId("x")
+                        .limitOffset("0.50")
+                        .limitPrice("250.00")
+                        .positionIntent(RequestPositionEffect.OPEN)
+                        .stopPrice("52.00")
+                        .strategy(
+                            OrderStrategy.Type.builder()
+                                .type(OrderStrategy.Type.InnerType.SOR)
+                                .build()
+                        )
+                        .symbol("TSLA")
+                        .trailingOffset("2.00")
+                        .trailingOffsetType(TrailingOffsetType.PRICE)
+                        .build()
+                ),
             )
     }
 
@@ -216,18 +224,22 @@ internal class OrderPreviewOrdersParamsTest {
 
         assertThat(body)
             .containsExactly(
-                NewOrderRequest.builder()
-                    .orderType(RequestOrderType.LIMIT)
-                    .quantity("100")
-                    .side(Side.BUY)
-                    .timeInForce(RequestTimeInForce.DAY)
-                    .build(),
-                NewOrderRequest.builder()
-                    .orderType(RequestOrderType.LIMIT)
-                    .quantity("10")
-                    .side(Side.BUY)
-                    .timeInForce(RequestTimeInForce.DAY)
-                    .build(),
+                OrderPreviewOrdersParams.Preview.ofNewOrderRequest(
+                    NewOrderRequest.builder()
+                        .orderType(RequestOrderType.LIMIT)
+                        .quantity("100")
+                        .side(Side.BUY)
+                        .timeInForce(RequestTimeInForce.DAY)
+                        .build()
+                ),
+                OrderPreviewOrdersParams.Preview.ofNewOrderRequest(
+                    NewOrderRequest.builder()
+                        .orderType(RequestOrderType.LIMIT)
+                        .quantity("10")
+                        .side(Side.BUY)
+                        .timeInForce(RequestTimeInForce.DAY)
+                        .build()
+                ),
             )
     }
 }

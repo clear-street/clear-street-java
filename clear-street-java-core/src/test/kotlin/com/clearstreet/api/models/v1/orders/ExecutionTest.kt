@@ -6,6 +6,7 @@ import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.v1.SecurityType
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.time.OffsetDateTime
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -21,6 +22,19 @@ internal class ExecutionTest {
                 .side(Side.BUY)
                 .transactionTime(OffsetDateTime.parse("2026-03-24T19:58:43.798000Z"))
                 .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
+                .addLeg(
+                    ExecutionLeg.builder()
+                        .price("price")
+                        .ratio("ratio")
+                        .side(Side.BUY)
+                        .symbol("AAPL  250620C00150000")
+                        .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .instrumentType(SecurityType.COMMON_STOCK)
+                        .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .underlyingInstrumentType(SecurityType.COMMON_STOCK)
+                        .venue("XNAS")
+                        .build()
+                )
                 .price("150.25")
                 .symbol("AAPL")
                 .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
@@ -35,6 +49,20 @@ internal class ExecutionTest {
         assertThat(execution.transactionTime())
             .isEqualTo(OffsetDateTime.parse("2026-03-24T19:58:43.798000Z"))
         assertThat(execution.instrumentId()).contains("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
+        assertThat(execution.legs().getOrNull())
+            .containsExactly(
+                ExecutionLeg.builder()
+                    .price("price")
+                    .ratio("ratio")
+                    .side(Side.BUY)
+                    .symbol("AAPL  250620C00150000")
+                    .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .instrumentType(SecurityType.COMMON_STOCK)
+                    .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                    .underlyingInstrumentType(SecurityType.COMMON_STOCK)
+                    .venue("XNAS")
+                    .build()
+            )
         assertThat(execution.price()).contains("150.25")
         assertThat(execution.symbol()).contains("AAPL")
         assertThat(execution.underlyingInstrumentId())
@@ -54,6 +82,19 @@ internal class ExecutionTest {
                 .side(Side.BUY)
                 .transactionTime(OffsetDateTime.parse("2026-03-24T19:58:43.798000Z"))
                 .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
+                .addLeg(
+                    ExecutionLeg.builder()
+                        .price("price")
+                        .ratio("ratio")
+                        .side(Side.BUY)
+                        .symbol("AAPL  250620C00150000")
+                        .instrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .instrumentType(SecurityType.COMMON_STOCK)
+                        .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                        .underlyingInstrumentType(SecurityType.COMMON_STOCK)
+                        .venue("XNAS")
+                        .build()
+                )
                 .price("150.25")
                 .symbol("AAPL")
                 .underlyingInstrumentId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")

@@ -23,6 +23,7 @@ private constructor(
     private val from: OffsetDateTime?,
     private val instrumentIds: List<String>?,
     private val instrumentType: InstrumentType?,
+    private val isMultiLeg: Boolean?,
     private val orderIds: List<String>?,
     private val pageSize: Long?,
     private val pageToken: String?,
@@ -45,6 +46,14 @@ private constructor(
 
     /** Instrument type filter (e.g., COMMON_STOCK, OPTION) */
     fun instrumentType(): Optional<InstrumentType> = Optional.ofNullable(instrumentType)
+
+    /**
+     * > **Alpha** — this parameter is experimental and may change or be removed at any time.
+     *
+     * Filter by whether the order is a multileg strategy. Omitted returns all orders; true returns
+     * only multileg orders; false excludes them.
+     */
+    fun isMultiLeg(): Optional<Boolean> = Optional.ofNullable(isMultiLeg)
 
     /**
      * Comma-separated list of order identifiers. Each value may be an order's `id` or its
@@ -102,6 +111,7 @@ private constructor(
         private var from: OffsetDateTime? = null
         private var instrumentIds: MutableList<String>? = null
         private var instrumentType: InstrumentType? = null
+        private var isMultiLeg: Boolean? = null
         private var orderIds: MutableList<String>? = null
         private var pageSize: Long? = null
         private var pageToken: String? = null
@@ -119,6 +129,7 @@ private constructor(
             from = orderGetOrdersParams.from
             instrumentIds = orderGetOrdersParams.instrumentIds?.toMutableList()
             instrumentType = orderGetOrdersParams.instrumentType
+            isMultiLeg = orderGetOrdersParams.isMultiLeg
             orderIds = orderGetOrdersParams.orderIds?.toMutableList()
             pageSize = orderGetOrdersParams.pageSize
             pageToken = orderGetOrdersParams.pageToken
@@ -177,6 +188,24 @@ private constructor(
         /** Alias for calling [Builder.instrumentType] with `instrumentType.orElse(null)`. */
         fun instrumentType(instrumentType: Optional<InstrumentType>) =
             instrumentType(instrumentType.getOrNull())
+
+        /**
+         * > **Alpha** — this parameter is experimental and may change or be removed at any time.
+         *
+         * Filter by whether the order is a multileg strategy. Omitted returns all orders; true
+         * returns only multileg orders; false excludes them.
+         */
+        fun isMultiLeg(isMultiLeg: Boolean?) = apply { this.isMultiLeg = isMultiLeg }
+
+        /**
+         * Alias for [Builder.isMultiLeg].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun isMultiLeg(isMultiLeg: Boolean) = isMultiLeg(isMultiLeg as Boolean?)
+
+        /** Alias for calling [Builder.isMultiLeg] with `isMultiLeg.orElse(null)`. */
+        fun isMultiLeg(isMultiLeg: Optional<Boolean>) = isMultiLeg(isMultiLeg.getOrNull())
 
         /**
          * Comma-separated list of order identifiers. Each value may be an order's `id` or its
@@ -384,6 +413,7 @@ private constructor(
                 from,
                 instrumentIds?.toImmutable(),
                 instrumentType,
+                isMultiLeg,
                 orderIds?.toImmutable(),
                 pageSize,
                 pageToken,
@@ -411,6 +441,7 @@ private constructor(
                 from?.let { put("from", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 instrumentIds?.let { put("instrument_ids", it.joinToString(",")) }
                 instrumentType?.let { put("instrument_type", it.toString()) }
+                isMultiLeg?.let { put("is_multi_leg", it.toString()) }
                 orderIds?.let { put("order_ids", it.joinToString(",")) }
                 pageSize?.let { put("page_size", it.toString()) }
                 pageToken?.let { put("page_token", it) }
@@ -1034,6 +1065,7 @@ private constructor(
             from == other.from &&
             instrumentIds == other.instrumentIds &&
             instrumentType == other.instrumentType &&
+            isMultiLeg == other.isMultiLeg &&
             orderIds == other.orderIds &&
             pageSize == other.pageSize &&
             pageToken == other.pageToken &&
@@ -1052,6 +1084,7 @@ private constructor(
             from,
             instrumentIds,
             instrumentType,
+            isMultiLeg,
             orderIds,
             pageSize,
             pageToken,
@@ -1065,5 +1098,5 @@ private constructor(
         )
 
     override fun toString() =
-        "OrderGetOrdersParams{accountId=$accountId, from=$from, instrumentIds=$instrumentIds, instrumentType=$instrumentType, orderIds=$orderIds, pageSize=$pageSize, pageToken=$pageToken, status=$status, symbol=$symbol, to=$to, underlyingInstrumentIds=$underlyingInstrumentIds, updatedAt=$updatedAt, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "OrderGetOrdersParams{accountId=$accountId, from=$from, instrumentIds=$instrumentIds, instrumentType=$instrumentType, isMultiLeg=$isMultiLeg, orderIds=$orderIds, pageSize=$pageSize, pageToken=$pageToken, status=$status, symbol=$symbol, to=$to, underlyingInstrumentIds=$underlyingInstrumentIds, updatedAt=$updatedAt, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

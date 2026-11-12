@@ -50,6 +50,7 @@ private constructor(
     private val extendedHours: JsonField<Boolean>,
     private val instrumentId: JsonField<String>,
     private val instrumentType: JsonField<SecurityType>,
+    private val legs: JsonField<List<OrderLeg>>,
     private val limitOffset: JsonField<String>,
     private val limitPrice: JsonField<String>,
     private val releasesAt: JsonField<OffsetDateTime>,
@@ -114,6 +115,7 @@ private constructor(
         @JsonProperty("instrument_type")
         @ExcludeMissing
         instrumentType: JsonField<SecurityType> = JsonMissing.of(),
+        @JsonProperty("legs") @ExcludeMissing legs: JsonField<List<OrderLeg>> = JsonMissing.of(),
         @JsonProperty("limit_offset")
         @ExcludeMissing
         limitOffset: JsonField<String> = JsonMissing.of(),
@@ -170,6 +172,7 @@ private constructor(
         extendedHours,
         instrumentId,
         instrumentType,
+        legs,
         limitOffset,
         limitPrice,
         releasesAt,
@@ -346,6 +349,16 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun instrumentType(): Optional<SecurityType> = instrumentType.getOptional("instrument_type")
+
+    /**
+     * > **Alpha** — this field is experimental and may change or be removed at any time.
+     *
+     * Individual legs of a multileg strategy order. Omitted for single-leg orders.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun legs(): Optional<List<OrderLeg>> = legs.getOptional("legs")
 
     /**
      * Limit offset for trailing stop-limit orders (signed) When a null/undefined value is observed,
@@ -639,6 +652,13 @@ private constructor(
     fun _instrumentType(): JsonField<SecurityType> = instrumentType
 
     /**
+     * Returns the raw JSON value of [legs].
+     *
+     * Unlike [legs], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("legs") @ExcludeMissing fun _legs(): JsonField<List<OrderLeg>> = legs
+
+    /**
      * Returns the raw JSON value of [limitOffset].
      *
      * Unlike [limitOffset], this method doesn't throw if the JSON field has an unexpected type.
@@ -820,6 +840,7 @@ private constructor(
         private var extendedHours: JsonField<Boolean> = JsonMissing.of()
         private var instrumentId: JsonField<String> = JsonMissing.of()
         private var instrumentType: JsonField<SecurityType> = JsonMissing.of()
+        private var legs: JsonField<MutableList<OrderLeg>>? = null
         private var limitOffset: JsonField<String> = JsonMissing.of()
         private var limitPrice: JsonField<String> = JsonMissing.of()
         private var releasesAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -857,6 +878,7 @@ private constructor(
             extendedHours = order.extendedHours
             instrumentId = order.instrumentId
             instrumentType = order.instrumentType
+            legs = order.legs.map { it.toMutableList() }
             limitOffset = order.limitOffset
             limitPrice = order.limitPrice
             releasesAt = order.releasesAt
@@ -1169,6 +1191,33 @@ private constructor(
          */
         fun instrumentType(instrumentType: JsonField<SecurityType>) = apply {
             this.instrumentType = instrumentType
+        }
+
+        /**
+         * > **Alpha** — this field is experimental and may change or be removed at any time.
+         *
+         * Individual legs of a multileg strategy order. Omitted for single-leg orders.
+         */
+        fun legs(legs: List<OrderLeg>) = legs(JsonField.of(legs))
+
+        /**
+         * Sets [Builder.legs] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.legs] with a well-typed `List<OrderLeg>` value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun legs(legs: JsonField<List<OrderLeg>>) = apply {
+            this.legs = legs.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [OrderLeg] to [legs].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addLeg(leg: OrderLeg) = apply {
+            legs = (legs ?: JsonField.of(mutableListOf())).also { checkKnown("legs", it).add(leg) }
         }
 
         /**
@@ -1531,6 +1580,7 @@ private constructor(
                 extendedHours,
                 instrumentId,
                 instrumentType,
+                (legs ?: JsonMissing.of()).map { it.toImmutable() },
                 limitOffset,
                 limitPrice,
                 releasesAt,
@@ -1583,6 +1633,7 @@ private constructor(
         extendedHours()
         instrumentId()
         instrumentType().ifPresent { it.validate() }
+        legs().ifPresent { it.forEach { it.validate() } }
         limitOffset()
         limitPrice()
         releasesAt()
@@ -1634,6 +1685,7 @@ private constructor(
             (if (extendedHours.asKnown().isPresent) 1 else 0) +
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
+            (legs.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (limitOffset.asKnown().isPresent) 1 else 0) +
             (if (limitPrice.asKnown().isPresent) 1 else 0) +
             (if (releasesAt.asKnown().isPresent) 1 else 0) +
@@ -2114,6 +2166,7 @@ private constructor(
             extendedHours == other.extendedHours &&
             instrumentId == other.instrumentId &&
             instrumentType == other.instrumentType &&
+            legs == other.legs &&
             limitOffset == other.limitOffset &&
             limitPrice == other.limitPrice &&
             releasesAt == other.releasesAt &&
@@ -2152,6 +2205,7 @@ private constructor(
             extendedHours,
             instrumentId,
             instrumentType,
+            legs,
             limitOffset,
             limitPrice,
             releasesAt,
@@ -2173,5 +2227,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, instrumentType=$instrumentType, limitOffset=$limitOffset, limitPrice=$limitPrice, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, instrumentType=$instrumentType, legs=$legs, limitOffset=$limitOffset, limitPrice=$limitPrice, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
 }

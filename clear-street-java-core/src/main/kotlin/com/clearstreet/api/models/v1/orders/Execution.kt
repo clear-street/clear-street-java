@@ -6,7 +6,9 @@ import com.clearstreet.api.core.ExcludeMissing
 import com.clearstreet.api.core.JsonField
 import com.clearstreet.api.core.JsonMissing
 import com.clearstreet.api.core.JsonValue
+import com.clearstreet.api.core.checkKnown
 import com.clearstreet.api.core.checkRequired
+import com.clearstreet.api.core.toImmutable
 import com.clearstreet.api.errors.ClearStreetInvalidDataException
 import com.clearstreet.api.models.v1.SecurityType
 import com.fasterxml.jackson.annotation.JsonAnyGetter
@@ -29,6 +31,7 @@ private constructor(
     private val side: JsonField<Side>,
     private val transactionTime: JsonField<OffsetDateTime>,
     private val instrumentId: JsonField<String>,
+    private val legs: JsonField<List<ExecutionLeg>>,
     private val price: JsonField<String>,
     private val symbol: JsonField<String>,
     private val underlyingInstrumentId: JsonField<String>,
@@ -49,6 +52,9 @@ private constructor(
         @JsonProperty("instrument_id")
         @ExcludeMissing
         instrumentId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("legs")
+        @ExcludeMissing
+        legs: JsonField<List<ExecutionLeg>> = JsonMissing.of(),
         @JsonProperty("price") @ExcludeMissing price: JsonField<String> = JsonMissing.of(),
         @JsonProperty("symbol") @ExcludeMissing symbol: JsonField<String> = JsonMissing.of(),
         @JsonProperty("underlying_instrument_id")
@@ -65,6 +71,7 @@ private constructor(
         side,
         transactionTime,
         instrumentId,
+        legs,
         price,
         symbol,
         underlyingInstrumentId,
@@ -123,6 +130,17 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun instrumentId(): Optional<String> = instrumentId.getOptional("instrument_id")
+
+    /**
+     * > **Alpha** — this field is experimental and may change or be removed at any time.
+     *
+     * Individual legs of a strategy-level multileg fill. Omitted for single-security and
+     * individual-leg fills.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun legs(): Optional<List<ExecutionLeg>> = legs.getOptional("legs")
 
     /**
      * Fill price. `null` for multileg fills, whose price lives only at the leg level. When a
@@ -221,6 +239,13 @@ private constructor(
     fun _instrumentId(): JsonField<String> = instrumentId
 
     /**
+     * Returns the raw JSON value of [legs].
+     *
+     * Unlike [legs], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("legs") @ExcludeMissing fun _legs(): JsonField<List<ExecutionLeg>> = legs
+
+    /**
      * Returns the raw JSON value of [price].
      *
      * Unlike [price], this method doesn't throw if the JSON field has an unexpected type.
@@ -299,6 +324,7 @@ private constructor(
         private var side: JsonField<Side>? = null
         private var transactionTime: JsonField<OffsetDateTime>? = null
         private var instrumentId: JsonField<String> = JsonMissing.of()
+        private var legs: JsonField<MutableList<ExecutionLeg>>? = null
         private var price: JsonField<String> = JsonMissing.of()
         private var symbol: JsonField<String> = JsonMissing.of()
         private var underlyingInstrumentId: JsonField<String> = JsonMissing.of()
@@ -314,6 +340,7 @@ private constructor(
             side = execution.side
             transactionTime = execution.transactionTime
             instrumentId = execution.instrumentId
+            legs = execution.legs.map { it.toMutableList() }
             price = execution.price
             symbol = execution.symbol
             underlyingInstrumentId = execution.underlyingInstrumentId
@@ -403,6 +430,34 @@ private constructor(
          */
         fun instrumentId(instrumentId: JsonField<String>) = apply {
             this.instrumentId = instrumentId
+        }
+
+        /**
+         * > **Alpha** — this field is experimental and may change or be removed at any time.
+         *
+         * Individual legs of a strategy-level multileg fill. Omitted for single-security and
+         * individual-leg fills.
+         */
+        fun legs(legs: List<ExecutionLeg>) = legs(JsonField.of(legs))
+
+        /**
+         * Sets [Builder.legs] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.legs] with a well-typed `List<ExecutionLeg>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun legs(legs: JsonField<List<ExecutionLeg>>) = apply {
+            this.legs = legs.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [ExecutionLeg] to [legs].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addLeg(leg: ExecutionLeg) = apply {
+            legs = (legs ?: JsonField.of(mutableListOf())).also { checkKnown("legs", it).add(leg) }
         }
 
         /**
@@ -553,6 +608,7 @@ private constructor(
                 checkRequired("side", side),
                 checkRequired("transactionTime", transactionTime),
                 instrumentId,
+                (legs ?: JsonMissing.of()).map { it.toImmutable() },
                 price,
                 symbol,
                 underlyingInstrumentId,
@@ -583,6 +639,7 @@ private constructor(
         side().validate()
         transactionTime()
         instrumentId()
+        legs().ifPresent { it.forEach { it.validate() } }
         price()
         symbol()
         underlyingInstrumentId()
@@ -612,6 +669,7 @@ private constructor(
             (side.asKnown().getOrNull()?.validity() ?: 0) +
             (if (transactionTime.asKnown().isPresent) 1 else 0) +
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
+            (legs.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (price.asKnown().isPresent) 1 else 0) +
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (underlyingInstrumentId.asKnown().isPresent) 1 else 0) +
@@ -630,6 +688,7 @@ private constructor(
             side == other.side &&
             transactionTime == other.transactionTime &&
             instrumentId == other.instrumentId &&
+            legs == other.legs &&
             price == other.price &&
             symbol == other.symbol &&
             underlyingInstrumentId == other.underlyingInstrumentId &&
@@ -646,6 +705,7 @@ private constructor(
             side,
             transactionTime,
             instrumentId,
+            legs,
             price,
             symbol,
             underlyingInstrumentId,
@@ -658,5 +718,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Execution{id=$id, orderId=$orderId, quantity=$quantity, side=$side, transactionTime=$transactionTime, instrumentId=$instrumentId, price=$price, symbol=$symbol, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, venue=$venue, additionalProperties=$additionalProperties}"
+        "Execution{id=$id, orderId=$orderId, quantity=$quantity, side=$side, transactionTime=$transactionTime, instrumentId=$instrumentId, legs=$legs, price=$price, symbol=$symbol, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, venue=$venue, additionalProperties=$additionalProperties}"
 }

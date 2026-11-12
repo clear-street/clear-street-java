@@ -92,26 +92,30 @@ internal class OrderSubmitOrdersParamsTest {
 
         assertThat(body)
             .containsExactly(
-                NewOrderRequest.builder()
-                    .orderType(RequestOrderType.LIMIT)
-                    .quantity("1")
-                    .side(Side.BUY)
-                    .timeInForce(RequestTimeInForce.DAY)
-                    .id("my-ref-id-20251001-002")
-                    .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
-                    .extendedHours(true)
-                    .instrumentId("x")
-                    .limitOffset("0.50")
-                    .limitPrice("48.00")
-                    .positionIntent(RequestPositionEffect.OPEN)
-                    .stopPrice("52.00")
-                    .strategy(
-                        OrderStrategy.Type.builder().type(OrderStrategy.Type.InnerType.SOR).build()
-                    )
-                    .symbol("TSLA")
-                    .trailingOffset("2.00")
-                    .trailingOffsetType(TrailingOffsetType.PRICE)
-                    .build()
+                OrderSubmitOrdersParams.Order.ofNewOrderRequest(
+                    NewOrderRequest.builder()
+                        .orderType(RequestOrderType.LIMIT)
+                        .quantity("1")
+                        .side(Side.BUY)
+                        .timeInForce(RequestTimeInForce.DAY)
+                        .id("my-ref-id-20251001-002")
+                        .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
+                        .extendedHours(true)
+                        .instrumentId("x")
+                        .limitOffset("0.50")
+                        .limitPrice("48.00")
+                        .positionIntent(RequestPositionEffect.OPEN)
+                        .stopPrice("52.00")
+                        .strategy(
+                            OrderStrategy.Type.builder()
+                                .type(OrderStrategy.Type.InnerType.SOR)
+                                .build()
+                        )
+                        .symbol("TSLA")
+                        .trailingOffset("2.00")
+                        .trailingOffsetType(TrailingOffsetType.PRICE)
+                        .build()
+                )
             )
     }
 
@@ -134,12 +138,14 @@ internal class OrderSubmitOrdersParamsTest {
 
         assertThat(body)
             .containsExactly(
-                NewOrderRequest.builder()
-                    .orderType(RequestOrderType.LIMIT)
-                    .quantity("1")
-                    .side(Side.BUY)
-                    .timeInForce(RequestTimeInForce.DAY)
-                    .build()
+                OrderSubmitOrdersParams.Order.ofNewOrderRequest(
+                    NewOrderRequest.builder()
+                        .orderType(RequestOrderType.LIMIT)
+                        .quantity("1")
+                        .side(Side.BUY)
+                        .timeInForce(RequestTimeInForce.DAY)
+                        .build()
+                )
             )
     }
 }
