@@ -21,6 +21,7 @@ internal class ExecutionTest {
                 .quantity("100")
                 .side(Side.BUY)
                 .transactionTime(OffsetDateTime.parse("2026-03-24T19:58:43.798000Z"))
+                .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
                 .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
                 .addLeg(
                     ExecutionLeg.builder()
@@ -48,6 +49,8 @@ internal class ExecutionTest {
         assertThat(execution.side()).isEqualTo(Side.BUY)
         assertThat(execution.transactionTime())
             .isEqualTo(OffsetDateTime.parse("2026-03-24T19:58:43.798000Z"))
+        assertThat(execution.fees())
+            .contains(Fees.builder().total("0.10").exchangeFee("0.10").build())
         assertThat(execution.instrumentId()).contains("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
         assertThat(execution.legs().getOrNull())
             .containsExactly(
@@ -81,6 +84,7 @@ internal class ExecutionTest {
                 .quantity("100")
                 .side(Side.BUY)
                 .transactionTime(OffsetDateTime.parse("2026-03-24T19:58:43.798000Z"))
+                .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
                 .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
                 .addLeg(
                     ExecutionLeg.builder()

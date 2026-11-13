@@ -58,6 +58,7 @@ internal class OrderCancelAllOpenOrdersResponseTest {
                         .addDetail("string")
                         .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                         .extendedHours(false)
+                        .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
                         .instrumentId("d4d5d6d7-e4e5-f4f5-a4a5-a6a7a8a9aaab")
                         .instrumentType(SecurityType.COMMON_STOCK)
                         .addLeg(
@@ -141,6 +142,7 @@ internal class OrderCancelAllOpenOrdersResponseTest {
                     .addDetail("string")
                     .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                     .extendedHours(false)
+                    .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
                     .instrumentId("d4d5d6d7-e4e5-f4f5-a4a5-a6a7a8a9aaab")
                     .instrumentType(SecurityType.COMMON_STOCK)
                     .addLeg(
@@ -226,6 +228,7 @@ internal class OrderCancelAllOpenOrdersResponseTest {
                         .addDetail("string")
                         .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                         .extendedHours(false)
+                        .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
                         .instrumentId("d4d5d6d7-e4e5-f4f5-a4a5-a6a7a8a9aaab")
                         .instrumentType(SecurityType.COMMON_STOCK)
                         .addLeg(

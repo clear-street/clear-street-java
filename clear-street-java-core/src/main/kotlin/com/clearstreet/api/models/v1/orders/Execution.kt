@@ -30,6 +30,7 @@ private constructor(
     private val quantity: JsonField<String>,
     private val side: JsonField<Side>,
     private val transactionTime: JsonField<OffsetDateTime>,
+    private val fees: JsonField<Fees>,
     private val instrumentId: JsonField<String>,
     private val legs: JsonField<List<ExecutionLeg>>,
     private val price: JsonField<String>,
@@ -49,6 +50,7 @@ private constructor(
         @JsonProperty("transaction_time")
         @ExcludeMissing
         transactionTime: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("fees") @ExcludeMissing fees: JsonField<Fees> = JsonMissing.of(),
         @JsonProperty("instrument_id")
         @ExcludeMissing
         instrumentId: JsonField<String> = JsonMissing.of(),
@@ -70,6 +72,7 @@ private constructor(
         quantity,
         side,
         transactionTime,
+        fees,
         instrumentId,
         legs,
         price,
@@ -120,6 +123,19 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun transactionTime(): OffsetDateTime = transactionTime.getRequired("transaction_time")
+
+    /**
+     * Fees charged to the account, broken out by kind.
+     *
+     * Amounts are in the instrument's currency, at the full precision the venue reports. Statements
+     * round each fill's fee to the cent, so they can differ by a fraction of a cent. A positive
+     * amount is charged to the account; a negative amount is a rebate. New kinds of fee are added
+     * as new optional fields, and `total` always includes them.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun fees(): Optional<Fees> = fees.getOptional("fees")
 
     /**
      * Unique instrument identifier. `null` when this is a strategy-level multileg fill whose legs
@@ -230,6 +246,13 @@ private constructor(
     fun _transactionTime(): JsonField<OffsetDateTime> = transactionTime
 
     /**
+     * Returns the raw JSON value of [fees].
+     *
+     * Unlike [fees], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Fees> = fees
+
+    /**
      * Returns the raw JSON value of [instrumentId].
      *
      * Unlike [instrumentId], this method doesn't throw if the JSON field has an unexpected type.
@@ -323,6 +346,7 @@ private constructor(
         private var quantity: JsonField<String>? = null
         private var side: JsonField<Side>? = null
         private var transactionTime: JsonField<OffsetDateTime>? = null
+        private var fees: JsonField<Fees> = JsonMissing.of()
         private var instrumentId: JsonField<String> = JsonMissing.of()
         private var legs: JsonField<MutableList<ExecutionLeg>>? = null
         private var price: JsonField<String> = JsonMissing.of()
@@ -339,6 +363,7 @@ private constructor(
             quantity = execution.quantity
             side = execution.side
             transactionTime = execution.transactionTime
+            fees = execution.fees
             instrumentId = execution.instrumentId
             legs = execution.legs.map { it.toMutableList() }
             price = execution.price
@@ -410,6 +435,24 @@ private constructor(
         fun transactionTime(transactionTime: JsonField<OffsetDateTime>) = apply {
             this.transactionTime = transactionTime
         }
+
+        /**
+         * Fees charged to the account, broken out by kind.
+         *
+         * Amounts are in the instrument's currency, at the full precision the venue reports.
+         * Statements round each fill's fee to the cent, so they can differ by a fraction of a cent.
+         * A positive amount is charged to the account; a negative amount is a rebate. New kinds of
+         * fee are added as new optional fields, and `total` always includes them.
+         */
+        fun fees(fees: Fees) = fees(JsonField.of(fees))
+
+        /**
+         * Sets [Builder.fees] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.fees] with a well-typed [Fees] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun fees(fees: JsonField<Fees>) = apply { this.fees = fees }
 
         /**
          * Unique instrument identifier. `null` when this is a strategy-level multileg fill whose
@@ -607,6 +650,7 @@ private constructor(
                 checkRequired("quantity", quantity),
                 checkRequired("side", side),
                 checkRequired("transactionTime", transactionTime),
+                fees,
                 instrumentId,
                 (legs ?: JsonMissing.of()).map { it.toImmutable() },
                 price,
@@ -638,6 +682,7 @@ private constructor(
         quantity()
         side().validate()
         transactionTime()
+        fees().ifPresent { it.validate() }
         instrumentId()
         legs().ifPresent { it.forEach { it.validate() } }
         price()
@@ -668,6 +713,7 @@ private constructor(
             (if (quantity.asKnown().isPresent) 1 else 0) +
             (side.asKnown().getOrNull()?.validity() ?: 0) +
             (if (transactionTime.asKnown().isPresent) 1 else 0) +
+            (fees.asKnown().getOrNull()?.validity() ?: 0) +
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (legs.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (price.asKnown().isPresent) 1 else 0) +
@@ -687,6 +733,7 @@ private constructor(
             quantity == other.quantity &&
             side == other.side &&
             transactionTime == other.transactionTime &&
+            fees == other.fees &&
             instrumentId == other.instrumentId &&
             legs == other.legs &&
             price == other.price &&
@@ -704,6 +751,7 @@ private constructor(
             quantity,
             side,
             transactionTime,
+            fees,
             instrumentId,
             legs,
             price,
@@ -718,5 +766,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Execution{id=$id, orderId=$orderId, quantity=$quantity, side=$side, transactionTime=$transactionTime, instrumentId=$instrumentId, legs=$legs, price=$price, symbol=$symbol, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, venue=$venue, additionalProperties=$additionalProperties}"
+        "Execution{id=$id, orderId=$orderId, quantity=$quantity, side=$side, transactionTime=$transactionTime, fees=$fees, instrumentId=$instrumentId, legs=$legs, price=$price, symbol=$symbol, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, venue=$venue, additionalProperties=$additionalProperties}"
 }

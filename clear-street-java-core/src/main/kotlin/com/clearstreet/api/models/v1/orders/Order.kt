@@ -48,6 +48,7 @@ private constructor(
     private val details: JsonField<List<String>>,
     private val expiresAt: JsonField<OffsetDateTime>,
     private val extendedHours: JsonField<Boolean>,
+    private val fees: JsonField<Fees>,
     private val instrumentId: JsonField<String>,
     private val instrumentType: JsonField<SecurityType>,
     private val legs: JsonField<List<OrderLeg>>,
@@ -109,6 +110,7 @@ private constructor(
         @JsonProperty("extended_hours")
         @ExcludeMissing
         extendedHours: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("fees") @ExcludeMissing fees: JsonField<Fees> = JsonMissing.of(),
         @JsonProperty("instrument_id")
         @ExcludeMissing
         instrumentId: JsonField<String> = JsonMissing.of(),
@@ -170,6 +172,7 @@ private constructor(
         details,
         expiresAt,
         extendedHours,
+        fees,
         instrumentId,
         instrumentType,
         legs,
@@ -329,6 +332,19 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun extendedHours(): Optional<Boolean> = extendedHours.getOptional("extended_hours")
+
+    /**
+     * Fees charged to the account, broken out by kind.
+     *
+     * Amounts are in the instrument's currency, at the full precision the venue reports. Statements
+     * round each fill's fee to the cent, so they can differ by a fraction of a cent. A positive
+     * amount is charged to the account; a negative amount is a rebate. New kinds of fee are added
+     * as new optional fields, and `total` always includes them.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun fees(): Optional<Fees> = fees.getOptional("fees")
 
     /**
      * Instrument identifier for the traded instrument. `null` when the order is a multileg strategy
@@ -634,6 +650,13 @@ private constructor(
     fun _extendedHours(): JsonField<Boolean> = extendedHours
 
     /**
+     * Returns the raw JSON value of [fees].
+     *
+     * Unlike [fees], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Fees> = fees
+
+    /**
      * Returns the raw JSON value of [instrumentId].
      *
      * Unlike [instrumentId], this method doesn't throw if the JSON field has an unexpected type.
@@ -838,6 +861,7 @@ private constructor(
         private var details: JsonField<MutableList<String>>? = null
         private var expiresAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var extendedHours: JsonField<Boolean> = JsonMissing.of()
+        private var fees: JsonField<Fees> = JsonMissing.of()
         private var instrumentId: JsonField<String> = JsonMissing.of()
         private var instrumentType: JsonField<SecurityType> = JsonMissing.of()
         private var legs: JsonField<MutableList<OrderLeg>>? = null
@@ -876,6 +900,7 @@ private constructor(
             details = order.details.map { it.toMutableList() }
             expiresAt = order.expiresAt
             extendedHours = order.extendedHours
+            fees = order.fees
             instrumentId = order.instrumentId
             instrumentType = order.instrumentType
             legs = order.legs.map { it.toMutableList() }
@@ -1148,6 +1173,24 @@ private constructor(
         fun extendedHours(extendedHours: JsonField<Boolean>) = apply {
             this.extendedHours = extendedHours
         }
+
+        /**
+         * Fees charged to the account, broken out by kind.
+         *
+         * Amounts are in the instrument's currency, at the full precision the venue reports.
+         * Statements round each fill's fee to the cent, so they can differ by a fraction of a cent.
+         * A positive amount is charged to the account; a negative amount is a rebate. New kinds of
+         * fee are added as new optional fields, and `total` always includes them.
+         */
+        fun fees(fees: Fees) = fees(JsonField.of(fees))
+
+        /**
+         * Sets [Builder.fees] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.fees] with a well-typed [Fees] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun fees(fees: JsonField<Fees>) = apply { this.fees = fees }
 
         /**
          * Instrument identifier for the traded instrument. `null` when the order is a multileg
@@ -1578,6 +1621,7 @@ private constructor(
                 (details ?: JsonMissing.of()).map { it.toImmutable() },
                 expiresAt,
                 extendedHours,
+                fees,
                 instrumentId,
                 instrumentType,
                 (legs ?: JsonMissing.of()).map { it.toImmutable() },
@@ -1631,6 +1675,7 @@ private constructor(
         details()
         expiresAt()
         extendedHours()
+        fees().ifPresent { it.validate() }
         instrumentId()
         instrumentType().ifPresent { it.validate() }
         legs().ifPresent { it.forEach { it.validate() } }
@@ -1683,6 +1728,7 @@ private constructor(
             (details.asKnown().getOrNull()?.size ?: 0) +
             (if (expiresAt.asKnown().isPresent) 1 else 0) +
             (if (extendedHours.asKnown().isPresent) 1 else 0) +
+            (fees.asKnown().getOrNull()?.validity() ?: 0) +
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (instrumentType.asKnown().getOrNull()?.validity() ?: 0) +
             (legs.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
@@ -2164,6 +2210,7 @@ private constructor(
             details == other.details &&
             expiresAt == other.expiresAt &&
             extendedHours == other.extendedHours &&
+            fees == other.fees &&
             instrumentId == other.instrumentId &&
             instrumentType == other.instrumentType &&
             legs == other.legs &&
@@ -2203,6 +2250,7 @@ private constructor(
             details,
             expiresAt,
             extendedHours,
+            fees,
             instrumentId,
             instrumentType,
             legs,
@@ -2227,5 +2275,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, instrumentId=$instrumentId, instrumentType=$instrumentType, legs=$legs, limitOffset=$limitOffset, limitPrice=$limitPrice, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, fees=$fees, instrumentId=$instrumentId, instrumentType=$instrumentType, legs=$legs, limitOffset=$limitOffset, limitPrice=$limitPrice, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
 }
