@@ -81,7 +81,7 @@ internal class ProGuardCompatibilityTest {
                 .status(AccountStatus.ACTIVE)
                 .subtype(AccountSubtype.MARGIN)
                 .type(AccountType.CUSTOMER)
-                .closeDate(null)
+                .closeDate(LocalDate.parse("2026-01-15"))
                 .build()
 
         val roundtrippedAccount =

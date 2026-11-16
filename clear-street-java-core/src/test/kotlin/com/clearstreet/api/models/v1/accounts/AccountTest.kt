@@ -24,7 +24,7 @@ internal class AccountTest {
                 .status(AccountStatus.ACTIVE)
                 .subtype(AccountSubtype.MARGIN)
                 .type(AccountType.CUSTOMER)
-                .closeDate(null)
+                .closeDate(LocalDate.parse("2026-01-15"))
                 .build()
 
         assertThat(account.id()).isEqualTo(19816L)
@@ -38,7 +38,7 @@ internal class AccountTest {
         assertThat(account.status()).isEqualTo(AccountStatus.ACTIVE)
         assertThat(account.subtype()).isEqualTo(AccountSubtype.MARGIN)
         assertThat(account.type()).isEqualTo(AccountType.CUSTOMER)
-        assertThat(account.closeDate()).isEmpty
+        assertThat(account.closeDate()).contains(LocalDate.parse("2026-01-15"))
     }
 
     @Test
@@ -56,7 +56,7 @@ internal class AccountTest {
                 .status(AccountStatus.ACTIVE)
                 .subtype(AccountSubtype.MARGIN)
                 .type(AccountType.CUSTOMER)
-                .closeDate(null)
+                .closeDate(LocalDate.parse("2026-01-15"))
                 .build()
 
         val roundtrippedAccount =

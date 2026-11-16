@@ -24,7 +24,7 @@ internal class AccountWithPersonalDetailsTest {
                 .status(AccountStatus.ACTIVE)
                 .subtype(AccountSubtype.MARGIN)
                 .type(AccountType.CUSTOMER)
-                .closeDate(null)
+                .closeDate(LocalDate.parse("2026-01-15"))
                 .countryOfTaxResidency("US")
                 .dateOfBirth(LocalDate.parse("1985-03-15"))
                 .mailingAddress(
@@ -51,7 +51,7 @@ internal class AccountWithPersonalDetailsTest {
         assertThat(accountWithPersonalDetails.status()).isEqualTo(AccountStatus.ACTIVE)
         assertThat(accountWithPersonalDetails.subtype()).isEqualTo(AccountSubtype.MARGIN)
         assertThat(accountWithPersonalDetails.type()).isEqualTo(AccountType.CUSTOMER)
-        assertThat(accountWithPersonalDetails.closeDate()).isEmpty
+        assertThat(accountWithPersonalDetails.closeDate()).contains(LocalDate.parse("2026-01-15"))
         assertThat(accountWithPersonalDetails.countryOfTaxResidency()).contains("US")
         assertThat(accountWithPersonalDetails.dateOfBirth()).contains(LocalDate.parse("1985-03-15"))
         assertThat(accountWithPersonalDetails.mailingAddress())
@@ -83,7 +83,7 @@ internal class AccountWithPersonalDetailsTest {
                 .status(AccountStatus.ACTIVE)
                 .subtype(AccountSubtype.MARGIN)
                 .type(AccountType.CUSTOMER)
-                .closeDate(null)
+                .closeDate(LocalDate.parse("2026-01-15"))
                 .countryOfTaxResidency("US")
                 .dateOfBirth(LocalDate.parse("1985-03-15"))
                 .mailingAddress(

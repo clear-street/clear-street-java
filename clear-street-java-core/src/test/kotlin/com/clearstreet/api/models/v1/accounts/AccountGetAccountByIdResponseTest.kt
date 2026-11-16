@@ -50,7 +50,7 @@ internal class AccountGetAccountByIdResponseTest {
                         .status(AccountStatus.ACTIVE)
                         .subtype(AccountSubtype.MARGIN)
                         .type(AccountType.CUSTOMER)
-                        .closeDate(null)
+                        .closeDate(LocalDate.parse("2026-01-15"))
                         .countryOfTaxResidency("US")
                         .dateOfBirth(LocalDate.parse("1985-03-15"))
                         .mailingAddress(
@@ -104,7 +104,7 @@ internal class AccountGetAccountByIdResponseTest {
                     .status(AccountStatus.ACTIVE)
                     .subtype(AccountSubtype.MARGIN)
                     .type(AccountType.CUSTOMER)
-                    .closeDate(null)
+                    .closeDate(LocalDate.parse("2026-01-15"))
                     .countryOfTaxResidency("US")
                     .dateOfBirth(LocalDate.parse("1985-03-15"))
                     .mailingAddress(
@@ -160,7 +160,7 @@ internal class AccountGetAccountByIdResponseTest {
                         .status(AccountStatus.ACTIVE)
                         .subtype(AccountSubtype.MARGIN)
                         .type(AccountType.CUSTOMER)
-                        .closeDate(null)
+                        .closeDate(LocalDate.parse("2026-01-15"))
                         .countryOfTaxResidency("US")
                         .dateOfBirth(LocalDate.parse("1985-03-15"))
                         .mailingAddress(
