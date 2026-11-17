@@ -27,6 +27,7 @@ private constructor(
     private val symbol: JsonField<String>,
     private val cumulativeVolume: JsonField<Long>,
     private val greeks: JsonField<SnapshotGreeks>,
+    private val indicativePrice: JsonField<String>,
     private val lastQuote: JsonField<SnapshotQuote>,
     private val lastTrade: JsonField<SnapshotLastTrade>,
     private val name: JsonField<String>,
@@ -52,6 +53,9 @@ private constructor(
         @JsonProperty("greeks")
         @ExcludeMissing
         greeks: JsonField<SnapshotGreeks> = JsonMissing.of(),
+        @JsonProperty("indicative_price")
+        @ExcludeMissing
+        indicativePrice: JsonField<String> = JsonMissing.of(),
         @JsonProperty("last_quote")
         @ExcludeMissing
         lastQuote: JsonField<SnapshotQuote> = JsonMissing.of(),
@@ -69,6 +73,7 @@ private constructor(
         symbol,
         cumulativeVolume,
         greeks,
+        indicativePrice,
         lastQuote,
         lastTrade,
         name,
@@ -143,6 +148,16 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun greeks(): Optional<SnapshotGreeks> = greeks.getOptional("greeks")
+
+    /**
+     * Indicative price for a new issue, in USD. Present only while the instrument is a new issue
+     * with no quote, trade or previous close. When a null/undefined value is observed, it indicates
+     * that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun indicativePrice(): Optional<String> = indicativePrice.getOptional("indicative_price")
 
     /**
      * Most recent quote if available. When a null/undefined value is observed, it indicates that
@@ -234,6 +249,15 @@ private constructor(
     @JsonProperty("greeks") @ExcludeMissing fun _greeks(): JsonField<SnapshotGreeks> = greeks
 
     /**
+     * Returns the raw JSON value of [indicativePrice].
+     *
+     * Unlike [indicativePrice], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("indicative_price")
+    @ExcludeMissing
+    fun _indicativePrice(): JsonField<String> = indicativePrice
+
+    /**
      * Returns the raw JSON value of [lastQuote].
      *
      * Unlike [lastQuote], this method doesn't throw if the JSON field has an unexpected type.
@@ -304,6 +328,7 @@ private constructor(
         private var symbol: JsonField<String>? = null
         private var cumulativeVolume: JsonField<Long> = JsonMissing.of()
         private var greeks: JsonField<SnapshotGreeks> = JsonMissing.of()
+        private var indicativePrice: JsonField<String> = JsonMissing.of()
         private var lastQuote: JsonField<SnapshotQuote> = JsonMissing.of()
         private var lastTrade: JsonField<SnapshotLastTrade> = JsonMissing.of()
         private var name: JsonField<String> = JsonMissing.of()
@@ -318,6 +343,7 @@ private constructor(
             symbol = marketDataSnapshot.symbol
             cumulativeVolume = marketDataSnapshot.cumulativeVolume
             greeks = marketDataSnapshot.greeks
+            indicativePrice = marketDataSnapshot.indicativePrice
             lastQuote = marketDataSnapshot.lastQuote
             lastTrade = marketDataSnapshot.lastTrade
             name = marketDataSnapshot.name
@@ -464,6 +490,29 @@ private constructor(
         fun greeks(greeks: JsonField<SnapshotGreeks>) = apply { this.greeks = greeks }
 
         /**
+         * Indicative price for a new issue, in USD. Present only while the instrument is a new
+         * issue with no quote, trade or previous close. When a null/undefined value is observed, it
+         * indicates that there is no available data.
+         */
+        fun indicativePrice(indicativePrice: String?) =
+            indicativePrice(JsonField.ofNullable(indicativePrice))
+
+        /** Alias for calling [Builder.indicativePrice] with `indicativePrice.orElse(null)`. */
+        fun indicativePrice(indicativePrice: Optional<String>) =
+            indicativePrice(indicativePrice.getOrNull())
+
+        /**
+         * Sets [Builder.indicativePrice] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.indicativePrice] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun indicativePrice(indicativePrice: JsonField<String>) = apply {
+            this.indicativePrice = indicativePrice
+        }
+
+        /**
          * Most recent quote if available. When a null/undefined value is observed, it indicates
          * that there is no available data.
          */
@@ -588,6 +637,7 @@ private constructor(
                 checkRequired("symbol", symbol),
                 cumulativeVolume,
                 greeks,
+                indicativePrice,
                 lastQuote,
                 lastTrade,
                 name,
@@ -617,6 +667,7 @@ private constructor(
         symbol()
         cumulativeVolume()
         greeks().ifPresent { it.validate() }
+        indicativePrice()
         lastQuote().ifPresent { it.validate() }
         lastTrade().ifPresent { it.validate() }
         name()
@@ -645,6 +696,7 @@ private constructor(
             (if (symbol.asKnown().isPresent) 1 else 0) +
             (if (cumulativeVolume.asKnown().isPresent) 1 else 0) +
             (greeks.asKnown().getOrNull()?.validity() ?: 0) +
+            (if (indicativePrice.asKnown().isPresent) 1 else 0) +
             (lastQuote.asKnown().getOrNull()?.validity() ?: 0) +
             (lastTrade.asKnown().getOrNull()?.validity() ?: 0) +
             (if (name.asKnown().isPresent) 1 else 0) +
@@ -662,6 +714,7 @@ private constructor(
             symbol == other.symbol &&
             cumulativeVolume == other.cumulativeVolume &&
             greeks == other.greeks &&
+            indicativePrice == other.indicativePrice &&
             lastQuote == other.lastQuote &&
             lastTrade == other.lastTrade &&
             name == other.name &&
@@ -677,6 +730,7 @@ private constructor(
             symbol,
             cumulativeVolume,
             greeks,
+            indicativePrice,
             lastQuote,
             lastTrade,
             name,
@@ -688,5 +742,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "MarketDataSnapshot{instrumentId=$instrumentId, session=$session, shortSaleRestricted=$shortSaleRestricted, symbol=$symbol, cumulativeVolume=$cumulativeVolume, greeks=$greeks, lastQuote=$lastQuote, lastTrade=$lastTrade, name=$name, openInterest=$openInterest, additionalProperties=$additionalProperties}"
+        "MarketDataSnapshot{instrumentId=$instrumentId, session=$session, shortSaleRestricted=$shortSaleRestricted, symbol=$symbol, cumulativeVolume=$cumulativeVolume, greeks=$greeks, indicativePrice=$indicativePrice, lastQuote=$lastQuote, lastTrade=$lastTrade, name=$name, openInterest=$openInterest, additionalProperties=$additionalProperties}"
 }

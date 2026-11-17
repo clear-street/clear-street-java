@@ -71,6 +71,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                                 .vega("vega")
                                 .build()
                         )
+                        .indicativePrice("indicative_price")
                         .lastQuote(
                             SnapshotQuote.builder()
                                 .ask("210.14")
@@ -158,6 +159,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                             .vega("vega")
                             .build()
                     )
+                    .indicativePrice("indicative_price")
                     .lastQuote(
                         SnapshotQuote.builder()
                             .ask("210.14")
@@ -243,6 +245,7 @@ internal class MarketDataGetSnapshotsResponseTest {
                                 .vega("vega")
                                 .build()
                         )
+                        .indicativePrice("indicative_price")
                         .lastQuote(
                             SnapshotQuote.builder()
                                 .ask("210.14")

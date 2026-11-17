@@ -30,6 +30,7 @@ private constructor(
     private val isFractionable: JsonField<Boolean>,
     private val isLiquidationOnly: JsonField<Boolean>,
     private val isMarginable: JsonField<Boolean>,
+    private val isNewIssue: JsonField<Boolean>,
     private val isPtp: JsonField<Boolean>,
     private val isShortProhibited: JsonField<Boolean>,
     private val isThresholdSecurity: JsonField<Boolean>,
@@ -69,6 +70,9 @@ private constructor(
         @JsonProperty("is_marginable")
         @ExcludeMissing
         isMarginable: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("is_new_issue")
+        @ExcludeMissing
+        isNewIssue: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("is_ptp") @ExcludeMissing isPtp: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("is_short_prohibited")
         @ExcludeMissing
@@ -118,6 +122,7 @@ private constructor(
         isFractionable,
         isLiquidationOnly,
         isMarginable,
+        isNewIssue,
         isPtp,
         isShortProhibited,
         isThresholdSecurity,
@@ -193,6 +198,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun isMarginable(): Boolean = isMarginable.getRequired("is_marginable")
+
+    /**
+     * Indicates if the instrument is a new issue (e.g. an IPO) that may not yet have a quote, trade
+     * or previous close. See `indicative_price` on the market data snapshot.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun isNewIssue(): Boolean = isNewIssue.getRequired("is_new_issue")
 
     /**
      * Indicates if the instrument is a publicly traded partnership (PTP). PTP sales are subject to
@@ -415,6 +429,13 @@ private constructor(
     fun _isMarginable(): JsonField<Boolean> = isMarginable
 
     /**
+     * Returns the raw JSON value of [isNewIssue].
+     *
+     * Unlike [isNewIssue], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("is_new_issue") @ExcludeMissing fun _isNewIssue(): JsonField<Boolean> = isNewIssue
+
+    /**
      * Returns the raw JSON value of [isPtp].
      *
      * Unlike [isPtp], this method doesn't throw if the JSON field has an unexpected type.
@@ -586,6 +607,7 @@ private constructor(
          * .isFractionable()
          * .isLiquidationOnly()
          * .isMarginable()
+         * .isNewIssue()
          * .isPtp()
          * .isShortProhibited()
          * .isThresholdSecurity()
@@ -607,6 +629,7 @@ private constructor(
         private var isFractionable: JsonField<Boolean>? = null
         private var isLiquidationOnly: JsonField<Boolean>? = null
         private var isMarginable: JsonField<Boolean>? = null
+        private var isNewIssue: JsonField<Boolean>? = null
         private var isPtp: JsonField<Boolean>? = null
         private var isShortProhibited: JsonField<Boolean>? = null
         private var isThresholdSecurity: JsonField<Boolean>? = null
@@ -635,6 +658,7 @@ private constructor(
             isFractionable = instrumentCore.isFractionable
             isLiquidationOnly = instrumentCore.isLiquidationOnly
             isMarginable = instrumentCore.isMarginable
+            isNewIssue = instrumentCore.isNewIssue
             isPtp = instrumentCore.isPtp
             isShortProhibited = instrumentCore.isShortProhibited
             isThresholdSecurity = instrumentCore.isThresholdSecurity
@@ -747,6 +771,21 @@ private constructor(
         fun isMarginable(isMarginable: JsonField<Boolean>) = apply {
             this.isMarginable = isMarginable
         }
+
+        /**
+         * Indicates if the instrument is a new issue (e.g. an IPO) that may not yet have a quote,
+         * trade or previous close. See `indicative_price` on the market data snapshot.
+         */
+        fun isNewIssue(isNewIssue: Boolean) = isNewIssue(JsonField.of(isNewIssue))
+
+        /**
+         * Sets [Builder.isNewIssue] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.isNewIssue] with a well-typed [Boolean] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun isNewIssue(isNewIssue: JsonField<Boolean>) = apply { this.isNewIssue = isNewIssue }
 
         /**
          * Indicates if the instrument is a publicly traded partnership (PTP). PTP sales are subject
@@ -1125,6 +1164,7 @@ private constructor(
          * .isFractionable()
          * .isLiquidationOnly()
          * .isMarginable()
+         * .isNewIssue()
          * .isPtp()
          * .isShortProhibited()
          * .isThresholdSecurity()
@@ -1144,6 +1184,7 @@ private constructor(
                 checkRequired("isFractionable", isFractionable),
                 checkRequired("isLiquidationOnly", isLiquidationOnly),
                 checkRequired("isMarginable", isMarginable),
+                checkRequired("isNewIssue", isNewIssue),
                 checkRequired("isPtp", isPtp),
                 checkRequired("isShortProhibited", isShortProhibited),
                 checkRequired("isThresholdSecurity", isThresholdSecurity),
@@ -1187,6 +1228,7 @@ private constructor(
         isFractionable()
         isLiquidationOnly()
         isMarginable()
+        isNewIssue()
         isPtp()
         isShortProhibited()
         isThresholdSecurity()
@@ -1229,6 +1271,7 @@ private constructor(
             (if (isFractionable.asKnown().isPresent) 1 else 0) +
             (if (isLiquidationOnly.asKnown().isPresent) 1 else 0) +
             (if (isMarginable.asKnown().isPresent) 1 else 0) +
+            (if (isNewIssue.asKnown().isPresent) 1 else 0) +
             (if (isPtp.asKnown().isPresent) 1 else 0) +
             (if (isShortProhibited.asKnown().isPresent) 1 else 0) +
             (if (isThresholdSecurity.asKnown().isPresent) 1 else 0) +
@@ -1260,6 +1303,7 @@ private constructor(
             isFractionable == other.isFractionable &&
             isLiquidationOnly == other.isLiquidationOnly &&
             isMarginable == other.isMarginable &&
+            isNewIssue == other.isNewIssue &&
             isPtp == other.isPtp &&
             isShortProhibited == other.isShortProhibited &&
             isThresholdSecurity == other.isThresholdSecurity &&
@@ -1289,6 +1333,7 @@ private constructor(
             isFractionable,
             isLiquidationOnly,
             isMarginable,
+            isNewIssue,
             isPtp,
             isShortProhibited,
             isThresholdSecurity,
@@ -1313,5 +1358,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, caxAdjustedPreviousClose=$caxAdjustedPreviousClose, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notShortableReasons=$notShortableReasons, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, shortableAttribute=$shortableAttribute, tickRules=$tickRules, additionalProperties=$additionalProperties}"
+        "InstrumentCore{id=$id, countryOfIssue=$countryOfIssue, currency=$currency, easyToBorrow=$easyToBorrow, isFractionable=$isFractionable, isLiquidationOnly=$isLiquidationOnly, isMarginable=$isMarginable, isNewIssue=$isNewIssue, isPtp=$isPtp, isShortProhibited=$isShortProhibited, isThresholdSecurity=$isThresholdSecurity, isTradable=$isTradable, symbol=$symbol, venue=$venue, adv=$adv, caxAdjustedPreviousClose=$caxAdjustedPreviousClose, instrumentType=$instrumentType, longMarginRate=$longMarginRate, name=$name, notShortableReasons=$notShortableReasons, notionalAdv=$notionalAdv, previousClose=$previousClose, shortMarginRate=$shortMarginRate, shortableAttribute=$shortableAttribute, tickRules=$tickRules, additionalProperties=$additionalProperties}"
 }

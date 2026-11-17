@@ -45,6 +45,7 @@ internal class MarketDataSnapshotTest {
                         .vega("vega")
                         .build()
                 )
+                .indicativePrice("indicative_price")
                 .lastQuote(
                     SnapshotQuote.builder()
                         .ask("210.14")
@@ -103,6 +104,7 @@ internal class MarketDataSnapshotTest {
                     .vega("vega")
                     .build()
             )
+        assertThat(marketDataSnapshot.indicativePrice()).contains("indicative_price")
         assertThat(marketDataSnapshot.lastQuote())
             .contains(
                 SnapshotQuote.builder()
@@ -165,6 +167,7 @@ internal class MarketDataSnapshotTest {
                         .vega("vega")
                         .build()
                 )
+                .indicativePrice("indicative_price")
                 .lastQuote(
                     SnapshotQuote.builder()
                         .ask("210.14")
