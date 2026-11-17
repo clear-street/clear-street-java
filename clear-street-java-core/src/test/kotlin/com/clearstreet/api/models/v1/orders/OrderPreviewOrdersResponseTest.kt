@@ -46,6 +46,9 @@ internal class OrderPreviewOrdersResponseTest {
                                     OrderPreviewAmount.builder()
                                         .grossAmount("10000.00")
                                         .netAmount("10000.00")
+                                        .fees(
+                                            Fees.builder().total("0.10").exchangeFee("0.10").build()
+                                        )
                                         .build()
                                 )
                                 .buyingPower(
@@ -181,6 +184,9 @@ internal class OrderPreviewOrdersResponseTest {
                                     OrderPreviewAmount.builder()
                                         .grossAmount("10000.00")
                                         .netAmount("10000.00")
+                                        .fees(
+                                            Fees.builder().total("0.10").exchangeFee("0.10").build()
+                                        )
                                         .build()
                                 )
                                 .buyingPower(
@@ -318,6 +324,9 @@ internal class OrderPreviewOrdersResponseTest {
                                     OrderPreviewAmount.builder()
                                         .grossAmount("10000.00")
                                         .netAmount("10000.00")
+                                        .fees(
+                                            Fees.builder().total("0.10").exchangeFee("0.10").build()
+                                        )
                                         .build()
                                 )
                                 .buyingPower(

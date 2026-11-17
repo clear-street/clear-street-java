@@ -19,6 +19,7 @@ internal class OrderPreviewTest {
                     OrderPreviewAmount.builder()
                         .grossAmount("10000.00")
                         .netAmount("10000.00")
+                        .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
                         .build()
                 )
                 .buyingPower(
@@ -112,7 +113,11 @@ internal class OrderPreviewTest {
         assertThat(orderPreview.accountId()).isEqualTo(19816L)
         assertThat(orderPreview.amount())
             .isEqualTo(
-                OrderPreviewAmount.builder().grossAmount("10000.00").netAmount("10000.00").build()
+                OrderPreviewAmount.builder()
+                    .grossAmount("10000.00")
+                    .netAmount("10000.00")
+                    .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
+                    .build()
             )
         assertThat(orderPreview.buyingPower())
             .isEqualTo(
@@ -217,6 +222,7 @@ internal class OrderPreviewTest {
                     OrderPreviewAmount.builder()
                         .grossAmount("10000.00")
                         .netAmount("10000.00")
+                        .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
                         .build()
                 )
                 .buyingPower(

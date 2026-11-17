@@ -14,6 +14,8 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 /** Monetary size of the previewed order. */
 class OrderPreviewAmount
@@ -21,6 +23,7 @@ class OrderPreviewAmount
 private constructor(
     private val grossAmount: JsonField<String>,
     private val netAmount: JsonField<String>,
+    private val fees: JsonField<Fees>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -30,7 +33,8 @@ private constructor(
         @ExcludeMissing
         grossAmount: JsonField<String> = JsonMissing.of(),
         @JsonProperty("net_amount") @ExcludeMissing netAmount: JsonField<String> = JsonMissing.of(),
-    ) : this(grossAmount, netAmount, mutableMapOf())
+        @JsonProperty("fees") @ExcludeMissing fees: JsonField<Fees> = JsonMissing.of(),
+    ) : this(grossAmount, netAmount, fees, mutableMapOf())
 
     /**
      * Total cash impact of the order before estimated fees and commissions.
@@ -41,12 +45,26 @@ private constructor(
     fun grossAmount(): String = grossAmount.getRequired("gross_amount")
 
     /**
-     * Total cash impact of the order after estimated fees and commissions.
+     * Total cash impact of the order after estimated fees and commissions: `gross_amount` with
+     * `fees.total` applied.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun netAmount(): String = netAmount.getRequired("net_amount")
+
+    /**
+     * Fees charged to the account, broken out by kind.
+     *
+     * Amounts are in the instrument's currency, at the full precision the venue reports. Statements
+     * round each fill's fee to the cent, so they can differ by a fraction of a cent. A positive
+     * amount is charged to the account; a negative amount is a rebate. New kinds of fee are added
+     * as new optional fields, and `total` always includes them.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun fees(): Optional<Fees> = fees.getOptional("fees")
 
     /**
      * Returns the raw JSON value of [grossAmount].
@@ -63,6 +81,13 @@ private constructor(
      * Unlike [netAmount], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("net_amount") @ExcludeMissing fun _netAmount(): JsonField<String> = netAmount
+
+    /**
+     * Returns the raw JSON value of [fees].
+     *
+     * Unlike [fees], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Fees> = fees
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -95,12 +120,14 @@ private constructor(
 
         private var grossAmount: JsonField<String>? = null
         private var netAmount: JsonField<String>? = null
+        private var fees: JsonField<Fees> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(orderPreviewAmount: OrderPreviewAmount) = apply {
             grossAmount = orderPreviewAmount.grossAmount
             netAmount = orderPreviewAmount.netAmount
+            fees = orderPreviewAmount.fees
             additionalProperties = orderPreviewAmount.additionalProperties.toMutableMap()
         }
 
@@ -116,7 +143,10 @@ private constructor(
          */
         fun grossAmount(grossAmount: JsonField<String>) = apply { this.grossAmount = grossAmount }
 
-        /** Total cash impact of the order after estimated fees and commissions. */
+        /**
+         * Total cash impact of the order after estimated fees and commissions: `gross_amount` with
+         * `fees.total` applied.
+         */
         fun netAmount(netAmount: String) = netAmount(JsonField.of(netAmount))
 
         /**
@@ -127,6 +157,24 @@ private constructor(
          * value.
          */
         fun netAmount(netAmount: JsonField<String>) = apply { this.netAmount = netAmount }
+
+        /**
+         * Fees charged to the account, broken out by kind.
+         *
+         * Amounts are in the instrument's currency, at the full precision the venue reports.
+         * Statements round each fill's fee to the cent, so they can differ by a fraction of a cent.
+         * A positive amount is charged to the account; a negative amount is a rebate. New kinds of
+         * fee are added as new optional fields, and `total` always includes them.
+         */
+        fun fees(fees: Fees) = fees(JsonField.of(fees))
+
+        /**
+         * Sets [Builder.fees] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.fees] with a well-typed [Fees] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun fees(fees: JsonField<Fees>) = apply { this.fees = fees }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -164,6 +212,7 @@ private constructor(
             OrderPreviewAmount(
                 checkRequired("grossAmount", grossAmount),
                 checkRequired("netAmount", netAmount),
+                fees,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -185,6 +234,7 @@ private constructor(
 
         grossAmount()
         netAmount()
+        fees().ifPresent { it.validate() }
         validated = true
     }
 
@@ -204,7 +254,8 @@ private constructor(
     @JvmSynthetic
     internal fun validity(): Int =
         (if (grossAmount.asKnown().isPresent) 1 else 0) +
-            (if (netAmount.asKnown().isPresent) 1 else 0)
+            (if (netAmount.asKnown().isPresent) 1 else 0) +
+            (fees.asKnown().getOrNull()?.validity() ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -214,13 +265,16 @@ private constructor(
         return other is OrderPreviewAmount &&
             grossAmount == other.grossAmount &&
             netAmount == other.netAmount &&
+            fees == other.fees &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(grossAmount, netAmount, additionalProperties) }
+    private val hashCode: Int by lazy {
+        Objects.hash(grossAmount, netAmount, fees, additionalProperties)
+    }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OrderPreviewAmount{grossAmount=$grossAmount, netAmount=$netAmount, additionalProperties=$additionalProperties}"
+        "OrderPreviewAmount{grossAmount=$grossAmount, netAmount=$netAmount, fees=$fees, additionalProperties=$additionalProperties}"
 }

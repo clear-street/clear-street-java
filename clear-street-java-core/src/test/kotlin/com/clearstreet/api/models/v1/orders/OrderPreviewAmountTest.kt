@@ -12,17 +12,27 @@ internal class OrderPreviewAmountTest {
     @Test
     fun create() {
         val orderPreviewAmount =
-            OrderPreviewAmount.builder().grossAmount("10000.00").netAmount("10000.00").build()
+            OrderPreviewAmount.builder()
+                .grossAmount("10000.00")
+                .netAmount("10000.00")
+                .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
+                .build()
 
         assertThat(orderPreviewAmount.grossAmount()).isEqualTo("10000.00")
         assertThat(orderPreviewAmount.netAmount()).isEqualTo("10000.00")
+        assertThat(orderPreviewAmount.fees())
+            .contains(Fees.builder().total("0.10").exchangeFee("0.10").build())
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val orderPreviewAmount =
-            OrderPreviewAmount.builder().grossAmount("10000.00").netAmount("10000.00").build()
+            OrderPreviewAmount.builder()
+                .grossAmount("10000.00")
+                .netAmount("10000.00")
+                .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
+                .build()
 
         val roundtrippedOrderPreviewAmount =
             jsonMapper.readValue(
