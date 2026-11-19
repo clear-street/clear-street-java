@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/clear-street/clear-street-java/compare/v0.9.0...v0.10.0) (2026-11-19)
+
+
+### Features
+
+* **api:** api update ([52562ec](https://github.com/clear-street/clear-street-java/commit/52562ecb3379c974dcc85d331d7446d24f314861))
+
 ## [0.9.0](https://github.com/clear-street/clear-street-java/compare/v0.8.0...v0.9.0) (2026-11-17)
 
 
