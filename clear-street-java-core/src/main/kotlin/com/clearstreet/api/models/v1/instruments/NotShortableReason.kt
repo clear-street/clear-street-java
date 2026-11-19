@@ -26,6 +26,8 @@ class NotShortableReason @JsonCreator private constructor(private val value: Jso
 
         @JvmField val UNSUPPORTED_SECURITY = of("UNSUPPORTED_SECURITY")
 
+        @JvmField val INSTRUMENT_NOT_SHORTABLE = of("INSTRUMENT_NOT_SHORTABLE")
+
         @JvmStatic fun of(value: String) = NotShortableReason(JsonField.of(value))
     }
 
@@ -33,6 +35,7 @@ class NotShortableReason @JsonCreator private constructor(private val value: Jso
     enum class Known {
         INSUFFICIENT_LOCATE_INVENTORY,
         UNSUPPORTED_SECURITY,
+        INSTRUMENT_NOT_SHORTABLE,
     }
 
     /**
@@ -47,6 +50,7 @@ class NotShortableReason @JsonCreator private constructor(private val value: Jso
     enum class Value {
         INSUFFICIENT_LOCATE_INVENTORY,
         UNSUPPORTED_SECURITY,
+        INSTRUMENT_NOT_SHORTABLE,
         /**
          * An enum member indicating that [NotShortableReason] was instantiated with an unknown
          * value.
@@ -65,6 +69,7 @@ class NotShortableReason @JsonCreator private constructor(private val value: Jso
         when (this) {
             INSUFFICIENT_LOCATE_INVENTORY -> Value.INSUFFICIENT_LOCATE_INVENTORY
             UNSUPPORTED_SECURITY -> Value.UNSUPPORTED_SECURITY
+            INSTRUMENT_NOT_SHORTABLE -> Value.INSTRUMENT_NOT_SHORTABLE
             else -> Value._UNKNOWN
         }
 
@@ -81,6 +86,7 @@ class NotShortableReason @JsonCreator private constructor(private val value: Jso
         when (this) {
             INSUFFICIENT_LOCATE_INVENTORY -> Known.INSUFFICIENT_LOCATE_INVENTORY
             UNSUPPORTED_SECURITY -> Known.UNSUPPORTED_SECURITY
+            INSTRUMENT_NOT_SHORTABLE -> Known.INSTRUMENT_NOT_SHORTABLE
             else -> throw ClearStreetInvalidDataException("Unknown NotShortableReason: $value")
         }
 
