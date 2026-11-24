@@ -16,6 +16,8 @@ import com.clearstreet.api.models.v1.omniai.PromptButtonAction
 import com.clearstreet.api.models.v1.omniai.StructuredAction
 import com.clearstreet.api.models.v1.omniai.StructuredActionButtonAction
 import com.clearstreet.api.models.v1.omniai.SuggestedActionsPayload
+import com.clearstreet.api.models.v1.omniai.UiNode
+import com.clearstreet.api.models.v1.omniai.UiPayload
 import com.clearstreet.api.models.v1.orders.OrderStrategy
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestPositionEffect
@@ -45,6 +47,7 @@ internal class MessageContentPartTest {
         assertThat(messageContentPart.contentPartText()).contains(contentPartText)
         assertThat(messageContentPart.contentPartStructuredAction()).isEmpty
         assertThat(messageContentPart.contentPartChart()).isEmpty
+        assertThat(messageContentPart.contentPartUi()).isEmpty
         assertThat(messageContentPart.contentPartSuggestedActions()).isEmpty
         assertThat(messageContentPart.contentPartCustom()).isEmpty
     }
@@ -123,6 +126,7 @@ internal class MessageContentPartTest {
         assertThat(messageContentPart.contentPartStructuredAction())
             .contains(contentPartStructuredAction)
         assertThat(messageContentPart.contentPartChart()).isEmpty
+        assertThat(messageContentPart.contentPartUi()).isEmpty
         assertThat(messageContentPart.contentPartSuggestedActions()).isEmpty
         assertThat(messageContentPart.contentPartCustom()).isEmpty
     }
@@ -237,6 +241,7 @@ internal class MessageContentPartTest {
         assertThat(messageContentPart.contentPartText()).isEmpty
         assertThat(messageContentPart.contentPartStructuredAction()).isEmpty
         assertThat(messageContentPart.contentPartChart()).contains(contentPartChart)
+        assertThat(messageContentPart.contentPartUi()).isEmpty
         assertThat(messageContentPart.contentPartSuggestedActions()).isEmpty
         assertThat(messageContentPart.contentPartCustom()).isEmpty
     }
@@ -283,6 +288,85 @@ internal class MessageContentPartTest {
                             .build()
                     )
                     .type(MessageContentPart.ContentPartChart.Type.CHART)
+                    .build()
+            )
+
+        val roundtrippedMessageContentPart =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(messageContentPart),
+                jacksonTypeRef<MessageContentPart>(),
+            )
+
+        assertThat(roundtrippedMessageContentPart).isEqualTo(messageContentPart)
+    }
+
+    @Test
+    fun ofContentPartUi() {
+        val contentPartUi =
+            MessageContentPart.ContentPartUi.builder()
+                .payload(
+                    UiPayload.builder()
+                        .root(
+                            UiNode.builder()
+                                .type("Row")
+                                .addChild(
+                                    JsonValue.from(
+                                        mapOf(
+                                            "props" to
+                                                mapOf("label" to "Day P&L", "value" to "+\$1,240"),
+                                            "type" to "MetricCard",
+                                        )
+                                    )
+                                )
+                                .props(JsonValue.from(mapOf<String, Any>()))
+                                .build()
+                        )
+                        .uiId("ui_day_pnl")
+                        .build()
+                )
+                .type(MessageContentPart.ContentPartUi.Type.UI)
+                .build()
+
+        val messageContentPart = MessageContentPart.ofContentPartUi(contentPartUi)
+
+        assertThat(messageContentPart.contentPartText()).isEmpty
+        assertThat(messageContentPart.contentPartStructuredAction()).isEmpty
+        assertThat(messageContentPart.contentPartChart()).isEmpty
+        assertThat(messageContentPart.contentPartUi()).contains(contentPartUi)
+        assertThat(messageContentPart.contentPartSuggestedActions()).isEmpty
+        assertThat(messageContentPart.contentPartCustom()).isEmpty
+    }
+
+    @Test
+    fun ofContentPartUiRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val messageContentPart =
+            MessageContentPart.ofContentPartUi(
+                MessageContentPart.ContentPartUi.builder()
+                    .payload(
+                        UiPayload.builder()
+                            .root(
+                                UiNode.builder()
+                                    .type("Row")
+                                    .addChild(
+                                        JsonValue.from(
+                                            mapOf(
+                                                "props" to
+                                                    mapOf(
+                                                        "label" to "Day P&L",
+                                                        "value" to "+\$1,240",
+                                                    ),
+                                                "type" to "MetricCard",
+                                            )
+                                        )
+                                    )
+                                    .props(JsonValue.from(mapOf<String, Any>()))
+                                    .build()
+                            )
+                            .uiId("ui_day_pnl")
+                            .build()
+                    )
+                    .type(MessageContentPart.ContentPartUi.Type.UI)
                     .build()
             )
 
@@ -347,6 +431,7 @@ internal class MessageContentPartTest {
         assertThat(messageContentPart.contentPartText()).isEmpty
         assertThat(messageContentPart.contentPartStructuredAction()).isEmpty
         assertThat(messageContentPart.contentPartChart()).isEmpty
+        assertThat(messageContentPart.contentPartUi()).isEmpty
         assertThat(messageContentPart.contentPartSuggestedActions())
             .contains(contentPartSuggestedActions)
         assertThat(messageContentPart.contentPartCustom()).isEmpty
@@ -423,6 +508,7 @@ internal class MessageContentPartTest {
         assertThat(messageContentPart.contentPartText()).isEmpty
         assertThat(messageContentPart.contentPartStructuredAction()).isEmpty
         assertThat(messageContentPart.contentPartChart()).isEmpty
+        assertThat(messageContentPart.contentPartUi()).isEmpty
         assertThat(messageContentPart.contentPartSuggestedActions()).isEmpty
         assertThat(messageContentPart.contentPartCustom()).contains(contentPartCustom)
     }

@@ -16,6 +16,8 @@ import com.clearstreet.api.models.v1.omniai.PromptButtonAction
 import com.clearstreet.api.models.v1.omniai.StructuredAction
 import com.clearstreet.api.models.v1.omniai.StructuredActionButtonAction
 import com.clearstreet.api.models.v1.omniai.SuggestedActionsPayload
+import com.clearstreet.api.models.v1.omniai.UiNode
+import com.clearstreet.api.models.v1.omniai.UiPayload
 import com.clearstreet.api.models.v1.orders.OrderStrategy
 import com.clearstreet.api.models.v1.orders.RequestOrderType
 import com.clearstreet.api.models.v1.orders.RequestPositionEffect
@@ -46,6 +48,7 @@ internal class ResponseContentPartTest {
         assertThat(responseContentPart.contentPartThinking()).isEmpty
         assertThat(responseContentPart.contentPartStructuredAction()).isEmpty
         assertThat(responseContentPart.contentPartChart()).isEmpty
+        assertThat(responseContentPart.contentPartUi()).isEmpty
         assertThat(responseContentPart.contentPartSuggestedActions()).isEmpty
         assertThat(responseContentPart.contentPartCustom()).isEmpty
     }
@@ -84,6 +87,7 @@ internal class ResponseContentPartTest {
         assertThat(responseContentPart.contentPartThinking()).contains(contentPartThinking)
         assertThat(responseContentPart.contentPartStructuredAction()).isEmpty
         assertThat(responseContentPart.contentPartChart()).isEmpty
+        assertThat(responseContentPart.contentPartUi()).isEmpty
         assertThat(responseContentPart.contentPartSuggestedActions()).isEmpty
         assertThat(responseContentPart.contentPartCustom()).isEmpty
     }
@@ -163,6 +167,7 @@ internal class ResponseContentPartTest {
         assertThat(responseContentPart.contentPartStructuredAction())
             .contains(contentPartStructuredAction)
         assertThat(responseContentPart.contentPartChart()).isEmpty
+        assertThat(responseContentPart.contentPartUi()).isEmpty
         assertThat(responseContentPart.contentPartSuggestedActions()).isEmpty
         assertThat(responseContentPart.contentPartCustom()).isEmpty
     }
@@ -278,6 +283,7 @@ internal class ResponseContentPartTest {
         assertThat(responseContentPart.contentPartThinking()).isEmpty
         assertThat(responseContentPart.contentPartStructuredAction()).isEmpty
         assertThat(responseContentPart.contentPartChart()).contains(contentPartChart)
+        assertThat(responseContentPart.contentPartUi()).isEmpty
         assertThat(responseContentPart.contentPartSuggestedActions()).isEmpty
         assertThat(responseContentPart.contentPartCustom()).isEmpty
     }
@@ -324,6 +330,86 @@ internal class ResponseContentPartTest {
                             .build()
                     )
                     .type(ResponseContentPart.ContentPartChart.Type.CHART)
+                    .build()
+            )
+
+        val roundtrippedResponseContentPart =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(responseContentPart),
+                jacksonTypeRef<ResponseContentPart>(),
+            )
+
+        assertThat(roundtrippedResponseContentPart).isEqualTo(responseContentPart)
+    }
+
+    @Test
+    fun ofContentPartUi() {
+        val contentPartUi =
+            ResponseContentPart.ContentPartUi.builder()
+                .payload(
+                    UiPayload.builder()
+                        .root(
+                            UiNode.builder()
+                                .type("Row")
+                                .addChild(
+                                    JsonValue.from(
+                                        mapOf(
+                                            "props" to
+                                                mapOf("label" to "Day P&L", "value" to "+\$1,240"),
+                                            "type" to "MetricCard",
+                                        )
+                                    )
+                                )
+                                .props(JsonValue.from(mapOf<String, Any>()))
+                                .build()
+                        )
+                        .uiId("ui_day_pnl")
+                        .build()
+                )
+                .type(ResponseContentPart.ContentPartUi.Type.UI)
+                .build()
+
+        val responseContentPart = ResponseContentPart.ofContentPartUi(contentPartUi)
+
+        assertThat(responseContentPart.contentPartText()).isEmpty
+        assertThat(responseContentPart.contentPartThinking()).isEmpty
+        assertThat(responseContentPart.contentPartStructuredAction()).isEmpty
+        assertThat(responseContentPart.contentPartChart()).isEmpty
+        assertThat(responseContentPart.contentPartUi()).contains(contentPartUi)
+        assertThat(responseContentPart.contentPartSuggestedActions()).isEmpty
+        assertThat(responseContentPart.contentPartCustom()).isEmpty
+    }
+
+    @Test
+    fun ofContentPartUiRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val responseContentPart =
+            ResponseContentPart.ofContentPartUi(
+                ResponseContentPart.ContentPartUi.builder()
+                    .payload(
+                        UiPayload.builder()
+                            .root(
+                                UiNode.builder()
+                                    .type("Row")
+                                    .addChild(
+                                        JsonValue.from(
+                                            mapOf(
+                                                "props" to
+                                                    mapOf(
+                                                        "label" to "Day P&L",
+                                                        "value" to "+\$1,240",
+                                                    ),
+                                                "type" to "MetricCard",
+                                            )
+                                        )
+                                    )
+                                    .props(JsonValue.from(mapOf<String, Any>()))
+                                    .build()
+                            )
+                            .uiId("ui_day_pnl")
+                            .build()
+                    )
+                    .type(ResponseContentPart.ContentPartUi.Type.UI)
                     .build()
             )
 
@@ -389,6 +475,7 @@ internal class ResponseContentPartTest {
         assertThat(responseContentPart.contentPartThinking()).isEmpty
         assertThat(responseContentPart.contentPartStructuredAction()).isEmpty
         assertThat(responseContentPart.contentPartChart()).isEmpty
+        assertThat(responseContentPart.contentPartUi()).isEmpty
         assertThat(responseContentPart.contentPartSuggestedActions())
             .contains(contentPartSuggestedActions)
         assertThat(responseContentPart.contentPartCustom()).isEmpty
@@ -466,6 +553,7 @@ internal class ResponseContentPartTest {
         assertThat(responseContentPart.contentPartThinking()).isEmpty
         assertThat(responseContentPart.contentPartStructuredAction()).isEmpty
         assertThat(responseContentPart.contentPartChart()).isEmpty
+        assertThat(responseContentPart.contentPartUi()).isEmpty
         assertThat(responseContentPart.contentPartSuggestedActions()).isEmpty
         assertThat(responseContentPart.contentPartCustom()).contains(contentPartCustom)
     }

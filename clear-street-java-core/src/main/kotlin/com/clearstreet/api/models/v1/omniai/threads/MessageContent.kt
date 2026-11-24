@@ -126,6 +126,10 @@ private constructor(
         fun addPart(contentPartChart: MessageContentPart.ContentPartChart) =
             addPart(MessageContentPart.ofContentPartChart(contentPartChart))
 
+        /** Alias for calling [addPart] with `MessageContentPart.ofContentPartUi(contentPartUi)`. */
+        fun addPart(contentPartUi: MessageContentPart.ContentPartUi) =
+            addPart(MessageContentPart.ofContentPartUi(contentPartUi))
+
         /**
          * Alias for calling [addPart] with
          * `MessageContentPart.ofContentPartSuggestedActions(contentPartSuggestedActions)`.
