@@ -3,6 +3,7 @@
 package com.clearstreet.api.models.v1.accounts
 
 import com.clearstreet.api.core.http.QueryParams
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,8 +13,11 @@ internal class AccountGetNonTradeActivitiesParamsTest {
     fun create() {
         AccountGetNonTradeActivitiesParams.builder()
             .accountId(0L)
+            .addActivityType(AccountGetNonTradeActivitiesParams.ActivityType.MONEY_MOVEMENT)
+            .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .pageSize(1L)
             .pageToken("U3RhaW5sZXNzIHJvY2tz")
+            .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
             .build()
     }
 
@@ -31,8 +35,11 @@ internal class AccountGetNonTradeActivitiesParamsTest {
         val params =
             AccountGetNonTradeActivitiesParams.builder()
                 .accountId(0L)
+                .addActivityType(AccountGetNonTradeActivitiesParams.ActivityType.MONEY_MOVEMENT)
+                .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .pageSize(1L)
                 .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .build()
 
         val queryParams = params._queryParams()
@@ -40,8 +47,11 @@ internal class AccountGetNonTradeActivitiesParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
+                    .put("activity_type", listOf("money_movement").joinToString(","))
+                    .put("from", "2019-12-27T18:11:19.117Z")
                     .put("page_size", "1")
                     .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
+                    .put("to", "2019-12-27T18:11:19.117Z")
                     .build()
             )
     }

@@ -11,6 +11,7 @@ import com.clearstreet.api.models.v1.accounts.AccountGetPortfolioHistoryParams
 import com.clearstreet.api.models.v1.accounts.AccountPatchAccountByIdParams
 import com.clearstreet.api.models.v1.accounts.RiskSettings
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -86,8 +87,11 @@ internal class AccountServiceTest {
             accountService.getNonTradeActivities(
                 AccountGetNonTradeActivitiesParams.builder()
                     .accountId(0L)
+                    .addActivityType(AccountGetNonTradeActivitiesParams.ActivityType.MONEY_MOVEMENT)
+                    .from(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .pageSize(1L)
                     .pageToken("U3RhaW5sZXNzIHJvY2tz")
+                    .to(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .build()
             )
 
