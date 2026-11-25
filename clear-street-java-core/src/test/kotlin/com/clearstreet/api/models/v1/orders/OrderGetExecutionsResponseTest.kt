@@ -46,6 +46,13 @@ internal class OrderGetExecutionsResponseTest {
                         .quantity("100")
                         .side(Side.BUY)
                         .transactionTime(OffsetDateTime.parse("2026-03-24T19:58:43.798000Z"))
+                        .eventContract(
+                            EventContractExecution.builder()
+                                .action(Side.BUY)
+                                .contractSide(EventContractSide.YES)
+                                .noPrice("0.40")
+                                .build()
+                        )
                         .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
                         .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
                         .addLeg(
@@ -101,6 +108,13 @@ internal class OrderGetExecutionsResponseTest {
                     .quantity("100")
                     .side(Side.BUY)
                     .transactionTime(OffsetDateTime.parse("2026-03-24T19:58:43.798000Z"))
+                    .eventContract(
+                        EventContractExecution.builder()
+                            .action(Side.BUY)
+                            .contractSide(EventContractSide.YES)
+                            .noPrice("0.40")
+                            .build()
+                    )
                     .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
                     .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
                     .addLeg(
@@ -158,6 +172,13 @@ internal class OrderGetExecutionsResponseTest {
                         .quantity("100")
                         .side(Side.BUY)
                         .transactionTime(OffsetDateTime.parse("2026-03-24T19:58:43.798000Z"))
+                        .eventContract(
+                            EventContractExecution.builder()
+                                .action(Side.BUY)
+                                .contractSide(EventContractSide.YES)
+                                .noPrice("0.40")
+                                .build()
+                        )
                         .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
                         .instrumentId("528ec5c3-cdbf-447c-b995-ec6c83cfbc02")
                         .addLeg(

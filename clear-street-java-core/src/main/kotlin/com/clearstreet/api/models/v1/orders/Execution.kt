@@ -30,6 +30,7 @@ private constructor(
     private val quantity: JsonField<String>,
     private val side: JsonField<Side>,
     private val transactionTime: JsonField<OffsetDateTime>,
+    private val eventContract: JsonField<EventContractExecution>,
     private val fees: JsonField<Fees>,
     private val instrumentId: JsonField<String>,
     private val legs: JsonField<List<ExecutionLeg>>,
@@ -50,6 +51,9 @@ private constructor(
         @JsonProperty("transaction_time")
         @ExcludeMissing
         transactionTime: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("event_contract")
+        @ExcludeMissing
+        eventContract: JsonField<EventContractExecution> = JsonMissing.of(),
         @JsonProperty("fees") @ExcludeMissing fees: JsonField<Fees> = JsonMissing.of(),
         @JsonProperty("instrument_id")
         @ExcludeMissing
@@ -72,6 +76,7 @@ private constructor(
         quantity,
         side,
         transactionTime,
+        eventContract,
         fees,
         instrumentId,
         legs,
@@ -123,6 +128,16 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun transactionTime(): OffsetDateTime = transactionTime.getRequired("transaction_time")
+
+    /**
+     * Effective action inherited from the parent order, with a NO-relative fill price. This is the
+     * order's classification, not a per-fill open/close accounting attribution.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun eventContract(): Optional<EventContractExecution> =
+        eventContract.getOptional("event_contract")
 
     /**
      * Fees charged to the account, broken out by kind.
@@ -246,6 +261,15 @@ private constructor(
     fun _transactionTime(): JsonField<OffsetDateTime> = transactionTime
 
     /**
+     * Returns the raw JSON value of [eventContract].
+     *
+     * Unlike [eventContract], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("event_contract")
+    @ExcludeMissing
+    fun _eventContract(): JsonField<EventContractExecution> = eventContract
+
+    /**
      * Returns the raw JSON value of [fees].
      *
      * Unlike [fees], this method doesn't throw if the JSON field has an unexpected type.
@@ -346,6 +370,7 @@ private constructor(
         private var quantity: JsonField<String>? = null
         private var side: JsonField<Side>? = null
         private var transactionTime: JsonField<OffsetDateTime>? = null
+        private var eventContract: JsonField<EventContractExecution> = JsonMissing.of()
         private var fees: JsonField<Fees> = JsonMissing.of()
         private var instrumentId: JsonField<String> = JsonMissing.of()
         private var legs: JsonField<MutableList<ExecutionLeg>>? = null
@@ -363,6 +388,7 @@ private constructor(
             quantity = execution.quantity
             side = execution.side
             transactionTime = execution.transactionTime
+            eventContract = execution.eventContract
             fees = execution.fees
             instrumentId = execution.instrumentId
             legs = execution.legs.map { it.toMutableList() }
@@ -434,6 +460,24 @@ private constructor(
          */
         fun transactionTime(transactionTime: JsonField<OffsetDateTime>) = apply {
             this.transactionTime = transactionTime
+        }
+
+        /**
+         * Effective action inherited from the parent order, with a NO-relative fill price. This is
+         * the order's classification, not a per-fill open/close accounting attribution.
+         */
+        fun eventContract(eventContract: EventContractExecution) =
+            eventContract(JsonField.of(eventContract))
+
+        /**
+         * Sets [Builder.eventContract] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.eventContract] with a well-typed
+         * [EventContractExecution] value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
+         */
+        fun eventContract(eventContract: JsonField<EventContractExecution>) = apply {
+            this.eventContract = eventContract
         }
 
         /**
@@ -650,6 +694,7 @@ private constructor(
                 checkRequired("quantity", quantity),
                 checkRequired("side", side),
                 checkRequired("transactionTime", transactionTime),
+                eventContract,
                 fees,
                 instrumentId,
                 (legs ?: JsonMissing.of()).map { it.toImmutable() },
@@ -682,6 +727,7 @@ private constructor(
         quantity()
         side().validate()
         transactionTime()
+        eventContract().ifPresent { it.validate() }
         fees().ifPresent { it.validate() }
         instrumentId()
         legs().ifPresent { it.forEach { it.validate() } }
@@ -713,6 +759,7 @@ private constructor(
             (if (quantity.asKnown().isPresent) 1 else 0) +
             (side.asKnown().getOrNull()?.validity() ?: 0) +
             (if (transactionTime.asKnown().isPresent) 1 else 0) +
+            (eventContract.asKnown().getOrNull()?.validity() ?: 0) +
             (fees.asKnown().getOrNull()?.validity() ?: 0) +
             (if (instrumentId.asKnown().isPresent) 1 else 0) +
             (legs.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
@@ -733,6 +780,7 @@ private constructor(
             quantity == other.quantity &&
             side == other.side &&
             transactionTime == other.transactionTime &&
+            eventContract == other.eventContract &&
             fees == other.fees &&
             instrumentId == other.instrumentId &&
             legs == other.legs &&
@@ -751,6 +799,7 @@ private constructor(
             quantity,
             side,
             transactionTime,
+            eventContract,
             fees,
             instrumentId,
             legs,
@@ -766,5 +815,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Execution{id=$id, orderId=$orderId, quantity=$quantity, side=$side, transactionTime=$transactionTime, fees=$fees, instrumentId=$instrumentId, legs=$legs, price=$price, symbol=$symbol, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, venue=$venue, additionalProperties=$additionalProperties}"
+        "Execution{id=$id, orderId=$orderId, quantity=$quantity, side=$side, transactionTime=$transactionTime, eventContract=$eventContract, fees=$fees, instrumentId=$instrumentId, legs=$legs, price=$price, symbol=$symbol, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, venue=$venue, additionalProperties=$additionalProperties}"
 }

@@ -7,6 +7,8 @@ import com.clearstreet.api.core.jsonMapper
 import com.clearstreet.api.models.ApiError
 import com.clearstreet.api.models.ResponseMetadata
 import com.clearstreet.api.models.v1.SecurityType
+import com.clearstreet.api.models.v1.orders.EventContractOrder
+import com.clearstreet.api.models.v1.orders.EventContractSide
 import com.clearstreet.api.models.v1.orders.Fees
 import com.clearstreet.api.models.v1.orders.Order
 import com.clearstreet.api.models.v1.orders.OrderLeg
@@ -65,6 +67,14 @@ internal class PositionClosePositionsResponseTest {
                         .venue("XNAS")
                         .averageFillPrice("47.95")
                         .addDetail("string")
+                        .eventContract(
+                            EventContractOrder.builder()
+                                .action(Side.BUY)
+                                .contractSide(EventContractSide.YES)
+                                .noAverageFillPrice("0.40")
+                                .noLimitPrice("0.40")
+                                .build()
+                        )
                         .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                         .extendedHours(false)
                         .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
@@ -149,6 +159,14 @@ internal class PositionClosePositionsResponseTest {
                     .venue("XNAS")
                     .averageFillPrice("47.95")
                     .addDetail("string")
+                    .eventContract(
+                        EventContractOrder.builder()
+                            .action(Side.BUY)
+                            .contractSide(EventContractSide.YES)
+                            .noAverageFillPrice("0.40")
+                            .noLimitPrice("0.40")
+                            .build()
+                    )
                     .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                     .extendedHours(false)
                     .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())
@@ -235,6 +253,14 @@ internal class PositionClosePositionsResponseTest {
                         .venue("XNAS")
                         .averageFillPrice("47.95")
                         .addDetail("string")
+                        .eventContract(
+                            EventContractOrder.builder()
+                                .action(Side.BUY)
+                                .contractSide(EventContractSide.YES)
+                                .noAverageFillPrice("0.40")
+                                .noLimitPrice("0.40")
+                                .build()
+                        )
                         .expiresAt(OffsetDateTime.parse("2025-10-15T16:00:00.000000000Z"))
                         .extendedHours(false)
                         .fees(Fees.builder().total("0.10").exchangeFee("0.10").build())

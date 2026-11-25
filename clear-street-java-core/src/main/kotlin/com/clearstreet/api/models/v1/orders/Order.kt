@@ -46,6 +46,7 @@ private constructor(
     private val venue: JsonField<String>,
     private val averageFillPrice: JsonField<String>,
     private val details: JsonField<List<String>>,
+    private val eventContract: JsonField<EventContractOrder>,
     private val expiresAt: JsonField<OffsetDateTime>,
     private val extendedHours: JsonField<Boolean>,
     private val fees: JsonField<Fees>,
@@ -104,6 +105,9 @@ private constructor(
         @JsonProperty("details")
         @ExcludeMissing
         details: JsonField<List<String>> = JsonMissing.of(),
+        @JsonProperty("event_contract")
+        @ExcludeMissing
+        eventContract: JsonField<EventContractOrder> = JsonMissing.of(),
         @JsonProperty("expires_at")
         @ExcludeMissing
         expiresAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -170,6 +174,7 @@ private constructor(
         venue,
         averageFillPrice,
         details,
+        eventContract,
         expiresAt,
         extendedHours,
         fees,
@@ -315,6 +320,15 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun details(): Optional<List<String>> = details.getOptional("details")
+
+    /**
+     * Effective action from the recorded order classification, with NO-relative prices. Existing
+     * top-level side and prices retain their YES-based meaning.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun eventContract(): Optional<EventContractOrder> = eventContract.getOptional("event_contract")
 
     /**
      * Timestamp when the order will expire (UTC). Present when time_in_force is GOOD_TILL_DATE.
@@ -632,6 +646,15 @@ private constructor(
     @JsonProperty("details") @ExcludeMissing fun _details(): JsonField<List<String>> = details
 
     /**
+     * Returns the raw JSON value of [eventContract].
+     *
+     * Unlike [eventContract], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("event_contract")
+    @ExcludeMissing
+    fun _eventContract(): JsonField<EventContractOrder> = eventContract
+
+    /**
      * Returns the raw JSON value of [expiresAt].
      *
      * Unlike [expiresAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -859,6 +882,7 @@ private constructor(
         private var venue: JsonField<String>? = null
         private var averageFillPrice: JsonField<String> = JsonMissing.of()
         private var details: JsonField<MutableList<String>>? = null
+        private var eventContract: JsonField<EventContractOrder> = JsonMissing.of()
         private var expiresAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var extendedHours: JsonField<Boolean> = JsonMissing.of()
         private var fees: JsonField<Fees> = JsonMissing.of()
@@ -898,6 +922,7 @@ private constructor(
             venue = order.venue
             averageFillPrice = order.averageFillPrice
             details = order.details.map { it.toMutableList() }
+            eventContract = order.eventContract
             expiresAt = order.expiresAt
             extendedHours = order.extendedHours
             fees = order.fees
@@ -1128,6 +1153,24 @@ private constructor(
                 (details ?: JsonField.of(mutableListOf())).also {
                     checkKnown("details", it).add(detail)
                 }
+        }
+
+        /**
+         * Effective action from the recorded order classification, with NO-relative prices.
+         * Existing top-level side and prices retain their YES-based meaning.
+         */
+        fun eventContract(eventContract: EventContractOrder) =
+            eventContract(JsonField.of(eventContract))
+
+        /**
+         * Sets [Builder.eventContract] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.eventContract] with a well-typed [EventContractOrder]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun eventContract(eventContract: JsonField<EventContractOrder>) = apply {
+            this.eventContract = eventContract
         }
 
         /**
@@ -1619,6 +1662,7 @@ private constructor(
                 checkRequired("venue", venue),
                 averageFillPrice,
                 (details ?: JsonMissing.of()).map { it.toImmutable() },
+                eventContract,
                 expiresAt,
                 extendedHours,
                 fees,
@@ -1673,6 +1717,7 @@ private constructor(
         venue()
         averageFillPrice()
         details()
+        eventContract().ifPresent { it.validate() }
         expiresAt()
         extendedHours()
         fees().ifPresent { it.validate() }
@@ -1726,6 +1771,7 @@ private constructor(
             (if (venue.asKnown().isPresent) 1 else 0) +
             (if (averageFillPrice.asKnown().isPresent) 1 else 0) +
             (details.asKnown().getOrNull()?.size ?: 0) +
+            (eventContract.asKnown().getOrNull()?.validity() ?: 0) +
             (if (expiresAt.asKnown().isPresent) 1 else 0) +
             (if (extendedHours.asKnown().isPresent) 1 else 0) +
             (fees.asKnown().getOrNull()?.validity() ?: 0) +
@@ -2208,6 +2254,7 @@ private constructor(
             venue == other.venue &&
             averageFillPrice == other.averageFillPrice &&
             details == other.details &&
+            eventContract == other.eventContract &&
             expiresAt == other.expiresAt &&
             extendedHours == other.extendedHours &&
             fees == other.fees &&
@@ -2248,6 +2295,7 @@ private constructor(
             venue,
             averageFillPrice,
             details,
+            eventContract,
             expiresAt,
             extendedHours,
             fees,
@@ -2275,5 +2323,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, expiresAt=$expiresAt, extendedHours=$extendedHours, fees=$fees, instrumentId=$instrumentId, instrumentType=$instrumentType, legs=$legs, limitOffset=$limitOffset, limitPrice=$limitPrice, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
+        "Order{id=$id, accountId=$accountId, clientOrderId=$clientOrderId, createdAt=$createdAt, filledQuantity=$filledQuantity, leavesQuantity=$leavesQuantity, orderType=$orderType, quantity=$quantity, side=$side, status=$status, timeInForce=$timeInForce, updatedAt=$updatedAt, venue=$venue, averageFillPrice=$averageFillPrice, details=$details, eventContract=$eventContract, expiresAt=$expiresAt, extendedHours=$extendedHours, fees=$fees, instrumentId=$instrumentId, instrumentType=$instrumentType, legs=$legs, limitOffset=$limitOffset, limitPrice=$limitPrice, releasesAt=$releasesAt, stopPrice=$stopPrice, strategy=$strategy, symbol=$symbol, trailingLimitPx=$trailingLimitPx, trailingOffset=$trailingOffset, trailingOffsetType=$trailingOffsetType, trailingStopPx=$trailingStopPx, trailingWatermarkPx=$trailingWatermarkPx, trailingWatermarkTs=$trailingWatermarkTs, underlyingInstrumentId=$underlyingInstrumentId, underlyingInstrumentType=$underlyingInstrumentType, additionalProperties=$additionalProperties}"
 }
