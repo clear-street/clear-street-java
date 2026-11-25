@@ -47,7 +47,10 @@ private constructor(
      */
     fun orderIds(): Optional<List<String>> = Optional.ofNullable(orderIds)
 
-    /** The number of items to return per page. Only used when page_token is not provided. */
+    /**
+     * The number of items to return per page. Only used when page_token is not provided. A value of
+     * 0 is rejected; a value above the maximum is treated as the maximum.
+     */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
@@ -168,7 +171,10 @@ private constructor(
             orderIds = (orderIds ?: mutableListOf()).apply { add(orderId) }
         }
 
-        /** The number of items to return per page. Only used when page_token is not provided. */
+        /**
+         * The number of items to return per page. Only used when page_token is not provided. A
+         * value of 0 is rejected; a value above the maximum is treated as the maximum.
+         */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**

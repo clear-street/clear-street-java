@@ -49,7 +49,10 @@ private constructor(
      */
     fun marketIds(): Optional<String> = Optional.ofNullable(marketIds)
 
-    /** The number of items to return per page. Only used when page_token is not provided. */
+    /**
+     * The number of items to return per page. Only used when page_token is not provided. A value of
+     * 0 is rejected; a value above the maximum is treated as the maximum.
+     */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
@@ -124,7 +127,10 @@ private constructor(
         /** Alias for calling [Builder.marketIds] with `marketIds.orElse(null)`. */
         fun marketIds(marketIds: Optional<String>) = marketIds(marketIds.getOrNull())
 
-        /** The number of items to return per page. Only used when page_token is not provided. */
+        /**
+         * The number of items to return per page. Only used when page_token is not provided. A
+         * value of 0 is rejected; a value above the maximum is treated as the maximum.
+         */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**

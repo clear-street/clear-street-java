@@ -18,7 +18,10 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** The number of items to return per page. Only used when page_token is not provided. */
+    /**
+     * The number of items to return per page. Only used when page_token is not provided. A value of
+     * 0 is rejected; a value above the maximum is treated as the maximum.
+     */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
@@ -61,7 +64,10 @@ private constructor(
             additionalQueryParams = watchlistGetWatchlistsParams.additionalQueryParams.toBuilder()
         }
 
-        /** The number of items to return per page. Only used when page_token is not provided. */
+        /**
+         * The number of items to return per page. Only used when page_token is not provided. A
+         * value of 0 is rejected; a value above the maximum is treated as the maximum.
+         */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**

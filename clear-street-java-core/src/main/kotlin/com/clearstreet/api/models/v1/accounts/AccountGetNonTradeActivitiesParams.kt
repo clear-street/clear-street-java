@@ -37,7 +37,10 @@ private constructor(
     /** The start date and time for the query range, inclusive (ISO 8601 format) */
     fun from(): Optional<OffsetDateTime> = Optional.ofNullable(from)
 
-    /** The number of items to return per page. Only used when page_token is not provided. */
+    /**
+     * The number of items to return per page. Only used when page_token is not provided. A value of
+     * 0 is rejected; a value above the maximum is treated as the maximum.
+     */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
@@ -132,7 +135,10 @@ private constructor(
         /** Alias for calling [Builder.from] with `from.orElse(null)`. */
         fun from(from: Optional<OffsetDateTime>) = from(from.getOrNull())
 
-        /** The number of items to return per page. Only used when page_token is not provided. */
+        /**
+         * The number of items to return per page. Only used when page_token is not provided. A
+         * value of 0 is rejected; a value above the maximum is treated as the maximum.
+         */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**

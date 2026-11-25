@@ -36,7 +36,10 @@ private constructor(
     /** Instrument type filter (e.g., COMMON_STOCK, OPTION) */
     fun instrumentType(): Optional<InstrumentType> = Optional.ofNullable(instrumentType)
 
-    /** The number of items to return per page. Only used when page_token is not provided. */
+    /**
+     * The number of items to return per page. Only used when page_token is not provided. A value of
+     * 0 is rejected; a value above the maximum is treated as the maximum.
+     */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
@@ -134,7 +137,10 @@ private constructor(
         fun instrumentType(instrumentType: Optional<InstrumentType>) =
             instrumentType(instrumentType.getOrNull())
 
-        /** The number of items to return per page. Only used when page_token is not provided. */
+        /**
+         * The number of items to return per page. Only used when page_token is not provided. A
+         * value of 0 is rejected; a value above the maximum is treated as the maximum.
+         */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**

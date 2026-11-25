@@ -58,7 +58,10 @@ private constructor(
      */
     fun includePtp(): Optional<Boolean> = Optional.ofNullable(includePtp)
 
-    /** The number of items to return per page. Only used when page_token is not provided. */
+    /**
+     * The number of items to return per page. Only used when page_token is not provided. A value of
+     * 0 or above the maximum is rejected.
+     */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
@@ -178,7 +181,10 @@ private constructor(
         /** Alias for calling [Builder.includePtp] with `includePtp.orElse(null)`. */
         fun includePtp(includePtp: Optional<Boolean>) = includePtp(includePtp.getOrNull())
 
-        /** The number of items to return per page. Only used when page_token is not provided. */
+        /**
+         * The number of items to return per page. Only used when page_token is not provided. A
+         * value of 0 or above the maximum is rejected.
+         */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**

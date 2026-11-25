@@ -58,7 +58,10 @@ private constructor(
     /** Filter by threshold security status */
     fun isThresholdSecurity(): Optional<Boolean> = Optional.ofNullable(isThresholdSecurity)
 
-    /** The number of items to return per page. Only used when page_token is not provided. */
+    /**
+     * The number of items to return per page. Only used when page_token is not provided. A value of
+     * 0 is rejected; a value above the maximum is treated as the maximum.
+     */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
@@ -240,7 +243,10 @@ private constructor(
         fun isThresholdSecurity(isThresholdSecurity: Optional<Boolean>) =
             isThresholdSecurity(isThresholdSecurity.getOrNull())
 
-        /** The number of items to return per page. Only used when page_token is not provided. */
+        /**
+         * The number of items to return per page. Only used when page_token is not provided. A
+         * value of 0 is rejected; a value above the maximum is treated as the maximum.
+         */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**

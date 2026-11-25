@@ -30,7 +30,10 @@ private constructor(
     /** Comma-separated categories. Keeps series with a market in any of them, ignoring case. */
     fun categories(): Optional<String> = Optional.ofNullable(categories)
 
-    /** The number of items to return per page. Only used when page_token is not provided. */
+    /**
+     * The number of items to return per page. Only used when page_token is not provided. A value of
+     * 0 is rejected; a value above the maximum is treated as the maximum.
+     */
     fun pageSize(): Optional<Long> = Optional.ofNullable(pageSize)
 
     /**
@@ -85,7 +88,10 @@ private constructor(
         /** Alias for calling [Builder.categories] with `categories.orElse(null)`. */
         fun categories(categories: Optional<String>) = categories(categories.getOrNull())
 
-        /** The number of items to return per page. Only used when page_token is not provided. */
+        /**
+         * The number of items to return per page. Only used when page_token is not provided. A
+         * value of 0 is rejected; a value above the maximum is treated as the maximum.
+         */
         fun pageSize(pageSize: Long?) = apply { this.pageSize = pageSize }
 
         /**
