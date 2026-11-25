@@ -36,14 +36,14 @@ private constructor(
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun risk(): Optional<RiskSettings> = body.risk()
+    fun risk(): Optional<Risk> = body.risk()
 
     /**
      * Returns the raw JSON value of [risk].
      *
      * Unlike [risk], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _risk(): JsonField<RiskSettings> = body._risk()
+    fun _risk(): JsonField<Risk> = body._risk()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -104,19 +104,18 @@ private constructor(
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
         /** Risk settings for the account */
-        fun risk(risk: RiskSettings?) = apply { body.risk(risk) }
+        fun risk(risk: Risk?) = apply { body.risk(risk) }
 
         /** Alias for calling [Builder.risk] with `risk.orElse(null)`. */
-        fun risk(risk: Optional<RiskSettings>) = risk(risk.getOrNull())
+        fun risk(risk: Optional<Risk>) = risk(risk.getOrNull())
 
         /**
          * Sets [Builder.risk] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.risk] with a well-typed [RiskSettings] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.risk] with a well-typed [Risk] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun risk(risk: JsonField<RiskSettings>) = apply { body.risk(risk) }
+        fun risk(risk: JsonField<Risk>) = apply { body.risk(risk) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -265,13 +264,13 @@ private constructor(
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val risk: JsonField<RiskSettings>,
+        private val risk: JsonField<Risk>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("risk") @ExcludeMissing risk: JsonField<RiskSettings> = JsonMissing.of()
+            @JsonProperty("risk") @ExcludeMissing risk: JsonField<Risk> = JsonMissing.of()
         ) : this(risk, mutableMapOf())
 
         /**
@@ -280,14 +279,14 @@ private constructor(
          * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun risk(): Optional<RiskSettings> = risk.getOptional("risk")
+        fun risk(): Optional<Risk> = risk.getOptional("risk")
 
         /**
          * Returns the raw JSON value of [risk].
          *
          * Unlike [risk], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("risk") @ExcludeMissing fun _risk(): JsonField<RiskSettings> = risk
+        @JsonProperty("risk") @ExcludeMissing fun _risk(): JsonField<Risk> = risk
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -310,7 +309,7 @@ private constructor(
         /** A builder for [Body]. */
         class Builder internal constructor() {
 
-            private var risk: JsonField<RiskSettings> = JsonMissing.of()
+            private var risk: JsonField<Risk> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -320,19 +319,19 @@ private constructor(
             }
 
             /** Risk settings for the account */
-            fun risk(risk: RiskSettings?) = risk(JsonField.ofNullable(risk))
+            fun risk(risk: Risk?) = risk(JsonField.ofNullable(risk))
 
             /** Alias for calling [Builder.risk] with `risk.orElse(null)`. */
-            fun risk(risk: Optional<RiskSettings>) = risk(risk.getOrNull())
+            fun risk(risk: Optional<Risk>) = risk(risk.getOrNull())
 
             /**
              * Sets [Builder.risk] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.risk] with a well-typed [RiskSettings] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.risk] with a well-typed [Risk] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
              */
-            fun risk(risk: JsonField<RiskSettings>) = apply { this.risk = risk }
+            fun risk(risk: JsonField<Risk>) = apply { this.risk = risk }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -412,6 +411,226 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() = "Body{risk=$risk, additionalProperties=$additionalProperties}"
+    }
+
+    /** Risk settings for the account */
+    class Risk
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val marginMultiplier: JsonField<MarginMultiplier>,
+        private val maxNotional: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("margin_multiplier")
+            @ExcludeMissing
+            marginMultiplier: JsonField<MarginMultiplier> = JsonMissing.of(),
+            @JsonProperty("max_notional")
+            @ExcludeMissing
+            maxNotional: JsonField<String> = JsonMissing.of(),
+        ) : this(marginMultiplier, maxNotional, mutableMapOf())
+
+        /**
+         * The margin multiplier of a Reg T margin account: `"1"` for cash only, `"4"` for full Reg
+         * T margin. Only a Reg T margin account may set it. `"4"` replaces a `"1"` the account
+         * chose, never a limit Clear Street set, so the response can give `"1"` after a request for
+         * `"4"`. It cannot be `null`.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun marginMultiplier(): Optional<MarginMultiplier> =
+            marginMultiplier.getOptional("margin_multiplier")
+
+        /**
+         * The maximum notional value available to the account: 0 or greater. `null` clears the
+         * limit.
+         *
+         * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun maxNotional(): Optional<String> = maxNotional.getOptional("max_notional")
+
+        /**
+         * Returns the raw JSON value of [marginMultiplier].
+         *
+         * Unlike [marginMultiplier], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("margin_multiplier")
+        @ExcludeMissing
+        fun _marginMultiplier(): JsonField<MarginMultiplier> = marginMultiplier
+
+        /**
+         * Returns the raw JSON value of [maxNotional].
+         *
+         * Unlike [maxNotional], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("max_notional")
+        @ExcludeMissing
+        fun _maxNotional(): JsonField<String> = maxNotional
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Risk]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Risk]. */
+        class Builder internal constructor() {
+
+            private var marginMultiplier: JsonField<MarginMultiplier> = JsonMissing.of()
+            private var maxNotional: JsonField<String> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(risk: Risk) = apply {
+                marginMultiplier = risk.marginMultiplier
+                maxNotional = risk.maxNotional
+                additionalProperties = risk.additionalProperties.toMutableMap()
+            }
+
+            /**
+             * The margin multiplier of a Reg T margin account: `"1"` for cash only, `"4"` for full
+             * Reg T margin. Only a Reg T margin account may set it. `"4"` replaces a `"1"` the
+             * account chose, never a limit Clear Street set, so the response can give `"1"` after a
+             * request for `"4"`. It cannot be `null`.
+             */
+            fun marginMultiplier(marginMultiplier: MarginMultiplier) =
+                marginMultiplier(JsonField.of(marginMultiplier))
+
+            /**
+             * Sets [Builder.marginMultiplier] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.marginMultiplier] with a well-typed
+             * [MarginMultiplier] value instead. This method is primarily for setting the field to
+             * an undocumented or not yet supported value.
+             */
+            fun marginMultiplier(marginMultiplier: JsonField<MarginMultiplier>) = apply {
+                this.marginMultiplier = marginMultiplier
+            }
+
+            /**
+             * The maximum notional value available to the account: 0 or greater. `null` clears the
+             * limit.
+             */
+            fun maxNotional(maxNotional: String?) = maxNotional(JsonField.ofNullable(maxNotional))
+
+            /** Alias for calling [Builder.maxNotional] with `maxNotional.orElse(null)`. */
+            fun maxNotional(maxNotional: Optional<String>) = maxNotional(maxNotional.getOrNull())
+
+            /**
+             * Sets [Builder.maxNotional] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.maxNotional] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun maxNotional(maxNotional: JsonField<String>) = apply {
+                this.maxNotional = maxNotional
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Risk].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Risk =
+                Risk(marginMultiplier, maxNotional, additionalProperties.toMutableMap())
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws ClearStreetInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Risk = apply {
+            if (validated) {
+                return@apply
+            }
+
+            marginMultiplier().ifPresent { it.validate() }
+            maxNotional()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: ClearStreetInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (marginMultiplier.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (maxNotional.asKnown().isPresent) 1 else 0)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Risk &&
+                marginMultiplier == other.marginMultiplier &&
+                maxNotional == other.maxNotional &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(marginMultiplier, maxNotional, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Risk{marginMultiplier=$marginMultiplier, maxNotional=$maxNotional, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

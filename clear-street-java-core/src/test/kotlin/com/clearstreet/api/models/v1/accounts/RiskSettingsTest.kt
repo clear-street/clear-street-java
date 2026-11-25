@@ -11,15 +11,24 @@ internal class RiskSettingsTest {
 
     @Test
     fun create() {
-        val riskSettings = RiskSettings.builder().maxNotional("1000000.00").build()
+        val riskSettings =
+            RiskSettings.builder()
+                .marginMultiplier(MarginMultiplier._1)
+                .maxNotional("1000000.00")
+                .build()
 
+        assertThat(riskSettings.marginMultiplier()).contains(MarginMultiplier._1)
         assertThat(riskSettings.maxNotional()).contains("1000000.00")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val riskSettings = RiskSettings.builder().maxNotional("1000000.00").build()
+        val riskSettings =
+            RiskSettings.builder()
+                .marginMultiplier(MarginMultiplier._1)
+                .maxNotional("1000000.00")
+                .build()
 
         val roundtrippedRiskSettings =
             jsonMapper.readValue(

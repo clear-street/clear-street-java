@@ -20,16 +20,29 @@ import kotlin.jvm.optionals.getOrNull
 class RiskSettings
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val marginMultiplier: JsonField<MarginMultiplier>,
     private val maxNotional: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
+        @JsonProperty("margin_multiplier")
+        @ExcludeMissing
+        marginMultiplier: JsonField<MarginMultiplier> = JsonMissing.of(),
         @JsonProperty("max_notional")
         @ExcludeMissing
-        maxNotional: JsonField<String> = JsonMissing.of()
-    ) : this(maxNotional, mutableMapOf())
+        maxNotional: JsonField<String> = JsonMissing.of(),
+    ) : this(marginMultiplier, maxNotional, mutableMapOf())
+
+    /**
+     * When a null/undefined value is observed, it indicates that there is no available data.
+     *
+     * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun marginMultiplier(): Optional<MarginMultiplier> =
+        marginMultiplier.getOptional("margin_multiplier")
 
     /**
      * The maximum notional value available to the account. On update, a value must be 0 or greater,
@@ -40,6 +53,16 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun maxNotional(): Optional<String> = maxNotional.getOptional("max_notional")
+
+    /**
+     * Returns the raw JSON value of [marginMultiplier].
+     *
+     * Unlike [marginMultiplier], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("margin_multiplier")
+    @ExcludeMissing
+    fun _marginMultiplier(): JsonField<MarginMultiplier> = marginMultiplier
 
     /**
      * Returns the raw JSON value of [maxNotional].
@@ -71,13 +94,36 @@ private constructor(
     /** A builder for [RiskSettings]. */
     class Builder internal constructor() {
 
+        private var marginMultiplier: JsonField<MarginMultiplier> = JsonMissing.of()
         private var maxNotional: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(riskSettings: RiskSettings) = apply {
+            marginMultiplier = riskSettings.marginMultiplier
             maxNotional = riskSettings.maxNotional
             additionalProperties = riskSettings.additionalProperties.toMutableMap()
+        }
+
+        /**
+         * When a null/undefined value is observed, it indicates that there is no available data.
+         */
+        fun marginMultiplier(marginMultiplier: MarginMultiplier?) =
+            marginMultiplier(JsonField.ofNullable(marginMultiplier))
+
+        /** Alias for calling [Builder.marginMultiplier] with `marginMultiplier.orElse(null)`. */
+        fun marginMultiplier(marginMultiplier: Optional<MarginMultiplier>) =
+            marginMultiplier(marginMultiplier.getOrNull())
+
+        /**
+         * Sets [Builder.marginMultiplier] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.marginMultiplier] with a well-typed [MarginMultiplier]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun marginMultiplier(marginMultiplier: JsonField<MarginMultiplier>) = apply {
+            this.marginMultiplier = marginMultiplier
         }
 
         /**
@@ -123,7 +169,8 @@ private constructor(
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): RiskSettings = RiskSettings(maxNotional, additionalProperties.toMutableMap())
+        fun build(): RiskSettings =
+            RiskSettings(marginMultiplier, maxNotional, additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
@@ -141,6 +188,7 @@ private constructor(
             return@apply
         }
 
+        marginMultiplier().ifPresent { it.validate() }
         maxNotional()
         validated = true
     }
@@ -158,7 +206,10 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    @JvmSynthetic internal fun validity(): Int = (if (maxNotional.asKnown().isPresent) 1 else 0)
+    @JvmSynthetic
+    internal fun validity(): Int =
+        (marginMultiplier.asKnown().getOrNull()?.validity() ?: 0) +
+            (if (maxNotional.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -166,14 +217,17 @@ private constructor(
         }
 
         return other is RiskSettings &&
+            marginMultiplier == other.marginMultiplier &&
             maxNotional == other.maxNotional &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(maxNotional, additionalProperties) }
+    private val hashCode: Int by lazy {
+        Objects.hash(marginMultiplier, maxNotional, additionalProperties)
+    }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "RiskSettings{maxNotional=$maxNotional, additionalProperties=$additionalProperties}"
+        "RiskSettings{marginMultiplier=$marginMultiplier, maxNotional=$maxNotional, additionalProperties=$additionalProperties}"
 }

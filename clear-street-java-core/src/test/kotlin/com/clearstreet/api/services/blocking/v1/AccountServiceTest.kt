@@ -9,7 +9,7 @@ import com.clearstreet.api.models.v1.accounts.AccountGetAccountsParams
 import com.clearstreet.api.models.v1.accounts.AccountGetNonTradeActivitiesParams
 import com.clearstreet.api.models.v1.accounts.AccountGetPortfolioHistoryParams
 import com.clearstreet.api.models.v1.accounts.AccountPatchAccountByIdParams
-import com.clearstreet.api.models.v1.accounts.RiskSettings
+import com.clearstreet.api.models.v1.accounts.MarginMultiplier
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Test
@@ -132,7 +132,12 @@ internal class AccountServiceTest {
             accountService.patchAccountById(
                 AccountPatchAccountByIdParams.builder()
                     .accountId(0L)
-                    .risk(RiskSettings.builder().maxNotional("5000000.00").build())
+                    .risk(
+                        AccountPatchAccountByIdParams.Risk.builder()
+                            .marginMultiplier(MarginMultiplier._1)
+                            .maxNotional("5000000.00")
+                            .build()
+                    )
                     .build()
             )
 

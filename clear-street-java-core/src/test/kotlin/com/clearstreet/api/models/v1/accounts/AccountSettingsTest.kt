@@ -13,11 +13,21 @@ internal class AccountSettingsTest {
     fun create() {
         val accountSettings =
             AccountSettings.builder()
-                .risk(RiskSettings.builder().maxNotional("5000000.00").build())
+                .risk(
+                    RiskSettings.builder()
+                        .marginMultiplier(MarginMultiplier._1)
+                        .maxNotional("5000000.00")
+                        .build()
+                )
                 .build()
 
         assertThat(accountSettings.risk())
-            .contains(RiskSettings.builder().maxNotional("5000000.00").build())
+            .contains(
+                RiskSettings.builder()
+                    .marginMultiplier(MarginMultiplier._1)
+                    .maxNotional("5000000.00")
+                    .build()
+            )
     }
 
     @Test
@@ -25,7 +35,12 @@ internal class AccountSettingsTest {
         val jsonMapper = jsonMapper()
         val accountSettings =
             AccountSettings.builder()
-                .risk(RiskSettings.builder().maxNotional("5000000.00").build())
+                .risk(
+                    RiskSettings.builder()
+                        .marginMultiplier(MarginMultiplier._1)
+                        .maxNotional("5000000.00")
+                        .build()
+                )
                 .build()
 
         val roundtrippedAccountSettings =

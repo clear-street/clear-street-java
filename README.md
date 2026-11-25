@@ -494,10 +494,9 @@ To set undocumented parameters on _nested_ headers, query params, or body classe
 ```java
 import com.clearstreet.api.core.JsonValue;
 import com.clearstreet.api.models.v1.accounts.AccountPatchAccountByIdParams;
-import com.clearstreet.api.models.v1.accounts.RiskSettings;
 
 AccountPatchAccountByIdParams params = AccountPatchAccountByIdParams.builder()
-    .risk(RiskSettings.builder()
+    .risk(AccountPatchAccountByIdParams.Risk.builder()
         .putAdditionalProperty("secretProperty", JsonValue.from("42"))
         .build())
     .build();

@@ -11,7 +11,12 @@ internal class AccountPatchAccountByIdParamsTest {
     fun create() {
         AccountPatchAccountByIdParams.builder()
             .accountId(0L)
-            .risk(RiskSettings.builder().maxNotional("5000000.00").build())
+            .risk(
+                AccountPatchAccountByIdParams.Risk.builder()
+                    .marginMultiplier(MarginMultiplier._1)
+                    .maxNotional("5000000.00")
+                    .build()
+            )
             .build()
     }
 
@@ -29,12 +34,23 @@ internal class AccountPatchAccountByIdParamsTest {
         val params =
             AccountPatchAccountByIdParams.builder()
                 .accountId(0L)
-                .risk(RiskSettings.builder().maxNotional("5000000.00").build())
+                .risk(
+                    AccountPatchAccountByIdParams.Risk.builder()
+                        .marginMultiplier(MarginMultiplier._1)
+                        .maxNotional("5000000.00")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.risk()).contains(RiskSettings.builder().maxNotional("5000000.00").build())
+        assertThat(body.risk())
+            .contains(
+                AccountPatchAccountByIdParams.Risk.builder()
+                    .marginMultiplier(MarginMultiplier._1)
+                    .maxNotional("5000000.00")
+                    .build()
+            )
     }
 
     @Test

@@ -39,7 +39,12 @@ internal class AccountPatchAccountByIdResponseTest {
                 )
                 .data(
                     AccountSettings.builder()
-                        .risk(RiskSettings.builder().maxNotional("5000000.00").build())
+                        .risk(
+                            RiskSettings.builder()
+                                .marginMultiplier(MarginMultiplier._1)
+                                .maxNotional("5000000.00")
+                                .build()
+                        )
                         .build()
                 )
                 .build()
@@ -70,7 +75,12 @@ internal class AccountPatchAccountByIdResponseTest {
         assertThat(accountPatchAccountByIdResponse.data())
             .isEqualTo(
                 AccountSettings.builder()
-                    .risk(RiskSettings.builder().maxNotional("5000000.00").build())
+                    .risk(
+                        RiskSettings.builder()
+                            .marginMultiplier(MarginMultiplier._1)
+                            .maxNotional("5000000.00")
+                            .build()
+                    )
                     .build()
             )
     }
@@ -103,7 +113,12 @@ internal class AccountPatchAccountByIdResponseTest {
                 )
                 .data(
                     AccountSettings.builder()
-                        .risk(RiskSettings.builder().maxNotional("5000000.00").build())
+                        .risk(
+                            RiskSettings.builder()
+                                .marginMultiplier(MarginMultiplier._1)
+                                .maxNotional("5000000.00")
+                                .build()
+                        )
                         .build()
                 )
                 .build()
