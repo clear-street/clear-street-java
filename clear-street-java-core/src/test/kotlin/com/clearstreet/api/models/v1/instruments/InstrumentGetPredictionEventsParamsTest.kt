@@ -37,6 +37,7 @@ internal class InstrumentGetPredictionEventsParamsTest {
             .seriesCodes("series_codes")
             .sortBy(InstrumentGetPredictionEventsParams.SortBy.OPEN_AT)
             .sortDirection(InstrumentGetPredictionEventsParams.SortDirection.ASC)
+            .statuses("statuses")
             .build()
     }
 
@@ -70,6 +71,7 @@ internal class InstrumentGetPredictionEventsParamsTest {
                 .seriesCodes("series_codes")
                 .sortBy(InstrumentGetPredictionEventsParams.SortBy.OPEN_AT)
                 .sortDirection(InstrumentGetPredictionEventsParams.SortDirection.ASC)
+                .statuses("statuses")
                 .build()
 
         val queryParams = params._queryParams()
@@ -95,6 +97,7 @@ internal class InstrumentGetPredictionEventsParamsTest {
                     .put("series_codes", "series_codes")
                     .put("sort_by", "OPEN_AT")
                     .put("sort_direction", "ASC")
+                    .put("statuses", "statuses")
                     .build()
             )
     }

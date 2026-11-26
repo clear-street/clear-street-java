@@ -36,6 +36,15 @@ import kotlin.jvm.optionals.getOrNull
  * request that takes longer than 30 seconds fails with `504`; narrow `search` or the filters and
  * try again.
  *
+ * `statuses` keeps events in any listed lifecycle state, judged over all of an event's markets, not
+ * only listable ones: `ACTIVE` events have an open market, `UPCOMING` events have only markets that
+ * open in the future, and `SETTLED` events have only settled markets. Events in none of those
+ * states, such as events awaiting settlement, match no value. Unrecognized values are ignored; a
+ * list with none recognized returns no events. Listing `UPCOMING` or `SETTLED` reads every market,
+ * as `include_settled=true` does: `title`, `categories`, the open and close times, and the other
+ * filters then count paused and settled markets too. A request listing `SETTLED` also has the 30
+ * second limit.
+ *
  * `open_at.*` and `close_at.*` bound an event's open and close time, which are the earliest across
  * its listable markets, and `sort_by` uses the same times.
  *
@@ -64,6 +73,7 @@ private constructor(
     private val seriesCodes: String?,
     private val sortBy: SortBy?,
     private val sortDirection: SortDirection?,
+    private val statuses: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -128,6 +138,15 @@ private constructor(
     /** Sort direction. Defaults to ascending. Ignored when sorting by relevance. */
     fun sortDirection(): Optional<SortDirection> = Optional.ofNullable(sortDirection)
 
+    /**
+     * Comma-separated lifecycle statuses to keep: `ACTIVE` (a market is open), `UPCOMING` (every
+     * market opens in the future), `SETTLED` (every market is settled). Keeps events matching any
+     * listed status, judged over all of an event's markets. Listing `UPCOMING` or `SETTLED` counts
+     * every market of an event, as `include_settled` does. A request listing `SETTLED` that takes
+     * longer than 30 seconds fails with `504`. Unrecognized values are ignored.
+     */
+    fun statuses(): Optional<String> = Optional.ofNullable(statuses)
+
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
 
@@ -162,6 +181,7 @@ private constructor(
         private var seriesCodes: String? = null
         private var sortBy: SortBy? = null
         private var sortDirection: SortDirection? = null
+        private var statuses: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -181,6 +201,7 @@ private constructor(
             seriesCodes = instrumentGetPredictionEventsParams.seriesCodes
             sortBy = instrumentGetPredictionEventsParams.sortBy
             sortDirection = instrumentGetPredictionEventsParams.sortDirection
+            statuses = instrumentGetPredictionEventsParams.statuses
             additionalHeaders = instrumentGetPredictionEventsParams.additionalHeaders.toBuilder()
             additionalQueryParams =
                 instrumentGetPredictionEventsParams.additionalQueryParams.toBuilder()
@@ -313,6 +334,19 @@ private constructor(
         fun sortDirection(sortDirection: Optional<SortDirection>) =
             sortDirection(sortDirection.getOrNull())
 
+        /**
+         * Comma-separated lifecycle statuses to keep: `ACTIVE` (a market is open), `UPCOMING`
+         * (every market opens in the future), `SETTLED` (every market is settled). Keeps events
+         * matching any listed status, judged over all of an event's markets. Listing `UPCOMING` or
+         * `SETTLED` counts every market of an event, as `include_settled` does. A request listing
+         * `SETTLED` that takes longer than 30 seconds fails with `504`. Unrecognized values are
+         * ignored.
+         */
+        fun statuses(statuses: String?) = apply { this.statuses = statuses }
+
+        /** Alias for calling [Builder.statuses] with `statuses.orElse(null)`. */
+        fun statuses(statuses: Optional<String>) = statuses(statuses.getOrNull())
+
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
             putAllAdditionalHeaders(additionalHeaders)
@@ -430,6 +464,7 @@ private constructor(
                 seriesCodes,
                 sortBy,
                 sortDirection,
+                statuses,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -472,6 +507,7 @@ private constructor(
                 seriesCodes?.let { put("series_codes", it) }
                 sortBy?.let { put("sort_by", it.toString()) }
                 sortDirection?.let { put("sort_direction", it.toString()) }
+                statuses?.let { put("statuses", it) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -1181,6 +1217,7 @@ private constructor(
             seriesCodes == other.seriesCodes &&
             sortBy == other.sortBy &&
             sortDirection == other.sortDirection &&
+            statuses == other.statuses &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -1199,10 +1236,11 @@ private constructor(
             seriesCodes,
             sortBy,
             sortDirection,
+            statuses,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "InstrumentGetPredictionEventsParams{categories=$categories, closeAt=$closeAt, includeMarkets=$includeMarkets, includeSettled=$includeSettled, marketIds=$marketIds, openAt=$openAt, pageSize=$pageSize, pageToken=$pageToken, search=$search, seriesCodes=$seriesCodes, sortBy=$sortBy, sortDirection=$sortDirection, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InstrumentGetPredictionEventsParams{categories=$categories, closeAt=$closeAt, includeMarkets=$includeMarkets, includeSettled=$includeSettled, marketIds=$marketIds, openAt=$openAt, pageSize=$pageSize, pageToken=$pageToken, search=$search, seriesCodes=$seriesCodes, sortBy=$sortBy, sortDirection=$sortDirection, statuses=$statuses, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

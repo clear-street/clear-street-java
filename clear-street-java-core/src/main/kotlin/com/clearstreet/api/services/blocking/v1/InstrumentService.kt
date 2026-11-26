@@ -177,6 +177,15 @@ interface InstrumentService {
      * Such a request that takes longer than 30 seconds fails with `504`; narrow `search` or the
      * filters and try again.
      *
+     * `statuses` keeps events in any listed lifecycle state, judged over all of an event's markets,
+     * not only listable ones: `ACTIVE` events have an open market, `UPCOMING` events have only
+     * markets that open in the future, and `SETTLED` events have only settled markets. Events in
+     * none of those states, such as events awaiting settlement, match no value. Unrecognized values
+     * are ignored; a list with none recognized returns no events. Listing `UPCOMING` or `SETTLED`
+     * reads every market, as `include_settled=true` does: `title`, `categories`, the open and close
+     * times, and the other filters then count paused and settled markets too. A request listing
+     * `SETTLED` also has the 30 second limit.
+     *
      * `open_at.*` and `close_at.*` bound an event's open and close time, which are the earliest
      * across its listable markets, and `sort_by` uses the same times.
      *

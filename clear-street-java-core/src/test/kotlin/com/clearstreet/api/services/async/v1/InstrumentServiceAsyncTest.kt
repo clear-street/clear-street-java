@@ -149,6 +149,7 @@ internal class InstrumentServiceAsyncTest {
                     .seriesCodes("series_codes")
                     .sortBy(InstrumentGetPredictionEventsParams.SortBy.OPEN_AT)
                     .sortDirection(InstrumentGetPredictionEventsParams.SortDirection.ASC)
+                    .statuses("statuses")
                     .build()
             )
 
