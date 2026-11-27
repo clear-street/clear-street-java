@@ -46,7 +46,8 @@ private constructor(
 
     /**
      * Total cash impact of the order after estimated fees and commissions: `gross_amount` with
-     * `fees.total` applied.
+     * `fees.total` applied. For an order that receives cash, a negative value means its estimated
+     * fees exceed what it receives.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -145,7 +146,8 @@ private constructor(
 
         /**
          * Total cash impact of the order after estimated fees and commissions: `gross_amount` with
-         * `fees.total` applied.
+         * `fees.total` applied. For an order that receives cash, a negative value means its
+         * estimated fees exceed what it receives.
          */
         fun netAmount(netAmount: String) = netAmount(JsonField.of(netAmount))
 
