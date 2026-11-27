@@ -65,7 +65,8 @@ private constructor(
     )
 
     /**
-     * Instruments associated with this news item.
+     * Instruments associated with this news item. The requested instrument is listed too when the
+     * item matched it through another share class or cross-listing of the same issuer.
      *
      * @throws ClearStreetInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -264,7 +265,10 @@ private constructor(
             additionalProperties = newsItem.additionalProperties.toMutableMap()
         }
 
-        /** Instruments associated with this news item. */
+        /**
+         * Instruments associated with this news item. The requested instrument is listed too when
+         * the item matched it through another share class or cross-listing of the same issuer.
+         */
         fun instruments(instruments: List<NewsInstrument>) = instruments(JsonField.of(instruments))
 
         /**
