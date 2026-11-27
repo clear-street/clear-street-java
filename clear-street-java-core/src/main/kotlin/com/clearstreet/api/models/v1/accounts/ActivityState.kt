@@ -21,9 +21,9 @@ class ActivityState @JsonCreator private constructor(private val value: JsonFiel
 
     companion object {
 
-        @JvmField val SETTLED = of("settled")
+        @JvmField val SETTLED = of("SETTLED")
 
-        @JvmField val CANCELLED = of("cancelled")
+        @JvmField val CANCELLED = of("CANCELLED")
 
         @JvmStatic fun of(value: String) = ActivityState(JsonField.of(value))
     }

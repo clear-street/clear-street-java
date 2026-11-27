@@ -318,25 +318,25 @@ private constructor(
 
         companion object {
 
-            @JvmField val MONEY_MOVEMENT = of("money_movement")
+            @JvmField val MONEY_MOVEMENT = of("MONEY_MOVEMENT")
 
-            @JvmField val INTEREST = of("interest")
+            @JvmField val INTEREST = of("INTEREST")
 
-            @JvmField val FEE = of("fee")
+            @JvmField val FEE = of("FEE")
 
-            @JvmField val DIVIDEND = of("dividend")
+            @JvmField val DIVIDEND = of("DIVIDEND")
 
-            @JvmField val OPTION_EVENT = of("option_event")
+            @JvmField val OPTION_EVENT = of("OPTION_EVENT")
 
-            @JvmField val TRANSFER = of("transfer")
+            @JvmField val TRANSFER = of("TRANSFER")
 
-            @JvmField val CORPORATE_ACTION = of("corporate_action")
+            @JvmField val CORPORATE_ACTION = of("CORPORATE_ACTION")
 
-            @JvmField val TAX_WITHHOLDING = of("tax_withholding")
+            @JvmField val TAX_WITHHOLDING = of("TAX_WITHHOLDING")
 
-            @JvmField val ADJUSTMENT = of("adjustment")
+            @JvmField val ADJUSTMENT = of("ADJUSTMENT")
 
-            @JvmField val OTHER = of("other")
+            @JvmField val OTHER = of("OTHER")
 
             @JvmStatic fun of(value: String) = ActivityType(JsonField.of(value))
         }

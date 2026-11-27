@@ -47,7 +47,7 @@ internal class AccountGetNonTradeActivitiesParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put("activity_type", listOf("money_movement").joinToString(","))
+                    .put("activity_type", listOf("MONEY_MOVEMENT").joinToString(","))
                     .put("from", "2019-12-27T18:11:19.117Z")
                     .put("page_size", "1")
                     .put("page_token", "U3RhaW5sZXNzIHJvY2tz")
